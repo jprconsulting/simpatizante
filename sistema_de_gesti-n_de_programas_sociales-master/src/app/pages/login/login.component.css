@@ -1,0 +1,6 @@
+.page-center {
+    background-image: url('src/assets/images/diflogo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}

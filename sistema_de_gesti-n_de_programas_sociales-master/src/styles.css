@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+.btn-add-dif {
+    background-color: #422b7d !important;
+    color: white !important;
+}
+
+.pac-container {
+    z-index: 9999 !important;
+}
+
+.custom-green-switch input:checked {
+  background-color: #1db83f;
+}
+
+.error-message {
+  color: #e53e3e;
+  font-size: 0.875rem;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  margin-right: 10px;
+}

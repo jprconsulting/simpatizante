@@ -1,0 +1,33 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+    <p style="font-size: 30px; color: white; margin-top: 40px">
+        <br /> Iniciando Sesión...
+    </p>
+</ngx-spinner>
+
+<div class="page page-center">
+    <div class="container container-tight py-4">
+        <div class="card card-md" style="left: 450px;">
+            <div class="card-body">
+                <h2 class="h2 text-center mb-4">Inicia sesión con tus datos</h2>
+                <hr>
+                <form [formGroup]="formUserLogin" autocomplete="off" novalidate (ngSubmit)="login()">
+                    <div class="mb-3">
+                        <label class="form-label">Correo</label>
+                        <input type="email" class="form-control" autocomplete="off" formControlName="email" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label"> Contraseña </label>
+                        <div class="input-group input-group-flat">
+                            <input type="password" class="form-control" autocomplete="off" formControlName="password" />
+                        </div>
+                    </div>
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-secondary w-100" [disabled]="!formUserLogin.valid">
+            Ingresar
+          </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+<div class="row row-deck row-cards">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header pb-1 pt-2">
+        <div class="col-lg-12">
+          <div class="mb-3">
+            <div class="custom-header">
+              <h5 class="page-title mb-3">Beneficiarios por programa social</h5>
+              <ng-select
+                #selectPrograma
+                [searchable]="false"
+                [items]="programasSociales"
+                bindLabel="nombre"
+                bindValue="id"
+                placeholder="Todos los programas sociales"
+                [clearable]="true"
+                (change)="onSelectProgramaSocial($event?.id)"
+                (clear)="onClear()"
+                style="width: 50%"
+              >
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div
+          id="map-canvas"
+          class="custom-map"
+          style="width: 100%; height: 70vh"
+          data-lat="19.34889526616767"
+          data-lng="-98.19011296839722"
+        ></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Total de beneficiarios por programa social</h3>
+      </div>
+      <div class="card-table table-responsive">
+        <table class="table table-vcenter">
+          <thead>
+            <tr>
+              <th class="text-center">#</th>
+              <th>Programa Social</th>
+              <th class="text-center">Beneficiarios</th>
+              <th class="text-center">Porcentaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="
+                let programa of programaSocialEstadistica;
+                let pointIndex = index
+              "
+            >
+              <td class="text-center">
+                {{ pointIndex + 1 }}
+              </td>
+              <td class="text-muted">
+                <span
+                  class="badge me-2"
+                  style="height: 14px; width: 14px"
+                  [style.backgroundColor]="programa.color"
+                >
+                </span>
+                {{ programa.nombre }}
+              </td>
+              <td class="text-muted text-center">
+                {{ programa.totalBeneficiarios }}
+              </td>
+              <td class="text-muted text-center">{{ programa.porcentaje }}%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

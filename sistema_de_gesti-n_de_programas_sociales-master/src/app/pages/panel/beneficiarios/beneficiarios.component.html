@@ -1,0 +1,350 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
+    <p style="color: white">Guardando...</p>
+</ngx-spinner>
+
+<app-page-header headerTitle="Beneficiarios"></app-page-header>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body border-bottom py-3">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-beneficiario" (click)="handleChangeAdd()">
+                <i class="ti ti-plus me-1"></i>Agregar
+            </button>
+                    <div class="ms-auto d-flex align-items-center">
+                        <div class="input-icon">
+                                <input #searchItem type="text" class="form-control form-control-rounded" formControlName="busqueda" placeholder="Buscar" (input)="handleChangeSearch($event)" />
+                                <span class="input-icon-addon">
+                        <i class="ti ti-search"></i>
+                    </span>
+                        </div>
+                        <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de beneficiarios" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px;">
+                            <i class="ti ti-cloud-down text-muted" style="font-size: 28px;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <ng-container [ngSwitch]="isLoading">
+                <div style="height: 300px" *ngSwitchCase="2">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+                    </div>
+                </div>
+
+                <div *ngSwitchCase="3" class="table-responsive">
+                    <table class="table table-vcenter card-table">
+                        <thead>
+                            <tr>
+                                <th class="text-center " style="text-transform: none; ">#</th>
+                                <th style="text-transform: none; font-size: inherit;">Nombre completo</th>
+                                <th style="text-transform: none; font-size: inherit;">Fecha nacimiento</th>
+                                <th style="text-transform: none; font-size: inherit;">Domicilio</th>
+                                <th style="text-transform: none; font-size: inherit;">Sexo</th>
+                                <th style="text-transform: none; font-size: inherit;">CURP</th>
+                                <th style="text-transform: none; font-size: inherit;">Programa social</th>
+                                <th style="text-transform: none; font-size: inherit;">Municipio</th>
+                                <th class="text-center" style="text-transform: none; font-size: inherit;">Estatus</th>
+                                <th class="w-1" style="text-transform: none; font-size: inherit;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="
+                  let beneficiario of beneficiariosFilter
+                    | paginate : configPaginator;
+                  let pointIndex = index
+                ">
+                                <td class="text-center">
+                                    {{ configPaginator.itemsPerPage * (configPaginator.currentPage - 1) + pointIndex + 1 }}
+                                </td>
+                                <td>{{ beneficiario.nombreCompleto }}</td>
+                                <td class="text-muted">
+                                    {{ beneficiario.strFechaNacimiento }}
+                                </td>
+                                <td class="text-muted">{{ beneficiario.domicilio }}</td>
+                                <td class="text-muted">{{ objGeneros[beneficiario.sexo] }}</td>
+                                <td class="text-muted">{{ beneficiario.curp }}</td>
+                                <td class="text-muted">
+                                    {{ beneficiario.programaSocial.nombre }}
+                                </td>
+                                <td class="text-muted">
+                                    {{ beneficiario.municipio.nombre }}
+                                </td>
+                                <td class="text-center">
+                                    <ng-container *ngIf="beneficiario.estatus; else elseEstatus">
+                                        <span class="badge bg-success me-1"> </span> Activo
+                                    </ng-container>
+                                    <ng-template #elseEstatus>
+                                        <span class="badge bg-warning me-1"></span> Inactivo
+                                    </ng-template>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-beneficiario" (click)="setDataModalUpdate(beneficiario);mapa()">
+                    <i class="ti ti-edit"></i>
+                  </button>
+                                        <button class="btn btn-danger btn-icon btn-sm" (click)="
+                        deleteItem(beneficiario.id, beneficiario.nombreCompleto)
+                      ">
+                      <i class="ti ti-eraser"></i>
+                    </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <app-no-results *ngSwitchCase="4"></app-no-results>
+            </ng-container>
+            <!-- Fin *ngSwitchCase-->
+
+            <div class="card-footer d-flex align-items-center">
+                <p class="m-0 text-muted">
+                    Total de registros: <b>{{ beneficiariosFilter.length }}</b>
+                </p>
+                <div class="m-0 ms-auto">
+                    <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
+                    </pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-beneficiario" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {{ isModalAdd ? "Agregar" : "Actualizar" }} beneficiario
+                </h5>
+                <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetMap()"></button>
+            </div>
+
+            <form [formGroup]="beneficiarioForm" (ngSubmit)="submit()">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre*:</label>
+                                <input type="text" class="form-control" formControlName="nombres" />
+                                <div *ngIf="beneficiarioForm.get('nombres')?.touched" class="error-message">
+                                    <div *ngIf="
+                      beneficiarioForm.get('nombres')?.hasError('required')
+                    ">
+                                        El Nombre es obligatorio
+                                    </div>
+                                    <div *ngIf="
+                      beneficiarioForm.get('nombres')?.hasError('minlength')
+                    ">
+                                        El Nombre debe tener al menos 3 caracteres
+                                    </div>
+                                    <div *ngIf="beneficiarioForm.get('nombres')?.hasError('pattern')">
+                                        El Nombre no puede tener números ni signos
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Apellido paterno*:</label>
+                                <input type="text" class="form-control" formControlName="apellidoPaterno" />
+                                <div *ngIf="beneficiarioForm.get('apellidoPaterno')?.touched" class="error-message">
+                                    <div *ngIf="
+                      beneficiarioForm
+                        .get('apellidoPaterno')
+                        ?.hasError('required')
+                    ">
+                                        El apellido paterno es obligatorio
+                                    </div>
+                                    <div *ngIf="
+                      beneficiarioForm
+                        .get('apellidoPaterno')
+                        ?.hasError('minlength')
+                    ">
+                                        El apellido paterno debe tener al menos 3 caracteres
+                                    </div>
+                                    <div *ngIf="
+                      beneficiarioForm
+                        .get('apellidoPaterno')
+                        ?.hasError('pattern')
+                    ">
+                                        El apellido paterno no puede tener números ni signos
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Apellido materno*:</label>
+                                <input type="text" class="form-control" formControlName="apellidoMaterno" />
+                                <div *ngIf="beneficiarioForm.get('apellidoMaterno')?.touched" class="error-message">
+                                    <div *ngIf="
+                      beneficiarioForm
+                        .get('apellidoMaterno')
+                        ?.hasError('required')
+                    ">
+                                        El apellido materno es obligatorio
+                                    </div>
+                                    <div *ngIf="
+                      beneficiarioForm
+                        .get('apellidoMaterno')
+                        ?.hasError('minlength')
+                    ">
+                                        El apellido materno debe tener al menos 3 caracteres
+                                    </div>
+                                    <div *ngIf="
+                      beneficiarioForm
+                        .get('apellidoMaterno')
+                        ?.hasError('pattern')
+                    ">
+                                        El apellido materno no puede tener números ni signos
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Fecha nacimiento*:</label>
+                                <input type="date" class="form-control" formControlName="fechaNacimiento" />
+                                <div *ngIf="beneficiarioForm.get('fechaNacimiento')?.touched" class="error-message">
+                                    <div *ngIf="
+                      beneficiarioForm
+                        .get('fechaNacimiento')
+                        ?.hasError('required')
+                    ">
+                                        la fecha de nacimiento es obligatorio
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">CURP*:</label>
+                                <input type="text" class="form-control" formControlName="curp" />
+                                <div *ngIf="beneficiarioForm.get('curp')?.touched" class="error-message">
+                                    <div *ngIf="beneficiarioForm.get('curp')?.hasError('required')">
+                                        El CURP es obligatorio
+                                    </div>
+                                    <div *ngIf="beneficiarioForm.get('curp')?.hasError('pattern')">
+                                        El CURP no es valido
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Género*:</label>
+                                <ng-select placeholder="Elegir" [items]="generos" bindLabel="name" bindValue="id" [searchable]="false" [clearable]="false" formControlName="sexo">
+                                    <ng-template ng-option-tmp let-item="item">
+                                        {{ item.name }}
+                                    </ng-template>
+                                </ng-select>
+                                <div *ngIf="beneficiarioForm.get('sexo')?.touched" class="error-message">
+                                    <div *ngIf="beneficiarioForm.get('sexo')?.hasError('required')">
+                                        El genero es obligatorio
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Programa social*:</label>
+                                <ng-select formControlName="programaSocialId" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                    <ng-template ng-header-tmp>
+                                        <input class="form-control" type="text" (input)="
+                        selectProgramaSocial.filter($any($event.target).value)
+                      " />
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                                        {{ item.nombre }}
+                                    </ng-template>
+                                </ng-select>
+                                <div *ngIf="beneficiarioForm.get('programaSocialId')?.touched" class="error-message">
+                                    <div *ngIf="
+                      beneficiarioForm
+                        .get('programaSocialId')
+                        ?.hasError('required')
+                    ">
+                                        El programa social es obligatorio
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Municipio*:</label>
+                                <ng-select formControlName="municipioId" #selectMunicipio [searchable]="false" [items]="municipios" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                    <ng-template ng-header-tmp>
+                                        <input class="form-control" type="text" (input)="
+                        selectMunicipio.filter($any($event.target).value)
+                      " />
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                                        {{ item.nombre }}
+                                    </ng-template>
+                                </ng-select>
+                                <div *ngIf="beneficiarioForm.get('municipioId')?.touched" class="error-message">
+                                    <div *ngIf="
+                      beneficiarioForm.get('municipioId')?.hasError('required')
+                    ">
+                                        El municipio es obligatorio
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <label>Estatus: </label><br />
+                            <div class="form-group">
+                                <div class="form-check form-switch mt-1 ml-2 custom-green-switch">
+                                    <input class="form-check-input" type="checkbox" (change)="setEstatus()" [(ngModel)]="estatusBtn" name="estatusBtn" formControlName="estatus" [ngStyle]="{'background-color': estatusBtn ? '#1db83f' : '#b2c0b5'}" />
+                                    <span class="form-check-label" [ngClass]="
+                      beneficiarioForm.get('estatus')?.value
+                        ? 'text-success'
+                        : 'text-danger'
+                    ">
+                    {{
+                      beneficiarioForm.get("estatus")?.value
+                        ? "Activo"
+                        : "Inactivo"
+                    }}
+                  </span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label">Ubicación*</label>
+                                <input #ubicacionInput [options]="options" class="form-control" type="text" ngx-gp-autocomplete formControlName="domicilio" (onAddressChange)="selectAddress($event)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <div class="card w-100 altura-mapa" style="width: 100%; height: 50vh" #mapCanvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="form-label" style="
+                    margin-left: 20px;
+                    color: red;
+                    font-weight: bold;
+                ">Todos los campos marcados con * son requeridos</p>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" [disabled]="!beneficiarioForm.valid">
+            {{ isModalAdd ? "Agregar" : "Actualizar" }}
+          </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

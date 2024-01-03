@@ -1,0 +1,410 @@
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p style="color: white">Guardando...</p>
+</ngx-spinner>
+
+<app-page-header headerTitle="Usuarios"></app-page-header>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="d-flex align-items-center">
+          <button
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-usuario"
+            (click)="handleChangeAdd()"
+          >
+            <i class="ti ti-plus me-1"></i>Agregar
+          </button>
+          <div class="ms-auto d-flex align-items-center">
+            <div class="input-icon">
+              <input
+                #searchItem
+                type="text"
+                class="form-control form-control-rounded"
+                placeholder="Buscar"
+                (input)="handleChangeSearch($event)"
+              />
+              <span class="input-icon-addon">
+                <i class="ti ti-search"></i>
+              </span>
+            </div>
+            <a
+              class="btn w-30 btn-icon"
+              aria-label="Dribbble"
+              (click)="exportarDatosAExcel()"
+              title="Descargar excel de usuarios"
+              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+            >
+              <i
+                class="ti ti-cloud-down text-muted"
+                style="font-size: 28px"
+              ></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="3" class="table-responsive">
+          <table class="table table-vcenter card-table table-striped">
+            <thead>
+              <tr>
+                <th style="text-transform: none; font-size: inherit;" class="text-center">#</th>
+                <th style="text-transform: none; font-size: inherit;">Nombre completo</th>
+                <th style="text-transform: none; font-size: inherit;">Email</th>
+                <th style="text-transform: none; font-size: inherit;">Rol</th>
+                <th style="text-transform: none; font-size: inherit;">Área adscripción</th>
+                <th style="text-transform: none; font-size: inherit;" class="text-center">Estatus</th>
+                <th style="text-transform: none; font-size: inherit;" class="w-1">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let usuario of usuariosFilter | paginate : configPaginator;
+                  let pointIndex = index
+                "
+              >
+                <td class="text-center">
+                  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}
+                </td>
+                <td>{{ usuario.nombreCompleto }}</td>
+                <td class="text-muted">{{ usuario.correo }}</td>
+                <td class="text-muted">{{ usuario.rol.nombreRol }}</td>
+                <td class="text-muted">
+                  {{ usuario?.areaAdscripcion?.nombre }}
+                </td>
+                <td class="text-center">
+                  <ng-container *ngIf="usuario.estatus; else elseEstatus">
+                    <span class="badge bg-success me-1"> </span> Activo
+                  </ng-container>
+                  <ng-template #elseEstatus>
+                    <span class="badge bg-warning me-1"></span> Inactivo
+                  </ng-template>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between">
+                    <button
+                      class="btn btn-warning btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal-usuario"
+                      (click)="setDataModalUpdate(usuario)"
+                    >
+                      <i class="ti ti-edit"></i>
+                    </button>
+                    <button
+                      class="btn btn-danger btn-icon btn-sm"
+                      (click)="deleteItem(usuario.id, usuario.nombre)"
+                    >
+                      <i class="ti ti-eraser"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <app-no-results *ngSwitchCase="4"></app-no-results>
+      </ng-container>
+      <!-- Fin *ngSwitchCase-->
+
+      <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">
+          Total de registros: <b>{{ usuariosFilter.length }}</b>
+        </p>
+        <div class="m-0 ms-auto">
+          <pagination-controls
+            (pageChange)="onPageChange($event)"
+            previousLabel=""
+            nextLabel=""
+          >
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal modal-blur fade"
+  id="modal-usuario"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} usuario
+        </h5>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form [formGroup]="usuarioForm" (ngSubmit)="submit()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Nombre*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nombre"
+                />
+                <div
+                  *ngIf="usuarioForm.get('nombre')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="usuarioForm.get('nombre')?.hasError('required')">
+                    <p style="color: red">El nombre es obligatorio</p>
+                  </div>
+                    <div *ngIf="
+                      usuarioForm.get('nombre')?.hasError('minlength')
+                    ">
+                       El Nombre debe tener al menos 3 caracteres
+                    </div>
+                    <div *ngIf="usuarioForm.get('nombre')?.hasError('pattern')">
+                      El Nombre no puede tener números ni signos
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Apellido paterno*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apellidoPaterno"
+                />
+                <div
+                  *ngIf="usuarioForm.get('apellidoPaterno')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      usuarioForm.get('apellidoPaterno')?.hasError('required')
+                    "
+                  >
+                    <p style="color: red">El apellido paterno es obligatorio</p>
+                  </div>
+                  <div *ngIf="
+                      usuarioForm
+                        .get('apellidoPaterno')
+                        ?.hasError('minlength')
+                    ">
+                                        El apellido paterno debe tener al menos 3 caracteres
+                                    </div>
+                                    <div *ngIf="
+                      usuarioForm
+                        .get('apellidoPaterno')
+                        ?.hasError('pattern')
+                    ">
+                                        El apellido paterno no puede tener números ni signos
+                                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Apellido materno*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apellidoMaterno"
+                />
+                <div
+                  *ngIf="usuarioForm.get('apellidoMaterno')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      usuarioForm.get('apellidoMaterno')?.hasError('required')
+                    "
+                  >
+                    <p style="color: red">El apellido materno es obligatorio</p>
+                  </div>
+                  <div *ngIf="
+                      usuarioForm
+                        .get('apellidoMaterno')
+                        ?.hasError('minlength')
+                    ">
+                                        El apellido materno debe tener al menos 3 caracteres
+                                    </div>
+                                    <div *ngIf="
+                      usuarioForm
+                        .get('apellidoMaterno')
+                        ?.hasError('pattern')
+                    ">
+                                        El apellido materno no puede tener números ni signos
+                                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Correo*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="correo"
+                />
+                <div
+                  *ngIf="usuarioForm.get('correo')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="usuarioForm.get('correo')?.hasError('required')">
+                    <p style="color: red">El correo es obligatorio</p>
+                  </div>
+                  <div *ngIf="usuarioForm.get('correo')?.hasError('email')">
+                    <p style="color: red">El correo no es válido</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Contraseña*:</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  formControlName="password"
+                />
+                <div
+                  *ngIf="usuarioForm.get('password')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="usuarioForm.get('password')?.hasError('required')"
+                  >
+                    <p style="color: red">La contraseña es obligatoria</p>
+                  </div>
+                  <div
+                    *ngIf="usuarioForm.get('password')?.hasError('minlength')"
+                  >
+                    <p style="color: red">
+                      La contraseña debe tener al menos 8 caracteres
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3 custom-green-switch">
+                <label for="estadoActivo" class="form-label">Estatus</label>
+                <label class="form-check form-switch checkbox-verde">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    formControlName="estatus"
+                  />
+                  <span
+                    class="form-check-label"
+                    [ngClass]="
+                      usuarioForm.get('estatus')?.value
+                        ? 'text-success'
+                        : 'text-danger'
+                    "
+                  >
+                    {{
+                      usuarioForm.get("estatus")?.value ? "Activo" : "Inactivo"
+                    }}
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Rol*:</label>
+                <ng-select
+                  placeholder="Elegir"
+                  [items]="rols"
+                  bindLabel="nombreRol"
+                  bindValue="id"
+                  [searchable]="false"
+                  [clearable]="false"
+                  formControlName="rolId"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    {{ item.nombreRol }}
+                  </ng-template>
+                </ng-select>
+                <div
+                  *ngIf="usuarioForm.get('rolId')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="usuarioForm.get('rolId')?.hasError('required')">
+                    <p style="color: red">La rol es obligatorio</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Área de adscripción</label>
+                <ng-select
+                  placeholder="Elegir"
+                  [items]="areasAdscripcion"
+                  bindLabel="nombre"
+                  bindValue="id"
+                  [searchable]="false"
+                  [clearable]="false"
+                  formControlName="areaAdscripcionId"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="form-label" style="
+        margin-left: 20px;
+        color: red;
+        font-weight: bold;
+    ">Todos los campos marcados con * son requeridos</p>
+        <div class="modal-footer">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!usuarioForm.valid"
+          >
+            {{ isModalAdd ? "Agregar" : "Actualizar" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

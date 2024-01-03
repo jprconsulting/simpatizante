@@ -1,0 +1,40 @@
+<app-page-header headerTitle="Nube de palabras"></app-page-header>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-status-"></div>
+      <div class="card-header">
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <label class="form-label">Busqueda por municpio</label>
+            <ng-select
+              #selectMunicipio
+              [searchable]="false"
+              [items]="municipios"
+              bindLabel="nombre"
+              bindValue="id"
+              placeholder="Todos los municipios"
+              [clearable]="true"
+              (change)="onSelectMunicipio($event?.id)"
+              (clear)="onClear()"
+            >
+              <ng-template ng-header-tmp>
+                <input
+                  class="form-control"
+                  type="text"
+                  (input)="selectMunicipio.filter($any($event.target).value)"
+                />
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                {{ item.nombre }}
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div id="container"></div>
+      </div>
+    </div>
+  </div>
+</div>

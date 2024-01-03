@@ -1,0 +1,4 @@
+.bg-dif {
+    background: rgb(105, 33, 109);
+    background: linear-gradient(0deg, rgba(105, 33, 109, 1) 0%, rgba(92, 37, 112, 1) 15%, rgba(64, 21, 93, 1) 87%);
+}
