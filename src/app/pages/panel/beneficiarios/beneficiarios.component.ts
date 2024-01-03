@@ -32,7 +32,7 @@ export class BeneficiariosComponent implements OnInit {
   municipiosSelect!: Municipio | undefined;
   canvas!: HTMLElement;
   beneficiario!: Beneficiario;
-  beneficiarioForm!: FormGroup;
+  votanteForm!: FormGroup;
   busqueda!: FormGroup;
   beneficiarios: Beneficiario[] = [];
   beneficiariosFilter: Beneficiario[] = [];
@@ -121,7 +121,7 @@ export class BeneficiariosComponent implements OnInit {
       animation: google.maps.Animation.DROP,
       title: place.name,
     });
-    this.beneficiarioForm.patchValue({
+    this.votanteForm.patchValue({
       longitud: selectedLng,
       latitud: selectedLat
     });
@@ -129,8 +129,8 @@ export class BeneficiariosComponent implements OnInit {
 
   }
   selectAddress2(place: google.maps.places.PlaceResult) {
-    const selectedLat = this.beneficiarioForm.value.latitud;
-    const selectedLng = this.beneficiarioForm.value.longitud;
+    const selectedLat = this.votanteForm.value.latitud;
+    const selectedLng = this.votanteForm.value.longitud;
 
     this.canvas.setAttribute("data-lat", selectedLat.toString());
     this.canvas.setAttribute("data-lng", selectedLng.toString());
@@ -141,9 +141,9 @@ export class BeneficiariosComponent implements OnInit {
     position: newLatLng,
     map: this.maps,
     animation: google.maps.Animation.DROP,
-    title: this.beneficiarioForm.value.nombres, // Usa un campo relevante como título
+    title: this.votanteForm.value.nombres, // Usa un campo relevante como título
   });
-  this.beneficiarioForm.patchValue({
+  this.votanteForm.patchValue({
     longitud: selectedLng,
     latitud: selectedLat
   });
@@ -231,12 +231,16 @@ export class BeneficiariosComponent implements OnInit {
   }
 
   creteForm() {
-    this.beneficiarioForm = this.formBuilder.group({
+    this.votanteForm = this.formBuilder.group({
       id: [null],
       nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
+      estadoId:['', Validators.required],
+      localidad:['', Validators.required],
+      seccion: ['', Validators.required],
+      folio: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^([0-9]{7})[0-9]+$')]],
       sexo: [null, Validators.required],
       curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
@@ -308,7 +312,7 @@ export class BeneficiariosComponent implements OnInit {
     this.onSelectprograma(priogramaId);
     const municipio = beneficiario.municipio.id;
     this.onSelectmunicipios(municipio);
-    this.beneficiarioForm.patchValue({
+    this.votanteForm.patchValue({
       id: beneficiario.id,
       nombres: beneficiario.nombres,
       apellidoPaterno: beneficiario.apellidoPaterno,
@@ -325,14 +329,14 @@ export class BeneficiariosComponent implements OnInit {
     });
 
     console.log(beneficiario);
-    console.log(this.beneficiarioForm.value);
+    console.log(this.votanteForm.value);
   }
 
   actualizar() {
-    this.beneficiario = this.beneficiarioForm.value as Beneficiario;
+    this.beneficiario = this.votanteForm.value as Beneficiario;
 
-    const programaSocialId = this.beneficiarioForm.get('programaSocialId')?.value;
-    const municipioId = this.beneficiarioForm.get('municipioId')?.value;
+    const programaSocialId = this.votanteForm.get('programaSocialId')?.value;
+    const municipioId = this.votanteForm.get('municipioId')?.value;
 
     this.beneficiario.programaSocial = { id: programaSocialId } as ProgramaSocial;
     this.beneficiario.municipio = { id: municipioId } as Municipio;
@@ -380,7 +384,7 @@ export class BeneficiariosComponent implements OnInit {
 
   resetForm() {
     this.closebutton.nativeElement.click();
-    this.beneficiarioForm.reset();
+    this.votanteForm.reset();
   }
   submit() {
     if (this.isModalAdd === false) {
@@ -393,10 +397,10 @@ export class BeneficiariosComponent implements OnInit {
   }
 
   agregar() {
-    this.beneficiario = this.beneficiarioForm.value as Beneficiario;
+    this.beneficiario = this.votanteForm.value as Beneficiario;
 
-    const programaSocialId = this.beneficiarioForm.get('programaSocialId')?.value;
-    const municipioId = this.beneficiarioForm.get('municipioId')?.value;
+    const programaSocialId = this.votanteForm.get('programaSocialId')?.value;
+    const municipioId = this.votanteForm.get('municipioId')?.value;
 
     this.beneficiario.programaSocial = { id: programaSocialId } as ProgramaSocial;
     this.beneficiario.municipio = { id: municipioId } as Municipio;
@@ -419,9 +423,9 @@ export class BeneficiariosComponent implements OnInit {
   }
 
   handleChangeAdd() {
-    if (this.beneficiarioForm) {
-      this.beneficiarioForm.reset();
-      const estatusControl = this.beneficiarioForm.get('estatus');
+    if (this.votanteForm) {
+      this.votanteForm.reset();
+      const estatusControl = this.votanteForm.get('estatus');
       if (estatusControl) {
         estatusControl.setValue(true);
       }

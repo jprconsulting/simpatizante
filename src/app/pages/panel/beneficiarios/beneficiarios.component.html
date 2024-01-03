@@ -2,14 +2,14 @@
     <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
-<app-page-header headerTitle="Beneficiarios"></app-page-header>
+<app-page-header headerTitle="Votante"></app-page-header>
 
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-body border-bottom py-3">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-beneficiario" (click)="handleChangeAdd()">
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-votante" (click)="handleChangeAdd()">
                 <i class="ti ti-plus me-1"></i>Agregar
             </button>
                     <div class="ms-auto d-flex align-items-center">
@@ -19,7 +19,7 @@
                         <i class="ti ti-search"></i>
                     </span>
                         </div>
-                        <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de beneficiarios" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px;">
+                        <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de votantes" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px;">
                             <i class="ti ti-cloud-down text-muted" style="font-size: 28px;"></i>
                         </a>
                     </div>
@@ -81,7 +81,7 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-between">
-                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-beneficiario" (click)="setDataModalUpdate(beneficiario);mapa()">
+                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-votante" (click)="setDataModalUpdate(beneficiario);mapa()">
                     <i class="ti ti-edit"></i>
                   </button>
                                         <button class="btn btn-danger btn-icon btn-sm" (click)="
@@ -113,35 +113,35 @@
     </div>
 </div>
 
-<div class="modal" id="modal-beneficiario" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal" id="modal-votante" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    {{ isModalAdd ? "Agregar" : "Actualizar" }} beneficiario
+                    {{ isModalAdd ? "Agregar" : "Actualizar" }} votante
                 </h5>
                 <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetMap()"></button>
             </div>
 
-            <form [formGroup]="beneficiarioForm" (ngSubmit)="submit()">
+            <form [formGroup]="votanteForm" (ngSubmit)="submit()">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label">Nombre*:</label>
                                 <input type="text" class="form-control" formControlName="nombres" />
-                                <div *ngIf="beneficiarioForm.get('nombres')?.touched" class="error-message">
+                                <div *ngIf="votanteForm.get('nombres')?.touched" class="error-message">
                                     <div *ngIf="
-                      beneficiarioForm.get('nombres')?.hasError('required')
+                      votanteForm.get('nombres')?.hasError('required')
                     ">
                                         El Nombre es obligatorio
                                     </div>
                                     <div *ngIf="
-                      beneficiarioForm.get('nombres')?.hasError('minlength')
+                      votanteForm.get('nombres')?.hasError('minlength')
                     ">
                                         El Nombre debe tener al menos 3 caracteres
                                     </div>
-                                    <div *ngIf="beneficiarioForm.get('nombres')?.hasError('pattern')">
+                                    <div *ngIf="votanteForm.get('nombres')?.hasError('pattern')">
                                         El Nombre no puede tener números ni signos
                                     </div>
                                 </div>
@@ -151,23 +151,23 @@
                             <div class="mb-3">
                                 <label class="form-label">Apellido paterno*:</label>
                                 <input type="text" class="form-control" formControlName="apellidoPaterno" />
-                                <div *ngIf="beneficiarioForm.get('apellidoPaterno')?.touched" class="error-message">
+                                <div *ngIf="votanteForm.get('apellidoPaterno')?.touched" class="error-message">
                                     <div *ngIf="
-                      beneficiarioForm
+                      votanteForm
                         .get('apellidoPaterno')
                         ?.hasError('required')
                     ">
                                         El apellido paterno es obligatorio
                                     </div>
                                     <div *ngIf="
-                      beneficiarioForm
+                      votanteForm
                         .get('apellidoPaterno')
                         ?.hasError('minlength')
                     ">
                                         El apellido paterno debe tener al menos 3 caracteres
                                     </div>
                                     <div *ngIf="
-                      beneficiarioForm
+                      votanteForm
                         .get('apellidoPaterno')
                         ?.hasError('pattern')
                     ">
@@ -180,23 +180,23 @@
                             <div class="mb-3">
                                 <label class="form-label">Apellido materno*:</label>
                                 <input type="text" class="form-control" formControlName="apellidoMaterno" />
-                                <div *ngIf="beneficiarioForm.get('apellidoMaterno')?.touched" class="error-message">
+                                <div *ngIf="votanteForm.get('apellidoMaterno')?.touched" class="error-message">
                                     <div *ngIf="
-                      beneficiarioForm
+                      votanteForm
                         .get('apellidoMaterno')
                         ?.hasError('required')
                     ">
                                         El apellido materno es obligatorio
                                     </div>
                                     <div *ngIf="
-                      beneficiarioForm
+                      votanteForm
                         .get('apellidoMaterno')
                         ?.hasError('minlength')
                     ">
                                         El apellido materno debe tener al menos 3 caracteres
                                     </div>
                                     <div *ngIf="
-                      beneficiarioForm
+                      votanteForm
                         .get('apellidoMaterno')
                         ?.hasError('pattern')
                     ">
@@ -211,9 +211,9 @@
                             <div class="mb-3">
                                 <label class="form-label">Fecha nacimiento*:</label>
                                 <input type="date" class="form-control" formControlName="fechaNacimiento" />
-                                <div *ngIf="beneficiarioForm.get('fechaNacimiento')?.touched" class="error-message">
+                                <div *ngIf="votanteForm.get('fechaNacimiento')?.touched" class="error-message">
                                     <div *ngIf="
-                      beneficiarioForm
+                      votanteForm
                         .get('fechaNacimiento')
                         ?.hasError('required')
                     ">
@@ -226,11 +226,11 @@
                             <div class="mb-3">
                                 <label class="form-label">CURP*:</label>
                                 <input type="text" class="form-control" formControlName="curp" />
-                                <div *ngIf="beneficiarioForm.get('curp')?.touched" class="error-message">
-                                    <div *ngIf="beneficiarioForm.get('curp')?.hasError('required')">
+                                <div *ngIf="votanteForm.get('curp')?.touched" class="error-message">
+                                    <div *ngIf="votanteForm.get('curp')?.hasError('required')">
                                         El CURP es obligatorio
                                     </div>
-                                    <div *ngIf="beneficiarioForm.get('curp')?.hasError('pattern')">
+                                    <div *ngIf="votanteForm.get('curp')?.hasError('pattern')">
                                         El CURP no es valido
                                     </div>
                                 </div>
@@ -244,8 +244,8 @@
                                         {{ item.name }}
                                     </ng-template>
                                 </ng-select>
-                                <div *ngIf="beneficiarioForm.get('sexo')?.touched" class="error-message">
-                                    <div *ngIf="beneficiarioForm.get('sexo')?.hasError('required')">
+                                <div *ngIf="votanteForm.get('sexo')?.touched" class="error-message">
+                                    <div *ngIf="votanteForm.get('sexo')?.hasError('required')">
                                         El genero es obligatorio
                                     </div>
                                 </div>
@@ -253,10 +253,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">Programa social*:</label>
-                                <ng-select formControlName="programaSocialId" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                <label class="form-label">Estado*:</label>
+                                <ng-select formControlName="estadoId" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="
                         selectProgramaSocial.filter($any($event.target).value)
@@ -266,18 +266,18 @@
                                         {{ item.nombre }}
                                     </ng-template>
                                 </ng-select>
-                                <div *ngIf="beneficiarioForm.get('programaSocialId')?.touched" class="error-message">
+                                <div *ngIf="votanteForm.get('estadoId')?.touched" class="error-message">
                                     <div *ngIf="
-                      beneficiarioForm
-                        .get('programaSocialId')
+                      votanteForm
+                        .get('estadoId')
                         ?.hasError('required')
                     ">
-                                        El programa social es obligatorio
+                                        El estado es obligatorio
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label">Municipio*:</label>
                                 <ng-select formControlName="municipioId" #selectMunicipio [searchable]="false" [items]="municipios" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
@@ -290,28 +290,93 @@
                                         {{ item.nombre }}
                                     </ng-template>
                                 </ng-select>
-                                <div *ngIf="beneficiarioForm.get('municipioId')?.touched" class="error-message">
+                                <div *ngIf="votanteForm.get('municipioId')?.touched" class="error-message">
                                     <div *ngIf="
-                      beneficiarioForm.get('municipioId')?.hasError('required')
+                      votanteForm.get('municipioId')?.hasError('required')
                     ">
                                         El municipio es obligatorio
                                     </div>
                                 </div>
                             </div>
                         </div>
-
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Localidad*:</label>
+                                <ng-select formControlName="localidad" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                    <ng-template ng-header-tmp>
+                                        <input class="form-control" type="text" (input)="
+                        selectProgramaSocial.filter($any($event.target).value)
+                      " />
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                                        {{ item.nombre }}
+                                    </ng-template>
+                                </ng-select>
+                                <div *ngIf="votanteForm.get('localidad')?.touched" class="error-message">
+                                    <div *ngIf="
+                      votanteForm
+                        .get('localidad')
+                        ?.hasError('required')
+                    ">
+                                       la localidad es obligatoria
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Folio*:</label>
+                                <input type="text" class="form-control" formControlName="folio" />
+                                <div *ngIf="votanteForm.get('folio')?.touched" class="error-message">
+                                    <div *ngIf="votanteForm.get('folio')?.hasError('required')">
+                                        El folio es obligatorio
+                                    </div>
+                                    <div *ngIf="votanteForm.get('folio')?.hasError('minlength')">
+                                        El folio debe tener al menos 8 caracteres
+                                    </div>
+                                    <div *ngIf="votanteForm.get('folio')?.hasError('pattern')">
+                                        El folio no puede tener letras
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Seccion*:</label>
+                                <ng-select formControlName="seccion" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                    <ng-template ng-header-tmp>
+                                        <input class="form-control" type="text" (input)="
+                        selectProgramaSocial.filter($any($event.target).value)
+                      " />
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                                        {{ item.nombre }}
+                                    </ng-template>
+                                </ng-select>
+                                <div *ngIf="votanteForm.get('seccion')?.touched" class="error-message">
+                                    <div *ngIf="
+                      votanteForm
+                        .get('seccion')
+                        ?.hasError('required')
+                    ">
+                                        El seccion es obligatoria
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col">
                             <label>Estatus: </label><br />
                             <div class="form-group">
                                 <div class="form-check form-switch mt-1 ml-2 custom-green-switch">
                                     <input class="form-check-input" type="checkbox" (change)="setEstatus()" [(ngModel)]="estatusBtn" name="estatusBtn" formControlName="estatus" [ngStyle]="{'background-color': estatusBtn ? '#1db83f' : '#b2c0b5'}" />
                                     <span class="form-check-label" [ngClass]="
-                      beneficiarioForm.get('estatus')?.value
+                      votanteForm.get('estatus')?.value
                         ? 'text-success'
                         : 'text-danger'
                     ">
                     {{
-                      beneficiarioForm.get("estatus")?.value
+                      votanteForm.get("estatus")?.value
                         ? "Activo"
                         : "Inactivo"
                     }}
@@ -323,7 +388,7 @@
 
                         <div class="col-lg-12">
                             <div class="mb-3">
-                                <label class="form-label">Ubicación*</label>
+                                <label class="form-label">Domicilio*</label>
                                 <input #ubicacionInput [options]="options" class="form-control" type="text" ngx-gp-autocomplete formControlName="domicilio" (onAddressChange)="selectAddress($event)" />
                             </div>
                         </div>
@@ -340,7 +405,7 @@
                     font-weight: bold;
                 ">Todos los campos marcados con * son requeridos</p>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" [disabled]="!beneficiarioForm.valid">
+                    <button type="submit" class="btn btn-success" [disabled]="!votanteForm.valid">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
                 </div>
