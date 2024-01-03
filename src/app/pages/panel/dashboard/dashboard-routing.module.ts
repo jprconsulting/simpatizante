@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { VisitasComponent } from './visitas.component';
+import { DashboardComponent } from './dashboard.component';
 import { AuthGuard } from 'src/app/core/services/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: VisitasComponent,
-    canActivate: [AuthGuard], data: { claimType: 'CanAccessVisitas'}
+    component: DashboardComponent,
   }
 ];
 
@@ -15,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class VisitasRoutingModule { }
+export class DashboardRoutingModule { }

@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UsuariosComponent } from './usuarios.component';
+import { ProgramasSocialesComponent } from './programas-sociales.component';
 import { AuthGuard } from 'src/app/core/services/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: UsuariosComponent,
-    canActivate: [AuthGuard], data: { claimType: 'CanAccessUsuarios'}
+    component: ProgramasSocialesComponent,
   }
 ];
 
@@ -15,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class UsuariosRoutingModule { }
+export class ProgramasSocialesRoutingModule { }
