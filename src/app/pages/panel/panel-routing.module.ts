@@ -15,39 +15,39 @@ const routes: Routes = [
           .then(i => i.InicioModule)
       },
       {
-        path: 'areas-adscripcion',
-        loadChildren: () => import('./areas-adscripcion/areas-adscripcion.module')
-          .then(i => i.AreasAdscripcionModule)
+        path: 'candidatos',
+        loadChildren: () => import('./candidatos/candidatos.module')
+          .then(i => i.CandidatosModule)
       },
       {
-        path: 'beneficiarios',
-        loadChildren: () => import('./beneficiarios/beneficiarios.module')
-          .then(i => i.BeneficiariosModule)
+        path: 'operadores',
+        loadChildren: () => import('./operadores/operadores.module')
+          .then(i => i.OperadoresModule)
       },
       {
-        path: 'dashboard',
-        loadChildren: () => import('./dashboard/dashboard.module')
-          .then(i => i.DashboardModule)
+        path: 'jornada-electoral',
+        loadChildren: () => import('./jornada-electoral/jornada-electoral.module')
+          .then(i => i.JornadaElectoralModule)
       },
       {
-        path: 'mapa-beneficiarios',
-        loadChildren: () => import('./mapa-beneficiarios/mapa-beneficiarios.module')
-          .then(i => i.MapaBeneficiariosModule)
+        path: 'incidencias',
+        loadChildren: () => import('./incidencias/incidencias.module')
+          .then(i => i.IncidenciasModule)
       },
       {
-        path: 'mapa-programas-sociales',
-        loadChildren: () => import('./mapa-programas-sociales/mapa-programas-sociales.module')
-          .then(i => i.MapaProgramasSocialesModule)
+        path: 'seguimiento-voto',
+        loadChildren: () => import('./seguimiento-voto/seguimiento-voto.module')
+          .then(i => i.SeguimientoVotoModule)
       },
       {
-        path: 'nube-palabras',
-        loadChildren: () => import('./nube-palabras/nube-palabras.module')
-          .then(i => i.NubePalabrasModule)
+        path: 'resultados',
+        loadChildren: () => import('./resultados/resultados.module')
+          .then(i => i.ResultadosModule)
       },
       {
-        path: 'programas-sociales',
-        loadChildren: () => import('./programas-sociales/programas-sociales.module')
-          .then(i => i.ProgramasSocialesModule)
+        path: 'reportes',
+        loadChildren: () => import('./reportes/reportes.module')
+          .then(i => i.ReportesModule)
       },
       {
         path: 'usuarios',

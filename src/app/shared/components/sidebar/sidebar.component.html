@@ -361,18 +361,6 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
-        <a class="nav-link" [routerLink]="['dashboard']">
-          <span class="nav-link-icon d-md-none d-lg-inline-block">
-            <i class="ti ti-chart-pie-filled"></i>
-          </span>
-          <span class="nav-link-title">Tablero</span>
-        </a>
-      </li>
-      <li
-        class="nav-item"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
         <a class="nav-link" [routerLink]="['usuarios']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
             <i class="ti ti-users"></i>
@@ -385,11 +373,11 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
-        <a class="nav-link" [routerLink]="['areas-adscripcion']">
+        <a class="nav-link" [routerLink]="['candidatos']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
             <i class="ti ti-grip-horizontal"></i>
           </span>
-          <span class="nav-link-title">Áreas de adscripción</span>
+          <span class="nav-link-title">Candidatos</span>
         </a>
       </li>
       <li
@@ -401,19 +389,7 @@
           <span class="nav-link-icon d-md-none d-lg-inline-block">
             <i class="ti ti-social"></i>
           </span>
-          <span class="nav-link-title">Programas sociales</span>
-        </a>
-      </li>
-      <li
-        class="nav-item"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <a class="nav-link" [routerLink]="['beneficiarios']">
-          <span class="nav-link-icon d-md-none d-lg-inline-block">
-            <i class="ti ti-disabled"></i>
-          </span>
-          <span class="nav-link-title">Beneficiarios</span>
+          <span class="nav-link-title">Votantes</span>
         </a>
       </li>
       <li
@@ -423,7 +399,7 @@
       >
         <a class="nav-link" [routerLink]="['visitas']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
-            <i class="ti ti-list-check"></i>
+            <i class="ti ti-disabled"></i>
           </span>
           <span class="nav-link-title">Visitas</span>
         </a>
@@ -433,11 +409,23 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
-        <a class="nav-link" [routerLink]="['mapa-beneficiarios']">
+        <a class="nav-link" [routerLink]="['operadores']">
+          <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <i class="ti ti-list-check"></i>
+          </span>
+          <span class="nav-link-title">Operadores</span>
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a class="nav-link" [routerLink]="['jornada-electoral']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
             <i class="ti ti-map-pin"></i>
           </span>
-          <span class="nav-link-title">Mapa beneficiarios</span>
+          <span class="nav-link-title">Jornada electoral</span>
         </a>
       </li>
       <li
@@ -445,11 +433,11 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
-        <a class="nav-link" [routerLink]="['mapa-programas-sociales']">
+        <a class="nav-link" [routerLink]="['incidencias']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
             <i class="ti ti-map"></i>
           </span>
-          <span class="nav-link-title">Mapa programas sociales</span>
+          <span class="nav-link-title">Incidencias</span>
         </a>
       </li>
       <li
@@ -457,11 +445,35 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
-        <a class="nav-link" [routerLink]="['nube-palabras']">
+        <a class="nav-link" [routerLink]="['seguimiento-voto']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
             <i class="ti ti-cloud-search"></i>
           </span>
-          <span class="nav-link-title">Nube de palabras</span>
+          <span class="nav-link-title">Seguimiento del voto</span>
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a class="nav-link" [routerLink]="['resultados']">
+          <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <i class="ti ti-cloud-search"></i>
+          </span>
+          <span class="nav-link-title">Resultados</span>
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a class="nav-link" [routerLink]="['reportes']">
+          <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <i class="ti ti-cloud-search"></i>
+          </span>
+          <span class="nav-link-title">Reportes</span>
         </a>
       </li>
     </ul>
