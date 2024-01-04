@@ -60,9 +60,9 @@ const routes: Routes = [
           .then(i => i.VisitasModule)
       },
       {
-        path: 'beneficiarios',
-        loadChildren: () => import('./beneficiarios/beneficiarios.module')
-          .then(i => i.BeneficiariosModule)
+        path: 'votante',
+        loadChildren: () => import('./votante/votante.module')
+          .then(i => i.VicitasModule)
       },
     ]
   },

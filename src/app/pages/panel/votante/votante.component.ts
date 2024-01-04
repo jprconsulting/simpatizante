@@ -16,10 +16,10 @@ import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-beneficiarios',
-  templateUrl: './beneficiarios.component.html',
-  styleUrls: ['./beneficiarios.component.css']
+  templateUrl: './votante.component.html',
+  styleUrls: ['./votante.component.css']
 })
-export class BeneficiariosComponent implements OnInit {
+export class VotanteComponent implements OnInit {
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -249,7 +249,8 @@ export class BeneficiariosComponent implements OnInit {
       domicilio: [null, Validators.required],
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
-
+      edad: ['', [Validators.required, Validators.minLength(1), Validators.pattern('^([0-9]{1})[0-9]+$')]],
+      programa: ['', [Validators.required, Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
     });
   }
 

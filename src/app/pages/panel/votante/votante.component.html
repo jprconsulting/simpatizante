@@ -134,15 +134,15 @@
                                     <div *ngIf="
                       votanteForm.get('nombres')?.hasError('required')
                     ">
-                                        El Nombre es obligatorio
+                                        El nombre es obligatorio
                                     </div>
                                     <div *ngIf="
                       votanteForm.get('nombres')?.hasError('minlength')
                     ">
-                                        El Nombre debe tener al menos 3 caracteres
+                                        El nombre debe tener al menos 3 caracteres
                                     </div>
                                     <div *ngIf="votanteForm.get('nombres')?.hasError('pattern')">
-                                        El Nombre no puede tener números ni signos
+                                        El nombre no puede tener números ni signos
                                     </div>
                                 </div>
                             </div>
@@ -209,6 +209,21 @@
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
+                                <label class="form-label">Género*:</label>
+                                <ng-select placeholder="Elegir" [items]="generos" bindLabel="name" bindValue="id" [searchable]="false" [clearable]="false" formControlName="sexo">
+                                    <ng-template ng-option-tmp let-item="item">
+                                        {{ item.name }}
+                                    </ng-template>
+                                </ng-select>
+                                <div *ngIf="votanteForm.get('sexo')?.touched" class="error-message">
+                                    <div *ngIf="votanteForm.get('sexo')?.hasError('required')">
+                                        El genero es obligatorio
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
                                 <label class="form-label">Fecha nacimiento*:</label>
                                 <input type="date" class="form-control" formControlName="fechaNacimiento" />
                                 <div *ngIf="votanteForm.get('fechaNacimiento')?.touched" class="error-message">
@@ -218,6 +233,46 @@
                         ?.hasError('required')
                     ">
                                         la fecha de nacimiento es obligatorio
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Edad*:</label>
+                                <input type="text" class="form-control" formControlName="edad" />
+                                <div *ngIf="votanteForm.get('edad')?.touched" class="error-message">
+                                    <div *ngIf="votanteForm.get('edad')?.hasError('required')">
+                                        La edad es obligatoria
+                                    </div>
+                                    <div *ngIf="votanteForm.get('edad')?.hasError('pattern')">
+                                        El edad no es valida
+                                    </div>
+                                    <div *ngIf="
+                      votanteForm
+                        .get('edad')
+                        ?.hasError('minlength')
+                    ">
+                                        El apellido materno debe tener al menos 3 caracteres
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Folio*:</label>
+                                <input type="text" class="form-control" formControlName="folio" />
+                                <div *ngIf="votanteForm.get('folio')?.touched" class="error-message">
+                                    <div *ngIf="votanteForm.get('folio')?.hasError('required')">
+                                        El folio es obligatorio
+                                    </div>
+                                    <div *ngIf="votanteForm.get('folio')?.hasError('minlength')">
+                                        El folio debe tener al menos 8 caracteres
+                                    </div>
+                                    <div *ngIf="votanteForm.get('folio')?.hasError('pattern')">
+                                        El folio no puede tener letras
                                     </div>
                                 </div>
                             </div>
@@ -236,23 +291,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">Género*:</label>
-                                <ng-select placeholder="Elegir" [items]="generos" bindLabel="name" bindValue="id" [searchable]="false" [clearable]="false" formControlName="sexo">
-                                    <ng-template ng-option-tmp let-item="item">
-                                        {{ item.name }}
-                                    </ng-template>
-                                </ng-select>
-                                <div *ngIf="votanteForm.get('sexo')?.touched" class="error-message">
-                                    <div *ngIf="votanteForm.get('sexo')?.hasError('required')">
-                                        El genero es obligatorio
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label">Estado*:</label>
@@ -323,23 +361,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">Folio*:</label>
-                                <input type="text" class="form-control" formControlName="folio" />
-                                <div *ngIf="votanteForm.get('folio')?.touched" class="error-message">
-                                    <div *ngIf="votanteForm.get('folio')?.hasError('required')">
-                                        El folio es obligatorio
-                                    </div>
-                                    <div *ngIf="votanteForm.get('folio')?.hasError('minlength')">
-                                        El folio debe tener al menos 8 caracteres
-                                    </div>
-                                    <div *ngIf="votanteForm.get('folio')?.hasError('pattern')">
-                                        El folio no puede tener letras
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                         
                         <div class="col-lg-4">
                             <div class="mb-3">
@@ -361,6 +383,38 @@
                         ?.hasError('required')
                     ">
                                         El seccion es obligatoria
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">¿Usted cuenta con algun programa social?*:</label>
+                                <ng-select formControlName="programa" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                    <ng-template ng-header-tmp>
+                                        <input class="form-control" type="text" (input)="
+                        selectProgramaSocial.filter($any($event.target).value)
+                      " />
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                                        {{ item.nombre }}
+                                    </ng-template>
+                                </ng-select>
+                                <div *ngIf="votanteForm.get('programa')?.touched" class="error-message">
+                                    <div *ngIf="
+                      votanteForm
+                        .get('programa')
+                        ?.hasError('required')
+                    ">
+                                        El campo es obligatorio
+                                    </div>
+                                    
+                                    <div *ngIf="
+                      votanteForm
+                        .get('programa')
+                        ?.hasError('pattern')
+                    ">
+                                        El campo no puede tener números ni signos
                                     </div>
                                 </div>
                             </div>

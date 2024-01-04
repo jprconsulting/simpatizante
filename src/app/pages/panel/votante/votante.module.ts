@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { BeneficiariosRoutingModule } from './beneficiarios-routing.module';
-import { BeneficiariosComponent } from './beneficiarios.component';
+import { VotanteRoutingModule } from './votante-routing.module';
+import { VotanteComponent} from './votante.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -13,11 +13,11 @@ import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
 
 @NgModule({
   declarations: [
-    BeneficiariosComponent
+    VotanteComponent
   ],
   imports: [
     CommonModule,
-    BeneficiariosRoutingModule,
+    VotanteRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
@@ -28,4 +28,4 @@ import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
   ],
 
 })
-export class BeneficiariosModule { }
+export class VicitasModule { }
