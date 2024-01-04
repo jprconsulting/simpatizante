@@ -67,9 +67,10 @@ export class VisitasComponent {
   creteForm() {
     this.visitaForm = this.formBuilder.group({
       id: [null],
+      servicios:['', [Validators.required, Validators.minLength(3), Validators.pattern('^([a-zA-Z]{3})[a-zA-Z ]+$')]],
       descripcion:  ['', [Validators.required, Validators.minLength(3), Validators.pattern('^([a-zA-Z]{3})[a-zA-Z ]+$')]],
-      beneficiarioId: [null, Validators.required],
-      imagenBase64: ['']
+      votnate: ['', Validators.required],
+      imagenBase64: ['', Validators.required]
     });
   }
 

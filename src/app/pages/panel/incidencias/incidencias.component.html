@@ -1,1 +1,193 @@
-<p>incidencias works!</p>
+<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
+    <p style="color: white">Guardando...</p>
+</ngx-spinner>
+
+<app-page-header headerTitle="Incidencias"></app-page-header>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body border-bottom py-3">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-incidencias" (click)="handleChangeAdd()">
+            <i class="ti ti-plus me-1"></i>Agregar
+          </button>
+                    <div class="ms-auto d-flex align-items-center">
+                        <div class="input-icon">
+                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" />
+                            <span class="input-icon-addon">
+                <i class="ti ti-search"></i>
+              </span>
+                        </div>
+                        <a class="btn w-30 btn-icon" aria-label="Dribbble"  title="Descargar excel de incidencias" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px;">
+                            <i class="ti ti-cloud-down text-muted" style="font-size: 28px;"></i>
+                        </a>
+                    </div>
+                </div>
+                <hr />
+      </div>
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
+        <div >
+          <table class="table table-vcenter card-table table-striped">
+            <thead>
+              <tr>
+                <th class="text-center">#</th>
+                <th style="text-transform: none; font-size: inherit;">Tipo de incidencia</th>
+                <th style="text-transform: none; font-size: inherit;">Casilla</th>
+                <th style="text-transform: none; font-size: inherit;">Retroalimentacion de casilla</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                
+              >
+               
+                <td class="text-muted">
+                  1
+                </td>
+                <td class="text-muted" style="color: red;">
+                    grave
+                 </td>
+                 
+                <td class="text-muted">
+                 A1
+                </td>
+                <td style="width: 50px">
+                  <div>
+                    <button
+                      class="btn btn-warning btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal-incidencias"
+
+                      style="margin-right: 5px;"
+                    >
+                      <i class="ti ti-edit"></i>
+                    </button>
+                    <button
+                      class="btn btn-danger btn-icon btn-sm"
+                    
+                    >
+                      <i class="ti ti-eraser"></i>
+                    </button>
+                  </div>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <app-no-results *ngSwitchCase="4"></app-no-results>
+      </ng-container>
+      <!-- Fin *ngSwitchCase-->
+
+      <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">
+          Total de registros: <b>1</b>
+        </p>
+        <div class="m-0 ms-auto">
+          <pagination-controls
+            (pageChange)="onPageChange($event)"
+            previousLabel=""
+            nextLabel=""
+          >
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal modal-blur fade"
+  id="modal-incidencias"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} incidencia
+        </h5>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form [formGroup]="incidenciasForm" (ngSubmit)="submit()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="mb-3">
+                <label class="form-label">Tipo de incidencia*</label>
+                <select class="form-select" aria-label="Default select example" formControlName="tipo">
+                    <option value="1">Grave</option>
+                    <option value="2">Tolerante</option>
+                    <option value="3">Nada grave</option>
+                </select>
+                <div *ngIf="incidenciasForm.get('tipo')?.touched" class="error-message">
+                    <div *ngIf="incidenciasForm.get('tipo')?.hasError('required')">
+                        El tipo de incidencia es obligatorio
+                    </div>
+                </div>
+            </div>
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label class="form-label">Casilla*:</label>
+                        <select class="form-select" aria-label="Default select example" formControlName="casilla">
+                            <option value="1">A1</option>
+                            <option value="2">A2</option>
+                            <option value="3">A3</option>
+                          </select>
+                          <div *ngIf="incidenciasForm.get('casilla')?.touched" class="error-message">
+                                    <div *ngIf="
+                      incidenciasForm.get('casilla')?.hasError('required')
+                    ">
+                                        La casilla es obligatorio
+                                    </div>
+                                    
+                                </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="mb-3">
+                        <label class="form-label">Retroalimentacion de casilla:</label>
+                        <textarea rows="4" class="form-control" placeholder="" formControlName="retroalimentacion"></textarea>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="mb-3">
+                        <img class="img" *ngIf="incidenciasForm.get('imagenBase64')?.value" [src]="
+                    'data:image/jpeg;base64,' +
+                    incidenciasForm.get('imagenBase64')?.value
+                  " width="100%" height="100%" alt="Vista previa de la imagen" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="form-label" style="
+        margin-left: 20px;
+        color: red;
+        font-weight: bold;
+    ">Todos los campos marcados con * son requeridos</p>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success" [disabled]="!incidenciasForm.valid">
+            {{ isModalAdd ? "Agregar" : "Actualizar" }}
+          </button>
+        </div>
+        </form>
+    </div>
+</div>
+</div>
+
