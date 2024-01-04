@@ -74,9 +74,6 @@
                 </th>
                 <th style="text-transform: none; font-size: inherit">Email</th>
                 <th style="text-transform: none; font-size: inherit">Rol</th>
-                <th style="text-transform: none; font-size: inherit">
-                  Área adscripción
-                </th>
                 <th
                   style="text-transform: none; font-size: inherit"
                   class="text-center"
@@ -109,9 +106,6 @@
                 <td>{{ usuario.nombreCompleto }}</td>
                 <td class="text-muted">{{ usuario.correo }}</td>
                 <td class="text-muted">{{ usuario.rol.nombreRol }}</td>
-                <td class="text-muted">
-                  {{ usuario?.areaAdscripcion?.nombre }}
-                </td>
                 <td class="text-center">
                   <ng-container *ngIf="usuario.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
