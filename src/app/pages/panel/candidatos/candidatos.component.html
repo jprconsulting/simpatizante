@@ -69,13 +69,23 @@
                 >
                   #
                 </th>
-                <th style="text-transform: none; font-size: inherit">Nombre completo</th>
-                <th style="text-transform: none; font-size: inherit">Fecha de nacimiento</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Nombre completo
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Fecha de nacimiento
+                </th>
                 <th style="text-transform: none; font-size: inherit">Genero</th>
-                <th style="text-transform: none; font-size: inherit">Sobrenombre</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Sobrenombre
+                </th>
                 <th style="text-transform: none; font-size: inherit">Cargo</th>
-                <th style="text-transform: none; font-size: inherit">Fotografia</th>
-                <th style="text-transform: none; font-size: inherit">Emblema</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Fotografia
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Emblema
+                </th>
                 <th
                   style="text-transform: none; font-size: inherit"
                   class="text-center"
@@ -198,24 +208,16 @@
                   class="error-message"
                 >
                   <div
-                    *ngIf="
-                      candidatoForm.get('nombre')?.hasError('required')
-                    "
+                    *ngIf="candidatoForm.get('nombre')?.hasError('required')"
                   >
                     <p style="color: red">El nombre es obligatorio</p>
                   </div>
                   <div
-                    *ngIf="
-                      candidatoForm.get('nombre')?.hasError('minlength')
-                    "
+                    *ngIf="candidatoForm.get('nombre')?.hasError('minlength')"
                   >
                     El Nombre debe tener al menos 3 caracteres
                   </div>
-                  <div
-                    *ngIf="
-                      candidatoForm.get('nombre')?.hasError('pattern')
-                    "
-                  >
+                  <div *ngIf="candidatoForm.get('nombre')?.hasError('pattern')">
                     El Nombre no puede tener números ni signos
                   </div>
                 </div>
@@ -242,17 +244,19 @@
                   </div>
                   <div
                     *ngIf="
-                      candidatoForm.get('apellidoPaterno')?.hasError('minlength')
+                      candidatoForm
+                        .get('apellidoPaterno')
+                        ?.hasError('minlength')
                     "
                   >
-                    El apellido paterno  debe tener al menos 3 caracteres
+                    El apellido paterno debe tener al menos 3 caracteres
                   </div>
                   <div
                     *ngIf="
                       candidatoForm.get('apellidoPaterno')?.hasError('pattern')
                     "
                   >
-                    El apellido paterno  no puede tener números ni signos
+                    El apellido paterno no puede tener números ni signos
                   </div>
                 </div>
               </div>
@@ -278,7 +282,9 @@
                   </div>
                   <div
                     *ngIf="
-                      candidatoForm.get('apellidoMaterno')?.hasError('minlength')
+                      candidatoForm
+                        .get('apellidoMaterno')
+                        ?.hasError('minlength')
                     "
                   >
                     El apellido materno debe tener al menos 3 caracteres
@@ -358,12 +364,16 @@
                     class="error-message"
                   >
                     <div
-                      *ngIf="candidatoForm.get('sobrenombre')?.hasError('required')"
+                      *ngIf="
+                        candidatoForm.get('sobrenombre')?.hasError('required')
+                      "
                     >
                       El sobrenombre es obligatorio
                     </div>
                     <div
-                      *ngIf="candidatoForm.get('sobrenombre')?.hasError('pattern')"
+                      *ngIf="
+                        candidatoForm.get('sobrenombre')?.hasError('pattern')
+                      "
                     >
                       El sobrenombre no es valido
                     </div>
@@ -383,25 +393,15 @@
                   *ngIf="candidatoForm.get('cargo')?.touched"
                   class="error-message"
                 >
-                  <div
-                    *ngIf="
-                      candidatoForm.get('cargo')?.hasError('required')
-                    "
-                  >
+                  <div *ngIf="candidatoForm.get('cargo')?.hasError('required')">
                     <p style="color: red">El nombre es obligatorio</p>
                   </div>
                   <div
-                    *ngIf="
-                      candidatoForm.get('cargo')?.hasError('minlength')
-                    "
+                    *ngIf="candidatoForm.get('cargo')?.hasError('minlength')"
                   >
                     El Nombre debe tener al menos 3 caracteres
                   </div>
-                  <div
-                    *ngIf="
-                      candidatoForm.get('cargo')?.hasError('pattern')
-                    "
-                  >
+                  <div *ngIf="candidatoForm.get('cargo')?.hasError('pattern')">
                     El Nombre no puede tener números ni signos
                   </div>
                 </div>
@@ -435,16 +435,40 @@
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                  <div class="form-label">Selecciona una fotografía*</div>
-                  <input class="input" type="file"  formControlName="imagenBase64" />
+                <div class="form-label">Selecciona una fotografía*</div>
+                <input
+                  class="input"
+                  type="file"
+                  formControlName="imagenBase64foto"
+                />
               </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="mb-3">
-                <div class="form-label">Selecciona un emblema*</div>
-                <input class="input" type="file" formControlName="imagenBase64" />
             </div>
-        </div>
+
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <div class="form-label">Selecciona un emblema*</div>
+                <input
+                  class="input"
+                  type="file"
+                  formControlName="imagenBase64emblema"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <img
+                  class="img"
+                  *ngIf="candidatoForm.get('imagenBase64emblema')?.value"
+                  [src]="
+                    'data:image/jpeg;base64,' +
+                    candidatoForm.get('imagenBase64emblema')?.value
+                  "
+                  width="100%"
+                  height="100%"
+                  alt="Vista previa de la imagen"
+                />
+              </div>
+            </div>
           </div>
         </div>
         <p

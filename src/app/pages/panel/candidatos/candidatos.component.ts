@@ -55,7 +55,9 @@ export class CandidatosComponent {
       sexo: [null, Validators.required],
       sobrenombre: ['',[Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       cargo: ['',[Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      estatus: [true]
+      estatus: [true],
+      imagenBase64foto: [''],
+      imagenBase64emblema: ['']
     });
   }
 
