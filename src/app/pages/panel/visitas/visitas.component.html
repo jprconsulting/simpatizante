@@ -188,7 +188,7 @@
             <div class="col-lg-12">
               <div class="mb-3">
                 <label class="form-label">Nombre del votante*</label>
-                        <ng-select formControlName="beneficiarioId" #selectBeneficiario [searchable]="false" [items]="beneficiarios" bindLabel="nombreCompleto" bindValue="id" placeholder="Elegir" [clearable]="false" (change)="onSelectBeneficiario($event.id)">
+                        <ng-select formControlName="votnate" #selectBeneficiario [searchable]="false" [items]="beneficiarios" bindLabel="nombreCompleto" bindValue="id" placeholder="Elegir" [clearable]="false" (change)="onSelectBeneficiario($event.id)">
                             <ng-template ng-header-tmp>
                                 <input class="form-control" type="text" (input)="
                         selectBeneficiario.filter($any($event.target).value)
@@ -198,25 +198,61 @@
                                 {{ item.nombreCompleto }}
                             </ng-template>
                         </ng-select>
+                        <div *ngIf="visitaForm.get('votnate')?.touched" class="error-message">
+                          <div *ngIf="visitaForm.get('votnate')?.hasError('required')">
+                              El nombre del votnate es obligatorio
+                          </div>
+                      </div>
                     </div>
                 </div>
                 
                 <div class="col-md-12">
                     <div class="mb-3">
                         <label class="form-label">Servicios de interes</label>
-                        <input type="text" class="form-control"/>
+                        <input type="text" class="form-control" formControlName="servicios"/>
+                        <div *ngIf="visitaForm.get('servicios')?.touched" class="error-message">
+                          <div *ngIf="visitaForm.get('servicios')?.hasError('required')">
+                              El servicio de interes es obligatorio
+                          </div>
+                          <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
+                            El servicio no puede tener letras
+                        </div>
+                        <div *ngIf="
+                      visitaForm.get('servicios')?.hasError('minlength')
+                    ">
+                                        El servicio debe tener al menos 3 caracteres
+                                    </div>
+                      </div>
                     </div>
                 </div>
                 <div class="col-lg-12">
                     <div class="mb-3">
                         <label class="form-label">Descripción*</label>
                         <textarea rows="5" class="form-control" placeholder="" formControlName="descripcion"></textarea>
+                        <div *ngIf="visitaForm.get('descripcion')?.touched" class="error-message">
+                          <div *ngIf="visitaForm.get('descripcion')?.hasError('required')">
+                              La descripcion es obligatorio
+                          </div>
+                          <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
+                            La descripcion no puede tener numeros
+                        </div>
+                        <div *ngIf="
+                      visitaForm.get('descripcion')?.hasError('minlength')
+                    ">
+                                        La descripcion debe tener al menos 3 caracteres
+                                    </div>
+                      </div>
                     </div>
                 </div>
                 <div class="col-lg-12">
                     <div class="mb-3">
                         <div class="form-label">Selecciona una imagen*</div>
                         <input class="input" type="file" (change)="onFileChange($event)" formControlName="imagenBase64" />
+                        <div *ngIf="visitaForm.get('imagenBase64')?.touched" class="error-message">
+                          <div *ngIf="visitaForm.get('imagenBase64')?.hasError('required')">
+                              La imagen es obligatoria
+                          </div>
+                      </div>
                     </div>
                 </div>
                 <div class="col-lg-12">
