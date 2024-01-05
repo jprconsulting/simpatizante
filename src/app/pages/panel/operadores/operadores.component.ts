@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { RolsService } from 'src/app/core/services/rols.service';
-import { SeccionesService } from 'src/app/core/services/secciones.service';
+import { SeccionService } from 'src/app/core/services/seccion.service';
 import { UsuariosService } from 'src/app/core/services/usuarios.service';
 import { GenericType, LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
@@ -44,7 +44,7 @@ export class OperadoresComponent implements OnInit{
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
-    private seccionesService: SeccionesService,
+    private seccionesService: SeccionService,
   ) {
     this.usuarioService.refreshListUsuarios.subscribe(() => this.getUsuarios());
     this.getUsuarios();
