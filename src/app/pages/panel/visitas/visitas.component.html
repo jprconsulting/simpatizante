@@ -222,6 +222,11 @@
                     ">
                                         El servicio debe tener al menos 3 caracteres
                                     </div>
+                                    <div *ngIf="
+                      visitaForm.get('servicios')?.hasError('pattern')
+                    ">
+                                        El servicio debe tener numeros
+                                    </div>
                       </div>
                     </div>
                 </div>
@@ -240,6 +245,11 @@
                       visitaForm.get('descripcion')?.hasError('minlength')
                     ">
                                         La descripcion debe tener al menos 3 caracteres
+                                    </div>
+                                    <div *ngIf="
+                      visitaForm.get('descripcion')?.hasError('pattern')
+                    ">
+                                       La descripcion no puede llevar numeros
                                     </div>
                       </div>
                     </div>

@@ -336,40 +336,14 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">Localidad*:</label>
-                                <ng-select formControlName="localidad" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
-                                    <ng-template ng-header-tmp>
-                                        <input class="form-control" type="text" (input)="
-                        selectProgramaSocial.filter($any($event.target).value)
-                      " />
-                                    </ng-template>
-                                    <ng-template ng-option-tmp let-item="item" let-index="index">
-                                        {{ item.nombre }}
-                                    </ng-template>
-                                </ng-select>
-                                <div *ngIf="votanteForm.get('localidad')?.touched" class="error-message">
-                                    <div *ngIf="
-                      votanteForm
-                        .get('localidad')
-                        ?.hasError('required')
-                    ">
-                                       la localidad es obligatoria
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        
+                        </div>                        
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label">Seccion*:</label>
-                                <ng-select formControlName="seccion" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                <ng-select formControlName="seccion" #selectseccion [searchable]="false" [items]="seccion" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="
-                        selectProgramaSocial.filter($any($event.target).value)
+                        selectseccion.filter($any($event.target).value)
                       " />
                                     </ng-template>
                                     <ng-template ng-option-tmp let-item="item" let-index="index">
@@ -384,6 +358,25 @@
                     ">
                                         El seccion es obligatoria
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label>Estatus: </label><br />
+                            <div class="form-group">
+                                <div class="form-check form-switch mt-1 ml-2 custom-green-switch">
+                                    <input class="form-check-input" type="checkbox" (change)="setEstatus()" [(ngModel)]="estatusBtn" name="estatusBtn" formControlName="estatus" [ngStyle]="{'background-color': estatusBtn ? '#1db83f' : '#b2c0b5'}" />
+                                    <span class="form-check-label" [ngClass]="
+                      votanteForm.get('estatus')?.value
+                        ? 'text-success'
+                        : 'text-danger'
+                    ">
+                    {{
+                      votanteForm.get("estatus")?.value
+                        ? "Activo"
+                        : "Inactivo"
+                    }}
+                  </span>
                                 </div>
                             </div>
                         </div>
@@ -411,27 +404,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
-                            <label>Estatus: </label><br />
-                            <div class="form-group">
-                                <div class="form-check form-switch mt-1 ml-2 custom-green-switch">
-                                    <input class="form-check-input" type="checkbox" (change)="setEstatus()" [(ngModel)]="estatusBtn" name="estatusBtn" formControlName="estatus" [ngStyle]="{'background-color': estatusBtn ? '#1db83f' : '#b2c0b5'}" />
-                                    <span class="form-check-label" [ngClass]="
-                      votanteForm.get('estatus')?.value
-                        ? 'text-success'
-                        : 'text-danger'
-                    ">
-                    {{
-                      votanteForm.get("estatus")?.value
-                        ? "Activo"
-                        : "Inactivo"
-                    }}
-                  </span>
-                                </div>
-                            </div>
-                        </div>
-
-
                         <div class="col-lg-12">
                             <div class="mb-3">
                                 <label class="form-label">Domicilio*</label>
