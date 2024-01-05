@@ -6,10 +6,12 @@ import { Observable } from 'rxjs';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { RolsService } from 'src/app/core/services/rols.service';
+import { SeccionesService } from 'src/app/core/services/secciones.service';
 import { UsuariosService } from 'src/app/core/services/usuarios.service';
-import { LoadingStates } from 'src/app/global/global';
+import { GenericType, LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
 import { Rol } from 'src/app/models/rol';
+import { Seccion } from 'src/app/models/seccion';
 import { Usuario } from 'src/app/models/usuario';
 import * as XLSX from 'xlsx';
 
@@ -28,24 +30,25 @@ export class OperadoresComponent implements OnInit{
   usuarios: Usuario[] = [];
   usuariosFilter: Usuario[] = [];
   isLoading = LoadingStates.neutro;
-
-  rols: Rol[] = [];
+  generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
+  secciones: Seccion[] = [];
   areasAdscripcion: AreaAdscripcion[] = [];
   isModalAdd = true;
   rolId = 0;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
+    @Inject('GENEROS') public objGeneros: any,
     private spinnerService: NgxSpinnerService,
     private usuarioService: UsuariosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
-    private rolsService: RolsService,
+    private seccionesService: SeccionesService,
   ) {
     this.usuarioService.refreshListUsuarios.subscribe(() => this.getUsuarios());
     this.getUsuarios();
-    this.getRols();
+    this.getSecciones();
     this.getAreasAdscripcion();
     this.creteForm();
   }
@@ -53,8 +56,14 @@ export class OperadoresComponent implements OnInit{
     this.isModalAdd = false;
   }
 
-  getRols() {
-    this.rolsService.getAll().subscribe({ next: (dataFromAPI) => this.rols = dataFromAPI });
+  getGeneroName(id: number): string {
+    const genero = this.generos.find(g => g.id === id);
+    return genero ? genero.name : '';
+  }
+
+  getSecciones() {
+    this.seccionesService.getAll().subscribe({ next: (dataFromAPI) => this.secciones = dataFromAPI });
+    console.log(this.secciones)
   }
 
   getAreasAdscripcion() {
@@ -64,9 +73,9 @@ export class OperadoresComponent implements OnInit{
   creteForm() {
     this.operadorForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', [Validators.required,Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      nombre: ['', [Validators.required,Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       sexo: ['', [Validators.required, Validators.email, Validators.pattern('^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$')]],
       fechaNacimiento: ['', Validators.required],
       secciones: [null, Validators.required],
@@ -253,8 +262,8 @@ export class OperadoresComponent implements OnInit{
   }
 
 
-  selectedSecciones = [3];
-  secciones = [
+  selectedSecciones1 = [3];
+  secciones1 = [
       { id: 1, name: 'Sección1' },
       { id: 2, name: 'Sección2' },
       { id: 3, name: 'Sección3' },

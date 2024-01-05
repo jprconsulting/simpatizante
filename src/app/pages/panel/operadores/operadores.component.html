@@ -286,6 +286,7 @@
                 <label class="form-label">Género*:</label>
                 <ng-select
                   placeholder="Elegir"
+                  [items]="generos"
                   bindLabel="name"
                   bindValue="id"
                   [searchable]="false"
@@ -300,9 +301,7 @@
                   *ngIf="operadorForm.get('sexo')?.touched"
                   class="error-message"
                 >
-                  <div
-                    *ngIf="operadorForm.get('sexo')?.hasError('required')"
-                  >
+                  <div *ngIf="operadorForm.get('sexo')?.hasError('required')">
                     El genero es obligatorio
                   </div>
                 </div>
@@ -368,20 +367,21 @@
                   [multiple]="true"
                   [closeOnSelect]="false"
                   [hideSelected]="true"
-                  bindLabel="name"
-                  placeholder="Elegir secciones">
+                  bindLabel="nombre"
+                  placeholder="Elegir secciones"
+                  formControlName="seccion">
               </ng-select>
                 <div
-                  *ngIf="operadorForm.get('secciones')?.touched"
+                  *ngIf="operadorForm.get('seccion')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="operadorForm.get('secciones')?.hasError('required')"
+                    *ngIf="operadorForm.get('seccion')?.hasError('required')"
                   >
                     El sobrenombre es obligatorio
                   </div>
                   <div
-                    *ngIf="operadorForm.get('secciones')?.hasError('pattern')"
+                    *ngIf="operadorForm.get('seccion')?.hasError('pattern')"
                   >
                     El sobrenombre no es valido
                   </div>

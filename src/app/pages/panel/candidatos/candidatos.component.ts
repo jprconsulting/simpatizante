@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoadingStates } from 'src/app/global/global';
+import { GenericType, LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -19,6 +19,7 @@ export class CandidatosComponent {
 
   areaAdscripcion!: AreaAdscripcion;
   candidatoForm!: FormGroup;
+  generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   areasAdscripcion: AreaAdscripcion[] = [];
   areasAdscripcionFilter: AreaAdscripcion[] = [];
   isLoading = LoadingStates.neutro;
@@ -26,6 +27,7 @@ export class CandidatosComponent {
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
+    @Inject('GENEROS') public objGeneros: any,
     private spinnerService: NgxSpinnerService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
@@ -44,13 +46,57 @@ export class CandidatosComponent {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
 
+  getGeneroName(id: number): string {
+    const genero = this.generos.find(g => g.id === id);
+    return genero ? genero.name : '';
+  }
+
+  onFileChange(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+
+    if (inputElement.files && inputElement.files.length > 0) {
+      const file = inputElement.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
+
+        this.candidatoForm.patchValue({
+          imagenBase64foto: base64WithoutPrefix// Contiene solo la representación en base64
+        });
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  onFileChange2(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+
+    if (inputElement.files && inputElement.files.length > 0) {
+      const file = inputElement.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
+
+        this.candidatoForm.patchValue({// Contiene solo la representación en base64
+          imagenBase64emblema: base64WithoutPrefix // Contiene solo la representación en base64
+        });
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
 
   createForm() {
     this.candidatoForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      nombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       sobrenombre: ['',[Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
@@ -150,6 +196,7 @@ export class CandidatosComponent {
   agregar() {
     this.areaAdscripcion = this.candidatoForm.value as AreaAdscripcion;
     this.spinnerService.show();
+    console.log(this.candidatoForm)
     this.areasAdscripcionService.post(this.areaAdscripcion).subscribe({
       next: () => {
         this.spinnerService.hide();

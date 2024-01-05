@@ -27,7 +27,6 @@ export class UsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
   usuariosFilter: Usuario[] = [];
   isLoading = LoadingStates.neutro;
-
   rols: Rol[] = [];
   areasAdscripcion: AreaAdscripcion[] = [];
   isModalAdd = true;
@@ -64,9 +63,9 @@ export class UsuariosComponent implements OnInit {
   creteForm() {
     this.usuarioForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', [Validators.required,Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      nombre: ['', [Validators.required,Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       correo: ['', [Validators.required, Validators.email, Validators.pattern('^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$')]],
       password: [
         '',
