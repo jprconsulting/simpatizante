@@ -12,6 +12,8 @@ import { ProgramasSocialesService } from 'src/app/core/services/programas-social
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
 import * as XLSX from 'xlsx';
+import { Seccion } from 'src/app/models/seccion';
+import { SeccionService } from 'src/app/core/services/seccion.service';
 
 
 @Component({
@@ -40,6 +42,7 @@ export class VotanteComponent implements OnInit {
   isModalAdd: boolean = true;
   programasSociales: ProgramaSocial[] = [];
   municipios: Municipio[] = [];
+  seccion: Seccion[] = [];
   rolId = 0;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   estatusBtn = true;
@@ -68,16 +71,19 @@ export class VotanteComponent implements OnInit {
     private formBuilder: FormBuilder,
     private programasSocialesService: ProgramasSocialesService,
     private municipiosService: MunicipiosService,
+    private seccionService: SeccionService
   ) {
     this.beneficiariosService.refreshListBeneficiarios.subscribe(() => this.getBeneficiarios());
     this.getBeneficiarios();
     this.getMunicipios();
     this.getProgramasSociales();
     this.creteForm();
+    
   }
 
 
   ngOnInit() {
+    this.getSeccion();
   }
 
   resetMap() {
@@ -226,6 +232,16 @@ export class VotanteComponent implements OnInit {
     this.municipiosService.getAll().subscribe({ next: (dataFromAPI) => this.municipios = dataFromAPI });
   }
 
+  getSeccion() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.seccionService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.seccion = dataFromAPI;},
+      }
+    );
+  }
+
   getProgramasSociales() {
     this.programasSocialesService.getAll().subscribe({ next: (dataFromAPI) => this.programasSociales = dataFromAPI });
   }
@@ -233,12 +249,11 @@ export class VotanteComponent implements OnInit {
   creteForm() {
     this.votanteForm = this.formBuilder.group({
       id: [null],
-      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
       estadoId:['', Validators.required],
-      localidad:['', Validators.required],
       seccion: ['', Validators.required],
       folio: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^([0-9]{7})[0-9]+$')]],
       sexo: [null, Validators.required],
@@ -250,7 +265,7 @@ export class VotanteComponent implements OnInit {
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
       edad: ['', [Validators.required, Validators.minLength(1), Validators.pattern('^([0-9]{1})[0-9]+$')]],
-      programa: ['', [Validators.required, Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      programa: ['', [Validators.required, Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
     });
   }
 
