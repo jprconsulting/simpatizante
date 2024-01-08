@@ -1,4 +1,5 @@
 import { Municipio } from "./municipio"
+import { ProgramaSocial } from "./programa-social";
 
 export interface Votante {
     id: number;
@@ -14,7 +15,9 @@ export interface Votante {
     latitud: number;
     longitud: number;
     estatus: boolean;
+    programaSocial: ProgramaSocial;
     municipio: Municipio;
+    
 }
 
 export interface TotalBeneficiariosMunicipio extends Municipio {

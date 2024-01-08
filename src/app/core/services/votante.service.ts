@@ -2,49 +2,49 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
+import { Votante } from 'src/app/models/votante';
 import { Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { ProgramaSocial } from 'src/app/models/programa-social';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProgramasSocialesService {
-  route = `${environment.apiUrl}/programas-sociales`;
-  private _refreshListProgramasSociales$ = new Subject<ProgramaSocial | null>();
+export class VotantesService {
+  route = `${environment.apiUrl}/votantes`;
+  private _refreshListVotante$ = new Subject<Votante | null>();
 
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
   ) { }
 
-  get refreshListProgramasSociales() {
-    return this._refreshListProgramasSociales$;
+  get refreshListAreasAdscripcion() {
+    return this._refreshListVotante$;
   }
 
   getById(id: number) {
-    return this.http.get<ProgramaSocial>(`${this.route}/obtener-por-id/${id}`);
+    return this.http.get<Votante>(`${this.route}/obtener-por-id/${id}`);
   }
 
   getAll() {
-    return this.http.get<ProgramaSocial[]>(`${this.route}/obtener-todos`);
+    return this.http.get<Votante[]>(`${this.route}/obtener-todos`);
   }
 
-  post(dto: ProgramaSocial) {
-    return this.http.post<ProgramaSocial>(`${this.route}/crear`, dto)
+  post(dto: Votante) {
+    return this.http.post<Votante>(`${this.route}/crear`, dto)
       .pipe(
         tap(() => {
-          this._refreshListProgramasSociales$.next(null);
+          this._refreshListVotante$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );
   }
 
-  put(id: number, dto: ProgramaSocial) {
-    return this.http.put<ProgramaSocial>(`${this.route}/actualizar/${id}`, dto)
+  put(id: number, dto: Votante) {
+    return this.http.put<Votante>(`${this.route}/actualizar/${id}`, dto)
       .pipe(
         tap(() => {
-          this._refreshListProgramasSociales$.next(null);
+          this._refreshListVotante$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );
@@ -54,10 +54,9 @@ export class ProgramasSocialesService {
     return this.http.delete(`${this.route}/eliminar/${id}`)
       .pipe(
         tap(() => {
-          this._refreshListProgramasSociales$.next(null);
+          this._refreshListVotante$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );
   }
-
 }
