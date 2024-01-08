@@ -6,7 +6,7 @@
 
 <div class="page page-center">
     <div class="container container-tight py-4">
-        <div class="card card-md" style="left: 450px;">
+        <div class="card card-md text-center"> <!-- Añadido 'text-center' para centrar la tarjeta -->
             <div class="card-body">
                 <h2 class="h2 text-center mb-4">Inicia sesión con tus datos</h2>
                 <hr>
@@ -23,11 +23,12 @@
                     </div>
                     <div class="form-footer">
                         <button type="submit" class="btn btn-secondary w-100" [disabled]="!formUserLogin.valid">
-            Ingresar
-          </button>
+                            Ingresar
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+

@@ -1,27 +1,54 @@
-<header class="navbar navbar-expand-md d-none d-lg-flex d-print-none">
+<header class="navbar navbar-expand-md d-lg-none d-print-none">
   <div class="container-xl">
     <div class="d-flex ms-auto">
       <div class="navbar-nav">
         <div class="nav-item dropdown">
-          <div class="nav-item dropdown">
-            <a
-              href="#"
-              class="nav-link d-flex lh-1 text-reset p-0"
-              data-bs-toggle="dropdown"
-              aria-label="Open user menu"
-            >
-              <i
-                class="ti ti-user-circle text-muted"
-                style="font-size: 35px"
-              ></i>
-              <div class="d-none d-xl-block ps-2">
-                <div>{{ dataObject?.nombreCompleto }}</div>
-                <div class="mt-1 small text-muted">{{ dataObject?.rol }}</div>
-              </div>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <a class="dropdown-item" (click)="logout()">Cerrar sesión</a>
+          <a
+            href="#"
+            class="nav-link d-flex lh-1 text-reset p-0"
+            data-bs-toggle="dropdown"
+            aria-label="Open user menu"
+          >
+            <i
+              class="ti ti-user-circle text-muted"
+              style="font-size: 35px"
+            ></i>
+            <div class="d-none d-xl-block ps-2">
+              <div>{{ dataObject?.nombreCompleto }}</div>
+              <div class="mt-1 small text-muted">{{ dataObject?.rol }}</div>
             </div>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+            <a class="dropdown-item" (click)="logout()">Cerrar sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<header class="navbar navbar-expand-md d-none d-md-flex d-print-none">
+  <div class="container-xl">
+    <div class="d-flex ms-auto">
+      <div class="navbar-nav">
+        <div class="nav-item dropdown">
+          <a
+            href="#"
+            class="nav-link d-flex lh-1 text-reset p-0"
+            data-bs-toggle="dropdown"
+            aria-label="Open user menu"
+          >
+            <i
+              class="ti ti-user-circle text-muted"
+              style="font-size: 35px"
+            ></i>
+            <div class="d-none d-xl-block ps-2">
+              <div>{{ dataObject?.nombreCompleto }}</div>
+              <div class="mt-1 small text-muted">{{ dataObject?.rol }}</div>
+            </div>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+            <a class="dropdown-item" (click)="logout()">Cerrar sesión</a>
           </div>
         </div>
       </div>
