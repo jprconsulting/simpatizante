@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Estadistica, TotalGeneral } from 'src/app/models/estadistica';
-import { ProgramaSocialEstadistica } from 'src/app/models/programa-social';
 import { GeneralWordCloud, WordCloud } from 'src/app/models/word-cloud';
 import { environment } from 'src/environments/environment';
 
@@ -21,9 +20,7 @@ export class DashboardService {
     this.dataWordCloudSubject.next(newData);
   }
 
-  getTotalBeneficiariosPorProgramaSocial() {
-    return this.http.get<ProgramaSocialEstadistica[]>(`${this.route}/total-beneficiarios-por-programa-social`);
-  }
+ 
 
   getTotalVisitasPorProgramaSocial() {
     return this.http.get<Estadistica[]>(`${this.route}/total-visitas-por-programa-social`);

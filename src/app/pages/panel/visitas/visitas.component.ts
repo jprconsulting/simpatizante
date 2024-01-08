@@ -8,7 +8,7 @@ import { Visita } from 'src/app/models/visita';
 import { Beneficiario } from 'src/app/models/beneficiario';
 import { BeneficiariosService } from 'src/app/core/services/beneficiarios.service';
 import { VisitasService } from 'src/app/core/services/visitas.service';
-import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
+
 import { ProgramaSocial } from 'src/app/models/programa-social';
 import * as XLSX from 'xlsx';
 
@@ -35,6 +35,7 @@ export class VisitasComponent {
   imagenAmpliada: string | null = null;
   mostrarModal = false;
   selectedProgramaSocial: number = 0;
+  
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -43,14 +44,14 @@ export class VisitasComponent {
     private beneficiariosService: BeneficiariosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
-    private programasSocialesService: ProgramasSocialesService,
+   
   ) {
     this.visitasService.refreshListVisitas.subscribe(() => this.getVisitas());
     this.getVisitas();
     this.creteForm();
     this.getBeneficiarios();
-    this.getProgramasSociales();
   }
+  
 
   getBeneficiarios() {
     this.beneficiariosService.getAll().subscribe(
@@ -304,18 +305,7 @@ export class VisitasComponent {
     }
   }
 
-  getProgramasSociales() {
-    this.programasSocialesService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.programasSociales = dataFromAPI;
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      }
-    );
-  }
+
 
   filterByProgram() {
     if (this.selectedProgramaSocial) {

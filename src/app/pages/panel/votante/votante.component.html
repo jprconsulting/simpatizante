@@ -14,7 +14,7 @@
             </button>
                     <div class="ms-auto d-flex align-items-center">
                         <div class="input-icon">
-                                <input #searchItem type="text" class="form-control form-control-rounded" formControlName="busqueda" placeholder="Buscar" (input)="handleChangeSearch($event)" />
+                                <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
                                 <span class="input-icon-addon">
                         <i class="ti ti-search"></i>
                     </span>
@@ -51,28 +51,23 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="
-                  let beneficiario of beneficiariosFilter
+                  let votante of votantesFilter
                     | paginate : configPaginator;
                   let pointIndex = index
                 ">
                                 <td class="text-center">
                                     {{ configPaginator.itemsPerPage * (configPaginator.currentPage - 1) + pointIndex + 1 }}
                                 </td>
-                                <td>{{ beneficiario.nombreCompleto }}</td>
+                                <td>{{ votante.nombres }} {{ votante.apellidoPaterno }} {{ votante.apellidoMaterno }}</td>
                                 <td class="text-muted">
-                                    {{ beneficiario.strFechaNacimiento }}
+                                    {{ votante.fechaNacimiento| date:'yyyy-MM-dd' }}
                                 </td>
-                                <td class="text-muted">{{ beneficiario.domicilio }}</td>
-                                <td class="text-muted">{{ objGeneros[beneficiario.sexo] }}</td>
-                                <td class="text-muted">{{ beneficiario.curp }}</td>
-                                <td class="text-muted">
-                                    {{ beneficiario.programaSocial.nombre }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ beneficiario.municipio.nombre }}
-                                </td>
+                                <td class="text-muted">{{ votante.domicilio }}</td>
+                                <td class="text-muted">{{ objGeneros[votante.sexo] }}</td>
+                                <td class="text-muted">{{ votante.curp }}</td>
+                                <td class="text-muted">{{ votante.municipio.nombre }}</td>
                                 <td class="text-center">
-                                    <ng-container *ngIf="beneficiario.estatus; else elseEstatus">
+                                    <ng-container *ngIf="votante.estatus; else elseEstatus">
                                         <span class="badge bg-success me-1"> </span> Activo
                                     </ng-container>
                                     <ng-template #elseEstatus>
@@ -81,11 +76,11 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-between">
-                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-votante" (click)="setDataModalUpdate(beneficiario);mapa()">
+                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-votante" (click)="setDataModalUpdate(votante);mapa()">
                     <i class="ti ti-edit"></i>
                   </button>
                                         <button class="btn btn-danger btn-icon btn-sm" (click)="
-                        deleteItem(beneficiario.id, beneficiario.nombreCompleto)
+                        deleteItem(votante.id, votante.nombreCompleto)
                       ">
                       <i class="ti ti-eraser"></i>
                     </button>
@@ -102,7 +97,7 @@
 
             <div class="card-footer d-flex align-items-center">
                 <p class="m-0 text-muted">
-                    Total de registros: <b>{{ beneficiariosFilter.length }}</b>
+                    Total de registros: <b>{{ votantesFilter.length }}</b>
                 </p>
                 <div class="m-0 ms-auto">
                     <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
@@ -120,7 +115,7 @@
                 <h5 class="modal-title">
                     {{ isModalAdd ? "Agregar" : "Actualizar" }} votante
                 </h5>
-                <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetMap()"></button>
+                <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetMap();ocultar()"></button>
             </div>
 
             <form [formGroup]="votanteForm" (ngSubmit)="submit()">
@@ -294,10 +289,10 @@
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label">Estado*:</label>
-                                <ng-select formControlName="estadoId" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                <ng-select formControlName="estadoId" #selectEstado [searchable]="false" [items]="estado" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="
-                        selectProgramaSocial.filter($any($event.target).value)
+                        selectEstado.filter($any($event.target).value)
                       " />
                                     </ng-template>
                                     <ng-template ng-option-tmp let-item="item" let-index="index">
@@ -382,8 +377,22 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label class="form-label">¿Usted cuenta con algun programa social?*:</label>
-                                <ng-select formControlName="programa" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                <label class="form-label">¿Usted cuenta con algún programa social?*:</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"(click)="mostrar()">
+                                    <label class="form-check-label" for="flexRadioDefault1">Si</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" (click)="ocultar()" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">No</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6" *ngIf="visibility">
+                            <div class="mb-3">
+                                <label class="form-label">Selecciona el programa social:</label>
+                                <ng-select formControlName="programa" #selectProgramaSocial [searchable]="false" [items]="programaSocial" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="
                         selectProgramaSocial.filter($any($event.target).value)
@@ -393,15 +402,6 @@
                                         {{ item.nombre }}
                                     </ng-template>
                                 </ng-select>
-                                <div *ngIf="votanteForm.get('programa')?.touched" class="error-message">
-                                    <div *ngIf="
-                      votanteForm
-                        .get('programa')
-                        ?.hasError('required')
-                    ">
-                                        El campo es obligatorio
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="col-lg-12">
