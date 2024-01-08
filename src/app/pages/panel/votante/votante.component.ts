@@ -8,12 +8,16 @@ import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { BeneficiariosService } from 'src/app/core/services/beneficiarios.service';
-import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
+import { ProgramaSocialService } from 'src/app/core/services/programas.services';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
 import * as XLSX from 'xlsx';
 import { Seccion } from 'src/app/models/seccion';
 import { SeccionService } from 'src/app/core/services/seccion.service';
+import { Estado } from 'src/app/models/estados';
+import { EstadoService } from 'src/app/core/services/estados.service';
+import { VotantesService } from 'src/app/core/services/votante.service';
+import { Votante } from 'src/app/models/votante';
 
 
 @Component({
@@ -30,24 +34,26 @@ export class VotanteComponent implements OnInit {
   @ViewChild('ubicacionInput', { static: false }) ubicacionInput!: ElementRef;
 
 
-  programaSelect!: ProgramaSocial | undefined;
   municipiosSelect!: Municipio | undefined;
   canvas!: HTMLElement;
-  beneficiario!: Beneficiario;
+  votante!: Votante;
   votanteForm!: FormGroup;
   busqueda!: FormGroup;
   beneficiarios: Beneficiario[] = [];
-  beneficiariosFilter: Beneficiario[] = [];
+  votantesFilter: Votante[] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
-  programasSociales: ProgramaSocial[] = [];
+  votantes: Votante [] = [];
   municipios: Municipio[] = [];
   seccion: Seccion[] = [];
+  programaSocial: ProgramaSocial[] = [];
+  estado: Estado[] = [];
   rolId = 0;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   estatusBtn = true;
   verdadero = "Activo";
   falso = "Inactivo";
+  visibility = false
   estatusTag = this.verdadero;
   formData: any;
   id!: number;
@@ -62,21 +68,22 @@ export class VotanteComponent implements OnInit {
   SocialForm: any;
   private map: any;
   private marker: any;
-  constructor(
+  constructor(private renderer: Renderer2,
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
     private spinnerService: NgxSpinnerService,
     private beneficiariosService: BeneficiariosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
-    private programasSocialesService: ProgramasSocialesService,
     private municipiosService: MunicipiosService,
-    private seccionService: SeccionService
+    private seccionService: SeccionService,
+    private estadoService: EstadoService,
+    private programasSociales: ProgramaSocialService,
+    private votantesService: VotantesService
   ) {
-    this.beneficiariosService.refreshListBeneficiarios.subscribe(() => this.getBeneficiarios());
-    this.getBeneficiarios();
+    this.beneficiariosService.refreshListBeneficiarios.subscribe(() => this.getVotantes());
+    this.getVotantes();
     this.getMunicipios();
-    this.getProgramasSociales();
     this.creteForm();
     
   }
@@ -84,6 +91,8 @@ export class VotanteComponent implements OnInit {
 
   ngOnInit() {
     this.getSeccion();
+    this.getEstado();
+    this.getProgramas();
   }
 
   resetMap() {
@@ -241,11 +250,28 @@ export class VotanteComponent implements OnInit {
       }
     );
   }
-
-  getProgramasSociales() {
-    this.programasSocialesService.getAll().subscribe({ next: (dataFromAPI) => this.programasSociales = dataFromAPI });
+  getEstado() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.estadoService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.estado = dataFromAPI;},
+         
+      } 
+    );
+  }
+  getProgramas() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.programasSociales.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.programaSocial = dataFromAPI;},
+         
+      } 
+    );
   }
 
+  
   creteForm() {
     this.votanteForm = this.formBuilder.group({
       id: [null],
@@ -259,24 +285,36 @@ export class VotanteComponent implements OnInit {
       sexo: [null, Validators.required],
       curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
-      programaSocialId: [null, Validators.required],
+      programa: [''],
       municipioId: [null, Validators.required],
       domicilio: [null, Validators.required],
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
-      edad: ['', [Validators.required, Validators.minLength(1), Validators.pattern('^([0-9]{1})[0-9]+$')]],
-      programa: ['', [Validators.required, Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      edad: [null, [Validators.required]],
     });
   }
 
-  getBeneficiarios() {
+  mostrar(){
+    this.visibility = true;
+  }
+  ocultar(){
+    this.visibility = false;
+    const radioElement = document.getElementById('flexRadioDefault2') as HTMLInputElement;
+
+    if (radioElement) {
+      radioElement.checked = true;
+      radioElement.click();
+    }
+  }
+  getVotantes() {
     this.isLoading = LoadingStates.trueLoading;
-    this.beneficiariosService.getAll().subscribe(
+    this.votantesService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
-          this.beneficiarios = dataFromAPI;
-          this.beneficiariosFilter = this.beneficiarios;
-          this.isLoading = LoadingStates.falseLoading;
+          this.votantes = dataFromAPI;
+          this.votantesFilter = this.votantes;
+          this.isLoading = LoadingStates.falseLoading;console.log('dfsjncjk', this.votantesFilter);
+          
         },
         error: () => {
           this.isLoading = LoadingStates.errorLoading
@@ -288,81 +326,81 @@ export class VotanteComponent implements OnInit {
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
   }
+  
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
-
-    this.beneficiariosFilter = this.beneficiarios.filter(beneficiario =>
-      beneficiario.nombreCompleto.toLowerCase().includes(valueSearch) ||
-      this.getGeneroName(beneficiario.sexo).toLowerCase().includes(valueSearch) ||
-      beneficiario.domicilio.toLowerCase().includes(valueSearch) ||
-      beneficiario.strFechaNacimiento.toLowerCase().includes(valueSearch) ||
-      beneficiario.curp.toLowerCase().includes(valueSearch) ||
-      beneficiario.programaSocial.nombre.toLowerCase().includes(valueSearch) ||
-      beneficiario.municipio.nombre.toLowerCase().includes(valueSearch) ||
-      beneficiario.id.toString().includes(valueSearch)
+  
+    console.log('Search Value:', valueSearch);
+  
+    this.votantesFilter = this.votantes.filter(Votante =>
+      Votante.nombres.toLowerCase().includes(valueSearch) ||
+      this.getGeneroName(Votante.sexo).toLowerCase().includes(valueSearch) ||
+      Votante.domicilio.toLowerCase().includes(valueSearch) ||
+      Votante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
+      Votante.curp.toLowerCase().includes(valueSearch) ||
+      Votante.id.toString().includes(valueSearch)
     );
-
+  
+    console.log('Filtered Votantes:', this.votantesFilter);
+  
     this.configPaginator.currentPage = 1;
   }
+  
   getGeneroName(id: number): string {
     const genero = this.generos.find(g => g.id === id);
     return genero ? genero.name : '';
   }
 
-  onSelectprograma(id: number) {
-    if (id) {
-      this.programaSelect = this.programasSociales.find(b => b.id === id);
-    }
-  }
+ 
   onSelectmunicipios(id: number) {
     if (id) {
       this.municipiosSelect = this.municipios.find(b => b.id === id);
     }
   }
-  setDataModalUpdate(beneficiario: Beneficiario) {
+  setDataModalUpdate(votante: Votante) {
     this.isModalAdd = false;
-    this.id = beneficiario.id;
-    const fechaFormateada = this.formatoFecha(beneficiario.fechaNacimiento);
-    const priogramaId = beneficiario.programaSocial.id;
-    this.onSelectprograma(priogramaId);
-    const municipio = beneficiario.municipio.id;
+    this.id = votante.id;
+    const fechaFormateada = this.formatoFecha(votante.fechaNacimiento);
+    
+   
+    const municipio = votante.municipio.id;
     this.onSelectmunicipios(municipio);
     this.votanteForm.patchValue({
-      id: beneficiario.id,
-      nombres: beneficiario.nombres,
-      apellidoPaterno: beneficiario.apellidoPaterno,
-      apellidoMaterno: beneficiario.apellidoMaterno,
+      id: votante.id,
+      nombres: votante.nombres,
+      apellidoPaterno: votante.apellidoPaterno,
+      apellidoMaterno: votante.apellidoMaterno,
       fechaNacimiento: fechaFormateada,
-      domicilio: beneficiario.domicilio,
-      estatus: beneficiario.estatus,
-      latitud: beneficiario.latitud,
-      longitud: beneficiario.longitud,
+      domicilio: votante.domicilio,
+      estatus: votante.estatus,
+      latitud: votante.latitud,
+      longitud: votante.longitud,
       municipioId: municipio,
-      curp: beneficiario.curp,
-      sexo: beneficiario.sexo,
-      programaSocialId: priogramaId
+      curp: votante.curp,
+      sexo: votante.sexo,
+      
     });
 
-    console.log(beneficiario);
+    console.log(votante);
     console.log(this.votanteForm.value);
   }
 
   actualizar() {
-    this.beneficiario = this.votanteForm.value as Beneficiario;
+    this.votante = this.votanteForm.value as Votante;
 
     const programaSocialId = this.votanteForm.get('programaSocialId')?.value;
     const municipioId = this.votanteForm.get('municipioId')?.value;
 
-    this.beneficiario.programaSocial = { id: programaSocialId } as ProgramaSocial;
-    this.beneficiario.municipio = { id: municipioId } as Municipio;
+    this.votante.programaSocial = { id: programaSocialId } as ProgramaSocial;
+    this.votante.municipio = { id: municipioId } as Municipio;
 
-    console.log(this.beneficiario);
+    console.log(this.votante);
 
     this.spinnerService.show();
-    console.log('data:', this.beneficiario);
+    console.log('data:', this.votante);
 
-    this.beneficiariosService.put(this.id, this.beneficiario).subscribe({
+    this.votantesService.put(this.id, this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito("Beneficiario actualizado con éxito");
@@ -386,7 +424,7 @@ export class VotanteComponent implements OnInit {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar el beneficiario: ${nameItem}?`,
       () => {
-        this.beneficiariosService.delete(id).subscribe({
+        this.votantesService.delete(id).subscribe({
           next: () => {
             this.mensajeService.mensajeExito('Beneficiario borrado correctamente');
             this.configPaginator.currentPage = 1;
@@ -401,6 +439,8 @@ export class VotanteComponent implements OnInit {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.votanteForm.reset();
+    
+    
   }
   submit() {
     if (this.isModalAdd === false) {
@@ -413,18 +453,18 @@ export class VotanteComponent implements OnInit {
   }
 
   agregar() {
-    this.beneficiario = this.votanteForm.value as Beneficiario;
+    this.votante = this.votanteForm.value as Votante;
 
     const programaSocialId = this.votanteForm.get('programaSocialId')?.value;
     const municipioId = this.votanteForm.get('municipioId')?.value;
 
-    this.beneficiario.programaSocial = { id: programaSocialId } as ProgramaSocial;
-    this.beneficiario.municipio = { id: municipioId } as Municipio;
+    this.votante.programaSocial = { id: programaSocialId } as ProgramaSocial;
+    this.votante.municipio = { id: municipioId } as Municipio;
 
-    console.log(this.beneficiario);
+    console.log(this.votante);
 
     this.spinnerService.show();
-    this.beneficiariosService.post(this.beneficiario).subscribe({
+    this.votantesService.post(this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito('Beneficiario guardado correctamente');
