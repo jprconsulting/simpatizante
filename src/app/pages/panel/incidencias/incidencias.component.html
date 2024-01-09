@@ -128,37 +128,41 @@
       <form [formGroup]="incidenciasForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="row">
-            <div class="mb-3">
-                <label class="form-label">Tipo de incidencia*</label>
-                <select class="form-select" aria-label="Default select example" formControlName="tipo">
-                    <option value="1">Grave</option>
-                    <option value="2">Tolerante</option>
-                    <option value="3">Nada grave</option>
-                </select>
-                <div *ngIf="incidenciasForm.get('tipo')?.touched" class="error-message">
-                    <div *ngIf="incidenciasForm.get('tipo')?.hasError('required')">
-                        El tipo de incidencia es obligatorio
-                    </div>
-                </div>
+          <div class="mb-3">
+            <label class="form-label">Tipo de incidencia*</label>
+            <select class="form-select" aria-label="Default select example" formControlName="tipo">
+              <option *ngFor="let indicador of indicadores" [value]="indicador.id">{{ indicador.descripcion }}</option>
+            </select>
+            <div *ngIf="incidenciasForm.get('tipo')?.touched" class="error-message">
+              <div *ngIf="incidenciasForm.get('tipo')?.hasError('required')">
+                El tipo de incidencia es obligatorio
+              </div>
             </div>
-                <div class="col-md-12">
-                    <div class="mb-3">
-                        <label class="form-label">Casilla*:</label>
-                        <select class="form-select" aria-label="Default select example" formControlName="casilla">
-                            <option value="1">A1</option>
-                            <option value="2">A2</option>
-                            <option value="3">A3</option>
-                          </select>
-                          <div *ngIf="incidenciasForm.get('casilla')?.touched" class="error-message">
-                                    <div *ngIf="
-                      incidenciasForm.get('casilla')?.hasError('required')
-                    ">
-                                        La casilla es obligatorio
-                                    </div>
-                                    
-                                </div>
-                    </div>
-                </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+                <label class="form-label">Casilla*:</label>
+                <ng-select formControlName="casilla" #selectcasilla [searchable]="false" [items]="casillas" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                    <ng-template ng-header-tmp>
+                        <input class="form-control" type="text" (input)="
+        selectcasilla.filter($any($event.target).value)
+      " />
+                    </ng-template>
+                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                        {{ item.nombre }}
+                    </ng-template>
+                </ng-select>
+                <div *ngIf="incidenciasForm.get('casilla')?.touched" class="error-message">
+                  <div *ngIf="
+    incidenciasForm.get('casilla')?.hasError('required')
+  ">
+                      La casilla es obligatorio
+                  </div>
+                  
+              </div>
+                
+            </div>
+        </div>   
                 <div class="col-lg-12">
                     <div class="mb-3">
                         <label class="form-label">Retroalimentacion de casilla:</label>
