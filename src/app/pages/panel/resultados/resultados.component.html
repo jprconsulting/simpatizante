@@ -1,1 +1,272 @@
-<p>resultados works!</p>
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p style="color: white">Guardando...</p>
+</ngx-spinner>
+
+<app-page-header headerTitle="Resultados pre-eliminares"></app-page-header>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="d-flex align-items-center">
+          <button
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-seguimiento"
+            (click)="handleChangeAdd()"
+          >
+            <i class="ti ti-plus me-1"></i>Agregar
+          </button>
+          <div class="ms-auto d-flex align-items-center">
+            <div class="input-icon">
+              <input
+                #searchItem
+                type="text"
+                class="form-control form-control-rounded"
+                placeholder="Buscar"
+              />
+              <span class="input-icon-addon">
+                <i class="ti ti-search"></i>
+              </span>
+            </div>
+            <a
+              class="btn w-30 btn-icon"
+              aria-label="Dribbble"
+              title="Descargar excel de incidencias"
+              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+            >
+              <i
+                class="ti ti-cloud-down text-muted"
+                style="font-size: 28px"
+              ></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
+        <app-no-results *ngSwitchCase="4"></app-no-results>
+      </ng-container>
+      <!-- Fin *ngSwitchCase-->
+
+      <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">Total de registros: <b>1</b></p>
+        <div class="m-0 ms-auto">
+          <pagination-controls
+            (pageChange)="onPageChange($event)"
+            previousLabel=""
+            nextLabel=""
+          >
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal modal-blur fade"
+  id="modal-seguimiento"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Resultados pre-eliminares
+        </h5>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form [formGroup]="seguimientoForm" (ngSubmit)="submit()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-4">
+              <label class="form-label">Sección*:</label>
+              <ng-select
+                placeholder="Elegir"
+                [items]="secciones"
+                bindLabel="nombre"
+                [searchable]="false"
+                [clearable]="false"
+                formControlName="seccion"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label">Tipo de elección*:</label>
+              <ng-select
+                placeholder="Elegir"
+                bindLabel="nombre"
+                [searchable]="false"
+                [clearable]="false"
+                formControlName="eleccion"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label">Tipo de casilla*:</label>
+              <ng-select
+                placeholder="Elegir"
+                bindLabel="nombre"
+                [searchable]="false"
+                [clearable]="false"
+                formControlName="casilla"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Entidad Federativa:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apellidoMaterno"
+                />
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Distrito:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="distrito"
+                />
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Municipio:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="municipio"
+                />
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="card">
+                <div class="table-responsive">
+                  <table
+                      class="table table-vcenter card-table">
+                    <thead>
+                      <tr>
+                        <th style="text-transform: none; font-size: inherit; text-align: center;">Partido</th>
+                        <th style="text-transform: none; font-size: inherit; text-align: center;">Resultados de voto con letra</th>
+                        <th style="text-transform: none; font-size: inherit; text-align: center;">Resultados de voto con número</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style="text-align: center;">
+                        <td >
+                          <span class="avatar me-2" style="background-image: url(https://congresomorelos.gob.mx/wp-content/uploads/2023/08/pri.png); justify-content: center;"></span>
+                        </td>
+                        <td class="text-muted">
+                          <div class="">
+                            <input
+                              type="text"
+                              class="form-control"
+                            />
+                          </div>
+                        </td>
+                        <td class="text-muted" >
+                          <div class="col-12">
+                            <input
+                              type="text"
+                              class="form-control"
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <td >
+                          <span class="avatar me-2" style="background-image: url(data:image/png;base64,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); justify-content: center;"></span>
+                        </td>
+                        <td class="text-muted">
+                          <div class="">
+                            <input
+                              type="text"
+                              class="form-control"
+                            />
+                          </div>
+                        </td>
+                        <td class="text-muted" >
+                          <div class="col-12">
+                            <input
+                              type="text"
+                              class="form-control"
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <td >
+                          <span class="avatar me-2" style="background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/PRD_logo_%28Mexico%29.svg/1200px-PRD_logo_%28Mexico%29.svg.png); justify-content: center;"></span>
+                        </td>
+                        <td class="text-muted">
+                          <div class="mb-2">
+                            <input
+                              type="text"
+                              class="form-control"
+                            />
+                          </div>
+                        </td>
+                        <td class="text-muted" >
+                          <div class="col-12">
+                            <input
+                              type="text"
+                              class="form-control"
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!seguimientoForm.valid"
+          >
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
