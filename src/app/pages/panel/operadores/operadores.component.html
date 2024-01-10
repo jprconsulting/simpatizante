@@ -72,8 +72,8 @@
                 <th style="text-transform: none; font-size: inherit">
                   Nombre completo
                 </th>
-                <th style="text-transform: none; font-size: inherit">Email</th>
-                <th style="text-transform: none; font-size: inherit">Rol</th>
+                <th style="text-transform: none; font-size: inherit">Genero</th>
+                <th style="text-transform: none; font-size: inherit">Fecha de nacimiento</th>
                 <th
                   style="text-transform: none; font-size: inherit"
                   class="text-center"
@@ -91,7 +91,7 @@
             <tbody>
               <tr
                 *ngFor="
-                  let usuario of usuariosFilter | paginate : configPaginator;
+                  let operador of operadorFilter | paginate : configPaginator;
                   let pointIndex = index
                 "
               >
@@ -103,11 +103,11 @@
                       1
                   }}
                 </td>
-                <td>{{ usuario.nombreCompleto }}</td>
-                <td class="text-muted">{{ usuario.correo }}</td>
-                <td class="text-muted">{{ usuario.rol.nombreRol }}</td>
+                <td>{{ operador.nombre }} {{ operador.apellidoPaterno }} {{ operador.apellidoMaterno }}</td>
+                <td class="text-muted">{{ objGeneros[operador.sexo] }}</td>
+                <td class="text-muted">{{ operador.fechaNacimiento| date:'yyyy-MM-dd' }}</td>
                 <td class="text-center">
-                  <ng-container *ngIf="usuario.estatus; else elseEstatus">
+                  <ng-container *ngIf="operador.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
                   </ng-container>
                   <ng-template #elseEstatus>
@@ -120,13 +120,13 @@
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
                       data-bs-target="#modal-usuario"
-                      (click)="setDataModalUpdate(usuario)"
+                      (click)="setDataModalUpdate(operador)"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
-                      (click)="deleteItem(usuario.id, usuario.nombre)"
+                      (click)="deleteItem(operador.id, operador.nombre)"
                     >
                       <i class="ti ti-eraser"></i>
                     </button>
@@ -143,7 +143,7 @@
 
       <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-muted">
-          Total de registros: <b>{{ usuariosFilter.length }}</b>
+          Total de registros: <b>{{ operadorFilter.length }}</b>
         </p>
         <div class="m-0 ms-auto">
           <pagination-controls
