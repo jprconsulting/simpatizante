@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {  Component, ElementRef, Inject,  ViewChild } from '@angular/core';
+import {  FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
 import { Indicadores } from 'src/app/models/indicadores';
 import { Visita } from 'src/app/models/visita';
@@ -11,9 +11,6 @@ import { IncidenciaService } from 'src/app/core/services/incidencias.service';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
-import { Incidencias } from 'src/app/models/incidencia';
-import { Indicador } from 'src/app/models/indicador';
-import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 
 @Component({
@@ -39,6 +36,9 @@ export class IncidenciasComponent  {
   isLoading = LoadingStates.neutro;
   isModalAdd = true;
   incidenciasFilter: Incidencia[] = [];
+  idUpdate!: number;
+  formData: any;
+
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private formBuilder: FormBuilder,
@@ -76,11 +76,12 @@ export class IncidenciasComponent  {
     }
   }
 
-
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    this.incidenciasFilter = this.incidencias.filter(i => i.retroalimentacion
-      .toLowerCase().includes(inputValue.toLowerCase())
+    this.incidenciasFilter = this.incidencias.filter(incidencia =>
+      incidencia.retroalimentacion.toLowerCase().includes(inputValue.toLowerCase())||
+      incidencia.indicador.descripcion.toLowerCase().includes(inputValue.toLowerCase())||
+      incidencia.casilla.nombre.toLocaleLowerCase().includes(inputValue.toLowerCase())
     );
     this.configPaginator.currentPage = 1;
   }
@@ -88,6 +89,15 @@ export class IncidenciasComponent  {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.incidenciasForm.reset();
+  }
+  onPageChange(number: number) {
+    this.configPaginator.currentPage = number;
+  }
+
+  handleChangeAdd() {
+    this.incidenciasForm.reset();
+    this.isModalAdd = true;
+
   }
 
   agregar() {
@@ -113,21 +123,7 @@ export class IncidenciasComponent  {
     });
 
   }
-  actualizarVisita() {
 
-  }
-  onPageChange(number: number) {
-    this.configPaginator.currentPage = number;
-  }
-
-  handleChangeAdd() {
-    this.incidenciasForm.reset();
-    this.isModalAdd = true;
-
-  }
-
-  idUpdate!: number;
-  formData: any;
   setDataModalUpdate(dto: Incidencia){
     this.isModalAdd = false;
     this.idUpdate = dto.id;
