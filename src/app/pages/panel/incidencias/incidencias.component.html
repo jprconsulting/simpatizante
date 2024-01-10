@@ -1,81 +1,125 @@
-<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
-    <p style="color: white">Guardando...</p>
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
 <app-page-header headerTitle="Incidencias"></app-page-header>
 
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body border-bottom py-3">
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-incidencias" (click)="handleChangeAdd()">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="d-flex align-items-center">
+          <button
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-incidencias"
+            (click)="handleChangeAdd()"
+          >
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
-                    <div class="ms-auto d-flex align-items-center">
-                        <div class="input-icon">
-                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" />
-                            <span class="input-icon-addon">
+          <div class="ms-auto d-flex align-items-center">
+            <div class="input-icon">
+              <input
+                #searchItem
+                type="text"
+                class="form-control form-control-rounded"
+                placeholder="Buscar"
+                (input)="handleChangeSearch($event)"
+              />
+              <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
               </span>
-                        </div>
-                        <a class="btn w-30 btn-icon" aria-label="Dribbble"  title="Descargar excel de incidencias" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px;">
-                            <i class="ti ti-cloud-down text-muted" style="font-size: 28px;"></i>
-                        </a>
-                    </div>
-                </div>
-                <hr />
+            </div>
+            <a
+              class="btn w-30 btn-icon"
+              aria-label="Dribbble"
+              title="Descargar excel de usuarios"
+              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+            >
+              <i
+                class="ti ti-cloud-down text-muted"
+                style="font-size: 28px"
+              ></i>
+            </a>
+          </div>
+        </div>
       </div>
+
       <ng-container [ngSwitch]="isLoading">
         <div style="height: 300px" *ngSwitchCase="2">
           <div class="progress">
             <div class="progress-bar progress-bar-indeterminate bg-green"></div>
           </div>
         </div>
-        <div >
-          <table class="table table-vcenter card-table table-striped">
+
+        <div *ngSwitchCase="3" class="table-responsive">
+          <table class="table table-vcenter card-table">
             <thead>
               <tr>
-                <th class="text-center">#</th>
-                <th style="text-transform: none; font-size: inherit;">Tipo de incidencia</th>
-                <th style="text-transform: none; font-size: inherit;">Casilla</th>
-                <th style="text-transform: none; font-size: inherit;">Retroalimentacion de casilla</th>
+                <th
+                  style="text-transform: none; font-size: inherit"
+                  class="text-center"
+                >
+                  #
+                </th>
+                <th style="text-transform: none; font-size: inherit">Retroalimentaci[on</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Casilla
+                </th>
+                <th
+                  style="text-transform: none; font-size: inherit"
+                  class="text-center"
+                >
+                  Tipo de incidencia
+                </th>
+                <th
+                  style="text-transform: none; font-size: inherit"
+                  class="w-1"
+                >
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr
-                
+                *ngFor="
+                  let incidencia of incidenciasFilter | paginate : configPaginator;
+                  let pointIndex = index
+                "
               >
-               
-                <td class="text-muted">
-                  1
+                <td class="text-center">
+                  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}
                 </td>
-                <td class="text-muted" style="color: red;">
-                    grave
-                 </td>
-                 
-                <td class="text-muted">
-                 A1
+                <td>{{ incidencia.retroalimentacion }}</td>
+                <td class="text-muted">{{ incidencia.casilla.nombre }}</td>
+                <td class="text-center">
+                  {{ incidencia.indicador.descripcion }}
                 </td>
-                <td style="width: 50px">
-                  <div>
+                <td>
+                  <div class="d-flex justify-content-between">
                     <button
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
                       data-bs-target="#modal-incidencias"
-
-                      style="margin-right: 5px;"
+                      (click)="setDataModalUpdate(incidencia)"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
-                    <button
-                      class="btn btn-danger btn-icon btn-sm"
-                    
-                    >
+                    <button class="btn btn-danger btn-icon btn-sm" (click)="deleteItem(incidencia.id)">
                       <i class="ti ti-eraser"></i>
                     </button>
                   </div>
-
                 </td>
               </tr>
             </tbody>
@@ -88,7 +132,7 @@
 
       <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-muted">
-          Total de registros: <b>1</b>
+          Total de registros: <b>{{ incidenciasFilter.length }}</b>
         </p>
         <div class="m-0 ms-auto">
           <pagination-controls
@@ -128,70 +172,105 @@
       <form [formGroup]="incidenciasForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="row">
-          <div class="mb-3">
-            <label class="form-label">Tipo de incidencia*</label>
-            <select class="form-select" aria-label="Default select example" formControlName="tipo">
-              <option *ngFor="let indicador of indicadores" [value]="indicador.id">{{ indicador.descripcion }}</option>
-            </select>
-            <div *ngIf="incidenciasForm.get('tipo')?.touched" class="error-message">
-              <div *ngIf="incidenciasForm.get('tipo')?.hasError('required')">
-                El tipo de incidencia es obligatorio
+            <div class="mb-3">
+              <label class="form-label">Tipo de incidencia*</label>
+              <select
+                class="form-select"
+                aria-label="Default select example"
+                formControlName="indicador"
+              >
+                <option
+                  *ngFor="let indicador of indicadores"
+                  [value]="indicador.id"
+                >
+                  {{ indicador.descripcion }}
+                </option>
+              </select>
+              <div
+                *ngIf="incidenciasForm.get('tipo')?.touched"
+                class="error-message"
+              >
+                <div *ngIf="incidenciasForm.get('tipo')?.hasError('required')">
+                  El tipo de incidencia es obligatorio
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Casilla*:</label>
+                <ng-select
+                  formControlName="casilla"
+                  #selectcasilla
+                  [searchable]="false"
+                  [items]="casillas"
+                  bindLabel="nombre"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="selectcasilla.filter($any($event.target).value)"
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+                <div
+                  *ngIf="incidenciasForm.get('casilla')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="incidenciasForm.get('casilla')?.hasError('required')"
+                  >
+                    La casilla es obligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label class="form-label">Retroalimentacion de casilla:</label>
+                <textarea
+                  rows="4"
+                  class="form-control"
+                  placeholder=""
+                  formControlName="retroalimentacion"
+                ></textarea>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <img
+                  class="img"
+                  *ngIf="incidenciasForm.get('imagenBase64')?.value"
+                  [src]="
+                    'data:image/jpeg;base64,' +
+                    incidenciasForm.get('imagenBase64')?.value
+                  "
+                  width="100%"
+                  height="100%"
+                  alt="Vista previa de la imagen"
+                />
               </div>
             </div>
           </div>
-          <div class="col-lg-4">
-            <div class="mb-3">
-                <label class="form-label">Casilla*:</label>
-                <ng-select formControlName="casilla" #selectcasilla [searchable]="false" [items]="casillas" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
-                    <ng-template ng-header-tmp>
-                        <input class="form-control" type="text" (input)="
-        selectcasilla.filter($any($event.target).value)
-      " />
-                    </ng-template>
-                    <ng-template ng-option-tmp let-item="item" let-index="index">
-                        {{ item.nombre }}
-                    </ng-template>
-                </ng-select>
-                <div *ngIf="incidenciasForm.get('casilla')?.touched" class="error-message">
-                  <div *ngIf="
-    incidenciasForm.get('casilla')?.hasError('required')
-  ">
-                      La casilla es obligatorio
-                  </div>
-                  
-              </div>
-                
-            </div>
-        </div>   
-                <div class="col-lg-12">
-                    <div class="mb-3">
-                        <label class="form-label">Retroalimentacion de casilla:</label>
-                        <textarea rows="4" class="form-control" placeholder="" formControlName="retroalimentacion"></textarea>
-                        
-                    </div>
-                </div>
-                <div class="col-lg-12">
-                    <div class="mb-3">
-                        <img class="img" *ngIf="incidenciasForm.get('imagenBase64')?.value" [src]="
-                    'data:image/jpeg;base64,' +
-                    incidenciasForm.get('imagenBase64')?.value
-                  " width="100%" height="100%" alt="Vista previa de la imagen" />
-                    </div>
-                </div>
-            </div>
         </div>
-        <p class="form-label" style="
-        margin-left: 20px;
-        color: red;
-        font-weight: bold;
-    ">Todos los campos marcados con * son requeridos</p>
+        <p
+          class="form-label"
+          style="margin-left: 20px; color: red; font-weight: bold"
+        >
+          Todos los campos marcados con * son requeridos
+        </p>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-success" [disabled]="!incidenciasForm.valid">
+          <button type="submit" class="btn btn-success">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
-        </form>
+      </form>
     </div>
+  </div>
 </div>
-</div>
-

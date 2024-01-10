@@ -100,19 +100,36 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-lg-4">
-              <label class="form-label">Sección*:</label>
+              <label class="form-label">Seccion*:</label>
               <ng-select
-                placeholder="Elegir"
+                formControlName="seccion"
+                #selectseccion
+                [searchable]="false"
                 [items]="secciones"
                 bindLabel="nombre"
-                [searchable]="false"
+                bindValue="id"
+                placeholder="Elegir"
                 [clearable]="false"
-                formControlName="seccion"
               >
-                <ng-template ng-option-tmp let-item="item">
+                <ng-template ng-header-tmp>
+                  <input
+                    class="form-control"
+                    type="text"
+                    (input)="selectseccion.filter($any($event.target).value)"
+                  />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
                   {{ item.nombre }}
                 </ng-template>
               </ng-select>
+              <div
+                *ngIf="seguimientoForm.get('seccion')?.touched"
+                class="error-message"
+              >
+                <div *ngIf="seguimientoForm.get('seccion')?.hasError('required')">
+                  El seccion es obligatoria
+                </div>
+              </div>
             </div>
             <div class="col-lg-4">
               <label class="form-label">Tipo de elección*:</label>
@@ -133,6 +150,7 @@
               <ng-select
                 placeholder="Elegir"
                 bindLabel="nombre"
+                [items]="casillas"
                 [searchable]="false"
                 [clearable]="false"
                 formControlName="casilla"

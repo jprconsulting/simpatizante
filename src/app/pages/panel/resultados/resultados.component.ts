@@ -1,7 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { CasillasService } from 'src/app/core/services/casilla.service';
 import { SeccionService } from 'src/app/core/services/seccion.service';
 import { LoadingStates } from 'src/app/global/global';
+import { Casillas } from 'src/app/models/casillas';
 import { Seccion } from 'src/app/models/seccion';
 import { Visita } from 'src/app/models/visita';
 
@@ -13,15 +15,18 @@ import { Visita } from 'src/app/models/visita';
 export class ResultadosComponent {
   seguimientoForm!: FormGroup;
   secciones: Seccion[] = [];
+  casillas: Casillas[]=[];
   isLoading = LoadingStates.neutro;
   isModalAdd = true;
   @ViewChild('searchItem') searchItem!: ElementRef;
   constructor(
     private formBuilder: FormBuilder,
     private seccionesService: SeccionService,
+    private casillasService: CasillasService,
   ) {
    this.creteForm();
    this.getSecciones();
+   this.getCasillas();
   }
 
   seguiForm2 = new FormGroup({
@@ -32,6 +37,10 @@ export class ResultadosComponent {
   isClaveFilled = false;
   ngOnInit(): void {
 
+  }
+
+  getCasillas() {
+    this.casillasService.getAll().subscribe({ next: (dataFromAPI) => this.casillas = dataFromAPI });
   }
 
   getSecciones() {

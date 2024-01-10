@@ -1,9 +1,9 @@
 import { Casillas } from "./casillas";
-import { Indicador } from "./indicador";
+import { Indicadores } from "./indicadores";
 
 export interface Incidencia {
     id: number;
     retroalimentacion: string;
-    tipo: Indicador;
+    indicador: Indicadores;
     casilla: Casillas;
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
 import { Indicadores } from 'src/app/models/indicadores';
@@ -7,6 +7,14 @@ import { IndicadoresService } from 'src/app/core/services/indicadores.service';
 import { Casillas } from 'src/app/models/casillas';
 import { CasillasService } from 'src/app/core/services/casilla.service';
 import { Incidencia } from 'src/app/models/incidencias';
+import { IncidenciaService } from 'src/app/core/services/incidencias.service';
+import { PaginationInstance } from 'ngx-pagination';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MensajeService } from 'src/app/core/services/mensaje.service';
+import { Incidencias } from 'src/app/models/incidencia';
+import { Indicador } from 'src/app/models/indicador';
+import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
+import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 
 @Component({
   selector: 'app-incidencias',
@@ -15,60 +23,182 @@ import { Incidencia } from 'src/app/models/incidencias';
 })
 
 
-export class IncidenciasComponent {
+export class IncidenciasComponent  {
+
+  @ViewChild('closebutton') closebutton!: ElementRef;
+  @ViewChild('searchItem') searchItem!: ElementRef;
+
   incidenciasForm!: FormGroup;
+
+  incidencia!: Incidencia;
+
   vistas: Visita [] = [];
   casillas: Casillas [] = [];
   incidencias: Incidencia [] = [];
   indicadores: Indicadores [] = [];
-  incidencia!: Incidencia;
   isLoading = LoadingStates.neutro;
   isModalAdd = true;
-  @ViewChild('searchItem') searchItem!: ElementRef;
+  incidenciasFilter: Incidencia[] = [];
   constructor(
+    @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private formBuilder: FormBuilder,
+    private spinnerService: NgxSpinnerService,
+    private mensajeService: MensajeService,
     private indicadoresService: IndicadoresService,
     private casillasService: CasillasService,
+    private incidenciasService: IncidenciaService,
+    private areasAdscripcionService: AreasAdscripcionService,
   ) {
+   this.incidenciasService.refreshListIncidencia.subscribe(() => this.getIncidencias());
    this.creteForm();
    this.getIndicadores();
    this.getCasillas();
+   this.getIncidencias();
+   this.configPaginator.itemsPerPage = 10;
   }
   creteForm() {
     this.incidenciasForm = this.formBuilder.group({
-      id: [null],
-      tipo:  ['', [Validators.required]],
-      casilla: ['', [Validators.required]],
-      retroalimentacion: ['']
+      retroalimentacion: [''],
+      indicador:  [Validators.required],
+      casilla: [Validators.required],
+
     });
   }
+
+
   submit() {
     if (this.isModalAdd === false) {
 
-      this.actualizarVisita();
+      this.editarIncidencia();
     } else {
       this.agregar();
 
     }
-     
-  } agregar() {
+  }
+
+
+  handleChangeSearch(event: any) {
+    const inputValue = event.target.value;
+    this.incidenciasFilter = this.incidencias.filter(i => i.retroalimentacion
+      .toLowerCase().includes(inputValue.toLowerCase())
+    );
+    this.configPaginator.currentPage = 1;
+  }
+
+  resetForm() {
+    this.closebutton.nativeElement.click();
+    this.incidenciasForm.reset();
+  }
+
+  agregar() {
     this.incidencia = this.incidenciasForm.value as Incidencia;
+    const indicadorid = this.incidenciasForm.get('indicador')?.value;
+    const casillaid = this.incidenciasForm.get('casilla')?.value;
+
+    this.incidencia.casilla = {id: casillaid } as Casillas
+    this.incidencia.indicador = { id: indicadorid } as Indicadores
+
+    this.spinnerService.show();
+    this.incidenciasService.post(this.incidencia).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito('Incidencia guardado correctamente');
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      },
+    });
 
   }
   actualizarVisita() {
 
   }
   onPageChange(number: number) {
-    
+    this.configPaginator.currentPage = number;
   }
+
   handleChangeAdd() {
     this.incidenciasForm.reset();
     this.isModalAdd = true;
 
   }
-  
-  getIndicadores() {
+
+  idUpdate!: number;
+  formData: any;
+  setDataModalUpdate(dto: Incidencia){
+    this.isModalAdd = false;
+    this.idUpdate = dto.id;
+    this.incidenciasForm.patchValue({
+      id: dto.id,
+      retroalimentacion: dto.retroalimentacion,
+      indicador: dto.indicador.id,
+      casilla: dto.casilla.id,
+    });
+    this.formData = this.incidenciasForm.value;
+    console.log(this.incidenciasForm.value);
+  }
+
+  editarIncidencia() {
+    this.incidencia = this.incidenciasForm.value as Incidencia;
+    this.incidencia.id = this.idUpdate;
+
+    const indicadorid = this.incidenciasForm.get('indicador')?.value;
+    const casillaid = this.incidenciasForm.get('casilla')?.value;
+
+    this.incidencia.casilla = {id: casillaid } as Casillas
+    this.incidencia.indicador = { id: indicadorid } as Indicadores
+
+    this.spinnerService.show();
+    this.incidenciasService.put(this.idUpdate,this.incidencia).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
+        this.resetForm();
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      },
+    });
+  }
+
+  deleteItem(id: number) {
+    this.mensajeService.mensajeAdvertencia(
+      `¿Estás seguro de eliminar la incidencia?`,
+      () => {
+        this.incidenciasService.delete(id).subscribe({
+          next: () => {
+            this.mensajeService.mensajeExito('Incidencia borrada correctamente');
+            this.configPaginator.currentPage = 1;
+            this.searchItem.nativeElement.value = '';
+          },
+          error: (error) => this.mensajeService.mensajeError(error)
+        });
+      }
+    );
+  }
+
+
+  getIncidencias() {
     this.isLoading = LoadingStates.trueLoading;
+    this.incidenciasService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.incidencias = dataFromAPI;
+          this.incidenciasFilter = this.incidencias;
+          this.isLoading = LoadingStates.falseLoading;
+        },
+        error: () => {
+          this.isLoading = LoadingStates.errorLoading;
+        }
+      }
+    );
+  }
+
+  getIndicadores() {
     this.indicadoresService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
@@ -76,8 +206,8 @@ export class IncidenciasComponent {
       }
     );
   }
+
   getCasillas() {
-    this.isLoading = LoadingStates.trueLoading;
     this.casillasService.getAll().subscribe(
       {
         next: (dataFromAPI) => {

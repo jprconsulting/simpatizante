@@ -2,10 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Incidencia } from 'src/app/models/incidencias';
-import { GeneralWordCloud, WordCloud } from 'src/app/models/word-cloud';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,7 @@ export class IncidenciaService {
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
-  ) { } 
+  ) { }
 
   get refreshListIncidencia() {
     return this._refreshListIncidencia$;
@@ -59,6 +58,6 @@ export class IncidenciaService {
         }),
         catchError(this.handleErrorService.handleError)
       );
-  }  
+  }
 
 }

@@ -382,12 +382,20 @@
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">Cargo a participar*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="cargo"
-                />
+                <div class="">
+                  <label class="form-label">Cargo a participar*:</label>
+                  <ng-select
+                    placeholder="Elegir"
+                    bindLabel="nombre"
+                    [searchable]="false"
+                    [clearable]="false"
+                    formControlName="eleccion"
+                  >
+                    <ng-template ng-option-tmp let-item="item">
+                      {{ item.nombre }}
+                    </ng-template>
+                  </ng-select>
+                </div>
                 <div
                   *ngIf="candidatoForm.get('cargo')?.touched"
                   class="error-message"
