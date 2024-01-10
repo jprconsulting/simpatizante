@@ -5,11 +5,13 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable } from 'rxjs';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
+import { OperadoresService } from 'src/app/core/services/operadores.service';
 import { RolsService } from 'src/app/core/services/rols.service';
 import { SeccionService } from 'src/app/core/services/seccion.service';
 import { UsuariosService } from 'src/app/core/services/usuarios.service';
 import { GenericType, LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
+import { Operadores } from 'src/app/models/operadores';
 import { Rol } from 'src/app/models/rol';
 import { Seccion } from 'src/app/models/seccion';
 import { Usuario } from 'src/app/models/usuario';
@@ -25,10 +27,10 @@ export class OperadoresComponent implements OnInit{
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
 
-  usuario!: Usuario;
+  operador!:Operadores;
   operadorForm!: FormGroup;
-  usuarios: Usuario[] = [];
-  usuariosFilter: Usuario[] = [];
+  operadores: Operadores[] = [];
+  operadorFilter: Operadores[] = [];
   isLoading = LoadingStates.neutro;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   secciones: Seccion[] = [];
@@ -40,13 +42,13 @@ export class OperadoresComponent implements OnInit{
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
     private spinnerService: NgxSpinnerService,
-    private usuarioService: UsuariosService,
+    private operadoresService: OperadoresService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
     private seccionesService: SeccionService,
   ) {
-    this.usuarioService.refreshListUsuarios.subscribe(() => this.getUsuarios());
+    //this.operadoresService._refreshListOperadores.subscribe(() => this.getUsuarios());
     this.getUsuarios();
     this.getSecciones();
     this.getAreasAdscripcion();
@@ -87,11 +89,11 @@ export class OperadoresComponent implements OnInit{
 
   getUsuarios() {
     this.isLoading = LoadingStates.trueLoading;
-    this.usuarioService.getAll().subscribe(
+    this.operadoresService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
-          this.usuarios = dataFromAPI;
-          this.usuariosFilter = this.usuarios;
+          this.operadores = dataFromAPI;
+          this.operadorFilter = this.operadores;
           this.isLoading = LoadingStates.falseLoading;
 
         },
@@ -109,20 +111,17 @@ export class OperadoresComponent implements OnInit{
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
-    this.usuariosFilter = this.usuarios.filter(usuario =>
-      usuario.nombreCompleto.toLowerCase().includes(valueSearch) ||
-      usuario.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      usuario.rol.nombreRol.toLowerCase().includes(valueSearch) ||
-      usuario.areaAdscripcion?.nombre.toLowerCase().includes(valueSearch) ||
-      usuario.correo.toLowerCase().includes(valueSearch) ||
-      usuario.id.toString().includes(valueSearch)
+    this.operadorFilter = this.operadores.filter(operador =>
+      operador.nombre.toLowerCase().includes(valueSearch) ||
+      operador.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      operador.id.toString().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
 
   idUpdate!: number;
 
-  setDataModalUpdate(dto: Usuario) {
+  setDataModalUpdate(dto: Operadores) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     this.operadorForm.patchValue({
@@ -130,25 +129,17 @@ export class OperadoresComponent implements OnInit{
       nombre: dto.nombre,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
-      correo: dto.correo,
-      password: dto.password,
+      fechaNacimiento: dto.fechaNacimiento,
       estatus: dto.estatus,
-      rolId: dto.rol.id,
-      areaAdscripcionId: dto.areaAdscripcion?.id
     });
   }
 
   editarUsuario() {
-    this.usuario = this.operadorForm.value as Usuario;
+    this.operador = this.operadorForm.value as Operadores;
 
     const rolId = this.operadorForm.get('rolId')?.value;
-    const areaAdscripcionId = this.operadorForm.get('areaAdscripcionId')?.value;
-
-    this.usuario.rol = { id: rolId } as Rol;
-    this.usuario.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
-
     this.spinnerService.show();
-    this.usuarioService.put(this.idUpdate, this.usuario).subscribe({
+    this.operadoresService.put(this.idUpdate, this.operador).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito('Usuario actualizado correctamente');
@@ -165,7 +156,7 @@ export class OperadoresComponent implements OnInit{
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar el usuario: ${nameItem}?`,
       () => {
-        this.usuarioService.delete(id).subscribe({
+        this.operadoresService.delete(id).subscribe({
           next: () => {
             this.mensajeService.mensajeExito('Usuario borrado correctamente');
             this.configPaginator.currentPage = 1;
@@ -178,14 +169,12 @@ export class OperadoresComponent implements OnInit{
   }
 
   agregar() {
-    this.usuario = this.operadorForm.value as Usuario;
+    this.operador = this.operadorForm.value as Operadores;
     const rolId = this.operadorForm.get('rolId')?.value;
     const areaAdscripcionId = this.operadorForm.get('areaAdscripcionId')?.value;
-    this.usuario.rol = { id: rolId } as Rol;
-    this.usuario.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
 
     this.spinnerService.show();
-    this.usuarioService.post(this.usuario).subscribe({
+    this.operadoresService.post(this.operador).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito('Usuario guardado correctamente');
@@ -227,28 +216,28 @@ export class OperadoresComponent implements OnInit{
   }
 
   exportarDatosAExcel() {
-    if (this.usuarios.length === 0) {
-      console.warn('La lista de usuarios está vacía. No se puede exportar.');
-      return;
-    }
+    // if (this.operador.length === 0) {
+    //   console.warn('La lista de usuarios está vacía. No se puede exportar.');
+    //   return;
+    // }
 
-    const datosParaExportar = this.usuarios.map(usuario => {
-      const estatus = usuario.estatus ? 'Activo' : 'Inactivo';
-      return {
-        'Id': usuario.id,
-        'Nombre': usuario.nombre,
-        'Apellido Paterno': usuario.apellidoPaterno,
-        'Apellido Materno': usuario.apellidoMaterno,
-        'Correo': usuario.correo,
-        'Estatus': estatus,
-      };
-    });
+    // const datosParaExportar = this.operador.map(operador => {
+    //   const estatus = operador.estatus ? 'Activo' : 'Inactivo';
+    //   return {
+    //     'Id': operador.id,
+    //     'Nombre': operador.nombre,
+    //     'Apellido Paterno': operador.apellidoPaterno,
+    //     'Apellido Materno': operador.apellidoMaterno,
+    //     'Correo': operador.correo,
+    //     'Estatus': estatus,
+    //   };
+    // });
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    // const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    // const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    // const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
-    this.guardarArchivoExcel(excelBuffer, 'usuarios.xlsx');
+    // this.guardarArchivoExcel(excelBuffer, 'usuarios.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
