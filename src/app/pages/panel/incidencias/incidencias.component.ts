@@ -47,7 +47,6 @@ export class IncidenciasComponent  {
     private indicadoresService: IndicadoresService,
     private casillasService: CasillasService,
     private incidenciasService: IncidenciaService,
-    private areasAdscripcionService: AreasAdscripcionService,
   ) {
    this.incidenciasService.refreshListIncidencia.subscribe(() => this.getIncidencias());
    this.creteForm();

@@ -281,32 +281,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-4">
-              <div class="mb-3">
-                <label class="form-label">Género*:</label>
-                <ng-select
-                  placeholder="Elegir"
-                  [items]="generos"
-                  bindLabel="name"
-                  bindValue="id"
-                  [searchable]="false"
-                  [clearable]="false"
-                  formControlName="sexo"
-                >
-                  <ng-template ng-option-tmp let-item="item">
-                    {{ item.name }}
-                  </ng-template>
-                </ng-select>
-                <div
-                  *ngIf="operadorForm.get('sexo')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="operadorForm.get('sexo')?.hasError('required')">
-                    El genero es obligatorio
-                  </div>
-                </div>
-              </div>
-            </div>
+
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Fecha nacimiento*:</label>
@@ -331,7 +306,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-2">
               <div class="mb-3 custom-green-switch">
                 <label for="estadoActivo" class="form-label">Estatus</label>
                 <label class="form-check form-switch checkbox-verde">
@@ -357,9 +332,7 @@
                 </label>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label">Secciones electorales a operar*:</label>
                 <ng-select
@@ -388,6 +361,9 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="row">
+
 
 
           </div>

@@ -387,9 +387,11 @@
                   <ng-select
                     placeholder="Elegir"
                     bindLabel="nombre"
+                    bindValue="id"
                     [searchable]="false"
                     [clearable]="false"
-                    formControlName="eleccion"
+                    [items]="cargos"
+                    formControlName="cargo"
                   >
                     <ng-template ng-option-tmp let-item="item">
                       {{ item.nombre }}

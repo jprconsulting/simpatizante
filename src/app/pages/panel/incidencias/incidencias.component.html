@@ -187,10 +187,10 @@
                 </option>
               </select>
               <div
-                *ngIf="incidenciasForm.get('tipo')?.touched"
+                *ngIf="incidenciasForm.get('indicador')?.touched"
                 class="error-message"
               >
-                <div *ngIf="incidenciasForm.get('tipo')?.hasError('required')">
+                <div *ngIf="incidenciasForm.get('indicador')?.hasError('required')">
                   El tipo de incidencia es obligatorio
                 </div>
               </div>
@@ -266,7 +266,8 @@
           Todos los campos marcados con * son requeridos
         </p>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">
+          <button type="submit" class="btn btn-success"
+          [disabled]="!incidenciasForm.valid">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>

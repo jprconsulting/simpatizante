@@ -7,6 +7,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import * as XLSX from 'xlsx';
+import { CargoService } from 'src/app/core/services/cargo.service';
+import { Cargos } from 'src/app/models/cargo';
 @Component({
   selector: 'app-candidatos',
   templateUrl: './candidatos.component.html',
@@ -22,6 +24,7 @@ export class CandidatosComponent {
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   areasAdscripcion: AreaAdscripcion[] = [];
   areasAdscripcionFilter: AreaAdscripcion[] = [];
+  cargos: Cargos[] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
 
@@ -31,6 +34,7 @@ export class CandidatosComponent {
     private spinnerService: NgxSpinnerService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
+    private cargoService: CargoService,
     private areasAdscripcionService: AreasAdscripcionService,
   ) {
     this.areasAdscripcionService.refreshListAreasAdscripcion.subscribe(() => this.getCandidatos());
@@ -119,6 +123,15 @@ export class CandidatosComponent {
         error: () => {
           this.isLoading = LoadingStates.errorLoading;
         }
+      }
+    );
+  }
+
+  getCargo() {
+    this.cargoService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.cargos = dataFromAPI;},
       }
     );
   }
