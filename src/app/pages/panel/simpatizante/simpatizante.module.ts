@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { VotanteRoutingModule } from './votante-routing.module';
-import { VotanteComponent} from './votante.component';
+import { SimpatizanteRoutingModule } from './simpatizante-routing.module';
+import { SimpatizanteComponent} from './simpatizante.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -13,11 +13,11 @@ import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
 
 @NgModule({
   declarations: [
-    VotanteComponent
+    SimpatizanteComponent
   ],
   imports: [
     CommonModule,
-    VotanteRoutingModule,
+    SimpatizanteRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
@@ -28,4 +28,4 @@ import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
   ],
 
 })
-export class VicitasModule { }
+export class SimpatizanteModule { }
