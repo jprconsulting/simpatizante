@@ -12,6 +12,7 @@ import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-incidencias',
@@ -209,5 +210,35 @@ export class IncidenciasComponent  {
           this.casillas = dataFromAPI;},
       }
     );
+  }
+  exportarDatosAExcel() {
+    if (this.incidencias.length === 0) {
+      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      return;
+    }
+
+    const datosParaExportar = this.incidencias.map(incidencias => {
+      return {
+        'Id': incidencias.id,
+        'casilla': incidencias.casilla.nombre,
+        'tipo de incidencia': incidencias.indicador.descripcion,
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    this.guardarArchivoExcel(excelBuffer, 'incidencias.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 }
