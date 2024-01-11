@@ -22,10 +22,10 @@ import { Votante } from 'src/app/models/votante';
 
 @Component({
   selector: 'app-beneficiarios',
-  templateUrl: './votante.component.html',
-  styleUrls: ['./votante.component.css']
+  templateUrl: './simpatizante.component.html',
+  styleUrls: ['./simpatizante.component.css']
 })
-export class VotanteComponent implements OnInit {
+export class SimpatizanteComponent implements OnInit {
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -85,7 +85,7 @@ export class VotanteComponent implements OnInit {
     this.getVotantes();
     this.getMunicipios();
     this.creteForm();
-    
+
   }
 
 
@@ -256,8 +256,8 @@ export class VotanteComponent implements OnInit {
       {
         next: (dataFromAPI) => {
           this.estado = dataFromAPI;},
-         
-      } 
+
+      }
     );
   }
   getProgramas() {
@@ -266,12 +266,12 @@ export class VotanteComponent implements OnInit {
       {
         next: (dataFromAPI) => {
           this.programaSocial = dataFromAPI;},
-         
-      } 
+
+      }
     );
   }
 
-  
+
   creteForm() {
     this.votanteForm = this.formBuilder.group({
       id: [null],
@@ -314,7 +314,7 @@ export class VotanteComponent implements OnInit {
           this.votantes = dataFromAPI;
           this.votantesFilter = this.votantes;
           this.isLoading = LoadingStates.falseLoading;console.log('dfsjncjk', this.votantesFilter);
-          
+
         },
         error: () => {
           this.isLoading = LoadingStates.errorLoading
@@ -326,13 +326,13 @@ export class VotanteComponent implements OnInit {
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
   }
-  
+
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
-  
+
     console.log('Search Value:', valueSearch);
-  
+
     this.votantesFilter = this.votantes.filter(Votante =>
       Votante.nombres.toLowerCase().includes(valueSearch) ||
       this.getGeneroName(Votante.sexo).toLowerCase().includes(valueSearch) ||
@@ -341,18 +341,18 @@ export class VotanteComponent implements OnInit {
       Votante.curp.toLowerCase().includes(valueSearch) ||
       Votante.id.toString().includes(valueSearch)
     );
-  
+
     console.log('Filtered Votantes:', this.votantesFilter);
-  
+
     this.configPaginator.currentPage = 1;
   }
-  
+
   getGeneroName(id: number): string {
     const genero = this.generos.find(g => g.id === id);
     return genero ? genero.name : '';
   }
 
- 
+
   onSelectmunicipios(id: number) {
     if (id) {
       this.municipiosSelect = this.municipios.find(b => b.id === id);
@@ -362,8 +362,8 @@ export class VotanteComponent implements OnInit {
     this.isModalAdd = false;
     this.id = votante.id;
     const fechaFormateada = this.formatoFecha(votante.fechaNacimiento);
-    
-   
+
+
     const municipio = votante.municipio.id;
     this.onSelectmunicipios(municipio);
     this.votanteForm.patchValue({
@@ -379,7 +379,7 @@ export class VotanteComponent implements OnInit {
       municipioId: municipio,
       curp: votante.curp,
       sexo: votante.sexo,
-      
+
     });
 
     console.log(votante);
@@ -439,8 +439,8 @@ export class VotanteComponent implements OnInit {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.votanteForm.reset();
-    
-    
+
+
   }
   submit() {
     if (this.isModalAdd === false) {
