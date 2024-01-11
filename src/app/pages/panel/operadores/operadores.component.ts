@@ -48,7 +48,7 @@ export class OperadoresComponent implements OnInit{
     private areasAdscripcionService: AreasAdscripcionService,
     private seccionesService: SeccionService,
   ) {
-    //this.operadoresService._refreshListOperadores.subscribe(() => this.getUsuarios());
+    this.operadoresService.refreshListOperadores.subscribe(() => this.getOperadores());
     this.getOperadores();
     this.getSecciones();
     this.getAreasAdscripcion();
@@ -74,12 +74,10 @@ export class OperadoresComponent implements OnInit{
 
   creteForm() {
     this.operadorForm = this.formBuilder.group({
-      id: [null],
       nombre: ['', [Validators.required,Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
-      secciones: [null],
       estatus: [true],
     });
   }
@@ -133,15 +131,17 @@ export class OperadoresComponent implements OnInit{
     });
   }
 
-  editarUsuario() {
+  editarOperador() {
     this.operador = this.operadorForm.value as Operadores;
+    this.operador.id = this.idUpdate;
+    const seccionid = this.operadorForm.get('seccion')?.value;
 
-    const rolId = this.operadorForm.get('rolId')?.value;
+    this.operador.seccion = {id: seccionid } as Seccion;
     this.spinnerService.show();
     this.operadoresService.put(this.idUpdate, this.operador).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Usuario actualizado correctamente');
+        this.mensajeService.mensajeExito('Operador actualizado correctamente');
         this.resetForm();
       },
       error: (error) => {
@@ -153,11 +153,11 @@ export class OperadoresComponent implements OnInit{
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
-      `¿Estás seguro de eliminar el usuario: ${nameItem}?`,
+      `¿Estás seguro de eliminar el operador: ${nameItem}?`,
       () => {
         this.operadoresService.delete(id).subscribe({
           next: () => {
-            this.mensajeService.mensajeExito('Usuario borrado correctamente');
+            this.mensajeService.mensajeExito('Operador borrado correctamente');
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
@@ -171,11 +171,12 @@ export class OperadoresComponent implements OnInit{
     this.operador = this.operadorForm.value as Operadores;
     const seccionid = this.operadorForm.get('seccion')?.value;
 
+    this.operador.seccion = {id: seccionid } as Seccion;
     this.spinnerService.show();
     this.operadoresService.post(this.operador).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Usuario guardado correctamente');
+        this.mensajeService.mensajeExito('Operador guardado correctamente');
         this.resetForm();
         this.configPaginator.currentPage = 1;
       },
@@ -195,7 +196,7 @@ export class OperadoresComponent implements OnInit{
 
   submit() {
     if (this.isModalAdd === false) {
-      this.editarUsuario();
+      this.editarOperador();
     } else {
       this.agregar();
 
@@ -249,13 +250,7 @@ export class OperadoresComponent implements OnInit{
   }
 
 
-  selectedSecciones1 = [3];
-  secciones1 = [
-      { id: 1, name: 'Sección1' },
-      { id: 2, name: 'Sección2' },
-      { id: 3, name: 'Sección3' },
-      { id: 4, name: 'Sección4', disabled: true },
-  ];
+
 
   toggleDisabled() {
     const car: any = this.secciones[1];

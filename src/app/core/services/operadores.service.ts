@@ -18,7 +18,7 @@ export class OperadoresService {
     private handleErrorService: HandleErrorService
   ) { }
 
-  get refreshListAreasAdscripcion() {
+  get refreshListOperadores() {
     return this._refreshListOperadores$;
   }
 
