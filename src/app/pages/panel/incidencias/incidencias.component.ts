@@ -25,6 +25,7 @@ export class IncidenciasComponent  {
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
+  @ViewChild('mapCanvas') mapCanvas!: ElementRef<HTMLElement>;
 
   incidenciasForm!: FormGroup;
 
@@ -35,10 +36,18 @@ export class IncidenciasComponent  {
   incidencias: Incidencia [] = [];
   indicadores: Indicadores [] = [];
   isLoading = LoadingStates.neutro;
+  canvas!: HTMLElement;
   isModalAdd = true;
   incidenciasFilter: Incidencia[] = [];
   idUpdate!: number;
   formData: any;
+  latitude: number = 19.316818295403003;
+  longitude: number = -98.23837658175323;
+  options = {
+    types: [],
+    componentRestrictions: { country: 'MX' }
+  };
+  maps!: google.maps.Map;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -61,10 +70,100 @@ export class IncidenciasComponent  {
       retroalimentacion: [''],
       indicador:  [Validators.required],
       casilla: [Validators.required],
+      imagenBase64: [''],
 
     });
   }
 
+  ngAfterViewInit() {
+    this.canvas = this.mapCanvas.nativeElement;
+
+    if (!this.canvas) {
+      console.error("El elemento del mapa no fue encontrado");
+      return;
+    }
+
+    const myLatlng = new google.maps.LatLng(this.latitude, this.longitude);
+
+    const mapOptions = {
+      zoom: 13,
+      scrollwheel: false,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      styles: [
+        {
+          featureType: "administrative",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#444444" }],
+        },
+        {
+          featureType: "landscape",
+          elementType: "all",
+          stylers: [{ color: "#f2f2f2" }],
+        },
+        {
+          featureType: "poi",
+          elementType: "all",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "road",
+          elementType: "all",
+          stylers: [{ saturation: -100 }, { lightness: 45 }],
+        },
+        {
+          featureType: "road.highway",
+          elementType: "all",
+          stylers: [{ visibility: "simplified" }],
+        },
+        {
+          featureType: "road.arterial",
+          elementType: "labels.icon",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "transit",
+          elementType: "all",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "water",
+          elementType: "all",
+          stylers: [{ color: "#0ba4e2" }, { visibility: "on" }],
+        },
+      ],
+    };
+
+    this.maps = new google.maps.Map(this.canvas, mapOptions);
+  }
+
+  selectAddress(place: google.maps.places.PlaceResult) {
+    if (!place.geometry) {
+      window.alert("Autocomplete's returned place contains no geometry");
+      return;
+    }
+    const selectedLat = place.geometry?.location?.lat() || this.latitude;
+    const selectedLng = place.geometry?.location?.lng() || this.longitude;
+
+    this.canvas.setAttribute("data-lat", selectedLat.toString());
+    this.canvas.setAttribute("data-lng", selectedLng.toString());
+
+    const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
+    this.maps.setCenter(newLatLng);
+    this.maps.setZoom(15);
+    const marker = new google.maps.Marker({
+      position: newLatLng,
+      map: this.maps,
+      animation: google.maps.Animation.DROP,
+      title: place.name,
+    });
+    this.incidenciasForm.patchValue({
+      longitud: selectedLng,
+      latitud: selectedLat
+    });
+
+
+  }
 
   submit() {
     if (this.isModalAdd === false) {
@@ -73,6 +172,26 @@ export class IncidenciasComponent  {
     } else {
       this.agregar();
 
+    }
+  }
+
+  onFileChange(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+
+    if (inputElement.files && inputElement.files.length > 0) {
+      const file = inputElement.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
+
+        this.incidenciasForm.patchValue({
+          imagenBase64: base64WithoutPrefix// Contiene solo la representación en base64
+        });
+      };
+
+      reader.readAsDataURL(file);
     }
   }
 

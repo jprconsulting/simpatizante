@@ -8,7 +8,7 @@ import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import * as XLSX from 'xlsx';
 import { CargoService } from 'src/app/core/services/cargo.service';
-import { Cargos } from 'src/app/models/cargo';
+import { Cargo } from 'src/app/models/cargo';
 @Component({
   selector: 'app-candidatos',
   templateUrl: './candidatos.component.html',
@@ -24,7 +24,7 @@ export class CandidatosComponent {
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   areasAdscripcion: AreaAdscripcion[] = [];
   areasAdscripcionFilter: AreaAdscripcion[] = [];
-  cargos: Cargos[] = [];
+  cargos: Cargo[] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
 

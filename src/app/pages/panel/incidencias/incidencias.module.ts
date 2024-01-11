@@ -7,6 +7,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
 
 
 
@@ -23,6 +24,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NgxSpinnerModule,
     NgxPaginationModule,
     NgSelectModule,
+    NgxGpAutocompleteModule
   ]
 })
 export class IncidenciasModule { }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {  Cargos } from 'src/app/models/cargo';
+import {  Cargo } from 'src/app/models/cargo';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -12,6 +12,6 @@ export class CargoService {
   constructor(private http: HttpClient) { }
 
   getAll() {
-    return this.http.get<Cargos[]>(`${this.route}/obtener-todos`);
+    return this.http.get<Cargo[]>(`${this.route}/obtener-todos`);
   }
 }

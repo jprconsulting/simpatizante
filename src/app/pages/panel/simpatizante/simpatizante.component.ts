@@ -37,7 +37,7 @@ export class SimpatizanteComponent implements OnInit {
   municipiosSelect!: Municipio | undefined;
   canvas!: HTMLElement;
   votante!: Votante;
-  votanteForm!: FormGroup;
+  simpatizanteForm!: FormGroup;
   busqueda!: FormGroup;
   beneficiarios: Beneficiario[] = [];
   votantesFilter: Votante[] = [];
@@ -92,7 +92,9 @@ export class SimpatizanteComponent implements OnInit {
   ngOnInit() {
     this.getSeccion();
     this.getEstado();
+    this.getMunicipios();
     this.getProgramas();
+    this.getSeccion();
   }
 
   resetMap() {
@@ -113,7 +115,7 @@ export class SimpatizanteComponent implements OnInit {
       // Otras propiedades según tus necesidades
     };
 
-    this.selectAddress2(dummyPlace);
+    this.selectAddress(dummyPlace);
   }
 
   selectAddress(place: google.maps.places.PlaceResult) {
@@ -136,7 +138,7 @@ export class SimpatizanteComponent implements OnInit {
       animation: google.maps.Animation.DROP,
       title: place.name,
     });
-    this.votanteForm.patchValue({
+    this.simpatizanteForm.patchValue({
       longitud: selectedLng,
       latitud: selectedLat
     });
@@ -144,8 +146,8 @@ export class SimpatizanteComponent implements OnInit {
 
   }
   selectAddress2(place: google.maps.places.PlaceResult) {
-    const selectedLat = this.votanteForm.value.latitud;
-    const selectedLng = this.votanteForm.value.longitud;
+    const selectedLat = this.simpatizanteForm.value.latitud;
+    const selectedLng = this.simpatizanteForm.value.longitud;
 
     this.canvas.setAttribute("data-lat", selectedLat.toString());
     this.canvas.setAttribute("data-lng", selectedLng.toString());
@@ -156,9 +158,9 @@ export class SimpatizanteComponent implements OnInit {
     position: newLatLng,
     map: this.maps,
     animation: google.maps.Animation.DROP,
-    title: this.votanteForm.value.nombres, // Usa un campo relevante como título
+    title: this.simpatizanteForm.value.nombres, // Usa un campo relevante como título
   });
-  this.votanteForm.patchValue({
+  this.simpatizanteForm.patchValue({
     longitud: selectedLng,
     latitud: selectedLat
   });
@@ -273,7 +275,7 @@ export class SimpatizanteComponent implements OnInit {
 
 
   creteForm() {
-    this.votanteForm = this.formBuilder.group({
+    this.simpatizanteForm = this.formBuilder.group({
       id: [null],
       nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
@@ -291,6 +293,7 @@ export class SimpatizanteComponent implements OnInit {
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
       edad: [null, [Validators.required]],
+      idmex: ['', [Validators.required]],
     });
   }
 
@@ -366,7 +369,7 @@ export class SimpatizanteComponent implements OnInit {
 
     const municipio = votante.municipio.id;
     this.onSelectmunicipios(municipio);
-    this.votanteForm.patchValue({
+    this.simpatizanteForm.patchValue({
       id: votante.id,
       nombres: votante.nombres,
       apellidoPaterno: votante.apellidoPaterno,
@@ -383,14 +386,14 @@ export class SimpatizanteComponent implements OnInit {
     });
 
     console.log(votante);
-    console.log(this.votanteForm.value);
+    console.log(this.simpatizanteForm.value);
   }
 
   actualizar() {
-    this.votante = this.votanteForm.value as Votante;
+    this.votante = this.simpatizanteForm.value as Votante;
 
-    const programaSocialId = this.votanteForm.get('programaSocialId')?.value;
-    const municipioId = this.votanteForm.get('municipioId')?.value;
+    const programaSocialId = this.simpatizanteForm.get('programaSocialId')?.value;
+    const municipioId = this.simpatizanteForm.get('municipioId')?.value;
 
     this.votante.programaSocial = { id: programaSocialId } as ProgramaSocial;
     this.votante.municipio = { id: municipioId } as Municipio;
@@ -438,7 +441,7 @@ export class SimpatizanteComponent implements OnInit {
 
   resetForm() {
     this.closebutton.nativeElement.click();
-    this.votanteForm.reset();
+    this.simpatizanteForm.reset();
 
 
   }
@@ -453,10 +456,10 @@ export class SimpatizanteComponent implements OnInit {
   }
 
   agregar() {
-    this.votante = this.votanteForm.value as Votante;
+    this.votante = this.simpatizanteForm.value as Votante;
 
-    const programaSocialId = this.votanteForm.get('programaSocialId')?.value;
-    const municipioId = this.votanteForm.get('municipioId')?.value;
+    const programaSocialId = this.simpatizanteForm.get('programaSocialId')?.value;
+    const municipioId = this.simpatizanteForm.get('municipioId')?.value;
 
     this.votante.programaSocial = { id: programaSocialId } as ProgramaSocial;
     this.votante.municipio = { id: municipioId } as Municipio;
@@ -479,9 +482,9 @@ export class SimpatizanteComponent implements OnInit {
   }
 
   handleChangeAdd() {
-    if (this.votanteForm) {
-      this.votanteForm.reset();
-      const estatusControl = this.votanteForm.get('estatus');
+    if (this.simpatizanteForm) {
+      this.simpatizanteForm.reset();
+      const estatusControl = this.simpatizanteForm.get('estatus');
       if (estatusControl) {
         estatusControl.setValue(true);
       }

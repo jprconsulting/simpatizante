@@ -72,8 +72,8 @@
                 <th style="text-transform: none; font-size: inherit">
                   Nombre completo
                 </th>
-                <th style="text-transform: none; font-size: inherit">Genero</th>
                 <th style="text-transform: none; font-size: inherit">Fecha de nacimiento</th>
+                <th style="text-transform: none; font-size: inherit">Secciones a operar</th>
                 <th
                   style="text-transform: none; font-size: inherit"
                   class="text-center"
@@ -104,8 +104,8 @@
                   }}
                 </td>
                 <td>{{ operador.nombre }} {{ operador.apellidoPaterno }} {{ operador.apellidoMaterno }}</td>
-                <td class="text-muted">{{ objGeneros[operador.sexo] }}</td>
                 <td class="text-muted">{{ operador.fechaNacimiento| date:'yyyy-MM-dd' }}</td>
+                <td>{{ operador.seccion}}</td>
                 <td class="text-center">
                   <ng-container *ngIf="operador.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo

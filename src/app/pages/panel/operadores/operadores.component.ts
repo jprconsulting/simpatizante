@@ -49,7 +49,7 @@ export class OperadoresComponent implements OnInit{
     private seccionesService: SeccionService,
   ) {
     //this.operadoresService._refreshListOperadores.subscribe(() => this.getUsuarios());
-    this.getUsuarios();
+    this.getOperadores();
     this.getSecciones();
     this.getAreasAdscripcion();
     this.creteForm();
@@ -78,16 +78,15 @@ export class OperadoresComponent implements OnInit{
       nombre: ['', [Validators.required,Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      sexo: ['', [Validators.required, Validators.email, Validators.pattern('^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$')]],
       fechaNacimiento: ['', Validators.required],
-      secciones: [null, Validators.required],
+      secciones: [null],
       estatus: [true],
     });
   }
 
 
 
-  getUsuarios() {
+  getOperadores() {
     this.isLoading = LoadingStates.trueLoading;
     this.operadoresService.getAll().subscribe(
       {
@@ -170,8 +169,7 @@ export class OperadoresComponent implements OnInit{
 
   agregar() {
     this.operador = this.operadorForm.value as Operadores;
-    const rolId = this.operadorForm.get('rolId')?.value;
-    const areaAdscripcionId = this.operadorForm.get('areaAdscripcionId')?.value;
+    const seccionid = this.operadorForm.get('seccion')?.value;
 
     this.spinnerService.show();
     this.operadoresService.post(this.operador).subscribe({

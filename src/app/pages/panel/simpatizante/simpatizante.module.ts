@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { SimpatizanteRoutingModule } from './simpatizante-routing.module';
 import { SimpatizanteComponent} from './simpatizante.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
