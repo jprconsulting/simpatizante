@@ -60,7 +60,7 @@ const routes: Routes = [
           .then(i => i.VisitasModule)
       },
       {
-        path: 'incidencias',
+        path: 'simpatizantes',
         loadChildren: () => import('./simpatizante/simpatizante.module')
           .then(i => i.SimpatizanteModule)
       },
