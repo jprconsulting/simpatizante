@@ -40,6 +40,7 @@ export class CandidatosComponent {
     this.areasAdscripcionService.refreshListAreasAdscripcion.subscribe(() => this.getCandidatos());
     this.getCandidatos();
     this.createForm();
+    this.getCargos();
   }
 
   estatusBtn = true;
@@ -53,6 +54,9 @@ export class CandidatosComponent {
   getGeneroName(id: number): string {
     const genero = this.generos.find(g => g.id === id);
     return genero ? genero.name : '';
+  }
+  getCargos() {
+    this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
   }
 
   onFileChange(event: Event) {
@@ -127,14 +131,7 @@ export class CandidatosComponent {
     );
   }
 
-  getCargo() {
-    this.cargoService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.cargos = dataFromAPI;},
-      }
-    );
-  }
+
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
