@@ -1,3 +1,4 @@
+import { Cargo } from "./cargo";
 
 export interface Candidatos {
     id: number;
@@ -7,7 +8,7 @@ export interface Candidatos {
     fechaNacimiento: string;
     sexo: number;
     sobrenombre: string;
-    cargo: string;
+    cargo: Cargo;
     estatus: boolean;
     imagenBase64foto: string;
     imagenBase64emblema: string;

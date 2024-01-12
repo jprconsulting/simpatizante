@@ -103,7 +103,7 @@
             <tbody>
               <tr
                 *ngFor="
-                  let area of areasAdscripcionFilter
+                  let candidato of candidatoFilter
                     | paginate : configPaginator;
                   let pointIndex = index
                 "
@@ -116,10 +116,10 @@
                       1
                   }}
                 </td>
-                <td>{{ area.nombre }}</td>
-                <td class="text-muted">{{ area.descripcion }}</td>
+                <td>{{ candidato.nombre }}</td>
+                <td class="text-muted">{{ candidato.cargo.id }}</td>
                 <td class="text-center">
-                  <ng-container *ngIf="area.estatus; else elseEstatus">
+                  <ng-container *ngIf="candidato.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
                   </ng-container>
                   <ng-template #elseEstatus>
@@ -132,13 +132,13 @@
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
                       data-bs-target="#modal-area-adscripcion"
-                      (click)="setDataModalUpdate(area)"
+                      (click)="setDataModalUpdate(candidato)"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
-                      (click)="deleteItem(area.id, area.nombre)"
+                      (click)="deleteItem(candidato.id, candidato.nombre)"
                     >
                       <i class="ti ti-eraser"></i>
                     </button>
@@ -155,7 +155,7 @@
 
       <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-muted">
-          Total de registros: <b>{{ areasAdscripcionFilter.length }}</b>
+          Total de registros: <b>{{ candidatoFilter.length }}</b>
         </p>
         <div class="m-0 ms-auto">
           <pagination-controls
@@ -404,14 +404,6 @@
                 >
                   <div *ngIf="candidatoForm.get('cargo')?.hasError('required')">
                     <p style="color: red">El nombre es obligatorio</p>
-                  </div>
-                  <div
-                    *ngIf="candidatoForm.get('cargo')?.hasError('minlength')"
-                  >
-                    El Nombre debe tener al menos 3 caracteres
-                  </div>
-                  <div *ngIf="candidatoForm.get('cargo')?.hasError('pattern')">
-                    El Nombre no puede tener números ni signos
                   </div>
                 </div>
               </div>

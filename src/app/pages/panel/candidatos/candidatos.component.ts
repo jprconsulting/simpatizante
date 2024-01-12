@@ -9,6 +9,8 @@ import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion
 import * as XLSX from 'xlsx';
 import { CargoService } from 'src/app/core/services/cargo.service';
 import { Cargo } from 'src/app/models/cargo';
+import { Candidatos } from 'src/app/models/candidato';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
 @Component({
   selector: 'app-candidatos',
   templateUrl: './candidatos.component.html',
@@ -20,11 +22,13 @@ export class CandidatosComponent {
   @ViewChild('searchItem') searchItem!: ElementRef;
 
   areaAdscripcion!: AreaAdscripcion;
+  candidatos!: Candidatos;
   candidatoForm!: FormGroup;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   areasAdscripcion: AreaAdscripcion[] = [];
-  areasAdscripcionFilter: AreaAdscripcion[] = [];
+  candidatoFilter: Candidatos[] = [];
   cargos: Cargo[] = [];
+  candidato: Candidatos [] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
 
@@ -35,9 +39,9 @@ export class CandidatosComponent {
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private cargoService: CargoService,
-    private areasAdscripcionService: AreasAdscripcionService,
+    private candidatosService: CandidatosService,
   ) {
-    this.areasAdscripcionService.refreshListAreasAdscripcion.subscribe(() => this.getCandidatos());
+    this.candidatosService.refreshListCandidatos.subscribe(() => this.getCandidatos());
     this.getCandidatos();
     this.createForm();
     this.getCargos();
@@ -101,27 +105,26 @@ export class CandidatosComponent {
 
   createForm() {
     this.candidatoForm = this.formBuilder.group({
-      id: [null],
       nombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       sobrenombre: ['',[Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      cargo: ['',[Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      cargo: ['',[Validators.required]],
       estatus: [true],
       imagenBase64foto: [''],
-      imagenBase64emblema: ['']
+      imagenBase64emblema: [''],
     });
   }
 
   getCandidatos() {
     this.isLoading = LoadingStates.trueLoading;
-    this.areasAdscripcionService.getAll().subscribe(
+    this.candidatosService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
-          this.areasAdscripcion = dataFromAPI;
-          this.areasAdscripcionFilter = this.areasAdscripcion;
+          this.candidato = dataFromAPI;
+          this.candidatoFilter = this.candidato;
           this.isLoading = LoadingStates.falseLoading;
         },
         error: () => {
@@ -139,10 +142,7 @@ export class CandidatosComponent {
 
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    this.areasAdscripcionFilter = this.areasAdscripcion.filter(i => i.nombre
-      .toLowerCase().includes(inputValue.toLowerCase())
-    );
-    this.areasAdscripcionFilter = this.areasAdscripcion.filter(i => i.descripcion
+    this.candidatoFilter = this.candidato.filter(i => i.nombre
       .toLowerCase().includes(inputValue.toLowerCase())
     );
     this.configPaginator.currentPage = 1;
@@ -151,13 +151,12 @@ export class CandidatosComponent {
   id!: number;
   formData: any;
 
-  setDataModalUpdate(dto: AreaAdscripcion) {
+  setDataModalUpdate(dto: Candidatos) {
     this.isModalAdd = false;
     this.id = dto.id;
     this.candidatoForm.patchValue({
       id: dto.id,
       nombre: dto.nombre,
-      descripcion: dto.descripcion,
       estatus: dto.estatus,
     });
     this.formData = this.candidatoForm.value;
@@ -167,14 +166,14 @@ export class CandidatosComponent {
 
   editarArea() {
     const areaFormValue = { ...this.candidatoForm.value };
-    this.areasAdscripcionService.put(this.id,areaFormValue).subscribe({
+    this.candidatosService.put(this.id,areaFormValue).subscribe({
       next: () => {
-        this.mensajeService.mensajeExito("Área actualizada correctamente");
+        this.mensajeService.mensajeExito("Candidato actualizada correctamente");
         this.resetForm();
         console.log(areaFormValue);
       },
       error: (error) => {
-        this.mensajeService.mensajeError("Error al actualizar Area");
+        this.mensajeService.mensajeError("Error al actualizar candidato");
         console.error(error);
         console.log(areaFormValue);
       }
@@ -184,11 +183,11 @@ export class CandidatosComponent {
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
-      `¿Estás seguro de eliminar área de adscripción: ${nameItem}?`,
+      `¿Estás seguro de eliminar el candidato: ${nameItem}?`,
       () => {
-        this.areasAdscripcionService.delete(id).subscribe({
+        this.candidatosService.delete(id).subscribe({
           next: () => {
-            this.mensajeService.mensajeExito('Área de adscripción borrada correctamente');
+            this.mensajeService.mensajeExito('Candidato borrado correctamente');
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
@@ -204,13 +203,17 @@ export class CandidatosComponent {
   }
 
   agregar() {
-    this.areaAdscripcion = this.candidatoForm.value as AreaAdscripcion;
+    this.candidatos  = this.candidatoForm.value as Candidatos;
+
+    const cargoid = this.candidatoForm.get('cargo')?.value;
+    this.candidatos.cargo = { id: cargoid } as Cargo;
+
     this.spinnerService.show();
     console.log(this.candidatoForm)
-    this.areasAdscripcionService.post(this.areaAdscripcion).subscribe({
+    this.candidatosService.post(this.candidatos).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Área de adscripción guardada correctamente');
+        this.mensajeService.mensajeExito('Candidato guardado correctamente');
         this.resetForm();
         this.configPaginator.currentPage = 1;
       },
@@ -246,7 +249,7 @@ export class CandidatosComponent {
 
   exportarDatosAExcel() {
     if (this.areasAdscripcion.length === 0) {
-      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      console.warn('La lista de candidatos está vacía. No se puede exportar.');
       return;
     }
 
