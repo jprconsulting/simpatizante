@@ -35,7 +35,7 @@ export class VisitasComponent {
   imagenAmpliada: string | null = null;
   mostrarModal = false;
   selectedProgramaSocial: number = 0;
-  
+
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -44,14 +44,14 @@ export class VisitasComponent {
     private beneficiariosService: BeneficiariosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
-   
+
   ) {
     this.visitasService.refreshListVisitas.subscribe(() => this.getVisitas());
     this.getVisitas();
     this.creteForm();
     this.getBeneficiarios();
   }
-  
+
 
   getBeneficiarios() {
     this.beneficiariosService.getAll().subscribe(
@@ -70,8 +70,10 @@ export class VisitasComponent {
       id: [null],
       servicios:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       descripcion:  ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      votnate: ['', Validators.required],
-      imagenBase64: ['', Validators.required]
+      votante: ['', Validators.required],
+      operador: ['', Validators.required],
+      candidato: ['', Validators.required],
+      imagenBase64: ['', Validators.required],
     });
   }
 

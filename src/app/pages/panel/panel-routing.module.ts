@@ -64,6 +64,11 @@ const routes: Routes = [
         loadChildren: () => import('./simpatizante/simpatizante.module')
           .then(i => i.SimpatizanteModule)
       },
+      {
+        path: 'programas-sociales',
+        loadChildren: () => import('./programas-sociales/programas-sociales.module')
+          .then(i => i.ProgramasSocialesModule)
+      },
     ]
   },
 ];

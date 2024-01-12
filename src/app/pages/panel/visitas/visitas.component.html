@@ -1,33 +1,60 @@
-<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
-    <p style="color: white">Guardando...</p>
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
 <app-page-header headerTitle="Visitas"></app-page-header>
 
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body border-bottom py-3">
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-visita" (click)="handleChangeAdd()">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="d-flex align-items-center">
+          <button
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-visita"
+            (click)="handleChangeAdd()"
+          >
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
-                    <div class="ms-auto d-flex align-items-center">
-                        <div class="input-icon">
-                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
-                            <span class="input-icon-addon">
+          <div class="ms-auto d-flex align-items-center">
+            <div class="input-icon">
+              <input
+                #searchItem
+                type="text"
+                class="form-control form-control-rounded"
+                placeholder="Buscar"
+                (input)="handleChangeSearch($event)"
+              />
+              <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
               </span>
-                        </div>
-                        <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de visitas" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px;">
-                            <i class="ti ti-cloud-down text-muted" style="font-size: 28px;"></i>
-                        </a>
-                    </div>
-                </div>
-                <hr />
-                <div class="col-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="selectProgramaSocial">Filtrar por programa social:</label
+            </div>
+            <a
+              class="btn w-30 btn-icon"
+              aria-label="Dribbble"
+              (click)="exportarDatosAExcel()"
+              title="Descargar excel de visitas"
+              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+            >
+              <i
+                class="ti ti-cloud-down text-muted"
+                style="font-size: 28px"
+              ></i>
+            </a>
+          </div>
+        </div>
+        <hr />
+        <div class="col-4">
+          <div class="mb-3">
+            <label class="form-label" for="selectProgramaSocial"
+              >Filtrar por programa social:</label
             >
             <select
               class="form-select"
@@ -65,13 +92,27 @@
             <thead>
               <tr>
                 <th class="text-center">#</th>
-                <th style="text-transform: none; font-size: inherit;">Beneficiario</th>
-                <th style="text-transform: none; font-size: inherit;">Programa Social</th>
-                <th style="text-transform: none; font-size: inherit;">Municipio</th>
-                <th style="text-transform: none; font-size: inherit;">Descripcion</th>
-                <th style="text-transform: none; font-size: inherit;">Evidencia</th>
-                <th style="text-transform: none; font-size: inherit;">Fecha Visita</th>
-                <th style="text-transform: none; font-size: inherit;">Acciones</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Beneficiario
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Programa Social
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Municipio
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Descripcion
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Evidencia
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Fecha Visita
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -121,18 +162,19 @@
                       data-bs-toggle="modal"
                       data-bs-target="#modal-visita"
                       (click)="setDataModalUpdate(visita)"
-                      style="margin-right: 5px;"
+                      style="margin-right: 5px"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
-                      (click)="deleteItem(visita.id, visita.beneficiario.nombres)"
+                      (click)="
+                        deleteItem(visita.id, visita.beneficiario.nombres)
+                      "
                     >
                       <i class="ti ti-eraser"></i>
                     </button>
                   </div>
-
                 </td>
               </tr>
             </tbody>
@@ -185,120 +227,267 @@
       <form [formGroup]="visitaForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label">Nombre del votante*</label>
-                        <ng-select formControlName="votnate" #selectBeneficiario [searchable]="false" [items]="beneficiarios" bindLabel="nombreCompleto" bindValue="id" placeholder="Elegir" [clearable]="false" (change)="onSelectBeneficiario($event.id)">
-                            <ng-template ng-header-tmp>
-                                <input class="form-control" type="text" (input)="
+                <ng-select
+                  formControlName="votante"
+                  #selectBeneficiario
+                  [searchable]="false"
+                  [items]="beneficiarios"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                  (change)="onSelectBeneficiario($event.id)"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
                         selectBeneficiario.filter($any($event.target).value)
-                      " />
-                            </ng-template>
-                            <ng-template ng-option-tmp let-item="item" let-index="index">
-                                {{ item.nombreCompleto }}
-                            </ng-template>
-                        </ng-select>
-                        <div *ngIf="visitaForm.get('votnate')?.touched" class="error-message">
-                          <div *ngIf="visitaForm.get('votnate')?.hasError('required')">
-                              El nombre del votnate es obligatorio
-                          </div>
-                      </div>
-                    </div>
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+                <div
+                  *ngIf="visitaForm.get('votnate')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="visitaForm.get('votnate')?.hasError('required')">
+                    El nombre del votante es obligatorio
+                  </div>
                 </div>
-                
-                <div class="col-md-12">
-                    <div class="mb-3">
-                        <label class="form-label">Servicios de interes</label>
-                        <input type="text" class="form-control" formControlName="servicios"/>
-                        <div *ngIf="visitaForm.get('servicios')?.touched" class="error-message">
-                          <div *ngIf="visitaForm.get('servicios')?.hasError('required')">
-                              El servicio de interes es obligatorio
-                          </div>
-                          <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
-                            El servicio no puede tener letras
-                        </div>
-                        <div *ngIf="
-                      visitaForm.get('servicios')?.hasError('minlength')
-                    ">
-                                        El servicio debe tener al menos 3 caracteres
-                                    </div>
-                                    <div *ngIf="
-                      visitaForm.get('servicios')?.hasError('pattern')
-                    ">
-                                        El servicio debe tener numeros
-                                    </div>
-                      </div>
-                    </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Servicios de interes</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="servicios"
+                />
+                <div
+                  *ngIf="visitaForm.get('servicios')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="visitaForm.get('servicios')?.hasError('required')"
+                  >
+                    El servicio de interes es obligatorio
+                  </div>
+                  <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
+                    El servicio no puede tener letras
+                  </div>
+                  <div
+                    *ngIf="visitaForm.get('servicios')?.hasError('minlength')"
+                  >
+                    El servicio debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="visitaForm.get('servicios')?.hasError('pattern')">
+                    El servicio debe tener numeros
+                  </div>
                 </div>
-                <div class="col-lg-12">
-                    <div class="mb-3">
-                        <label class="form-label">Descripción*</label>
-                        <textarea rows="5" class="form-control" placeholder="" formControlName="descripcion"></textarea>
-                        <div *ngIf="visitaForm.get('descripcion')?.touched" class="error-message">
-                          <div *ngIf="visitaForm.get('descripcion')?.hasError('required')">
-                              La descripcion es obligatorio
-                          </div>
-                          <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
-                            La descripcion no puede tener numeros
-                        </div>
-                        <div *ngIf="
-                      visitaForm.get('descripcion')?.hasError('minlength')
-                    ">
-                                        La descripcion debe tener al menos 3 caracteres
-                                    </div>
-                                    <div *ngIf="
-                      visitaForm.get('descripcion')?.hasError('pattern')
-                    ">
-                                       La descripcion no puede llevar numeros
-                                    </div>
-                      </div>
-                    </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Nombre del operador*</label>
+                <ng-select
+                  formControlName="operador"
+                  #selectBeneficiario
+                  [searchable]="false"
+                  [items]="beneficiarios"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                  (change)="onSelectBeneficiario($event.id)"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectBeneficiario.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+                <div
+                  *ngIf="visitaForm.get('operador')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="visitaForm.get('operador')?.hasError('required')">
+                    El nombre del operador es obligatorio
+                  </div>
                 </div>
-                <div class="col-lg-12">
-                    <div class="mb-3">
-                        <div class="form-label">Selecciona una imagen*</div>
-                        <input class="input" type="file" (change)="onFileChange($event)" formControlName="imagenBase64" />
-                        <div *ngIf="visitaForm.get('imagenBase64')?.touched" class="error-message">
-                          <div *ngIf="visitaForm.get('imagenBase64')?.hasError('required')">
-                              La imagen es obligatoria
-                          </div>
-                      </div>
-                    </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Nombre del candidato*</label>
+                <ng-select
+                  formControlName="candidato"
+                  #selectBeneficiario
+                  [searchable]="false"
+                  [items]="beneficiarios"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                  (change)="onSelectBeneficiario($event.id)"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectBeneficiario.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+                <div
+                  *ngIf="visitaForm.get('candidato')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="visitaForm.get('candidato')?.hasError('required')">
+                    El nombre del candidato es obligatorio
+                  </div>
                 </div>
-                <div class="col-lg-12">
-                    <div class="mb-3">
-                        <img class="img" *ngIf="visitaForm.get('imagenBase64')?.value" [src]="
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label class="form-label">Descripción*</label>
+                <textarea
+                  rows="5"
+                  class="form-control"
+                  placeholder=""
+                  formControlName="descripcion"
+                ></textarea>
+                <div
+                  *ngIf="visitaForm.get('descripcion')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="visitaForm.get('descripcion')?.hasError('required')"
+                  >
+                    La descripcion es obligatorio
+                  </div>
+                  <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
+                    La descripcion no puede tener numeros
+                  </div>
+                  <div
+                    *ngIf="visitaForm.get('descripcion')?.hasError('minlength')"
+                  >
+                    La descripcion debe tener al menos 3 caracteres
+                  </div>
+                  <div
+                    *ngIf="visitaForm.get('descripcion')?.hasError('pattern')"
+                  >
+                    La descripcion no puede llevar numeros
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <div class="form-label">Selecciona una imagen*</div>
+                <input
+                  class="input"
+                  type="file"
+                  (change)="onFileChange($event)"
+                  formControlName="imagenBase64"
+                />
+                <div
+                  *ngIf="visitaForm.get('imagenBase64')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="visitaForm.get('imagenBase64')?.hasError('required')"
+                  >
+                    La imagen es obligatoria
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <img
+                  class="img"
+                  *ngIf="visitaForm.get('imagenBase64')?.value"
+                  [src]="
                     'data:image/jpeg;base64,' +
                     visitaForm.get('imagenBase64')?.value
-                  " width="100%" height="100%" alt="Vista previa de la imagen" />
-                    </div>
-                </div>
+                  "
+                  width="100%"
+                  height="100%"
+                  alt="Vista previa de la imagen"
+                />
+              </div>
             </div>
+          </div>
         </div>
-        <p class="form-label" style="
-        margin-left: 20px;
-        color: red;
-        font-weight: bold;
-    ">Todos los campos marcados con * son requeridos</p>
+        <p
+          class="form-label"
+          style="margin-left: 20px; color: red; font-weight: bold"
+        >
+          Todos los campos marcados con * son requeridos
+        </p>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-success" [disabled]="!visitaForm.valid">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!visitaForm.valid"
+          >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
-        </form>
+      </form>
     </div>
-</div>
+  </div>
 </div>
 
-<div class="modal" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
-            </div>
-            <div class="modal-body">
-                <img *ngIf="imagenAmpliada" [src]="imagenAmpliada" alt="Imagen Ampliada" class="w-100" />
-            </div>
-        </div>
+<div
+  class="modal"
+  id="modal-imagen-ampliada"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <img
+          *ngIf="imagenAmpliada"
+          [src]="imagenAmpliada"
+          alt="Imagen Ampliada"
+          class="w-100"
+        />
+      </div>
     </div>
+  </div>
 </div>
