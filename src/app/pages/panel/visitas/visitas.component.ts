@@ -11,6 +11,12 @@ import { VisitasService } from 'src/app/core/services/visitas.service';
 
 import { ProgramaSocial } from 'src/app/models/programa-social';
 import * as XLSX from 'xlsx';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
+import { Candidatos } from 'src/app/models/candidato';
+import { Operadores } from 'src/app/models/operadores';
+import { OperadoresService } from 'src/app/core/services/operadores.service';
+import { Simpatizante } from 'src/app/models/Simpatizante';
+import { VotantesService } from 'src/app/core/services/votante.service';
 
 @Component({
   selector: 'app-visitas',
@@ -28,36 +34,64 @@ export class VisitasComponent {
   visitasFilter: Visita[] = [];
   isLoading = LoadingStates.neutro;
   programasSociales: ProgramaSocial[] = [];
-
-  beneficiarioSelect!: Beneficiario | undefined;
-  beneficiarios: Beneficiario[] = [];
+  simpatizantes: Simpatizante[] =[];
+  candidatoSelect!: Candidatos | undefined;
+  candidato: Candidatos[] = [];
+  operador: Operadores[] = [];
   isModalAdd = true;
   imagenAmpliada: string | null = null;
   mostrarModal = false;
   selectedProgramaSocial: number = 0;
+  candidatosSelect: any;
 
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private spinnerService: NgxSpinnerService,
     private visitasService: VisitasService,
-    private beneficiariosService: BeneficiariosService,
+    private candidatosService: CandidatosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
+    private operadoresService: OperadoresService,
+    private votantesService: VotantesService,
 
   ) {
     this.visitasService.refreshListVisitas.subscribe(() => this.getVisitas());
     this.getVisitas();
     this.creteForm();
-    this.getBeneficiarios();
+    this.getCandidatos();
+    this.getOperadores();
+    this.getSimpatizante();
   }
-
-
-  getBeneficiarios() {
-    this.beneficiariosService.getAll().subscribe(
+  getSimpatizante() {
+    this.votantesService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
-          this.beneficiarios = dataFromAPI;
+          this.simpatizantes = dataFromAPI; console.log('simpatizante',this.simpatizantes)
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      }
+    );
+  }
+  getOperadores() {
+    this.operadoresService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.operador = dataFromAPI; console.log('operadores',this.operador)
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      }
+    );
+  }
+  getCandidatos() {
+    this.candidatosService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.candidato = dataFromAPI; console.log('candidatos',this.candidato)
         },
         error: (error) => {
           console.error(error);
@@ -70,9 +104,9 @@ export class VisitasComponent {
       id: [null],
       servicios:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       descripcion:  ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      votante: ['', Validators.required],
-      operador: ['', Validators.required],
-      candidato: ['', Validators.required],
+      simpatizante: ['', Validators.required],
+      OperadorId: ['', Validators.required],
+      CandidatoId: ['', Validators.required],
       imagenBase64: ['', Validators.required],
     });
   }
@@ -122,7 +156,7 @@ export class VisitasComponent {
     // Asegúrate de asignar solo el ID del beneficiario si beneficiarioId es un campo de ID
     // beneficiario no puede ser nulo
     const beneficiarioId = dto.beneficiario.id;
-    this.onSelectBeneficiario(beneficiarioId);
+    this.onSelectCandidato(beneficiarioId);
 
     this.visitaForm.patchValue({
       id: dto.id,
@@ -173,9 +207,12 @@ export class VisitasComponent {
 
   agregar() {
     this.visita = this.visitaForm.value as Visita;
-    const beneficiarioId = this.visitaForm.get('beneficiarioId')?.value;
-    this.visita.beneficiario = { id: beneficiarioId } as Beneficiario;
 
+    const OperadorId = this.visitaForm.get('OperadorId')?.value;
+    const municipioId = this.visitaForm.get('municipioId')?.value;
+
+    this.spinnerService.show();
+    console.log('data:', this.visita);
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 
     if (imagenBase64) {
@@ -204,6 +241,7 @@ export class VisitasComponent {
     const beneficiarioId = this.visitaForm.get('beneficiarioId')?.value;
     this.visita.beneficiario = { id: beneficiarioId } as Beneficiario;
 
+  
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 
     if (imagenBase64) {
@@ -231,12 +269,12 @@ export class VisitasComponent {
   handleChangeAdd() {
     this.visitaForm.reset();
     this.isModalAdd = true;
-    this.beneficiarioSelect = undefined;
+    this.candidatosSelect = undefined;
   }
 
-  onSelectBeneficiario(id: number) {
+  onSelectCandidato(id: number) {
     if (id) {
-      this.beneficiarioSelect = this.beneficiarios.find(b => b.id === id);
+      this.candidatosSelect = this.candidato.find(b => b.id === id);
     }
   }
 

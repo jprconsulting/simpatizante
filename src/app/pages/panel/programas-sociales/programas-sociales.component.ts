@@ -59,11 +59,6 @@ export class ProgramasSocialesComponent {
     this.programaSocialForm = this.formBuilder.group({
       id: [null],
       nombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      descripcion: [''],
-      color: ['', Validators.required],
-      estatus: [true],
-      acronimo: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      areaAdscripcionId: [null, Validators.required],
     });
   }
 
@@ -101,14 +96,12 @@ export class ProgramasSocialesComponent {
 
 
   actualizar() {
-    const socialFormValue = { ...this.programaSocialForm.value };
-  console.log('ded',socialFormValue)
-    const selectedArea = this.areasAdscripcion.find(area => area.id === socialFormValue.areaAdscripcionId);
-    if (selectedArea) {
-      socialFormValue.areaAdscripcion = selectedArea; // Utiliza el objeto completo
-    }
-    this.programasSocialesService.put(this.id, socialFormValue).subscribe({
+    const programaSocialData = { ...this.programaSocialForm.value };
+    this.programaSocial = programaSocialData as ProgramaSocial;
+    this.spinnerService.show();
+    this.programasSocialesService.put(this.id, this.programaSocial).subscribe({
       next: () => {
+        this.spinnerService.hide();
         this.mensajeService.mensajeExito("Programa social actualizado con éxito");
         this.resetForm();
         this.configPaginator.currentPage = 1;
@@ -165,9 +158,9 @@ export class ProgramasSocialesComponent {
 
 
   agregar() {
-    this.programaSocial = this.programaSocialForm.value as ProgramaSocial;
-
-
+    const programaSocialData = { ...this.programaSocialForm.value };
+    delete programaSocialData.id;
+    this.programaSocial = programaSocialData as ProgramaSocial;
     this.spinnerService.show();
     this.programasSocialesService.post(this.programaSocial).subscribe({
       next: () => {

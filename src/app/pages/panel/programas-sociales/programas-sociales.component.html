@@ -29,7 +29,6 @@
                 #searchItem
                 type="text"
                 class="form-control form-control-rounded"
-                formControlName="busqueda"
                 placeholder="Buscar"
                 (input)="handleChangeSearch($event)"
               />
@@ -66,22 +65,6 @@
               <tr>
                 <th class="text-center">#</th>
                 <th style="text-transform: none; font-size: inherit">Nombre</th>
-                <th style="text-transform: none; font-size: inherit">
-                  Descripción
-                </th>
-                <th style="text-transform: none; font-size: inherit">Color</th>
-                <th style="text-transform: none; font-size: inherit">
-                  Acrónimo
-                </th>
-                <th style="text-transform: none; font-size: inherit">
-                  Área adscripción
-                </th>
-                <th
-                  class="text-center"
-                  style="text-transform: none; font-size: inherit"
-                >
-                  Estatus
-                </th>
                 <th
                   class="w-1"
                   style="text-transform: none; font-size: inherit"
@@ -211,144 +194,6 @@
                     El nombre no puede tener números mi caracteres especiales
                   </div>
                 </div>
-              </div>
-            </div>
-            <!--<div class="col-lg-12">
-              <div class="mb-3">
-                <label class="form-label">Área de adscripción*:</label>
-                <ng-select
-                  placeholder="Elegir"
-                  [items]="areasAdscripcion"
-                  bindLabel="nombre"
-                  bindValue="id"
-                  [searchable]="false"
-                  [clearable]="false"
-                  formControlName="areaAdscripcionId"
-                >
-                  <ng-template ng-option-tmp let-item="item">
-                    {{ item.nombre }}
-                  </ng-template>
-                </ng-select>
-                <div
-                  *ngIf="programaSocialForm.get('areaAdscripcionId')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
-                      programaSocialForm
-                        .get('areaAdscripcionId')
-                        ?.hasError('required')
-                    "
-                  >
-                    El area de adscripcion es obligatorio
-                  </div>
-                </div>
-              </div>
-            </div>-->
-            <div class="col-lg-12">
-              <div class="mb-3">
-                <label class="form-label">Acrónimo*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="acronimo"
-                />
-                <div
-                  *ngIf="programaSocialForm.get('acronimo')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
-                      programaSocialForm.get('acronimo')?.hasError('required')
-                    "
-                  >
-                    El acronimo es obligatorio
-                  </div>
-                  <div
-                    *ngIf="
-                      programaSocialForm.get('acronimo')?.hasError('minlength')
-                    "
-                  >
-                    El acronimo debe tener al menos 3 caracteres
-                  </div>
-                  <div
-                    *ngIf="
-                      programaSocialForm.get('acronimo')?.hasError('pattern')
-                    "
-                  >
-                    El acronimo no puede tener números ni signos
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <label class="form-label">Color*:</label>
-              <input
-                type="color"
-                class="form-control form-control-color"
-                title="Selecciona color"
-                formControlName="color"
-                value="#206bc4"
-              />
-              <div
-                *ngIf="programaSocialForm.get('color')?.touched"
-                class="error-message"
-              >
-                <div
-                  *ngIf="programaSocialForm.get('color')?.hasError('required')"
-                >
-                  El color es obligatorio
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <label>Estatus: </label><br />
-              <div class="form-group">
-                <div
-                  class="form-check form-switch mt-1 ml-2 custom-green-switch"
-                >
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    (change)="setEstatus()"
-                    [(ngModel)]="estatusBtn"
-                    name="estatusBtn"
-                    formControlName="estatus"
-                    [ngStyle]="{
-                      'background-color': estatusBtn ? '#1db83f' : '#b2c0b5'
-                    }"
-                  />
-                  <span
-                    class="form-check-label"
-                    [ngClass]="
-                      programaSocialForm.get('estatus')?.value
-                        ? 'text-success'
-                        : 'text-danger'
-                    "
-                  >
-                    {{
-                      programaSocialForm.get("estatus")?.value
-                        ? "Activo"
-                        : "Inactivo"
-                    }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="mb-3">
-                <label class="form-label">Descripción:</label>
-                <textarea
-                  rows="5"
-                  class="form-control"
-                  placeholder=""
-                  formControlName="descripcion"
-                ></textarea>
               </div>
             </div>
           </div>

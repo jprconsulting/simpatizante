@@ -231,15 +231,15 @@
               <div class="mb-3">
                 <label class="form-label">Nombre del votante*</label>
                 <ng-select
-                  formControlName="votante"
+                  formControlName="simpatizante"
                   #selectBeneficiario
                   [searchable]="false"
-                  [items]="beneficiarios"
+                  [items]="simpatizantes"
                   bindLabel="nombreCompleto"
                   bindValue="id"
                   placeholder="Elegir"
                   [clearable]="false"
-                  (change)="onSelectBeneficiario($event.id)"
+                  (change)="onSelectCandidato($event.id)"
                 >
                   <ng-template ng-header-tmp>
                     <input
@@ -255,10 +255,10 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="visitaForm.get('votnate')?.touched"
+                  *ngIf="visitaForm.get('simpatizante')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="visitaForm.get('votnate')?.hasError('required')">
+                  <div *ngIf="visitaForm.get('simpatizante')?.hasError('required')">
                     El nombre del votante es obligatorio
                   </div>
                 </div>
@@ -300,15 +300,15 @@
               <div class="mb-3">
                 <label class="form-label">Nombre del operador*</label>
                 <ng-select
-                  formControlName="operador"
+                  formControlName="OperadorId"
                   #selectBeneficiario
                   [searchable]="false"
-                  [items]="beneficiarios"
+                  [items]="operador"
                   bindLabel="nombreCompleto"
                   bindValue="id"
                   placeholder="Elegir"
                   [clearable]="false"
-                  (change)="onSelectBeneficiario($event.id)"
+                  (change)="onSelectCandidato($event.id)"
                 >
                   <ng-template ng-header-tmp>
                     <input
@@ -324,10 +324,10 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="visitaForm.get('operador')?.touched"
+                  *ngIf="visitaForm.get('OperadorId')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="visitaForm.get('operador')?.hasError('required')">
+                  <div *ngIf="visitaForm.get('OperadorId')?.hasError('required')">
                     El nombre del operador es obligatorio
                   </div>
                 </div>
@@ -337,22 +337,21 @@
               <div class="mb-3">
                 <label class="form-label">Nombre del candidato*</label>
                 <ng-select
-                  formControlName="candidato"
-                  #selectBeneficiario
+                  formControlName="CandidatoId"
+                  #selectCandidato
                   [searchable]="false"
-                  [items]="beneficiarios"
+                  [items]="candidato"
                   bindLabel="nombreCompleto"
                   bindValue="id"
                   placeholder="Elegir"
                   [clearable]="false"
-                  (change)="onSelectBeneficiario($event.id)"
                 >
                   <ng-template ng-header-tmp>
                     <input
                       class="form-control"
                       type="text"
                       (input)="
-                        selectBeneficiario.filter($any($event.target).value)
+                        selectCandidato.filter($any($event.target).value)
                       "
                     />
                   </ng-template>
@@ -361,10 +360,10 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="visitaForm.get('candidato')?.touched"
+                  *ngIf="visitaForm.get('CandidatoId')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="visitaForm.get('candidato')?.hasError('required')">
+                  <div *ngIf="visitaForm.get('CandidatoId')?.hasError('required')">
                     El nombre del candidato es obligatorio
                   </div>
                 </div>

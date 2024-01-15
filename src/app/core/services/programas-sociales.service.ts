@@ -10,7 +10,7 @@ import { ProgramaSocial } from 'src/app/models/programa-social';
   providedIn: 'root'
 })
 export class ProgramasSocialesService {
-  route = `${environment.apiUrl}/programas-sociales`;
+  route = `${environment.apiUrl}/programas`;
   private _refreshListProgramasSociales$ = new Subject<ProgramaSocial | null>();
 
   constructor(

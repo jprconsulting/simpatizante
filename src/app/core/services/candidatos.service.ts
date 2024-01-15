@@ -10,7 +10,7 @@ import { Candidatos } from 'src/app/models/candidato';
   providedIn: 'root'
 })
 export class CandidatosService {
-  route = `${environment.apiUrl}/Operadores`;
+  route = `${environment.apiUrl}/candidato`;
   private _refreshListCandidatos$ = new Subject<Candidatos | null>();
 
   constructor(
