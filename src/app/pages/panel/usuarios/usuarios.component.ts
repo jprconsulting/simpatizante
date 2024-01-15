@@ -8,6 +8,7 @@ import { RolsService } from 'src/app/core/services/rols.service';
 import { UsuariosService } from 'src/app/core/services/usuarios.service';
 import { LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
+import { Beneficiario } from 'src/app/models/beneficiario';
 import { Rol } from 'src/app/models/rol';
 import { Usuario } from 'src/app/models/usuario';
 import * as XLSX from 'xlsx';
@@ -216,6 +217,7 @@ export class UsuariosComponent implements OnInit {
     });
 
   }
+  
 
   resetForm() {
     this.closebutton.nativeElement.click();
@@ -229,6 +231,14 @@ export class UsuariosComponent implements OnInit {
     } else {
       this.agregar();
 
+    }
+  }
+  
+  beneficiarioSelect!: Beneficiario | undefined;
+  beneficiarios: Beneficiario[] = [];
+  onSelectBeneficiario(id: number) {
+    if (id) {
+      this.beneficiarioSelect = this.beneficiarios.find(b => b.id === id);
     }
   }
 

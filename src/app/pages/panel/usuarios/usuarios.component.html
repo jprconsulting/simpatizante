@@ -183,98 +183,77 @@
       <form [formGroup]="usuarioForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">Nombre*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="nombre"
-                />
+                <label class="form-label">Nombre del candidato*</label>
+                <ng-select
+                  formControlName="candidato"
+                  #selectBeneficiario
+                  [searchable]="false"
+                  [items]="beneficiarios"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                  (change)="onSelectBeneficiario($event.id)"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectBeneficiario.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
                 <div
-                  *ngIf="usuarioForm.get('nombre')?.touched"
+                  *ngIf="usuarioForm.get('candidato')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="usuarioForm.get('nombre')?.hasError('required')">
-                    <p style="color: red">El nombre es obligatorio</p>
-                  </div>
-                  <div *ngIf="usuarioForm.get('nombre')?.hasError('minlength')">
-                    El Nombre debe tener al menos 3 caracteres
-                  </div>
-                  <div *ngIf="usuarioForm.get('nombre')?.hasError('pattern')">
-                    El Nombre no puede tener números ni signos
+                  <div *ngIf="usuarioForm.get('candidato')?.hasError('required')">
+                    El nombre del candidato es obligatorio
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-lg-4">
+           
+            <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">Apellido paterno*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="apellidoPaterno"
-                />
+                <label class="form-label">Nombre del operador*</label>
+                <ng-select
+                  formControlName="operador"
+                  #selectBeneficiario
+                  [searchable]="false"
+                  [items]="beneficiarios"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                  (change)="onSelectBeneficiario($event.id)"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectBeneficiario.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
                 <div
-                  *ngIf="usuarioForm.get('apellidoPaterno')?.touched"
+                  *ngIf="usuarioForm.get('operador')?.touched"
                   class="error-message"
                 >
-                  <div
-                    *ngIf="
-                      usuarioForm.get('apellidoPaterno')?.hasError('required')
-                    "
-                  >
-                    <p style="color: red">El apellido paterno es obligatorio</p>
-                  </div>
-                  <div
-                    *ngIf="
-                      usuarioForm.get('apellidoPaterno')?.hasError('minlength')
-                    "
-                  >
-                    El apellido paterno debe tener al menos 3 caracteres
-                  </div>
-                  <div
-                    *ngIf="
-                      usuarioForm.get('apellidoPaterno')?.hasError('pattern')
-                    "
-                  >
-                    El apellido paterno no puede tener números ni signos
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="mb-3">
-                <label class="form-label">Apellido materno*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="apellidoMaterno"
-                />
-                <div
-                  *ngIf="usuarioForm.get('apellidoMaterno')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
-                      usuarioForm.get('apellidoMaterno')?.hasError('required')
-                    "
-                  >
-                    <p style="color: red">El apellido materno es obligatorio</p>
-                  </div>
-                  <div
-                    *ngIf="
-                      usuarioForm.get('apellidoMaterno')?.hasError('minlength')
-                    "
-                  >
-                    El apellido materno debe tener al menos 3 caracteres
-                  </div>
-                  <div
-                    *ngIf="
-                      usuarioForm.get('apellidoMaterno')?.hasError('pattern')
-                    "
-                  >
-                    El apellido materno no puede tener números ni signos
+                  <div *ngIf="usuarioForm.get('operador')?.hasError('required')">
+                    El nombre del operador es obligatorio
                   </div>
                 </div>
               </div>
