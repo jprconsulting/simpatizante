@@ -68,10 +68,12 @@ export class IncidenciasComponent  {
   creteForm() {
     this.incidenciasForm = this.formBuilder.group({
       retroalimentacion: [''],
-      indicador:  [Validators.required],
+      tipoIncidencia:  [Validators.required],
       casilla: [Validators.required],
-      imagenBase64: [''],
-
+      imagenBase64: ['',Validators.required],
+      domicilio: [null, Validators.required],
+      latitud: [null, Validators.required],
+      longitud: [null, Validators.required],
     });
   }
 
@@ -199,7 +201,7 @@ export class IncidenciasComponent  {
     const inputValue = event.target.value;
     this.incidenciasFilter = this.incidencias.filter(incidencia =>
       incidencia.retroalimentacion.toLowerCase().includes(inputValue.toLowerCase())||
-      incidencia.indicador.descripcion.toLowerCase().includes(inputValue.toLowerCase())||
+      incidencia.tipoIncidencia.tipo.toLowerCase().includes(inputValue.toLowerCase())||
       incidencia.casilla.nombre.toLocaleLowerCase().includes(inputValue.toLowerCase())
     );
     this.configPaginator.currentPage = 1;
@@ -221,26 +223,67 @@ export class IncidenciasComponent  {
 
   agregar() {
     this.incidencia = this.incidenciasForm.value as Incidencia;
-    const indicadorid = this.incidenciasForm.get('indicador')?.value;
+    const indicadorid = this.incidenciasForm.get('tipoIncidencia')?.value;
     const casillaid = this.incidenciasForm.get('casilla')?.value;
+    const imagenBase64 = this.incidenciasForm.get('imagenBase64')?.value;
 
     this.incidencia.casilla = {id: casillaid } as Casillas
-    this.incidencia.indicador = { id: indicadorid } as Indicadores
+    this.incidencia.tipoIncidencia = { id: indicadorid } as Indicadores
 
-    this.spinnerService.show();
-    this.incidenciasService.post(this.incidencia).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Incidencia guardado correctamente');
-        this.resetForm();
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      },
-    });
+    if (imagenBase64) {
+      const formData = { ...this.incidencia, imagenBase64 };
 
+      this.spinnerService.show();
+      this.incidenciasService.post(this.incidencia).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Incidencia guardado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+          console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+        }
+      });
+    } else {
+      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+    }
+
+  }
+  id!: number;
+
+  editarIncidencia() {
+    this.incidencia = this.incidenciasForm.value as Incidencia;
+    this.incidencia.id = this.idUpdate;
+    const indicadorid = this.incidenciasForm.get('tipoIncidencia')?.value;
+    const casillaid = this.incidenciasForm.get('casilla')?.value;
+    const imagenBase64 = this.incidenciasForm.get('imagenBase64')?.value;
+
+    this.incidencia.casilla = {id: casillaid } as Casillas;
+    this.incidencia.tipoIncidencia = { id: indicadorid } as Indicadores;
+
+
+    if (imagenBase64) {
+      const formData = { ...this.incidencia, imagenBase64 };
+      this.spinnerService.show();
+
+      this.incidenciasService.put(this.id, formData).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        }
+      });
+    } else {
+      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+    }
   }
 
   setDataModalUpdate(dto: Incidencia){
@@ -249,36 +292,17 @@ export class IncidenciasComponent  {
     this.incidenciasForm.patchValue({
       id: dto.id,
       retroalimentacion: dto.retroalimentacion,
-      indicador: dto.indicador.id,
+      tipoIncidencia: dto.tipoIncidencia.id,
       casilla: dto.casilla.id,
+      imagenBase64: dto.imagenBase64,
+      direccion: dto.direccion,
+
     });
     this.formData = this.incidenciasForm.value;
     console.log(this.incidenciasForm.value);
   }
 
-  editarIncidencia() {
-    this.incidencia = this.incidenciasForm.value as Incidencia;
-    this.incidencia.id = this.idUpdate;
 
-    const indicadorid = this.incidenciasForm.get('indicador')?.value;
-    const casillaid = this.incidenciasForm.get('casilla')?.value;
-
-    this.incidencia.casilla = {id: casillaid } as Casillas
-    this.incidencia.indicador = { id: indicadorid } as Indicadores
-
-    this.spinnerService.show();
-    this.incidenciasService.put(this.idUpdate,this.incidencia).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
-        this.resetForm();
-      },
-      error: (error) => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      },
-    });
-  }
 
   deleteItem(id: number) {
     this.mensajeService.mensajeAdvertencia(
@@ -340,7 +364,7 @@ export class IncidenciasComponent  {
       return {
         'Id': incidencias.id,
         'casilla': incidencias.casilla.nombre,
-        'tipo de incidencia': incidencias.indicador.descripcion,
+        'tipo de incidencia': incidencias.tipoIncidencia.tipo,
       };
     });
 

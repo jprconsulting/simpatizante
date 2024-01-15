@@ -4,6 +4,10 @@ import { Indicadores } from "./indicadores";
 export interface Incidencia {
     id: number;
     retroalimentacion: string;
-    indicador: Indicadores;
+    tipoIncidencia: Indicadores;
+    direccion: string;
+    latitud: number;
+    longitud: number;
+    imagenBase64: string;
     casilla: Casillas;
 }

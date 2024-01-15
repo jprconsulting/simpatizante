@@ -74,7 +74,7 @@ export class OperadoresComponent implements OnInit{
 
   creteForm() {
     this.operadorForm = this.formBuilder.group({
-      nombre: ['', [Validators.required,Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      nombres: ['', [Validators.required,Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
@@ -109,7 +109,7 @@ export class OperadoresComponent implements OnInit{
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
     this.operadorFilter = this.operadores.filter(operador =>
-      operador.nombre.toLowerCase().includes(valueSearch) ||
+      operador.nombres.toLowerCase().includes(valueSearch) ||
       operador.apellidoPaterno.toLowerCase().includes(valueSearch) ||
       operador.id.toString().includes(valueSearch)
     );
@@ -123,7 +123,7 @@ export class OperadoresComponent implements OnInit{
     this.idUpdate = dto.id;
     this.operadorForm.patchValue({
       id: dto.id,
-      nombre: dto.nombre,
+      nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
       fechaNacimiento: dto.fechaNacimiento,

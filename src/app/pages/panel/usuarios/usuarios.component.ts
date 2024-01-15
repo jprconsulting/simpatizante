@@ -4,10 +4,13 @@ import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
+import { OperadoresService } from 'src/app/core/services/operadores.service';
 import { RolsService } from 'src/app/core/services/rols.service';
 import { UsuariosService } from 'src/app/core/services/usuarios.service';
 import { LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
+import { Beneficiario } from 'src/app/models/beneficiario';
+import { Operadores } from 'src/app/models/operadores';
 import { Rol } from 'src/app/models/rol';
 import { Usuario } from 'src/app/models/usuario';
 import * as XLSX from 'xlsx';
@@ -40,6 +43,7 @@ export class UsuariosComponent implements OnInit {
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
     private rolsService: RolsService,
+    private OperadoresService: OperadoresService
   ) {
     this.usuarioService.refreshListUsuarios.subscribe(() => this.getUsuarios());
     this.getUsuarios();
@@ -194,6 +198,19 @@ export class UsuariosComponent implements OnInit {
     );
   }
 
+  getBeneficiarios() {
+    this.OperadoresService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.beneficiarios = dataFromAPI;
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      }
+    );
+  }
+
   agregar() {
     this.usuario = this.usuarioForm.value as Usuario;
     const rolId = this.usuarioForm.get('rolId')?.value;
@@ -216,6 +233,7 @@ export class UsuariosComponent implements OnInit {
     });
 
   }
+  
 
   resetForm() {
     this.closebutton.nativeElement.click();
@@ -229,6 +247,14 @@ export class UsuariosComponent implements OnInit {
     } else {
       this.agregar();
 
+    }
+  }
+  
+  beneficiarioSelect!: Operadores | undefined;
+  beneficiarios: Operadores[] = [];
+  onSelectBeneficiario(id: number) {
+    if (id) {
+      this.beneficiarioSelect = this.beneficiarios.find(b => b.id === id);
     }
   }
 
