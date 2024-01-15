@@ -1,5 +1,5 @@
 export interface Indicadores {
     id: number;
-    descripcion: string;
+    tipo: string;
     color: string;
 }

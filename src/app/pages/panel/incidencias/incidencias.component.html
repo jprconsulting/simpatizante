@@ -69,7 +69,7 @@
                 >
                   #
                 </th>
-                <th style="text-transform: none; font-size: inherit">Retroalimentaci[on</th>
+                <th style="text-transform: none; font-size: inherit">Retroalimentacion</th>
                 <th style="text-transform: none; font-size: inherit">
                   Casilla
                 </th>
@@ -105,8 +105,9 @@
                 <td>{{ incidencia.retroalimentacion }}</td>
                 <td class="text-muted">{{ incidencia.casilla.nombre }}</td>
                 <td class="text-center">
-                  {{ incidencia.indicador.descripcion }}
+                  {{ incidencia.tipoIncidencia.tipo }}
                 </td>
+                <td></td>
                 <td>
                   <div class="d-flex justify-content-between">
                     <button
@@ -178,20 +179,20 @@
               <select
                 class="form-select"
                 aria-label="Default select example"
-                formControlName="indicador"
+                formControlName="tipoIncidencia"
               >
                 <option
                   *ngFor="let indicador of indicadores"
                   [value]="indicador.id"
                 >
-                  {{ indicador.descripcion }}
+                  {{ indicador.tipo }}
                 </option>
               </select>
               <div
-                *ngIf="incidenciasForm.get('indicador')?.touched"
+                *ngIf="incidenciasForm.get('tipoIncidencia')?.touched"
                 class="error-message"
               >
-                <div *ngIf="incidenciasForm.get('indicador')?.hasError('required')">
+                <div *ngIf="incidenciasForm.get('tipoIncidencia')?.hasError('required')">
                   El tipo de incidencia es obligatorio
                 </div>
               </div>

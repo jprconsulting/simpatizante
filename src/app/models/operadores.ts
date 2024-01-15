@@ -2,7 +2,7 @@ import { Seccion } from "./seccion";
 
 export interface Operadores {
     id: number;
-    nombre: string;
+    nombres: string;
     apellidoPaterno: string;
     apellidoMaterno: string;
     fechaNacimiento: Date;

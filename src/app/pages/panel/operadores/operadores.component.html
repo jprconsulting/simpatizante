@@ -103,7 +103,7 @@
                       1
                   }}
                 </td>
-                <td>{{ operador.nombre }} {{ operador.apellidoPaterno }} {{ operador.apellidoMaterno }}</td>
+                <td>{{ operador.nombres }} {{ operador.apellidoPaterno }} {{ operador.apellidoMaterno }}</td>
                 <td class="text-muted">{{ operador.fechaNacimiento| date:'yyyy-MM-dd' }}</td>
                 <td>{{ operador.seccion}}</td>
                 <td class="text-center">
@@ -126,7 +126,7 @@
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
-                      (click)="deleteItem(operador.id, operador.nombre)"
+                      (click)="deleteItem(operador.id, operador.nombres)"
                     >
                       <i class="ti ti-eraser"></i>
                     </button>
@@ -185,23 +185,23 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Nombre*:</label>
+                <label class="form-label">Nombres*:</label>
                 <input
                   type="text"
                   class="form-control"
-                  formControlName="nombre"
+                  formControlName="nombres"
                 />
                 <div
-                  *ngIf="operadorForm.get('nombre')?.touched"
+                  *ngIf="operadorForm.get('nombres')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="operadorForm.get('nombre')?.hasError('required')">
+                  <div *ngIf="operadorForm.get('nombres')?.hasError('required')">
                     <p style="color: red">El nombre es obligatorio</p>
                   </div>
-                  <div *ngIf="operadorForm.get('nombre')?.hasError('minlength')">
+                  <div *ngIf="operadorForm.get('nombres')?.hasError('minlength')">
                     El Nombre debe tener al menos 3 caracteres
                   </div>
-                  <div *ngIf="operadorForm.get('nombre')?.hasError('pattern')">
+                  <div *ngIf="operadorForm.get('nombres')?.hasError('pattern')">
                     El Nombre no puede tener números ni signos
                   </div>
                 </div>
