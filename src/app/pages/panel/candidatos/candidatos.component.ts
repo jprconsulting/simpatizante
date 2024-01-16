@@ -55,6 +55,54 @@ export class CandidatosComponent {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
 
+  obtenerRutaImagen(nombreArchivo: string): string {
+    const rutaBaseAPI = 'https://localhost:7224/';
+    if (nombreArchivo) {
+      return `${rutaBaseAPI}images/${nombreArchivo}`;
+    }
+    return ''; // O una URL predeterminada si no hay nombre de archivo
+  }
+
+  imagenAmpliada: string | null = null;
+
+  mostrarImagenAmpliada(rutaImagen: string) {
+    this.imagenAmpliada = rutaImagen;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+
+  cerrarModal() {
+    this.imagenAmpliada = null;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+    }
+  }
+
+  readFileAsDataURL(filePath: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result);
+        } else {
+          reject(new Error('Error al leer el archivo como URL de datos.'));
+        }
+      };
+
+      reader.onerror = () => {
+        reject(new Error('Error al leer el archivo.'));
+      };
+
+      reader.readAsDataURL(new Blob([filePath]));
+    });
+  }
+
   getGeneroName(id: number): string {
     const genero = this.generos.find(g => g.id === id);
     return genero ? genero.name : '';
@@ -75,7 +123,7 @@ export class CandidatosComponent {
         const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
 
         this.candidatoForm.patchValue({
-          imagenBase64foto: base64WithoutPrefix// Contiene solo la representación en base64
+          imagenBase64: base64WithoutPrefix// Contiene solo la representación en base64
         });
       };
 
@@ -95,7 +143,7 @@ export class CandidatosComponent {
         const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
 
         this.candidatoForm.patchValue({// Contiene solo la representación en base64
-          imagenBase64emblema: base64WithoutPrefix // Contiene solo la representación en base64
+          emblemaBase64: base64WithoutPrefix // Contiene solo la representación en base64
         });
       };
 
@@ -105,7 +153,7 @@ export class CandidatosComponent {
 
   createForm() {
     this.candidatoForm = this.formBuilder.group({
-      nombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
@@ -113,8 +161,8 @@ export class CandidatosComponent {
       sobrenombre: ['',[Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       cargo: ['',[Validators.required]],
       estatus: [true],
-      imagenBase64foto: [''],
-      imagenBase64emblema: [''],
+      imagenBase64: [''],
+      emblemaBase64: [''],
     });
   }
 
@@ -142,7 +190,7 @@ export class CandidatosComponent {
 
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    this.candidatoFilter = this.candidato.filter(i => i.nombre
+    this.candidatoFilter = this.candidato.filter(i => i.nombres
       .toLowerCase().includes(inputValue.toLowerCase())
     );
     this.configPaginator.currentPage = 1;
@@ -156,7 +204,7 @@ export class CandidatosComponent {
     this.id = dto.id;
     this.candidatoForm.patchValue({
       id: dto.id,
-      nombre: dto.nombre,
+      nombres: dto.nombres,
       estatus: dto.estatus,
     });
     this.formData = this.candidatoForm.value;
@@ -204,24 +252,31 @@ export class CandidatosComponent {
 
   agregar() {
     this.candidatos  = this.candidatoForm.value as Candidatos;
-
+    const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
+    const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
     const cargoid = this.candidatoForm.get('cargo')?.value;
     this.candidatos.cargo = { id: cargoid } as Cargo;
 
-    this.spinnerService.show();
-    console.log(this.candidatoForm)
-    this.candidatosService.post(this.candidatos).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Candidato guardado correctamente');
-        this.resetForm();
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      }
-    });
+    if (imagenBase64) {
+      const formData = { ...this.candidato, imagenBase64, emblemaBase64 };
+
+      this.spinnerService.show();
+      this.candidatosService.post(this.candidatos).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Incidencia guardado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+          console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+        }
+      });
+    } else {
+      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+    }
   }
 
 

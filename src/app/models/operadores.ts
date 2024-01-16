@@ -5,7 +5,9 @@ export interface Operadores {
     nombres: string;
     apellidoPaterno: string;
     apellidoMaterno: string;
-    fechaNacimiento: Date;
+    strFechaNacimiento: string;
+    fechaNacimiento: string;
+    strfechanacimineto: string;
     sexo: number;
     estatus: boolean;
     seccion: Seccion;

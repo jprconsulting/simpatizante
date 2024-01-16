@@ -1,4 +1,4 @@
-import {  Component, ElementRef, Inject,  ViewChild } from '@angular/core';
+import {  Component, ElementRef, Inject,  OnInit,  ViewChild } from '@angular/core';
 import {  FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
 import { Indicadores } from 'src/app/models/indicadores';
@@ -13,6 +13,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import * as XLSX from 'xlsx';
+import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
 
 @Component({
   selector: 'app-incidencias',
@@ -21,11 +22,14 @@ import * as XLSX from 'xlsx';
 })
 
 
-export class IncidenciasComponent  {
+export class IncidenciasComponent implements OnInit {
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
+  @ViewChild('ngxPlaces') placesRef!: NgxGpAutocompleteDirective;
   @ViewChild('mapCanvas') mapCanvas!: ElementRef<HTMLElement>;
+  @ViewChild('ubicacionInput', { static: false }) ubicacionInput!: ElementRef;
+
 
   incidenciasForm!: FormGroup;
 
@@ -65,16 +69,50 @@ export class IncidenciasComponent  {
    this.getIncidencias();
    this.configPaginator.itemsPerPage = 10;
   }
+  ngOnInit(): void {
+
+  }
   creteForm() {
     this.incidenciasForm = this.formBuilder.group({
       retroalimentacion: [''],
-      tipoIncidencia:  [Validators.required],
-      casilla: [Validators.required],
+      tipoIncidencia:  [null,Validators.required],
+      casilla: [null,Validators.required],
       imagenBase64: ['',Validators.required],
-      domicilio: [null, Validators.required],
+      direccion: [null, Validators.required],
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
     });
+  }
+
+  resetMap() {
+    this.ubicacionInput.nativeElement.value = '';
+    this.setCurrentLocation();
+    this.ngAfterViewInit()
+  }
+
+  setCurrentLocation() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+      });
+    }
+  }
+
+  mapa() {
+    this.setCurrentLocation();
+
+    // Puedes proporcionar un valor predeterminado o nulo, según tus necesidades
+    const dummyPlace: google.maps.places.PlaceResult = {
+      geometry: {
+        location: new google.maps.LatLng(0, 0), // Coordenadas predeterminadas o nulas
+      },
+      formatted_address: '',
+      name: '',
+      // Otras propiedades según tus necesidades
+    };
+
+    this.selectAddress2(dummyPlace);
   }
 
   ngAfterViewInit() {
@@ -144,6 +182,12 @@ export class IncidenciasComponent  {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
+
+    if (place.formatted_address) {
+      this.incidenciasForm.patchValue({
+        direccion: place.formatted_address
+      });
+    }
     const selectedLat = place.geometry?.location?.lat() || this.latitude;
     const selectedLng = place.geometry?.location?.lng() || this.longitude;
 
@@ -165,6 +209,27 @@ export class IncidenciasComponent  {
     });
 
 
+  }
+
+  selectAddress2(place: google.maps.places.PlaceResult) {
+    const selectedLat = this.incidenciasForm.value.latitud;
+    const selectedLng = this.incidenciasForm.value.longitud;
+
+    this.canvas.setAttribute("data-lat", selectedLat.toString());
+    this.canvas.setAttribute("data-lng", selectedLng.toString());
+      const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
+    this.maps.setCenter(newLatLng);
+    this.maps.setZoom(15);
+     const marker = new google.maps.Marker({
+    position: newLatLng,
+    map: this.maps,
+    animation: google.maps.Animation.DROP,
+    title: this.incidenciasForm.value.nombre, // Usa un campo relevante como título
+  });
+  this.incidenciasForm.patchValue({
+    longitud: selectedLng,
+    latitud: selectedLat
+  });
   }
 
   submit() {
@@ -194,6 +259,33 @@ export class IncidenciasComponent  {
       };
 
       reader.readAsDataURL(file);
+    }
+  }
+
+  imagenAmpliada: string | null = null;
+  obtenerRutaImagen(nombreArchivo: string): string {
+    const rutaBaseAPI = 'https://localhost:7224/';
+    if (nombreArchivo) {
+      return `${rutaBaseAPI}images/${nombreArchivo}`;
+    }
+    return ''; // O una URL predeterminada si no hay nombre de archivo
+  }
+
+  mostrarImagenAmpliada(rutaImagen: string) {
+    this.imagenAmpliada = rutaImagen;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+
+  cerrarModal() {
+    this.imagenAmpliada = null;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
     }
   }
 
@@ -296,6 +388,8 @@ export class IncidenciasComponent  {
       casilla: dto.casilla.id,
       imagenBase64: dto.imagenBase64,
       direccion: dto.direccion,
+      latitud: dto.latitud,
+      longitud: dto.longitud,
 
     });
     this.formData = this.incidenciasForm.value;

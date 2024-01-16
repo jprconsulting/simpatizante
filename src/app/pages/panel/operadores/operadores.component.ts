@@ -118,6 +118,12 @@ export class OperadoresComponent implements OnInit{
 
   idUpdate!: number;
 
+  formatoFecha(fecha: string): string {
+    // Aquí puedes utilizar la lógica para formatear la fecha según tus necesidades
+    const fechaFormateada = new Date(fecha).toISOString().split('T')[0];
+    return fechaFormateada;
+  }
+
   setDataModalUpdate(dto: Operadores) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;

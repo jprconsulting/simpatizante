@@ -2,7 +2,7 @@ import { Cargo } from "./cargo";
 
 export interface Candidatos {
     id: number;
-    nombre: string;
+    nombres: string;
     apellidoPaterno: string;
     apellidoMaterno: string;
     fechaNacimiento: string;
@@ -10,7 +10,9 @@ export interface Candidatos {
     sobrenombre: string;
     cargo: Cargo;
     estatus: boolean;
-    imagenBase64foto: string;
-    imagenBase64emblema: string;
+    imagenBase64: string;
+    emblemaBase64: string;
+    foto: string;
+    emblema: string;
 }
 

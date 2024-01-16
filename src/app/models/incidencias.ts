@@ -9,5 +9,6 @@ export interface Incidencia {
     latitud: number;
     longitud: number;
     imagenBase64: string;
+    foto: string;
     casilla: Casillas;
 }

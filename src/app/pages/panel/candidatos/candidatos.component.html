@@ -116,8 +116,15 @@
                       1
                   }}
                 </td>
-                <td>{{ candidato.nombre }}</td>
-                <td class="text-muted">{{ candidato.cargo.id }}</td>
+                <td>{{ candidato.nombres }} {{ candidato.apellidoPaterno}} {{candidato.apellidoMaterno}}</td>
+                <td>{{ candidato.fechaNacimiento }}</td>
+                <td>{{ objGeneros[candidato.sexo] }}</td>
+                <td>{{ candidato.sobrenombre }}</td>
+                <td class="text-muted">{{ candidato.cargo.nombre }}</td>
+                <td class="text-muted">
+
+                </td>
+                <td></td>
                 <td class="text-center">
                   <ng-container *ngIf="candidato.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
@@ -131,14 +138,14 @@
                     <button
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
-                      data-bs-target="#modal-area-adscripcion"
+                      data-bs-target="#modal-candidato"
                       (click)="setDataModalUpdate(candidato)"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
-                      (click)="deleteItem(candidato.id, candidato.nombre)"
+                      (click)="deleteItem(candidato.id, candidato.nombres)"
                     >
                       <i class="ti ti-eraser"></i>
                     </button>
@@ -201,23 +208,23 @@
                 <input
                   type="text"
                   class="form-control"
-                  formControlName="nombre"
+                  formControlName="nombres"
                 />
                 <div
-                  *ngIf="candidatoForm.get('nombre')?.touched"
+                  *ngIf="candidatoForm.get('nombres')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="candidatoForm.get('nombre')?.hasError('required')"
+                    *ngIf="candidatoForm.get('nombres')?.hasError('required')"
                   >
                     <p style="color: red">El nombre es obligatorio</p>
                   </div>
                   <div
-                    *ngIf="candidatoForm.get('nombre')?.hasError('minlength')"
+                    *ngIf="candidatoForm.get('nombres')?.hasError('minlength')"
                   >
                     El Nombre debe tener al menos 3 caracteres
                   </div>
-                  <div *ngIf="candidatoForm.get('nombre')?.hasError('pattern')">
+                  <div *ngIf="candidatoForm.get('nombres')?.hasError('pattern')">
                     El Nombre no puede tener números ni signos
                   </div>
                 </div>
@@ -441,7 +448,7 @@
                   class="input"
                   type="file"
                   (change)="onFileChange($event)"
-                  formControlName="imagenBase64foto"
+                  formControlName="imagenBase64"
                 />
               </div>
             </div>
@@ -449,10 +456,10 @@
               <div class="mb-3">
                 <img
                   class="img"
-                  *ngIf="candidatoForm.get('imagenBase64foto')?.value"
+                  *ngIf="candidatoForm.get('imagenBase64')?.value"
                   [src]="
                     'data:image/jpeg;base64,' +
-                    candidatoForm.get('imagenBase64foto')?.value
+                    candidatoForm.get('imagenBase64')?.value
                   "
                   width="50%"
                   height="50%"
@@ -468,7 +475,7 @@
                   class="input"
                   type="file"
                   (change)="onFileChange2($event)"
-                  formControlName="imagenBase64emblema"
+                  formControlName="emblemaBase64"
                 />
               </div>
             </div>
@@ -476,10 +483,10 @@
               <div class="mb-3">
                 <img
                   class="img"
-                  *ngIf="candidatoForm.get('imagenBase64emblema')?.value"
+                  *ngIf="candidatoForm.get('emblemaBase64')?.value"
                   [src]="
                     'data:image/jpeg;base64,' +
-                    candidatoForm.get('imagenBase64emblema')?.value
+                    candidatoForm.get('emblemaBase64')?.value
                   "
                   width="50%"
                   height="50%"
@@ -499,12 +506,25 @@
           <button
             type="submit"
             class="btn btn-success"
-            [disabled]="candidatoForm.valid"
+
           >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
       </form>
     </div>
+  </div>
+</div>
+
+<div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5);">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
+          </div>
+          <div class="modal-body">
+              <img *ngIf="imagenAmpliada" [src]="imagenAmpliada" alt="Imagen Ampliada" class="w-100" />
+          </div>
+      </div>
   </div>
 </div>
