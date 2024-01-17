@@ -258,6 +258,15 @@ export class UsuariosComponent implements OnInit {
     }
   }
 
+  CandidatoSelect!: Operadores | undefined;
+  Candidato: Operadores[] = [];
+  onSelectCandidato(id: number) {
+    if (id) {
+      this.beneficiarioSelect = this.beneficiarios.find(b => b.id === id);
+    }
+  }
+
+
   handleChangeAdd() {
     if (this.usuarioForm) {
       this.usuarioForm.reset();
