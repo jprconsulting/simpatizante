@@ -227,52 +227,15 @@
       <form [formGroup]="visitaForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="row">
-            <div class="col-lg-6">
-              <div class="mb-3">
-                <label class="form-label">Nombre del votante*</label>
-                <ng-select
-                  formControlName="simpatizante"
-                  #selectBeneficiario
-                  [searchable]="false"
-                  [items]="simpatizantes"
-                  bindLabel="nombreCompleto"
-                  bindValue="id"
-                  placeholder="Elegir"
-                  [clearable]="false"
-                  (change)="onSelectCandidato($event.id)"
-                >
-                  <ng-template ng-header-tmp>
-                    <input
-                      class="form-control"
-                      type="text"
-                      (input)="
-                        selectBeneficiario.filter($any($event.target).value)
-                      "
-                    />
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombreCompleto }}
-                  </ng-template>
-                </ng-select>
-                <div
-                  *ngIf="visitaForm.get('simpatizante')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="visitaForm.get('simpatizante')?.hasError('required')">
-                    El nombre del votante es obligatorio
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-6">
+            
+            <div class="col-lg-12">
               <div class="mb-3">
                 <label class="form-label">Servicios de interes</label>
-                <input
+                <textarea
                   type="text"
                   class="form-control"
                   formControlName="servicios"
-                />
+                ></textarea>
                 <div
                   *ngIf="visitaForm.get('servicios')?.touched"
                   class="error-message"
@@ -296,78 +259,9 @@
                 </div>
               </div>
             </div>
+          
             <div class="col-lg-6">
-              <div class="mb-3">
-                <label class="form-label">Nombre del operador*</label>
-                <ng-select
-                  formControlName="OperadorId"
-                  #selectBeneficiario
-                  [searchable]="false"
-                  [items]="operador"
-                  bindLabel="nombreCompleto"
-                  bindValue="id"
-                  placeholder="Elegir"
-                  [clearable]="false"
-                  (change)="onSelectCandidato($event.id)"
-                >
-                  <ng-template ng-header-tmp>
-                    <input
-                      class="form-control"
-                      type="text"
-                      (input)="
-                        selectBeneficiario.filter($any($event.target).value)
-                      "
-                    />
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombreCompleto }}
-                  </ng-template>
-                </ng-select>
-                <div
-                  *ngIf="visitaForm.get('OperadorId')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="visitaForm.get('OperadorId')?.hasError('required')">
-                    El nombre del operador es obligatorio
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="mb-3">
-                <label class="form-label">Nombre del candidato*</label>
-                <ng-select
-                  formControlName="CandidatoId"
-                  #selectCandidato
-                  [searchable]="false"
-                  [items]="candidato"
-                  bindLabel="nombreCompleto"
-                  bindValue="id"
-                  placeholder="Elegir"
-                  [clearable]="false"
-                >
-                  <ng-template ng-header-tmp>
-                    <input
-                      class="form-control"
-                      type="text"
-                      (input)="
-                        selectCandidato.filter($any($event.target).value)
-                      "
-                    />
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombreCompleto }}
-                  </ng-template>
-                </ng-select>
-                <div
-                  *ngIf="visitaForm.get('CandidatoId')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="visitaForm.get('CandidatoId')?.hasError('required')">
-                    El nombre del candidato es obligatorio
-                  </div>
-                </div>
-              </div>
+             
             </div>
             <div class="col-lg-12">
               <div class="mb-3">

@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
+import { Simpatizante } from 'src/app/models/Simpatizante';
+import { Candidatos } from 'src/app/models/candidato';
 import { Visita } from 'src/app/models/visita';
 
 @Component({
@@ -28,6 +30,16 @@ export class SeguimientoVotoComponent implements OnInit{
   isClaveFilled = false;
   ngOnInit(): void {
 
+  }
+  
+  candidato: Candidatos[] = [];
+  candidatosSelect: any;
+  simpatizantes: Simpatizante[] =[];
+  
+  onSelectCandidato(id: number) {
+    if (id) {
+      this.candidatosSelect = this.candidato.find(b => b.id === id);
+    }
   }
 
   onFileChange(event: Event) {
