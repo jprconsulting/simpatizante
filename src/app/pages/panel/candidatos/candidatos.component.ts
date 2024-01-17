@@ -31,6 +31,7 @@ export class CandidatosComponent {
   candidato: Candidatos [] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
+  idUpdate!: number;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -141,6 +142,9 @@ export class CandidatosComponent {
       reader.onload = () => {
         const base64String = reader.result as string;
         const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
+        console.log('Leyendo archivo...');
+        console.log('Base64 sin prefijo:', base64WithoutPrefix);
+
 
         this.candidatoForm.patchValue({// Contiene solo la representación en base64
           emblemaBase64: base64WithoutPrefix // Contiene solo la representación en base64
@@ -151,8 +155,11 @@ export class CandidatosComponent {
     }
   }
 
+
+
   createForm() {
     this.candidatoForm = this.formBuilder.group({
+      id: [null],
       nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
@@ -196,36 +203,58 @@ export class CandidatosComponent {
     this.configPaginator.currentPage = 1;
   }
 
-  id!: number;
   formData: any;
 
   setDataModalUpdate(dto: Candidatos) {
     this.isModalAdd = false;
-    this.id = dto.id;
+    this.idUpdate = dto.id;
     this.candidatoForm.patchValue({
       id: dto.id,
       nombres: dto.nombres,
       estatus: dto.estatus,
+      apellidoPaterno: dto.apellidoPaterno,
+      apellidoMaterno: dto.apellidoMaterno,
+      sexo: dto.sexo,
+      fechaNacimiento: dto.strFechaNacimiento,
+      sobrenombre: dto.sobrenombre,
+      cargo: dto.cargo.id,
+      imagenBase64: dto.imagenBase64,
+      emblemaBase64: dto.emblemaBase64,
+
     });
     this.formData = this.candidatoForm.value;
     console.log(this.candidatoForm.value);
   }
 
 
-  editarArea() {
-    const areaFormValue = { ...this.candidatoForm.value };
-    this.candidatosService.put(this.id,areaFormValue).subscribe({
-      next: () => {
-        this.mensajeService.mensajeExito("Candidato actualizada correctamente");
-        this.resetForm();
-        console.log(areaFormValue);
-      },
-      error: (error) => {
-        this.mensajeService.mensajeError("Error al actualizar candidato");
-        console.error(error);
-        console.log(areaFormValue);
-      }
-    });
+  editarCandidato() {
+    this.candidatos = this.candidatoForm.value as Candidatos;
+    const candidatoId = this.candidatoForm.get('id')?.value
+    const cargoid = this.candidatoForm.get('cargo')?.value;
+    const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
+    const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
+
+    this.candidatos.cargo = {id: cargoid } as Cargo;
+    if (imagenBase64 && emblemaBase64) {
+      const formData = { ...this.candidatos, imagenBase64, emblemaBase64 };
+      this.spinnerService.show();
+
+      this.candidatosService.put(candidatoId, formData).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Candidato actualizado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        }
+      });
+    } else {
+      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+    }
+
   }
 
 
@@ -257,11 +286,10 @@ export class CandidatosComponent {
     const cargoid = this.candidatoForm.get('cargo')?.value;
     this.candidatos.cargo = { id: cargoid } as Cargo;
 
-    if (imagenBase64) {
-      const formData = { ...this.candidato, imagenBase64, emblemaBase64 };
-
+    if (imagenBase64 && emblemaBase64) {
+      const formData = { ...this.candidatos, imagenBase64, emblemaBase64};
       this.spinnerService.show();
-      this.candidatosService.post(this.candidatos).subscribe({
+      this.candidatosService.post(formData).subscribe({
         next: () => {
           this.spinnerService.hide();
           this.mensajeService.mensajeExito('Incidencia guardado correctamente');
@@ -271,7 +299,7 @@ export class CandidatosComponent {
         error: (error) => {
           this.spinnerService.hide();
           this.mensajeService.mensajeError(error);
-          console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+
         }
       });
     } else {
@@ -280,10 +308,11 @@ export class CandidatosComponent {
   }
 
 
+
   submit() {
     if (this.isModalAdd === false) {
 
-      this.editarArea();
+      this.editarCandidato();
     } else {
       this.agregar();
 

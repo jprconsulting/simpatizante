@@ -74,6 +74,7 @@ export class IncidenciasComponent implements OnInit {
   }
   creteForm() {
     this.incidenciasForm = this.formBuilder.group({
+      id:[null],
       retroalimentacion: [''],
       tipoIncidencia:  [null,Validators.required],
       casilla: [null,Validators.required],
@@ -114,6 +115,8 @@ export class IncidenciasComponent implements OnInit {
 
     this.selectAddress2(dummyPlace);
   }
+
+
 
   ngAfterViewInit() {
     this.canvas = this.mapCanvas.nativeElement;
@@ -294,7 +297,8 @@ export class IncidenciasComponent implements OnInit {
     this.incidenciasFilter = this.incidencias.filter(incidencia =>
       incidencia.retroalimentacion.toLowerCase().includes(inputValue.toLowerCase())||
       incidencia.tipoIncidencia.tipo.toLowerCase().includes(inputValue.toLowerCase())||
-      incidencia.casilla.nombre.toLocaleLowerCase().includes(inputValue.toLowerCase())
+      incidencia.casilla.nombre.toLocaleLowerCase().includes(inputValue.toLowerCase())||
+      incidencia.direccion.toLowerCase().includes(inputValue)
     );
     this.configPaginator.currentPage = 1;
   }
@@ -326,7 +330,7 @@ export class IncidenciasComponent implements OnInit {
       const formData = { ...this.incidencia, imagenBase64 };
 
       this.spinnerService.show();
-      this.incidenciasService.post(this.incidencia).subscribe({
+      this.incidenciasService.post(formData).subscribe({
         next: () => {
           this.spinnerService.hide();
           this.mensajeService.mensajeExito('Incidencia guardado correctamente');
@@ -347,36 +351,36 @@ export class IncidenciasComponent implements OnInit {
   id!: number;
 
   editarIncidencia() {
-    this.incidencia = this.incidenciasForm.value as Incidencia;
-    this.incidencia.id = this.idUpdate;
     const indicadorid = this.incidenciasForm.get('tipoIncidencia')?.value;
     const casillaid = this.incidenciasForm.get('casilla')?.value;
     const imagenBase64 = this.incidenciasForm.get('imagenBase64')?.value;
 
-    this.incidencia.casilla = {id: casillaid } as Casillas;
-    this.incidencia.tipoIncidencia = { id: indicadorid } as Indicadores;
+    const incidenciaId = this.incidenciasForm.get('id')?.value; // Obtener el ID de la incidencia directamente del formulario
 
+    this.incidencia = this.incidenciasForm.value as Incidencia;
+    this.incidencia.casilla = {id: casillaid} as Casillas;
+    this.incidencia.tipoIncidencia = {id: indicadorid} as Indicadores;
 
     if (imagenBase64) {
-      const formData = { ...this.incidencia, imagenBase64 };
-      this.spinnerService.show();
+       const formData = { ...this.incidencia, imagenBase64 };
+       this.spinnerService.show();
 
-      this.incidenciasService.put(this.id, formData).subscribe({
-        next: () => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
-          this.resetForm();
-          this.configPaginator.currentPage = 1;
-        },
-        error: (error) => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeError(error);
-        }
-      });
+       this.incidenciasService.put(incidenciaId, formData).subscribe({
+          next: () => {
+             this.spinnerService.hide();
+             this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
+             this.resetForm();
+             this.configPaginator.currentPage = 1;
+          },
+          error: (error) => {
+             this.spinnerService.hide();
+             this.mensajeService.mensajeError(error);
+          }
+       });
     } else {
-      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+       console.error('Error: No se encontró una representación válida en base64 de la imagen.');
     }
-  }
+ }
 
   setDataModalUpdate(dto: Incidencia){
     this.isModalAdd = false;
@@ -392,8 +396,10 @@ export class IncidenciasComponent implements OnInit {
       longitud: dto.longitud,
 
     });
-    this.formData = this.incidenciasForm.value;
+
+    // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
     console.log(this.incidenciasForm.value);
+    console.log(dto);
   }
 
 

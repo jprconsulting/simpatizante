@@ -6,6 +6,7 @@ export interface Candidatos {
     apellidoPaterno: string;
     apellidoMaterno: string;
     fechaNacimiento: string;
+    strFechaNacimiento: string;
     sexo: number;
     sobrenombre: string;
     cargo: Cargo;

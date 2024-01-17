@@ -287,7 +287,7 @@ export class SimpatizanteComponent implements OnInit {
       sexo: [null, Validators.required],
       curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
-      programa: [''],
+      programaSocial: [null],
       municipioId: [null, Validators.required],
       domicilio: [null, Validators.required],
       latitud: [null, Validators.required],
@@ -365,8 +365,6 @@ export class SimpatizanteComponent implements OnInit {
     this.isModalAdd = false;
     this.id = votante.id;
     const fechaFormateada = this.formatoFecha(votante.fechaNacimiento);
-
-
     const municipio = votante.municipio.id;
     this.onSelectmunicipios(municipio);
     this.simpatizanteForm.patchValue({
@@ -382,7 +380,7 @@ export class SimpatizanteComponent implements OnInit {
       municipioId: municipio,
       curp: votante.curp,
       sexo: votante.sexo,
-
+      programaSocial: votante.programaSocial.id,
     });
 
     console.log(votante);
@@ -460,9 +458,13 @@ export class SimpatizanteComponent implements OnInit {
 
     const programaSocialId = this.simpatizanteForm.get('programaSocialId')?.value;
     const municipioId = this.simpatizanteForm.get('municipioId')?.value;
+    const estadoId = this.simpatizanteForm.get('estado')?.value;
+    const seccionId = this.simpatizanteForm.get('seccion')?.value;
 
     this.votante.programaSocial = { id: programaSocialId } as ProgramaSocial;
     this.votante.municipio = { id: municipioId } as Municipio;
+    this.votante.estado = {id: estadoId} as Estado;
+    this.votante.seccion = { id: seccionId } as Seccion
 
     console.log(this.votante);
 

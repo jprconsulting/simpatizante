@@ -117,14 +117,37 @@
                   }}
                 </td>
                 <td>{{ candidato.nombres }} {{ candidato.apellidoPaterno}} {{candidato.apellidoMaterno}}</td>
-                <td>{{ candidato.fechaNacimiento }}</td>
+                <td>{{ candidato.strFechaNacimiento }}</td>
                 <td>{{ objGeneros[candidato.sexo] }}</td>
                 <td>{{ candidato.sobrenombre }}</td>
                 <td class="text-muted">{{ candidato.cargo.nombre }}</td>
                 <td class="text-muted">
-
+                  <div class="flex justify-center items-center">
+                    <img
+                      [src]="obtenerRutaImagen(candidato.foto)"
+                      alt="Foto de {{ candidato.foto }}"
+                      width="50"
+                      height="50"
+                      (click)="
+                        mostrarImagenAmpliada(obtenerRutaImagen(candidato.foto))
+                      "
+                    />
+                  </div>
                 </td>
-                <td></td>
+
+                <td>
+                  <div class="flex justify-center items-center">
+                  <img
+                    [src]="obtenerRutaImagen(candidato.emblema)"
+                    alt="Foto de {{ candidato.emblema }}"
+                    width="50"
+                    height="50"
+                    (click)="
+                      mostrarImagenAmpliada(obtenerRutaImagen(candidato.emblema))
+                    "
+                  />
+                </div>
+              </td>
                 <td class="text-center">
                   <ng-container *ngIf="candidato.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
@@ -450,6 +473,16 @@
                   (change)="onFileChange($event)"
                   formControlName="imagenBase64"
                 />
+                <div
+                  *ngIf="candidatoForm.get('imagenBase64')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="candidatoForm.get('imagenBase64')?.hasError('required')"
+                  >
+                    La imagen es obligatoria
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-12">
@@ -458,7 +491,7 @@
                   class="img"
                   *ngIf="candidatoForm.get('imagenBase64')?.value"
                   [src]="
-                    'data:image/jpeg;base64,' +
+                    'data:image/jpg;base64,' +
                     candidatoForm.get('imagenBase64')?.value
                   "
                   width="50%"
@@ -485,7 +518,7 @@
                   class="img"
                   *ngIf="candidatoForm.get('emblemaBase64')?.value"
                   [src]="
-                    'data:image/jpeg;base64,' +
+                    'data:image/jpg;base64,' +
                     candidatoForm.get('emblemaBase64')?.value
                   "
                   width="50%"
