@@ -182,7 +182,36 @@
 
       <form [formGroup]="usuarioForm" (ngSubmit)="submit()">
         <div class="modal-body">
-          <div class="row">
+          <div class="">
+            <div class="">
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label class="form-label">Rol*:</label>
+                  <ng-select
+                    placeholder="Elegir"
+                    [items]="rols"
+                    bindLabel="nombreRol"
+                    bindValue="id"
+                    [searchable]="false"
+                    [clearable]="false"
+                    formControlName="rolId"
+                  >
+                    <ng-template ng-option-tmp let-item="item">
+                      {{ item.nombreRol }}
+                    </ng-template>
+                  </ng-select>
+                  <div
+                    *ngIf="usuarioForm.get('rolId')?.touched"
+                    class="error-message"
+                  >
+                    <div *ngIf="usuarioForm.get('rolId')?.hasError('required')">
+                      <p style="color: red">La rol es obligatorio</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
             <div class="col-lg-6" *ngIf="usuarioForm.get('rolId')?.value === 3">
               <div class="mb-3">
                 <label class="form-label">Nombre del candidato*</label>
@@ -333,35 +362,7 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-lg-4">
-              <div class="mb-3">
-                <label class="form-label">Rol*:</label>
-                <ng-select
-                  placeholder="Elegir"
-                  [items]="rols"
-                  bindLabel="nombreRol"
-                  bindValue="id"
-                  [searchable]="false"
-                  [clearable]="false"
-                  formControlName="rolId"
-                >
-                  <ng-template ng-option-tmp let-item="item">
-                    {{ item.nombreRol }}
-                  </ng-template>
-                </ng-select>
-                <div
-                  *ngIf="usuarioForm.get('rolId')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="usuarioForm.get('rolId')?.hasError('required')">
-                    <p style="color: red">La rol es obligatorio</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
+          
         </div>
         <p
           class="form-label"

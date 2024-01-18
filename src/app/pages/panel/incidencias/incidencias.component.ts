@@ -465,6 +465,8 @@ export class IncidenciasComponent implements OnInit {
         'Id': incidencias.id,
         'casilla': incidencias.casilla.nombre,
         'tipo de incidencia': incidencias.tipoIncidencia.tipo,
+        'direccion': incidencias.direccion,
+
       };
     });
 
