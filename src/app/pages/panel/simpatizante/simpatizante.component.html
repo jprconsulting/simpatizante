@@ -119,7 +119,9 @@
                 </td>
                 <td class="text-muted">{{ simpatizante.domicilio }}</td>
                 <td class="text-muted">{{ objGeneros[simpatizante.sexo] }}</td>
-                <td class="text-muted">{{ simpatizante.curp }}</td>
+                <td class="text-muted">{{ simpatizante.CURP }}</td>
+                <td class="text-muted">{{ simpatizante.IDMEX }}</td>
+                <td class="text-muted">{{ simpatizante.programaSocial.nombre }}</td>
                 <td class="text-muted">{{ simpatizante.municipio.nombre }}</td>
                 <td class="text-center">
                   <ng-container *ngIf="simpatizante.estatus; else elseEstatus">
@@ -135,7 +137,7 @@
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
                       data-bs-target="#modal-votante"
-                      (click)="setDataModalUpdate(votante); mapa()"
+                      (click)="setDataModalUpdate(votante)"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
@@ -349,32 +351,6 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Edad*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="edad"
-                />
-                <div
-                  *ngIf="simpatizanteForm.get('edad')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="simpatizanteForm.get('edad')?.hasError('required')">
-                    La edad es obligatoria
-                  </div>
-                  <div *ngIf="simpatizanteForm.get('edad')?.hasError('pattern')">
-                    El edad no es valida
-                  </div>
-                  <div *ngIf="simpatizanteForm.get('edad')?.hasError('minlength')">
-                    El apellido materno debe tener al menos 3 caracteres
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-4">
-              <div class="mb-3">
                 <label class="form-label">Folio*:</label>
                 <input
                   type="text"
@@ -397,22 +373,25 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="row">
+
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">CURP*:</label>
                 <input
                   type="text"
                   class="form-control"
-                  formControlName="curp"
+                  formControlName="CURP"
                 />
                 <div
-                  *ngIf="simpatizanteForm.get('curp')?.touched"
+                  *ngIf="simpatizanteForm.get('CURP')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="simpatizanteForm.get('curp')?.hasError('required')">
+                  <div *ngIf="simpatizanteForm.get('CURP')?.hasError('required')">
                     El CURP es obligatorio
                   </div>
-                  <div *ngIf="simpatizanteForm.get('curp')?.hasError('pattern')">
+                  <div *ngIf="simpatizanteForm.get('CURP')?.hasError('pattern')">
                     El CURP no es valido
                   </div>
                 </div>
@@ -481,11 +460,11 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="simpatizanteForm.get('municipioId')?.touched"
+                  *ngIf="simpatizanteForm.get('municipio')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="simpatizanteForm.get('municipioId')?.hasError('required')"
+                    *ngIf="simpatizanteForm.get('municipio')?.hasError('required')"
                   >
                     El municipio es obligatorio
                   </div>
@@ -500,7 +479,7 @@
                   #selectseccion
                   [searchable]="false"
                   [items]="seccion"
-                  bindLabel="nombre"
+                  bindLabel="clave"
                   bindValue="id"
                   placeholder="Elegir"
                   [clearable]="false"
@@ -513,7 +492,7 @@
                     />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombre }}
+                    {{ item.clave }}
                   </ng-template>
                 </ng-select>
                 <div
@@ -527,31 +506,25 @@
               </div>
             </div>
 
-            <div class="col">
+            <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">IDMEX*:</label>
                 <input
                   type="text"
                   class="form-control"
-                  formControlName="idmex"
+                  formControlName="IDMEX"
                 />
                 <div
-                  *ngIf="simpatizanteForm.get('idmex')?.touched"
+                  *ngIf="simpatizanteForm.get('IDMEX')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="simpatizanteForm.get('idmex')?.hasError('required')">
+                  <div *ngIf="simpatizanteForm.get('IDMEX')?.hasError('required')">
                     El IDMEX es obligatorio
-                  </div>
-                  <div *ngIf="simpatizanteForm.get('idmex')?.hasError('minlength')">
-                    El IDMEX debe tener al menos 8 caracteres
-                  </div>
-                  <div *ngIf="simpatizanteForm.get('idmex')?.hasError('pattern')">
-                    El IDMEX no puede tener letras
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label"
                   >¿Usted cuenta con algún programa social?*:</label

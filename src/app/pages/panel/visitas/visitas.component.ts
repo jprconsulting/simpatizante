@@ -15,7 +15,7 @@ import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { Candidatos } from 'src/app/models/candidato';
 import { Operadores } from 'src/app/models/operadores';
 import { OperadoresService } from 'src/app/core/services/operadores.service';
-import { Simpatizante } from 'src/app/models/Simpatizante';
+import { Votante } from 'src/app/models/votante';
 import { VotantesService } from 'src/app/core/services/votante.service';
 
 @Component({
@@ -34,7 +34,7 @@ export class VisitasComponent {
   visitasFilter: Visita[] = [];
   isLoading = LoadingStates.neutro;
   programasSociales: ProgramaSocial[] = [];
-  simpatizantes: Simpatizante[] =[];
+  simpatizantes: Votante[] =[];
   candidatoSelect!: Candidatos | undefined;
   candidato: Candidatos[] = [];
   operador: Operadores[] = [];
@@ -101,12 +101,8 @@ export class VisitasComponent {
   }
   creteForm() {
     this.visitaForm = this.formBuilder.group({
-      id: [null],
-      servicios:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      servicio:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       descripcion:  ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      simpatizante: ['', Validators.required],
-      OperadorId: ['', Validators.required],
-      CandidatoId: ['', Validators.required],
       imagenBase64: ['', Validators.required],
     });
   }
@@ -137,10 +133,7 @@ export class VisitasComponent {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value.toLowerCase();
     this.visitasFilter = this.visitas.filter(visita =>
-      visita.descripcion.toLowerCase().includes(inputValue) ||
-      visita.beneficiario.nombreCompleto.toLowerCase().includes(inputValue)||
-      visita.beneficiario.domicilio.toLowerCase().includes(inputValue)||
-      visita.beneficiario.programaSocial.nombre.toLowerCase().includes(inputValue)
+      visita.descripcion.toLowerCase().includes(inputValue)
     );
 
     this.configPaginator.currentPage = 1;
@@ -152,16 +145,10 @@ export class VisitasComponent {
   setDataModalUpdate(dto: Visita) {
     this.isModalAdd = false;
     this.id = dto.id;
-
-    // Asegúrate de asignar solo el ID del beneficiario si beneficiarioId es un campo de ID
-    // beneficiario no puede ser nulo
-    const beneficiarioId = dto.beneficiario.id;
-    this.onSelectCandidato(beneficiarioId);
-
     this.visitaForm.patchValue({
       id: dto.id,
       descripcion: dto.descripcion,
-      beneficiarioId: beneficiarioId,
+      servicio: dto.servicio,
       imagenBase64: dto.imagenBase64
     });
 
@@ -172,9 +159,9 @@ export class VisitasComponent {
 
 
 
-  deleteItem(id: number, nameItem: string) {
+  deleteItem(id: number) {
     this.mensajeService.mensajeAdvertencia(
-      `¿Estás seguro de eliminar la visita: ${nameItem}?`,
+      `¿Estás seguro de eliminar la visita:?`,
       () => {
         this.visitasService.delete(id).subscribe({
           next: () => {
@@ -208,9 +195,6 @@ export class VisitasComponent {
   agregar() {
     this.visita = this.visitaForm.value as Visita;
 
-    const OperadorId = this.visitaForm.get('OperadorId')?.value;
-    const municipioId = this.visitaForm.get('municipioId')?.value;
-
     this.spinnerService.show();
     console.log('data:', this.visita);
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
@@ -238,10 +222,8 @@ export class VisitasComponent {
 
   actualizarVisita() {
     this.visita = this.visitaForm.value as Visita;
-    const beneficiarioId = this.visitaForm.get('beneficiarioId')?.value;
-    this.visita.beneficiario = { id: beneficiarioId } as Beneficiario;
 
-  
+
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 
     if (imagenBase64) {
@@ -345,47 +327,5 @@ export class VisitasComponent {
     }
   }
 
-
-
-  filterByProgram() {
-    if (this.selectedProgramaSocial) {
-      this.visitasFilter = this.visitas.filter(visita => visita.beneficiario.programaSocial.id === this.selectedProgramaSocial);
-    } else {
-      this.visitasFilter = this.visitas; // Si no se selecciona ningún programa, mostrar todos
-    }
-  }
-
-  exportarDatosAExcel() {
-    if (this.visitas.length === 0) {
-      console.warn('La lista de evidencias está vacía. No se puede exportar.');
-      return;
-    }
-
-    const datosParaExportar = this.visitas.map(visitas => {
-      return {
-        'Id': visitas.id,
-        'Nombre del beneficiario': visitas.beneficiario.nombreCompleto,
-        'Descripción': visitas.descripcion,
-        'Fecha y hora de visita': visitas.strFechaHoraVisita,
-      };
-    });
-
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-    this.guardarArchivoExcel(excelBuffer, 'visitas.xlsx');
-  }
-
-  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url: string = window.URL.createObjectURL(data);
-    const a: HTMLAnchorElement = document.createElement('a');
-    a.href = url;
-    a.download = nombreArchivo;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
-  buscar: string = '';
-  usuarioFiltrado: any[] = [];
 }
+

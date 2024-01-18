@@ -123,6 +123,11 @@ export class SimpatizanteComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
+    if (place.formatted_address) {
+      this.simpatizanteForm.patchValue({
+        domicilio: place.formatted_address
+      });
+    }
     const selectedLat = place.geometry?.location?.lat() || this.latitude;
     const selectedLng = place.geometry?.location?.lng() || this.longitude;
 
@@ -281,19 +286,18 @@ export class SimpatizanteComponent implements OnInit {
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
-      estadoId:['', Validators.required],
-      seccion: ['', Validators.required],
+      estado:[null, Validators.required],
+      seccion: [null, Validators.required],
       folio: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^([0-9]{7})[0-9]+$')]],
       sexo: [null, Validators.required],
-      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
+      CURP: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
       programaSocial: [null],
-      municipioId: [null, Validators.required],
-      domicilio: [null, Validators.required],
+      municipio: [null, Validators.required],
+      domicilio: ['', Validators.required],
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
-      edad: [null, [Validators.required]],
-      idmex: ['', [Validators.required]],
+      IDMEX: ['', [Validators.required]],
     });
   }
 
@@ -341,7 +345,7 @@ export class SimpatizanteComponent implements OnInit {
       this.getGeneroName(Votante.sexo).toLowerCase().includes(valueSearch) ||
       Votante.domicilio.toLowerCase().includes(valueSearch) ||
       Votante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
-      Votante.curp.toLowerCase().includes(valueSearch) ||
+      Votante.CURP.toLowerCase().includes(valueSearch) ||
       Votante.id.toString().includes(valueSearch)
     );
 
@@ -366,6 +370,7 @@ export class SimpatizanteComponent implements OnInit {
     this.id = votante.id;
     const fechaFormateada = this.formatoFecha(votante.fechaNacimiento);
     const municipio = votante.municipio.id;
+    const estado = votante.estado.id;
     this.onSelectmunicipios(municipio);
     this.simpatizanteForm.patchValue({
       id: votante.id,
@@ -377,8 +382,9 @@ export class SimpatizanteComponent implements OnInit {
       estatus: votante.estatus,
       latitud: votante.latitud,
       longitud: votante.longitud,
-      municipioId: municipio,
-      curp: votante.curp,
+      municipio: municipio,
+      estado: estado,
+      CURP: votante.CURP,
       sexo: votante.sexo,
       programaSocial: votante.programaSocial.id,
     });
@@ -404,13 +410,13 @@ export class SimpatizanteComponent implements OnInit {
     this.votantesService.put(this.id, this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito("Beneficiario actualizado con éxito");
+        this.mensajeService.mensajeExito("Simpatizante actualizado con éxito");
         this.resetForm();
 
         this.configPaginator.currentPage = 1;
       },
       error: (error) => {
-        this.mensajeService.mensajeError("Error al actualizar el beneficiario");
+        this.mensajeService.mensajeError("Error al actualizar el simpatizante");
         console.error(error);
       }
     });
@@ -423,11 +429,11 @@ export class SimpatizanteComponent implements OnInit {
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
-      `¿Estás seguro de eliminar el beneficiario: ${nameItem}?`,
+      `¿Estás seguro de eliminar el simpatizante: ${nameItem}?`,
       () => {
         this.votantesService.delete(id).subscribe({
           next: () => {
-            this.mensajeService.mensajeExito('Beneficiario borrado correctamente');
+            this.mensajeService.mensajeExito('Simpatizante borrado correctamente');
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
@@ -456,8 +462,8 @@ export class SimpatizanteComponent implements OnInit {
   agregar() {
     this.votante = this.simpatizanteForm.value as Votante;
 
-    const programaSocialId = this.simpatizanteForm.get('programaSocialId')?.value;
-    const municipioId = this.simpatizanteForm.get('municipioId')?.value;
+    const programaSocialId = this.simpatizanteForm.get('programaSocial')?.value;
+    const municipioId = this.simpatizanteForm.get('municipio')?.value;
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
 
@@ -472,11 +478,12 @@ export class SimpatizanteComponent implements OnInit {
     this.votantesService.post(this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Beneficiario guardado correctamente');
+        this.mensajeService.mensajeExito('Simpatizante guardado correctamente');
         this.resetForm();
         this.configPaginator.currentPage = 1;
       },
       error: (error) => {
+        console.error('Error en la solicitud POST:', error);
         this.spinnerService.hide();
         this.mensajeService.mensajeError(error);
       }

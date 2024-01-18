@@ -13,7 +13,7 @@ export interface Votante {
     strFechaNacimiento: string;
     domicilio: string;
     sexo: number;
-    curp: string;
+    CURP: string;
     latitud: number;
     longitud: number;
     estatus: boolean;
@@ -21,7 +21,7 @@ export interface Votante {
     municipio: Municipio;
     seccion: Seccion;
     estado: Estado;
-
+    IDMEX: string;
 }
 
 export interface TotalBeneficiariosMunicipio extends Municipio {

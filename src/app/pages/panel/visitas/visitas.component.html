@@ -39,7 +39,7 @@
             <a
               class="btn w-30 btn-icon"
               aria-label="Dribbble"
-              (click)="exportarDatosAExcel()"
+
               title="Descargar excel de visitas"
               style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
             >
@@ -51,35 +51,7 @@
           </div>
         </div>
         <hr />
-        <div class="col-4">
-          <div class="mb-3">
-            <label class="form-label" for="selectProgramaSocial"
-              >Filtrar por programa social:</label
-            >
-            <select
-              class="form-select"
-              id="selectProgramaSocial"
-              [(ngModel)]="selectedProgramaSocial"
-              (change)="filterByProgram()"
-            >
-              <option
-                value="0"
-                [attr.selected]="selectedProgramaSocial === -1 ? true : null"
-                disabled
-                selected
-              >
-                Selecciona un programa social
-              </option>
-              <option value="">Todos los programas sociales</option>
-              <option
-                *ngFor="let programa of programasSociales"
-                [ngValue]="programa.id"
-              >
-                {{ programa.nombre }}
-              </option>
-            </select>
-          </div>
-        </div>
+
       </div>
       <ng-container [ngSwitch]="isLoading">
         <div style="height: 300px" *ngSwitchCase="2">
@@ -131,15 +103,12 @@
                   }}
                 </td>
                 <td class="text-muted">
-                  {{ visita.beneficiario.nombreCompleto }}
+                  {{ visita.descripcion }}
                 </td>
                 <td class="text-muted">
-                  {{ visita.beneficiario.programaSocial.nombre }}
+                  {{ visita.servicio }}
                 </td>
-                <td class="text-muted">
-                  {{ visita.beneficiario.municipio.nombre }}
-                </td>
-                <td>{{ visita.descripcion }}</td>
+
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
                     <img
@@ -153,7 +122,6 @@
                     />
                   </div>
                 </td>
-                <td class="text-muted">{{ visita.strFechaHoraVisita }}</td>
 
                 <td style="width: 50px">
                   <div>
@@ -169,7 +137,7 @@
                     <button
                       class="btn btn-danger btn-icon btn-sm"
                       (click)="
-                        deleteItem(visita.id, visita.beneficiario.nombres)
+                        deleteItem(visita.id)
                       "
                     >
                       <i class="ti ti-eraser"></i>
@@ -227,21 +195,21 @@
       <form [formGroup]="visitaForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="row">
-            
+
             <div class="col-lg-12">
               <div class="mb-3">
                 <label class="form-label">Servicios de interes</label>
                 <textarea
                   type="text"
                   class="form-control"
-                  formControlName="servicios"
+                  formControlName="servicio"
                 ></textarea>
                 <div
-                  *ngIf="visitaForm.get('servicios')?.touched"
+                  *ngIf="visitaForm.get('servicio')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="visitaForm.get('servicios')?.hasError('required')"
+                    *ngIf="visitaForm.get('servicio')?.hasError('required')"
                   >
                     El servicio de interes es obligatorio
                   </div>
@@ -249,19 +217,19 @@
                     El servicio no puede tener letras
                   </div>
                   <div
-                    *ngIf="visitaForm.get('servicios')?.hasError('minlength')"
+                    *ngIf="visitaForm.get('servicio')?.hasError('minlength')"
                   >
                     El servicio debe tener al menos 3 caracteres
                   </div>
-                  <div *ngIf="visitaForm.get('servicios')?.hasError('pattern')">
+                  <div *ngIf="visitaForm.get('servicio')?.hasError('pattern')">
                     El servicio debe tener numeros
                   </div>
                 </div>
               </div>
             </div>
-          
+
             <div class="col-lg-6">
-             
+
             </div>
             <div class="col-lg-12">
               <div class="mb-3">

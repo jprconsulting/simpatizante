@@ -1,15 +1,15 @@
 import { Beneficiario } from "./beneficiario"
 import { Candidatos } from "./candidato";
 import { Operadores } from "./operadores";
+import { Votante } from "./votante";
 
 export interface Visita {
-    operador: Operadores;
     id: number;
     descripcion: string;
-    foto: string;
+    servicio: string;
     imagenBase64: string;
-    strFechaHoraVisita: string;
-    OperadorId:Operadores,
-    CandidatoId: Candidatos,
-    beneficiario: Beneficiario;
+    foto: string;
+    candidato: Candidatos;
+    operador: Operadores;
+    simpatizante: Votante;
 }

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
-import { Simpatizante } from 'src/app/models/Simpatizante';
+import { Votante } from 'src/app/models/votante';
 import { Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
@@ -11,7 +11,7 @@ import { catchError, tap } from 'rxjs/operators';
 })
 export class VotantesService {
   route = `${environment.apiUrl}/votantes`;
-  private _refreshListVotante$ = new Subject<Simpatizante | null>();
+  private _refreshListVotante$ = new Subject<Votante | null>();
 
   constructor(
     private http: HttpClient,
@@ -23,15 +23,15 @@ export class VotantesService {
   }
 
   getById(id: number) {
-    return this.http.get<Simpatizante>(`${this.route}/obtener-por-id/${id}`);
+    return this.http.get<Votante>(`${this.route}/obtener-por-id/${id}`);
   }
 
   getAll() {
-    return this.http.get<Simpatizante[]>(`${this.route}/obtener-todos`);
+    return this.http.get<Votante[]>(`${this.route}/obtener-todos`);
   }
 
-  post(dto: Simpatizante) {
-    return this.http.post<Simpatizante>(`${this.route}/crear`, dto)
+  post(dto: Votante) {
+    return this.http.post<Votante>(`${this.route}/crear`, dto)
       .pipe(
         tap(() => {
           this._refreshListVotante$.next(null);
@@ -40,8 +40,8 @@ export class VotantesService {
       );
   }
 
-  put(id: number, dto: Simpatizante) {
-    return this.http.put<Simpatizante>(`${this.route}/actualizar/${id}`, dto)
+  put(id: number, dto: Votante) {
+    return this.http.put<Votante>(`${this.route}/actualizar/${id}`, dto)
       .pipe(
         tap(() => {
           this._refreshListVotante$.next(null);
