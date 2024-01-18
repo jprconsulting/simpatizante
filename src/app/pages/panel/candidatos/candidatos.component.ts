@@ -332,17 +332,19 @@ export class CandidatosComponent {
   }
 
   exportarDatosAExcel() {
-    if (this.areasAdscripcion.length === 0) {
+    if (this.candidato.length === 0) {
       console.warn('La lista de candidatos está vacía. No se puede exportar.');
       return;
     }
 
-    const datosParaExportar = this.areasAdscripcion.map(areasadscripcion => {
-      const estatus = areasadscripcion.estatus ? 'Activo' : 'Inactivo';
+    const datosParaExportar = this.candidato.map(candidato => {
+      const estatus = candidato.estatus ? 'Activo' : 'Inactivo';
       return {
-        'Id': areasadscripcion.id,
-        'Nombre': areasadscripcion.nombre,
-        'Descripcion': areasadscripcion.descripcion,
+        'Id': candidato.id,
+        'Nombres': candidato.nombres,
+        'apellidoPaterno': candidato.apellidoPaterno,
+        'apellidoMaterno': candidato.apellidoMaterno,
+        'fechaNacimiento': candidato.fechaNacimiento,
         'Estatus': estatus,
 
       };
@@ -352,7 +354,7 @@ export class CandidatosComponent {
     const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
-    this.guardarArchivoExcel(excelBuffer, 'areas_adscripcion.xlsx');
+    this.guardarArchivoExcel(excelBuffer, 'Candidatos.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {

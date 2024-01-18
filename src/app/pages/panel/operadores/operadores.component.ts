@@ -220,29 +220,30 @@ export class OperadoresComponent implements OnInit{
     }
   }
 
+ 
+
   exportarDatosAExcel() {
-    // if (this.operador.length === 0) {
-    //   console.warn('La lista de usuarios está vacía. No se puede exportar.');
-    //   return;
-    // }
+    if (this.operadores.length === 0) {
+      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      return;
+    }
 
-    // const datosParaExportar = this.operador.map(operador => {
-    //   const estatus = operador.estatus ? 'Activo' : 'Inactivo';
-    //   return {
-    //     'Id': operador.id,
-    //     'Nombre': operador.nombre,
-    //     'Apellido Paterno': operador.apellidoPaterno,
-    //     'Apellido Materno': operador.apellidoMaterno,
-    //     'Correo': operador.correo,
-    //     'Estatus': estatus,
-    //   };
-    // });
+    const datosParaExportar = this.operadores.map(operador => {
+        const estatus = operador.estatus ? 'Activo' : 'Inactivo';
+        return {
+          'Id': operador.id,
+          'Nombres': operador.nombres,
+          'Apellido Paterno': operador.apellidoPaterno,
+          'Apellido Materno': operador.apellidoMaterno,
+          'sexo': operador.sexo,         
+          'Estatus': estatus,
+        };
+      });
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
-    // const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    // const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    // const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-    // this.guardarArchivoExcel(excelBuffer, 'usuarios.xlsx');
+    this.guardarArchivoExcel(excelBuffer, 'Operadores.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
