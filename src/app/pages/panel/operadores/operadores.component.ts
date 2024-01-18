@@ -220,7 +220,7 @@ export class OperadoresComponent implements OnInit{
     }
   }
 
- 
+
 
   exportarDatosAExcel() {
     if (this.operadores.length === 0) {
@@ -235,7 +235,7 @@ export class OperadoresComponent implements OnInit{
           'Nombres': operador.nombres,
           'Apellido Paterno': operador.apellidoPaterno,
           'Apellido Materno': operador.apellidoMaterno,
-          'sexo': operador.sexo,         
+          'sexo': operador.sexo,
           'Estatus': estatus,
         };
       });
@@ -263,4 +263,32 @@ export class OperadoresComponent implements OnInit{
     const car: any = this.secciones[1];
     car.disabled = !car.disabled;
   }
+  imagenAmpliada: string | null = null;
+
+  obtenerRutaImagen(nombreArchivo: string): string {
+    const rutaBaseAPI = 'https://localhost:7224/';
+    if (nombreArchivo) {
+      return `${rutaBaseAPI}images/${nombreArchivo}`;
+    }
+    return ''; // O una URL predeterminada si no hay nombre de archivo
+  }
+
+  mostrarImagenAmpliada(seccion: string) {
+    this.imagenAmpliada = seccion;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+
+  cerrarModal() {
+    this.imagenAmpliada = null;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+    }
+  }
+
 }

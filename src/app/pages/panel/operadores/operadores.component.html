@@ -105,7 +105,18 @@
                 </td>
                 <td>{{ operador.nombres }} {{ operador.apellidoPaterno }} {{ operador.apellidoMaterno }}</td>
                 <td class="text-muted">{{ operador.strFechaNacimiento }}</td>
-                <td>{{ operador.seccion}}</td>
+                <td >
+                  <div class="flex justify-center items-center">
+                    <h4
+                      class="text-muted"
+                      width="50"
+                      height="50"
+                      (click)="
+                        mostrarImagenAmpliada(obtenerRutaImagen(operador.nombres))
+                      "
+                    > Ver secciones</h4>
+                  </div>
+                </td>
                 <td class="text-center">
                   <ng-container *ngIf="operador.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
@@ -385,5 +396,23 @@
         </div>
       </form>
     </div>
+  </div>
+</div>
+<div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5);">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Secciones asociadas al operador</h5>
+              <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
+          </div>
+          <div class="modal-body">
+              <p>Seccion 0080</p>
+              <p>Seccion 0080</p>
+              <p>Seccion 0080</p>
+              <p>Seccion 0080</p>
+              <p>Seccion 0080</p>
+              <p>Seccion 0080</p>
+          </div>
+      </div>
   </div>
 </div>
