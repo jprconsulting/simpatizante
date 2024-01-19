@@ -292,7 +292,7 @@ export class CandidatosComponent {
       this.candidatosService.post(formData).subscribe({
         next: () => {
           this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Incidencia guardado correctamente');
+          this.mensajeService.mensajeExito('Candidato guardado correctamente');
           this.resetForm();
           this.configPaginator.currentPage = 1;
         },
