@@ -462,7 +462,6 @@ export class IncidenciasComponent implements OnInit {
 
     const datosParaExportar = this.incidencias.map(incidencias => {
       return {
-        'Id': incidencias.id,
         'casilla': incidencias.casilla.nombre,
         'tipo de incidencia': incidencias.tipoIncidencia.tipo,
         'direccion': incidencias.direccion,
