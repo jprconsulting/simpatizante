@@ -101,9 +101,11 @@ export class VisitasComponent {
   }
   creteForm() {
     this.visitaForm = this.formBuilder.group({
+      id:[null],
       servicio:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       descripcion:  ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       imagenBase64: ['', Validators.required],
+      votante:[null]
     });
   }
 
@@ -194,7 +196,10 @@ export class VisitasComponent {
 
   agregar() {
     this.visita = this.visitaForm.value as Visita;
+    const simpatizanteId = this.visitaForm.get('votante')?.value;
 
+
+    this.visita.votante = { id: simpatizanteId } as Votante
     this.spinnerService.show();
     console.log('data:', this.visita);
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
@@ -222,7 +227,10 @@ export class VisitasComponent {
 
   actualizarVisita() {
     this.visita = this.visitaForm.value as Visita;
+    const simpatizanteId = this.visitaForm.get('votante')?.value;
 
+
+    this.visita.votante = { id: simpatizanteId } as Votante
 
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 
