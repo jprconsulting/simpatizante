@@ -127,12 +127,13 @@ export class OperadoresComponent implements OnInit{
   setDataModalUpdate(dto: Operadores) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
+    const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
     this.operadorForm.patchValue({
       id: dto.id,
       nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
-      fechaNacimiento: dto.fechaNacimiento,
+      fechaNacimiento: fechaFormateada,
       estatus: dto.estatus,
     });
   }

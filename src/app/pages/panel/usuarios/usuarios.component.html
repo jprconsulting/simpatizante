@@ -103,7 +103,7 @@
                       1
                   }}
                 </td>
-                <td>{{ usuario.nombreCompleto }}</td>
+                <td>{{ usuario.nombre }} {{ usuario.apellidoPaterno}} {{usuario.apellidoMaterno}}</td>
                 <td class="text-muted">{{ usuario.correo }}</td>
                 <td class="text-muted">{{ usuario.rol.nombreRol }}</td>
                 <td class="text-center">
@@ -183,109 +183,63 @@
       <form [formGroup]="usuarioForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="">
-            <div class="">
+            <div class="row">
               <div class="col-lg-4">
                 <div class="mb-3">
-                  <label class="form-label">Rol*:</label>
-                  <ng-select
-                    placeholder="Elegir"
-                    [items]="rols"
-                    bindLabel="nombreRol"
-                    bindValue="id"
-                    [searchable]="false"
-                    [clearable]="false"
-                    formControlName="rolId"
-                  >
-                    <ng-template ng-option-tmp let-item="item">
-                      {{ item.nombreRol }}
-                    </ng-template>
-                  </ng-select>
+                  <label class="form-label">Nombre*:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="nombre"
+                  />
                   <div
-                    *ngIf="usuarioForm.get('rolId')?.touched"
+                    *ngIf="usuarioForm.get('nombre')?.touched"
                     class="error-message"
                   >
-                    <div *ngIf="usuarioForm.get('rolId')?.hasError('required')">
-                      <p style="color: red">La rol es obligatorio</p>
+                    <div *ngIf="usuarioForm.get('nombre')?.hasError('required')">
+                      <p style="color: red">El nombre es obligatorio</p>
                     </div>
                   </div>
                 </div>
               </div>
-  
-            </div>
-            <div class="col-lg-6" *ngIf="usuarioForm.get('rolId')?.value === 3">
-              <div class="mb-3">
-                <label class="form-label">Nombre del candidato*</label>
-                <ng-select
-                  formControlName="candidato"
-                  #selectBeneficiario
-                  [searchable]="false"
-                  [items]="beneficiarios"
-                  bindLabel="nombreCompleto"
-                  bindValue="id"
-                  placeholder="Elegir"
-                  [clearable]="false"
-                  (change)="onSelectBeneficiario($event.id)"
-                >
-                  <ng-template ng-header-tmp>
-                    <input
-                      class="form-control"
-                      type="text"
-                      (input)="
-                        selectBeneficiario.filter($any($event.target).value)
-                      "
-                    />
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombreCompleto }}
-                  </ng-template>
-                </ng-select>
-                <div
-                  *ngIf="usuarioForm.get('candidato')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="usuarioForm.get('candidato')?.hasError('required')">
-                    El nombre del candidato es obligatorio
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label class="form-label">Apellido paterno*:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="apellidoPaterno"
+                  />
+                  <div
+                    *ngIf="usuarioForm.get('apellidoPaterno')?.touched"
+                    class="error-message"
+                  >
+                    <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('required')">
+                      <p style="color: red">El nombre es obligatorio</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-           
-            <div class="col-lg-6" *ngIf="usuarioForm.get('rolId')?.value === 2">
-              <div class="mb-3">
-                <label class="form-label">Nombre del operador*</label>
-                <ng-select
-                  formControlName="operador"
-                  #selectBeneficiario
-                  [searchable]="false"
-                  [items]="beneficiarios"
-                  bindLabel="nombreCompleto"
-                  bindValue="id"
-                  placeholder="Elegir"
-                  [clearable]="false"
-                  (change)="onSelectBeneficiario($event.id)"
-                >
-                  <ng-template ng-header-tmp>
-                    <input
-                      class="form-control"
-                      type="text"
-                      (input)="
-                        selectBeneficiario.filter($any($event.target).value)
-                      "
-                    />
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombreCompleto }}
-                  </ng-template>
-                </ng-select>
-                <div
-                  *ngIf="usuarioForm.get('operador')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="usuarioForm.get('operador')?.hasError('required')">
-                    El nombre del operador es obligatorio
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label class="form-label">Apellido materno*:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="apellidoMaterno"
+                  />
+                  <div
+                    *ngIf="usuarioForm.get('apellidoMaterno')?.touched"
+                    class="error-message"
+                  >
+                    <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('required')">
+                      <p style="color: red">El nombre es obligatorio</p>
+                    </div>
                   </div>
                 </div>
               </div>
+
+
             </div>
           </div>
           <div class="row">
@@ -361,8 +315,34 @@
                 </label>
               </div>
             </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Rol*:</label>
+                <ng-select
+                  placeholder="Elegir"
+                  [items]="rols"
+                  bindLabel="nombreRol"
+                  bindValue="id"
+                  [searchable]="false"
+                  [clearable]="false"
+                  formControlName="rolId"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    {{ item.nombreRol }}
+                  </ng-template>
+                </ng-select>
+                <div
+                  *ngIf="usuarioForm.get('rolId')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="usuarioForm.get('rolId')?.hasError('required')">
+                    <p style="color: red">La rol es obligatorio</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          
+
         </div>
         <p
           class="form-label"

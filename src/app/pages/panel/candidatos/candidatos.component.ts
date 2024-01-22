@@ -190,6 +190,12 @@ export class CandidatosComponent {
   }
 
 
+  formatoFecha(fecha: string): string {
+    // Aquí puedes utilizar la lógica para formatear la fecha según tus necesidades
+    const fechaFormateada = new Date(fecha).toISOString().split('T')[0];
+    return fechaFormateada;
+  }
+
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
@@ -205,9 +211,12 @@ export class CandidatosComponent {
 
   formData: any;
 
+
+
   setDataModalUpdate(dto: Candidatos) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
+    const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
     this.candidatoForm.patchValue({
       id: dto.id,
       nombres: dto.nombres,
@@ -215,14 +224,14 @@ export class CandidatosComponent {
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
       sexo: dto.sexo,
-      fechaNacimiento: dto.strFechaNacimiento,
+      fechaNacimiento: fechaFormateada,
       sobrenombre: dto.sobrenombre,
       cargo: dto.cargo.id,
       imagenBase64: dto.imagenBase64,
       emblemaBase64: dto.emblemaBase64,
 
     });
-    this.formData = this.candidatoForm.value;
+    console.log(dto);
     console.log(this.candidatoForm.value);
   }
 

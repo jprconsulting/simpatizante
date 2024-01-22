@@ -104,7 +104,7 @@
                   }}
                 </td>
                 <td>{{ operador.nombres }} {{ operador.apellidoPaterno }} {{ operador.apellidoMaterno }}</td>
-                <td class="text-muted">{{ operador.fechaNacimiento }}</td>
+                <td class="text-muted">{{ operador.fechaNacimiento  | date : "dd-MM-yyy"}}</td>
                 <td >
                   <div class="flex justify-center items-center">
                     <h4
@@ -312,7 +312,7 @@
                         ?.hasError('required')
                     "
                   >
-                    la fecha de nacimiento es obligatorio
+                    la fecha de nacimiento es obligatoria
                   </div>
                 </div>
               </div>

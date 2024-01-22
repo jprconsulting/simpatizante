@@ -79,7 +79,7 @@ export class IncidenciasComponent implements OnInit {
       tipoIncidencia:  [null,Validators.required],
       casilla: [null,Validators.required],
       imagenBase64: ['',Validators.required],
-      direccion: [null, Validators.required],
+      direccion: ['', Validators.required],
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
     });
