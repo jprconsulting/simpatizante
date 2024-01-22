@@ -78,6 +78,7 @@ export class OperadoresComponent implements OnInit{
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
+      secciones: [[], Validators.required],
       estatus: [true],
     });
   }
@@ -179,6 +180,7 @@ export class OperadoresComponent implements OnInit{
   agregar() {
     this.operador = this.operadorForm.value as Operadores;
     const seccionid = this.operadorForm.get('seccion')?.value;
+    const seccionesValue = this.operadorForm.get('secciones')?.value;
 
     this.operador.seccion = {id: seccionid } as Seccion;
     this.spinnerService.show();

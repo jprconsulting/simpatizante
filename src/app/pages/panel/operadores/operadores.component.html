@@ -343,18 +343,34 @@
                 </label>
               </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-12">
               <div class="mb-3">
                 <label class="form-label">Secciones electorales a operar*:</label>
-                <ng-select
+              <ng-select
+                  #selectSecciones
                   [items]="secciones"
+                  [searchable]="false"
                   [multiple]="true"
                   [closeOnSelect]="false"
                   [hideSelected]="true"
-                  bindLabel="nombre"
-                  placeholder="Elegir secciones"
-                  formControlName="seccion">
-              </ng-select>
+                  bindValue="id"
+                  bindLabel="clave"
+                  placeholder="Seleccionar"
+                  formControlName="candidatosIds"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectSecciones.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.clave }}
+                  </ng-template>
+                </ng-select>
                 <div
                   *ngIf="operadorForm.get('seccion')?.touched"
                   class="error-message"
@@ -362,13 +378,9 @@
                   <div
                     *ngIf="operadorForm.get('seccion')?.hasError('required')"
                   >
-                    El sobrenombre es obligatorio
+                    La secciones son obligatorias
                   </div>
-                  <div
-                    *ngIf="operadorForm.get('seccion')?.hasError('pattern')"
-                  >
-                    El sobrenombre no es valido
-                  </div>
+
                 </div>
               </div>
             </div>
