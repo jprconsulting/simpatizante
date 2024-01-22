@@ -78,6 +78,7 @@ export class OperadoresComponent implements OnInit{
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
+      secciones: [[], Validators.required],
       estatus: [true],
     });
   }
@@ -111,7 +112,9 @@ export class OperadoresComponent implements OnInit{
     this.operadorFilter = this.operadores.filter(operador =>
       operador.nombres.toLowerCase().includes(valueSearch) ||
       operador.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      operador.id.toString().includes(valueSearch)
+      operador.fechaNacimiento.toString().includes(valueSearch)||
+      operador.apellidoMaterno.toLowerCase().includes(valueSearch)
+
     );
     this.configPaginator.currentPage = 1;
   }
@@ -127,12 +130,13 @@ export class OperadoresComponent implements OnInit{
   setDataModalUpdate(dto: Operadores) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
+    const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
     this.operadorForm.patchValue({
       id: dto.id,
       nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
-      fechaNacimiento: dto.fechaNacimiento,
+      fechaNacimiento: fechaFormateada,
       estatus: dto.estatus,
     });
   }
@@ -176,6 +180,7 @@ export class OperadoresComponent implements OnInit{
   agregar() {
     this.operador = this.operadorForm.value as Operadores;
     const seccionid = this.operadorForm.get('seccion')?.value;
+    const seccionesValue = this.operadorForm.get('secciones')?.value;
 
     this.operador.seccion = {id: seccionid } as Seccion;
     this.spinnerService.show();

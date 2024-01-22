@@ -11,5 +11,4 @@ export interface Usuario {
     password: string;
     estatus: boolean;
     rol: Rol;
-    areaAdscripcion: AreaAdscripcion;
 }

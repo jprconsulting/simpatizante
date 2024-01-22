@@ -117,7 +117,7 @@
                   }}
                 </td>
                 <td>{{ candidato.nombres }} {{ candidato.apellidoPaterno}} {{candidato.apellidoMaterno}}</td>
-                <td>{{ candidato.strFechaNacimiento }}</td>
+                <td>{{ candidato.fechaNacimiento  | date : "dd-MM-yyy"}}</td>
                 <td>{{ objGeneros[candidato.sexo] }}</td>
                 <td>{{ candidato.sobrenombre }}</td>
                 <td class="text-muted">{{ candidato.cargo.nombre }}</td>
