@@ -382,6 +382,24 @@ export class IncidenciasComponent implements OnInit {
     }
  }
 
+ visibility = false;
+  ocultar(){
+    this.visibility = false;
+    const radioElement = document.getElementById('flexRadioDefault2') as HTMLInputElement;
+
+    if (radioElement) {
+      radioElement.checked = true;
+      radioElement.click();
+    }
+  }
+
+
+  mostrar(){
+    this.visibility = true;
+  }
+
+
+
   setDataModalUpdate(dto: Incidencia){
     this.isModalAdd = false;
     this.idUpdate = dto.id;
