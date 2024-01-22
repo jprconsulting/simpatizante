@@ -291,7 +291,7 @@ export class SimpatizanteComponent implements OnInit {
       sexo: [null, Validators.required],
       curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
-      programaSocial: ['',Validators.required],
+      programaSocial: [null],
       municipio: [null, Validators.required],
       domicilio: ['', Validators.required],
       latitud: ['', Validators.required],
@@ -387,7 +387,7 @@ export class SimpatizanteComponent implements OnInit {
       sexo: dto.sexo,
       idmex: dto.idmex,
       seccion: dto.seccion.id,
-      programaSocial: dto.programaSocial.id,
+      programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
     });
 
     console.log(dto);
@@ -396,6 +396,7 @@ export class SimpatizanteComponent implements OnInit {
 
   actualizar() {
     this.votante = this.simpatizanteForm.value as Votante;
+
     const votanteId = this.simpatizanteForm.get('id')?.value
 
     const programaSocialId = this.simpatizanteForm.get('programaSocial')?.value;
@@ -403,7 +404,7 @@ export class SimpatizanteComponent implements OnInit {
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
 
-    this.votante.programaSocial = { id: programaSocialId } as ProgramaSocial;
+    this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
     this.votante.municipio = { id: municipioId } as Municipio;
     this.votante.estado = {id: estadoId} as Estado;
     this.votante.seccion = { id: seccionId } as Seccion
@@ -477,7 +478,7 @@ export class SimpatizanteComponent implements OnInit {
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
 
-    this.votante.programaSocial = { id: programaSocialId } as ProgramaSocial;
+    this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
     this.votante.municipio = { id: municipioId } as Municipio;
     this.votante.estado = {id: estadoId} as Estado;
     this.votante.seccion = { id: seccionId } as Seccion

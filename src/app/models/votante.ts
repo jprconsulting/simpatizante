@@ -17,7 +17,7 @@ export interface Votante {
     latitud: number;
     longitud: number;
     estatus: boolean;
-    programaSocial: ProgramaSocial;
+    programaSocial: ProgramaSocial | null;
     municipio: Municipio;
     seccion: Seccion;
     estado: Estado;

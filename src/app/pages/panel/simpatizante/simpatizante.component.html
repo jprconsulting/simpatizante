@@ -112,8 +112,7 @@
                   }}
                 </td>
                 <td>
-                  {{ simpatizante.nombres }} {{ simpatizante.apellidoPaterno }}
-                  {{ simpatizante.apellidoMaterno }}
+                  {{ simpatizante.nombreCompleto }}
                 </td>
                 <td class="text-muted">
                   {{ simpatizante.fechaNacimiento | date : "yyyy-MM-dd" }}
@@ -122,7 +121,7 @@
                 <td class="text-muted">{{ objGeneros[simpatizante.sexo] }}</td>
                 <td class="text-muted">{{ simpatizante.curp }}</td>
                 <td class="text-muted">{{ simpatizante.idmex }}</td>
-                <td class="text-muted">{{ simpatizante.programaSocial.nombre }}</td>
+                <td class="text-muted">{{ simpatizante.programaSocial?.nombre }}</td>
                 <td class="text-muted">{{ simpatizante.municipio.nombre }}</td>
                 <td class="text-center">
                   <ng-container *ngIf="simpatizante.estatus; else elseEstatus">
@@ -512,10 +511,10 @@
                     class="form-check-input"
                     type="radio"
                     name="flexRadioDefault"
-                    id="flexRadioDefault1"
+                    id="flexRadioDefault2"
                     (click)="mostrar()"
                   />
-                  <label class="form-check-label" for="flexRadioDefault1"
+                  <label class="form-check-label" for="flexRadioDefault2"
                     >Si</label
                   >
                 </div>
@@ -524,11 +523,11 @@
                     class="form-check-input"
                     type="radio"
                     name="flexRadioDefault"
-                    id="flexRadioDefault2"
+                    id="flexRadioDefault1"
                     (click)="ocultar()"
                     checked
                   />
-                  <label class="form-check-label" for="flexRadioDefault2"
+                  <label class="form-check-label" for="flexRadioDefault1"
                     >No</label
                   >
                 </div>
@@ -630,6 +629,7 @@
           <button
             type="submit"
             class="btn btn-success"
+            [disabled]="!simpatizanteForm.valid"
           >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
