@@ -515,23 +515,24 @@ export class SimpatizanteComponent implements OnInit {
     }
   }
   exportarDatosAExcel() {
-    if (this.beneficiarios.length === 0) {
-      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+    if (this.votantes.length === 0) {
+      console.warn('La lista de simpatizantes está vacía, no se puede exportar.');
       return;
     }
 
-    const datosParaExportar = this.beneficiarios.map(beneficiarios => {
-      const estatus = beneficiarios.estatus ? 'Activo' : 'Inactivo';
+    const datosParaExportar = this.votantes.map(votante => {
+      const estatus = votante.estatus ? 'Activo' : 'Inactivo';
 
       return {
-        'Id': beneficiarios.id,
-        'Nombre': beneficiarios.nombres,
-        'ApellidoPaterno': beneficiarios.apellidoPaterno,
-        'Apellido Materno': beneficiarios.apellidoMaterno,
-        'FechaNacimiento': beneficiarios.strFechaNacimiento,
-        'Curp': beneficiarios.curp,
-        'Sexo': beneficiarios.sexo === 1 ? 'Masculino' : 'Femenino',
-        'Domicilio': beneficiarios.domicilio,
+        'Nombre': votante.nombres,
+        'Apellido paterno': votante.apellidoPaterno,
+        'Apellido materno': votante.apellidoMaterno,
+        'Fecha de nacimiento': votante.fechaNacimiento,
+        'Curp': votante.curp,
+        'Sexo': votante.sexo === 1 ? 'Masculino' : 'Femenino',
+        'Domicilio': votante.domicilio,
+        'CURP': votante.curp,
+        'IDMEX': votante.idmex,
         'Estatus': estatus,
       };
     });
@@ -540,7 +541,7 @@ export class SimpatizanteComponent implements OnInit {
     const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
-    this.guardarArchivoExcel(excelBuffer, 'beneficiarios.xlsx');
+    this.guardarArchivoExcel(excelBuffer, 'Simpatizantes.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
