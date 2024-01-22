@@ -203,9 +203,22 @@ export class CandidatosComponent {
 
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    this.candidatoFilter = this.candidato.filter(i => i.nombres
-      .toLowerCase().includes(inputValue.toLowerCase())
+    const valueSearch = inputValue.toLowerCase();
+
+    console.log('Search Value:', valueSearch);
+
+    this.candidatoFilter = this.candidato.filter(Candidato =>
+      Candidato.nombres.toLowerCase().includes(valueSearch) ||
+      Candidato.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      Candidato.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+      Candidato.cargo.nombre.toLowerCase().includes(valueSearch) ||
+      Candidato.sobrenombre.toLowerCase().includes(valueSearch) ||
+      Candidato.fechaNacimiento.toLowerCase().includes(valueSearch)||
+      this.getGeneroName(Candidato.sexo).toLowerCase().includes(valueSearch)
     );
+
+    console.log('Filtered Votantes:', this.candidatoFilter);
+
     this.configPaginator.currentPage = 1;
   }
 

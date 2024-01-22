@@ -111,7 +111,9 @@ export class OperadoresComponent implements OnInit{
     this.operadorFilter = this.operadores.filter(operador =>
       operador.nombres.toLowerCase().includes(valueSearch) ||
       operador.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      operador.id.toString().includes(valueSearch)
+      operador.fechaNacimiento.toString().includes(valueSearch)||
+      operador.apellidoMaterno.toLowerCase().includes(valueSearch)
+
     );
     this.configPaginator.currentPage = 1;
   }
