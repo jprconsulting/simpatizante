@@ -350,32 +350,6 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4">
-              <div class="mb-3">
-                <label class="form-label">Folio*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="folio"
-                />
-                <div
-                  *ngIf="simpatizanteForm.get('folio')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="simpatizanteForm.get('folio')?.hasError('required')">
-                    El folio es obligatorio
-                  </div>
-                  <div *ngIf="simpatizanteForm.get('folio')?.hasError('minlength')">
-                    El folio debe tener al menos 8 caracteres
-                  </div>
-                  <div *ngIf="simpatizanteForm.get('folio')?.hasError('pattern')">
-                    El folio no puede tener letras
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
 
             <div class="col-lg-4">
               <div class="mb-3">
@@ -398,6 +372,9 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="row">
+
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Estado*:</label>
@@ -558,7 +535,7 @@
               </div>
             </div>
 
-            <div class="col-lg-6" *ngIf="visibility">
+            <div class="col-lg-4" *ngIf="visibility">
               <div class="mb-3">
                 <label class="form-label">Selecciona el programa social:</label>
                 <ng-select

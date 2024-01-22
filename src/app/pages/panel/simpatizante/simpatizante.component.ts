@@ -370,12 +370,13 @@ export class SimpatizanteComponent implements OnInit {
   setDataModalUpdate(dto: Votante) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
+    const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
     this.simpatizanteForm.patchValue({
       id: dto.id,
       nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
-      fechaNacimiento: dto.fechaNacimiento,
+      fechaNacimiento: fechaFormateada,
       domicilio: dto.domicilio,
       estatus: dto.estatus,
       latitud: dto.latitud,
