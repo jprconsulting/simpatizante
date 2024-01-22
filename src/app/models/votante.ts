@@ -19,6 +19,7 @@ export interface Votante {
     estatus: boolean;
     programaSocial: ProgramaSocial | null;
     municipio: Municipio;
+    votante: Votante;
     seccion: Seccion;
     estado: Estado;
     idmex: string;
