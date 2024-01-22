@@ -346,8 +346,8 @@ export class SimpatizanteComponent implements OnInit {
       Votante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
       Votante.idmex.toString().includes(valueSearch) ||
       Votante.curp.toString().includes(valueSearch) ||
-      Votante.programaSocial?.nombre.toString().includes(valueSearch) ||
-      Votante.municipio.toString().includes(valueSearch) ||
+      Votante.programaSocial?.nombre.toLowerCase().includes(valueSearch) ||
+      Votante.municipio.nombre.toLowerCase().includes(valueSearch) ||
       Votante.id.toString().includes(valueSearch)
     );
 
