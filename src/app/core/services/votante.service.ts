@@ -18,7 +18,7 @@ export class VotantesService {
     private handleErrorService: HandleErrorService
   ) { }
 
-  get refreshListAreasAdscripcion() {
+  get refreshListVotantes() {
     return this._refreshListVotante$;
   }
 

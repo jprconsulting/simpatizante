@@ -132,7 +132,7 @@ export class OperadoresComponent implements OnInit{
       nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
-      fechaNacimiento: dto.strFechaNacimiento,
+      fechaNacimiento: dto.fechaNacimiento,
       estatus: dto.estatus,
     });
   }
