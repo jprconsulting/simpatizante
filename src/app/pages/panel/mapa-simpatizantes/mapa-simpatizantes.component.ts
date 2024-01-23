@@ -1,4 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { color } from 'highcharts';
 import { VotantesService } from 'src/app/core/services/votante.service';
 import { Votante } from 'src/app/models/votante';
 declare const google: any;
@@ -43,6 +44,7 @@ getMarker(simpatizante: Votante) {
     position: new google.maps.LatLng(simpatizante.latitud, simpatizante.longitud),
     map: this.map,
     icon: {
+      fillColor: color ,
       path: google.maps.SymbolPath.CIRCLE,
       fillOpacity: 1,
       strokeWeight: 0,
@@ -164,8 +166,8 @@ getsimpatisantes() {
 onSelectProgramaSocial(id: number) {
   if (id) {
     this.clearMarkers();
-    this.simpatisantes.filter(b => b.domicilio).forEach(beneficiario => {
-      this.setInfoWindow(this.getMarker(beneficiario), this.getContentString(beneficiario));
+    this.simpatizantes.filter(b => b.domicilio).forEach(simpatizante => {
+      this.setInfoWindow(this.getMarker(simpatizante), this.getContentString(simpatizante));
     });
   }
 }
