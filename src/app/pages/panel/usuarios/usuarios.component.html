@@ -325,17 +325,17 @@
                   bindValue="id"
                   [searchable]="false"
                   [clearable]="false"
-                  formControlName="rolId"
+                  formControlName="rol"
                 >
                   <ng-template ng-option-tmp let-item="item">
                     {{ item.nombreRol }}
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="usuarioForm.get('rolId')?.touched"
+                  *ngIf="usuarioForm.get('rol')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="usuarioForm.get('rolId')?.hasError('required')">
+                  <div *ngIf="usuarioForm.get('rol')?.hasError('required')">
                     <p style="color: red">La rol es obligatorio</p>
                   </div>
                 </div>
@@ -354,7 +354,7 @@
           <button
             type="submit"
             class="btn btn-success"
-            [disabled]="!usuarioForm.valid"
+
           >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>

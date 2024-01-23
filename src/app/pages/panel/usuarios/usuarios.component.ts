@@ -80,7 +80,7 @@ export class UsuariosComponent implements OnInit {
         ],
       ],
       estatus: [true],
-      rolId: [null, Validators.required],
+      rol: [null, Validators.required],
     });
   }
 
@@ -111,10 +111,8 @@ export class UsuariosComponent implements OnInit {
     const valueSearch = inputValue.toLowerCase();
     this.usuariosFilter = this.usuarios.filter(usuario =>
       usuario.nombreCompleto.toLowerCase().includes(valueSearch) ||
-      usuario.apellidoPaterno.toLowerCase().includes(valueSearch) ||
       usuario.rol.nombreRol.toLowerCase().includes(valueSearch) ||
-      usuario.correo.toLowerCase().includes(valueSearch) ||
-      usuario.id.toString().includes(valueSearch)
+      usuario.correo.toLowerCase().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
@@ -132,15 +130,14 @@ export class UsuariosComponent implements OnInit {
       correo: dto.correo,
       password: dto.password,
       estatus: dto.estatus,
-      rolId: dto.rol.id,
+      rol: dto.rol.id,
     });
   }
 
   editarUsuario() {
     this.usuario = this.usuarioForm.value as Usuario;
 
-    const rolId = this.usuarioForm.get('rolId')?.value;
-    const areaAdscripcionId = this.usuarioForm.get('areaAdscripcionId')?.value;
+    const rolId = this.usuarioForm.get('rol')?.value;
 
     this.usuario.rol = { id: rolId } as Rol;
 
@@ -189,7 +186,7 @@ export class UsuariosComponent implements OnInit {
 
   agregar() {
     this.usuario = this.usuarioForm.value as Usuario;
-    const rolId = this.usuarioForm.get('rolId')?.value;
+    const rolId = this.usuarioForm.get('rol')?.value;
     this.usuario.rol = { id: rolId } as Rol;
 
     this.spinnerService.show();

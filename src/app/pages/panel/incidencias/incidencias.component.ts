@@ -333,14 +333,13 @@ export class IncidenciasComponent implements OnInit {
       this.incidenciasService.post(formData).subscribe({
         next: () => {
           this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Incidencia guardado correctamente');
+          this.mensajeService.mensajeExito('Incidencia guardada correctamente');
           this.resetForm();
           this.configPaginator.currentPage = 1;
         },
         error: (error) => {
           this.spinnerService.hide();
           this.mensajeService.mensajeError(error);
-          console.error('Error: No se encontró una representación válida en base64 de la imagen.');
         }
       });
     } else {
