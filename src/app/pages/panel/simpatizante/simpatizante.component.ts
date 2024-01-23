@@ -296,7 +296,7 @@ export class SimpatizanteComponent implements OnInit {
       domicilio: ['', Validators.required],
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
-      idmex: ['', [Validators.required]],
+      idmex: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
     });
   }
 

@@ -498,6 +498,9 @@
                   <div *ngIf="simpatizanteForm.get('idmex')?.hasError('required')">
                     El IDMEX es obligatorio
                   </div>
+                  <div *ngIf="simpatizanteForm.get('idmex')?.hasError('pattern')">
+                    El IDMEX solo contiene numeros
+                  </div>
                 </div>
               </div>
             </div>
