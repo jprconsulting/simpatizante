@@ -120,7 +120,10 @@ export class MapaIncidenciasComponent implements AfterViewInit {
 
   getContentString(incidencias: Incidencia) {
     return `
-      <div style="width: 300px; height: auto;" class=" text-center">
+      <div style="width: 350px; height: auto;" class=" text-center">
+          <!--<img class="rounded-circle" style="width: 130px; height: 130px; object-fit: cover;"
+            src="../../../../assets/images/casilla.png"
+            alt="Sunset in the mountains">-->
             <div class="px-4 py-4">
           <p style="font-weight:  bolder;" class=" ">
             Casilla:

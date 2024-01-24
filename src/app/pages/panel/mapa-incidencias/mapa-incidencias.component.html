@@ -46,18 +46,25 @@
         <table class="table table-vcenter card-table table-striped">
           <thead>
             <tr>
-              <th style="text-transform: none; font-size: inherit;" class="text-center">#</th>
-              <th style="text-transform: none; font-size: inherit;">Tipo de incidencia</th>
-              <th style="text-transform: none; font-size: inherit;" class="text-center">Casilla</th>
+              <th
+                style="text-transform: none; font-size: inherit"
+                class="text-center"
+              >
+                #
+              </th>
+              <th style="text-transform: none; font-size: inherit">
+                Tipo de incidencia
+              </th>
+              <th
+                style="text-transform: none; font-size: inherit"
+                class="text-center"
+              >
+                Casilla
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              *ngFor="
-                let programa of incidencias;
-                let pointIndex = index
-              "
-            >
+            <tr *ngFor="let programa of incidencias; let pointIndex = index">
               <td class="text-center">
                 {{ pointIndex + 1 }}
               </td>
