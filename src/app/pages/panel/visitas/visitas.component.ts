@@ -135,7 +135,7 @@ export class VisitasComponent {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value.toLowerCase();
     this.visitasFilter = this.visitas.filter(visita =>
-      visita.descripcion.toLowerCase().includes(inputValue)
+      visita.votante.nombreCompleto.toLocaleLowerCase().includes(inputValue.toLowerCase())
     );
 
     this.configPaginator.currentPage = 1;
