@@ -84,16 +84,17 @@ export class SimpatizanteComponent implements OnInit {
     this.getVotantes();
     this.getMunicipios();
     this.creteForm();
-
-  }
-
-
-  ngOnInit() {
     this.getSeccion();
     this.getEstado();
     this.getMunicipios();
     this.getProgramas();
     this.getSeccion();
+
+  }
+
+
+  ngOnInit() {
+
 
   }
 

@@ -236,11 +236,11 @@ export class OperadoresComponent implements OnInit{
     const datosParaExportar = this.operadores.map(operador => {
         const estatus = operador.estatus ? 'Activo' : 'Inactivo';
         return {
-          'Id': operador.id,
           'Nombres': operador.nombres,
           'Apellido Paterno': operador.apellidoPaterno,
           'Apellido Materno': operador.apellidoMaterno,
-          'sexo': operador.sexo,
+          'Fecha de nacimiento': operador.fechaNacimiento,
+          'Secciones': operador.seccion.id,
           'Estatus': estatus,
         };
       });
