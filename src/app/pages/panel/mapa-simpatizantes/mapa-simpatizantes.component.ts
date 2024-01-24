@@ -15,20 +15,19 @@ simpatizantes: Votante [] = [];
 infowindow = new google.maps.InfoWindow();
 markers: google.maps.Marker[] = [];
 map: any = {};
-simpatisantes: Votante[] = [];
 simpatizantesFiltrados: Votante[] = [];
 
 constructor(
   private simpatizantesService: VotantesService,
  
 ) {
-  this.getsimpatisantes();
+  this.getsimpatizantes();
 
 }
 setAllMarkers() {
   this.clearMarkers();
-  this.simpatisantes.forEach(simpatisantes => {
-    this.setInfoWindow(this.getMarker(simpatisantes), this.getContentString(simpatisantes));
+  this.simpatizantes.forEach(simpatizantes => {
+    this.setInfoWindow(this.getMarker(simpatizantes), this.getContentString(simpatizantes));
   });
 }
 
@@ -154,7 +153,7 @@ ngAfterViewInit() {
   };
   this.map = new google.maps.Map(mapElement, mapOptions);
 }
-getsimpatisantes() {
+getsimpatizantes() {
   this.simpatizantesService.getAll().subscribe({
     next: (dataFromAPI) => {
       this.simpatizantes = dataFromAPI;
@@ -166,7 +165,7 @@ getsimpatisantes() {
 onSelectProgramaSocial(id: number) {
   if (id) {
     this.clearMarkers();
-    this.simpatizantes.filter(b => b.domicilio).forEach(simpatizante => {
+    this.simpatizantes.filter(b => b.id == id).forEach(simpatizante => {
       this.setInfoWindow(this.getMarker(simpatizante), this.getContentString(simpatizante));
     });
   }
