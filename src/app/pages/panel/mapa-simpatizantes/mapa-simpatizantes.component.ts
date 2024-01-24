@@ -1,6 +1,8 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { color } from 'highcharts';
+import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { VotantesService } from 'src/app/core/services/votante.service';
+import { Municipio } from 'src/app/models/municipio';
 import { Votante } from 'src/app/models/votante';
 declare const google: any;
 
@@ -16,13 +18,15 @@ infowindow = new google.maps.InfoWindow();
 markers: google.maps.Marker[] = [];
 map: any = {};
 simpatizantesFiltrados: Votante[] = [];
+municipios: Municipio[] = [];
 
 constructor(
   private simpatizantesService: VotantesService,
+  private municipiosService: MunicipiosService
  
 ) {
   this.getsimpatizantes();
-
+  this.getMunicipios();
 }
 setAllMarkers() {
   this.clearMarkers();
@@ -49,7 +53,7 @@ getMarker(simpatizante: Votante) {
       strokeWeight: 0,
       scale: 10
     },
-    title: `${simpatizante.nombreCompleto}`,
+    title: `${simpatizante.municipio.nombre}`,
   });
   this.markers.push(marker);
   return marker;
@@ -65,6 +69,11 @@ setInfoWindow(marker: any, contentString: string) {
     this.infowindow.open(this.map, marker);
   });
 }
+
+getMunicipios() {
+  this.municipiosService.getAll().subscribe({ next: (dataFromAPI) => this.municipios = dataFromAPI });
+}
+
 
 getContentString(simpatizante: Votante) {
   return `
@@ -163,13 +172,18 @@ getsimpatizantes() {
   });
 }
 onSelectProgramaSocial(id: number) {
+  console.log('filtro')
   if (id) {
     this.clearMarkers();
-    this.simpatizantes.filter(b => b.id == id).forEach(simpatizante => {
+    
+    this.simpatizantesFiltrados = this.simpatizantes.filter(simpatizante => simpatizante.municipio.id === id);
+    
+    this.simpatizantesFiltrados.forEach(simpatizante => {
       this.setInfoWindow(this.getMarker(simpatizante), this.getContentString(simpatizante));
     });
   }
 }
+
 onClear() {
   this.setAllMarkers();
 }

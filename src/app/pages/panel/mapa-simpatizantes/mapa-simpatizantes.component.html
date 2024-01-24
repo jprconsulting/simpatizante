@@ -7,21 +7,30 @@
               <div class="custom-header">
                 <h5 class="page-title mb-3">Simpatizantes</h5>
                 <ng-select
-                  #selectPrograma
-                  [searchable]="false"
-                  [items]="simpatizantes"
-                  bindLabel="nombres"
-                  bindValue="id"
-                  placeholder="Todos los simpatizantes"
-                  [clearable]="true"
-                  style="width: 50%"
-                  (change)="onSelectProgramaSocial($event?.id)"
+                formControlName="municipio"
+                #selectMunicipio
+                [searchable]="false"
+                [items]="municipios"
+                bindLabel="nombre"
+                bindValue="id"
+                placeholder="Elegir"
+                [clearable]="false"
+                (change)="onSelectProgramaSocial($event?.id)"
                 (clear)="onClear()"
-                >
-                  <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombres }}
-                  </ng-template>
-                </ng-select>
+              >
+                <ng-template ng-header-tmp>
+                  <input
+                    class="form-control"
+                    type="text"
+                    (input)="
+                      selectMunicipio.filter($any($event.target).value)
+                    "
+                  />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{ item.nombre }}
+                </ng-template>
+              </ng-select>
               </div>
             </div>
           </div>
