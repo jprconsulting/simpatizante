@@ -109,11 +109,18 @@ export class UsuariosComponent implements OnInit {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
+
+    console.log('Search Value:', valueSearch);
+
     this.usuariosFilter = this.usuarios.filter(usuario =>
-      usuario.nombreCompleto.toLowerCase().includes(valueSearch) ||
+      usuario.nombre.toLowerCase().includes(valueSearch) ||
+      usuario.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      usuario.apellidoMaterno.toLowerCase().includes(valueSearch) ||
       usuario.rol.nombreRol.toLowerCase().includes(valueSearch) ||
       usuario.correo.toLowerCase().includes(valueSearch)
     );
+    console.log('Filtered Votantes:', this.usuariosFilter);
+
     this.configPaginator.currentPage = 1;
   }
 
@@ -258,11 +265,11 @@ export class UsuariosComponent implements OnInit {
     const datosParaExportar = this.usuarios.map(usuario => {
       const estatus = usuario.estatus ? 'Activo' : 'Inactivo';
       return {
-        'Id': usuario.id,
         'Nombre': usuario.nombre,
         'Apellido Paterno': usuario.apellidoPaterno,
         'Apellido Materno': usuario.apellidoMaterno,
         'Correo': usuario.correo,
+        'Rol': usuario.rol.nombreRol,
         'Estatus': estatus,
       };
     });
