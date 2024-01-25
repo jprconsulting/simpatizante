@@ -37,6 +37,7 @@ export class OperadoresComponent implements OnInit{
   areasAdscripcion: AreaAdscripcion[] = [];
   isModalAdd = true;
   rolId = 0;
+  seccionesFilter: Seccion [] =[];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -64,7 +65,13 @@ export class OperadoresComponent implements OnInit{
   }
 
   getSecciones() {
-    this.seccionesService.getAll().subscribe({ next: (dataFromAPI) => this.secciones = dataFromAPI });
+    this.seccionesService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.secciones = dataFromAPI
+          this.seccionesFilter = this.secciones;
+        }
+      });
     console.log(this.secciones)
   }
 
@@ -74,11 +81,12 @@ export class OperadoresComponent implements OnInit{
 
   creteForm() {
     this.operadorForm = this.formBuilder.group({
+      id: [null],
       nombres: ['', [Validators.required,Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
-      /*secciones: [[], Validators.required],*/
+      seccionesIds: [[], Validators.required],
       estatus: [true],
     });
   }
@@ -138,15 +146,16 @@ export class OperadoresComponent implements OnInit{
       apellidoMaterno: dto.apellidoMaterno,
       fechaNacimiento: fechaFormateada,
       estatus: dto.estatus,
+      seccionesIds: dto.seccionesIds,
     });
   }
 
   editarOperador() {
     this.operador = this.operadorForm.value as Operadores;
     this.operador.id = this.idUpdate;
-    const seccionid = this.operadorForm.get('seccion')?.value;
+    const seccionid = this.operadorForm.get('seccionesIds')?.value;
 
-    this.operador.seccion = {id: seccionid } as Seccion;
+    this.operador.seccionesIds = {id: seccionid } as Seccion;
     this.spinnerService.show();
     this.operadoresService.put(this.idUpdate, this.operador).subscribe({
       next: () => {
@@ -179,10 +188,9 @@ export class OperadoresComponent implements OnInit{
 
   agregar() {
     this.operador = this.operadorForm.value as Operadores;
-    const seccionid = this.operadorForm.get('seccion')?.value;
-    const seccionesValue = this.operadorForm.get('secciones')?.value;
+    const seccionid = this.operadorForm.get('seccionesIds')?.value;
 
-    this.operador.seccion = {id: seccionid } as Seccion;
+    this.operador.seccionesIds = seccionid as Seccion;
     this.spinnerService.show();
     this.operadoresService.post(this.operador).subscribe({
       next: () => {
@@ -240,7 +248,7 @@ export class OperadoresComponent implements OnInit{
           'Apellido Paterno': operador.apellidoPaterno,
           'Apellido Materno': operador.apellidoMaterno,
           'Fecha de nacimiento': operador.fechaNacimiento,
-          'Secciones': operador.seccion.id,
+          'Secciones': operador.seccionesIds.id,
           'Estatus': estatus,
         };
       });
