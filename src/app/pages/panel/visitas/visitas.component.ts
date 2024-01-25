@@ -151,6 +151,7 @@ export class VisitasComponent {
       id: dto.id,
       descripcion: dto.descripcion,
       servicio: dto.servicio,
+      votante: dto.votante.id,
       imagenBase64: dto.imagenBase64
     });
 
