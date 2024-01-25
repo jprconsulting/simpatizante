@@ -10,5 +10,5 @@ export interface Operadores {
     strfechanacimineto: string;
     sexo: number;
     estatus: boolean;
-    seccion: Seccion;
+    seccionesIds: Seccion;
 }

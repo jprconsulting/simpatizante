@@ -354,7 +354,7 @@
                   bindValue="id"
                   bindLabel="clave"
                   placeholder="Seleccionar"
-                  formControlName="candidatosIds"
+                  formControlName="seccionesIds"
                 >
                   <ng-template ng-header-tmp>
                     <input
@@ -429,12 +429,12 @@
               </thead>
               <tbody>
                 <tr
+                *ngFor="
+                  let secciones of seccionesFilter"
                 >
-                  <td>Nombre del operador</td>
-                  <td class="text-muted">
-                    <p>seccion 1</p>
-                    <p>seccion 1</p>
-                    <p>seccion 1</p>
+                  <td>{{ secciones.id}}</td>
+                  <td class="text-muted" colspan="2">
+                    <p>{{ secciones.clave}}</p>
                   </td>
                 </tr>
               </tbody>
