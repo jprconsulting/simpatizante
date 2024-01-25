@@ -72,7 +72,6 @@ export class SimpatizanteComponent implements OnInit {
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
     private spinnerService: NgxSpinnerService,
-    private beneficiariosService: BeneficiariosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private municipiosService: MunicipiosService,
@@ -81,20 +80,22 @@ export class SimpatizanteComponent implements OnInit {
     private programasSociales: ProgramaSocialService,
     private votantesService: VotantesService
   ) {
-    this.beneficiariosService.refreshListBeneficiarios.subscribe(() => this.getVotantes());
+    this.votantesService.refreshListVotantes.subscribe(() => this.getVotantes());
     this.getVotantes();
     this.getMunicipios();
     this.creteForm();
-
-  }
-
-
-  ngOnInit() {
     this.getSeccion();
     this.getEstado();
     this.getMunicipios();
     this.getProgramas();
     this.getSeccion();
+
+  }
+
+
+  ngOnInit() {
+
+
   }
 
   resetMap() {
@@ -288,16 +289,15 @@ export class SimpatizanteComponent implements OnInit {
       fechaNacimiento: ['', Validators.required],
       estado:[null, Validators.required],
       seccion: [null, Validators.required],
-      folio: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^([0-9]{7})[0-9]+$')]],
       sexo: [null, Validators.required],
-      CURP: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
+      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
       programaSocial: [null],
       municipio: [null, Validators.required],
       domicilio: ['', Validators.required],
-      latitud: [null, Validators.required],
-      longitud: [null, Validators.required],
-      IDMEX: ['', [Validators.required]],
+      latitud: ['', Validators.required],
+      longitud: ['', Validators.required],
+      idmex: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
     });
   }
 
@@ -341,11 +341,14 @@ export class SimpatizanteComponent implements OnInit {
     console.log('Search Value:', valueSearch);
 
     this.votantesFilter = this.votantes.filter(Votante =>
-      Votante.nombres.toLowerCase().includes(valueSearch) ||
+      Votante.nombreCompleto.toLowerCase().includes(valueSearch) ||
       this.getGeneroName(Votante.sexo).toLowerCase().includes(valueSearch) ||
       Votante.domicilio.toLowerCase().includes(valueSearch) ||
       Votante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
-      Votante.CURP.toLowerCase().includes(valueSearch) ||
+      Votante.idmex.toString().includes(valueSearch) ||
+      Votante.curp.toString().includes(valueSearch) ||
+      Votante.programaSocial?.nombre.toLowerCase().includes(valueSearch) ||
+      Votante.municipio.nombre.toLowerCase().includes(valueSearch) ||
       Votante.id.toString().includes(valueSearch)
     );
 
@@ -365,49 +368,56 @@ export class SimpatizanteComponent implements OnInit {
       this.municipiosSelect = this.municipios.find(b => b.id === id);
     }
   }
-  setDataModalUpdate(votante: Votante) {
+
+  idUpdate!: number;
+
+  setDataModalUpdate(dto: Votante) {
     this.isModalAdd = false;
-    this.id = votante.id;
-    const fechaFormateada = this.formatoFecha(votante.fechaNacimiento);
-    const municipio = votante.municipio.id;
-    const estado = votante.estado.id;
-    this.onSelectmunicipios(municipio);
+    this.idUpdate = dto.id;
+    const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
     this.simpatizanteForm.patchValue({
-      id: votante.id,
-      nombres: votante.nombres,
-      apellidoPaterno: votante.apellidoPaterno,
-      apellidoMaterno: votante.apellidoMaterno,
+      id: dto.id,
+      nombres: dto.nombres,
+      apellidoPaterno: dto.apellidoPaterno,
+      apellidoMaterno: dto.apellidoMaterno,
       fechaNacimiento: fechaFormateada,
-      domicilio: votante.domicilio,
-      estatus: votante.estatus,
-      latitud: votante.latitud,
-      longitud: votante.longitud,
-      municipio: municipio,
-      estado: estado,
-      CURP: votante.CURP,
-      sexo: votante.sexo,
-      programaSocial: votante.programaSocial.id,
+      domicilio: dto.domicilio,
+      estatus: dto.estatus,
+      latitud: dto.latitud,
+      longitud: dto.longitud,
+      municipio: dto.municipio.id,
+      estado: dto.estado.id,
+      curp: dto.curp,
+      sexo: dto.sexo,
+      idmex: dto.idmex,
+      seccion: dto.seccion.id,
+      programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
     });
 
-    console.log(votante);
+    console.log(dto);
     console.log(this.simpatizanteForm.value);
   }
 
   actualizar() {
     this.votante = this.simpatizanteForm.value as Votante;
 
-    const programaSocialId = this.simpatizanteForm.get('programaSocialId')?.value;
-    const municipioId = this.simpatizanteForm.get('municipioId')?.value;
+    const votanteId = this.simpatizanteForm.get('id')?.value
 
-    this.votante.programaSocial = { id: programaSocialId } as ProgramaSocial;
+    const programaSocialId = this.simpatizanteForm.get('programaSocial')?.value;
+    const municipioId = this.simpatizanteForm.get('municipio')?.value;
+    const estadoId = this.simpatizanteForm.get('estado')?.value;
+    const seccionId = this.simpatizanteForm.get('seccion')?.value;
+
+    this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
     this.votante.municipio = { id: municipioId } as Municipio;
+    this.votante.estado = {id: estadoId} as Estado;
+    this.votante.seccion = { id: seccionId } as Seccion
 
     console.log(this.votante);
 
     this.spinnerService.show();
-    console.log('data:', this.votante);
 
-    this.votantesService.put(this.id, this.votante).subscribe({
+    this.votantesService.put(votanteId, this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito("Simpatizante actualizado con éxito");
@@ -431,13 +441,18 @@ export class SimpatizanteComponent implements OnInit {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar el simpatizante: ${nameItem}?`,
       () => {
+        console.log('Confirmation callback executed');
         this.votantesService.delete(id).subscribe({
           next: () => {
+            console.log('Delete success callback executed');
             this.mensajeService.mensajeExito('Simpatizante borrado correctamente');
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
-          error: (error) => this.mensajeService.mensajeError(error)
+          error: (error) => {
+            console.log('Delete error callback executed', error);
+            this.mensajeService.mensajeError(error);
+          }
         });
       }
     );
@@ -467,7 +482,7 @@ export class SimpatizanteComponent implements OnInit {
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
 
-    this.votante.programaSocial = { id: programaSocialId } as ProgramaSocial;
+    this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
     this.votante.municipio = { id: municipioId } as Municipio;
     this.votante.estado = {id: estadoId} as Estado;
     this.votante.seccion = { id: seccionId } as Seccion
@@ -501,23 +516,24 @@ export class SimpatizanteComponent implements OnInit {
     }
   }
   exportarDatosAExcel() {
-    if (this.beneficiarios.length === 0) {
-      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+    if (this.votantes.length === 0) {
+      console.warn('La lista de simpatizantes está vacía, no se puede exportar.');
       return;
     }
 
-    const datosParaExportar = this.beneficiarios.map(beneficiarios => {
-      const estatus = beneficiarios.estatus ? 'Activo' : 'Inactivo';
+    const datosParaExportar = this.votantes.map(votante => {
+      const estatus = votante.estatus ? 'Activo' : 'Inactivo';
 
       return {
-        'Id': beneficiarios.id,
-        'Nombre': beneficiarios.nombres,
-        'ApellidoPaterno': beneficiarios.apellidoPaterno,
-        'Apellido Materno': beneficiarios.apellidoMaterno,
-        'FechaNacimiento': beneficiarios.strFechaNacimiento,
-        'Curp': beneficiarios.curp,
-        'Sexo': beneficiarios.sexo === 1 ? 'Masculino' : 'Femenino',
-        'Domicilio': beneficiarios.domicilio,
+        'Nombre': votante.nombres,
+        'Apellido paterno': votante.apellidoPaterno,
+        'Apellido materno': votante.apellidoMaterno,
+        'Fecha de nacimiento': votante.fechaNacimiento,
+        'Curp': votante.curp,
+        'Sexo': votante.sexo === 1 ? 'Masculino' : 'Femenino',
+        'Domicilio': votante.domicilio,
+        'CURP': votante.curp,
+        'IDMEX': votante.idmex,
         'Estatus': estatus,
       };
     });
@@ -526,7 +542,7 @@ export class SimpatizanteComponent implements OnInit {
     const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
-    this.guardarArchivoExcel(excelBuffer, 'beneficiarios.xlsx');
+    this.guardarArchivoExcel(excelBuffer, 'Simpatizantes.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {

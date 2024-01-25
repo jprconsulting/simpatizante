@@ -69,13 +69,12 @@ export class IncidenciasComponent implements OnInit {
    this.getIncidencias();
    this.configPaginator.itemsPerPage = 10;
   }
-  ngOnInit(): void {
-
+  ngOnInit() {
   }
   creteForm() {
     this.incidenciasForm = this.formBuilder.group({
       id:[null],
-      retroalimentacion: [''],
+      retroalimentacion: ['', Validators.required],
       tipoIncidencia:  [null,Validators.required],
       casilla: [null,Validators.required],
       imagenBase64: ['',Validators.required],
@@ -227,7 +226,7 @@ export class IncidenciasComponent implements OnInit {
     position: newLatLng,
     map: this.maps,
     animation: google.maps.Animation.DROP,
-    title: this.incidenciasForm.value.nombre, // Usa un campo relevante como título
+    title: this.incidenciasForm.value.nombres, // Usa un campo relevante como título
   });
   this.incidenciasForm.patchValue({
     longitud: selectedLng,
@@ -312,9 +311,10 @@ export class IncidenciasComponent implements OnInit {
   }
 
   handleChangeAdd() {
-    this.incidenciasForm.reset();
-    this.isModalAdd = true;
-
+    if (this.incidenciasForm) {
+      this.incidenciasForm.reset();
+      this.isModalAdd = true;
+    }
   }
 
   agregar() {
@@ -333,14 +333,13 @@ export class IncidenciasComponent implements OnInit {
       this.incidenciasService.post(formData).subscribe({
         next: () => {
           this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Incidencia guardado correctamente');
+          this.mensajeService.mensajeExito('Incidencia guardada correctamente');
           this.resetForm();
           this.configPaginator.currentPage = 1;
         },
         error: (error) => {
           this.spinnerService.hide();
           this.mensajeService.mensajeError(error);
-          console.error('Error: No se encontró una representación válida en base64 de la imagen.');
         }
       });
     } else {
@@ -349,6 +348,27 @@ export class IncidenciasComponent implements OnInit {
 
   }
   id!: number;
+  setDataModalUpdate(dto: Incidencia){
+    this.isModalAdd = false;
+    this.idUpdate = dto.id;
+    this.incidenciasForm.patchValue({
+      id: dto.id,
+      retroalimentacion: dto.retroalimentacion,
+      tipoIncidencia: dto.tipoIncidencia.id,
+      casilla: dto.casilla.id,
+      imagenBase64: dto.imagenBase64,
+      direccion: dto.direccion,
+      latitud: dto.latitud,
+      longitud: dto.longitud,
+
+    });
+    console.log(dto.direccion)
+    // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
+    console.log(this.incidenciasForm.value);
+    console.log(dto);
+  }
+
+
 
   editarIncidencia() {
     const indicadorid = this.incidenciasForm.get('tipoIncidencia')?.value;
@@ -382,27 +402,21 @@ export class IncidenciasComponent implements OnInit {
     }
  }
 
-  setDataModalUpdate(dto: Incidencia){
-    this.isModalAdd = false;
-    this.idUpdate = dto.id;
-    this.incidenciasForm.patchValue({
-      id: dto.id,
-      retroalimentacion: dto.retroalimentacion,
-      tipoIncidencia: dto.tipoIncidencia.id,
-      casilla: dto.casilla.id,
-      imagenBase64: dto.imagenBase64,
-      direccion: dto.direccion,
-      latitud: dto.latitud,
-      longitud: dto.longitud,
+ visibility = false;
+  ocultar(){
+    this.visibility = false;
+    const radioElement = document.getElementById('flexRadioDefault2') as HTMLInputElement;
 
-    });
-
-    // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
-    console.log(this.incidenciasForm.value);
-    console.log(dto);
+    if (radioElement) {
+      radioElement.checked = true;
+      radioElement.click();
+    }
   }
 
 
+  mostrar(){
+    this.visibility = true;
+  }
 
   deleteItem(id: number) {
     this.mensajeService.mensajeAdvertencia(
@@ -462,10 +476,11 @@ export class IncidenciasComponent implements OnInit {
 
     const datosParaExportar = this.incidencias.map(incidencias => {
       return {
+        'retroalimentacion': incidencias.retroalimentacion,
         'casilla': incidencias.casilla.nombre,
         'tipo de incidencia': incidencias.tipoIncidencia.tipo,
         'direccion': incidencias.direccion,
-
+      
       };
     });
 

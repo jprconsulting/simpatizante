@@ -13,15 +13,16 @@ export interface Votante {
     strFechaNacimiento: string;
     domicilio: string;
     sexo: number;
-    CURP: string;
+    curp: string;
     latitud: number;
     longitud: number;
     estatus: boolean;
-    programaSocial: ProgramaSocial;
+    programaSocial: ProgramaSocial | null;
     municipio: Municipio;
+    votante: Votante;
     seccion: Seccion;
     estado: Estado;
-    IDMEX: string;
+    idmex: string;
 }
 
 export interface TotalBeneficiariosMunicipio extends Municipio {

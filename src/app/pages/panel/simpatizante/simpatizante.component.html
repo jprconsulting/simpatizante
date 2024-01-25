@@ -75,6 +75,7 @@
                 </th>
                 <th style="text-transform: none; font-size: inherit">Sexo</th>
                 <th style="text-transform: none; font-size: inherit">CURP</th>
+                <th style="text-transform: none; font-size: inherit">IDMEX</th>
                 <th style="text-transform: none; font-size: inherit">
                   Programa social
                 </th>
@@ -111,17 +112,16 @@
                   }}
                 </td>
                 <td>
-                  {{ simpatizante.nombres }} {{ simpatizante.apellidoPaterno }}
-                  {{ simpatizante.apellidoMaterno }}
+                  {{ simpatizante.nombreCompleto }}
                 </td>
                 <td class="text-muted">
-                  {{ simpatizante.fechaNacimiento | date : "yyyy-MM-dd" }}
+                  {{ simpatizante.fechaNacimiento | date : "dd-MM-yyy" }}
                 </td>
                 <td class="text-muted">{{ simpatizante.domicilio }}</td>
                 <td class="text-muted">{{ objGeneros[simpatizante.sexo] }}</td>
-                <td class="text-muted">{{ simpatizante.CURP }}</td>
-                <td class="text-muted">{{ simpatizante.IDMEX }}</td>
-                <td class="text-muted">{{ simpatizante.programaSocial.nombre }}</td>
+                <td class="text-muted">{{ simpatizante.curp }}</td>
+                <td class="text-muted">{{ simpatizante.idmex }}</td>
+                <td class="text-muted">{{ simpatizante.programaSocial?.nombre }}</td>
                 <td class="text-muted">{{ simpatizante.municipio.nombre }}</td>
                 <td class="text-center">
                   <ng-container *ngIf="simpatizante.estatus; else elseEstatus">
@@ -137,13 +137,13 @@
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
                       data-bs-target="#modal-votante"
-                      (click)="setDataModalUpdate(votante)"
+                      (click)="setDataModalUpdate(simpatizante); mapa()"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
-                      (click)="deleteItem(votante.id, votante.nombreCompleto)"
+                      (click)="deleteItem(simpatizante.id, simpatizante.nombres)"
                     >
                       <i class="ti ti-eraser"></i>
                     </button>
@@ -344,37 +344,11 @@
                       simpatizanteForm.get('fechaNacimiento')?.hasError('required')
                     "
                   >
-                    la fecha de nacimiento es obligatorio
+                    La fecha de nacimiento es obligatoria
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-lg-4">
-              <div class="mb-3">
-                <label class="form-label">Folio*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="folio"
-                />
-                <div
-                  *ngIf="simpatizanteForm.get('folio')?.touched"
-                  class="error-message"
-                >
-                  <div *ngIf="simpatizanteForm.get('folio')?.hasError('required')">
-                    El folio es obligatorio
-                  </div>
-                  <div *ngIf="simpatizanteForm.get('folio')?.hasError('minlength')">
-                    El folio debe tener al menos 8 caracteres
-                  </div>
-                  <div *ngIf="simpatizanteForm.get('folio')?.hasError('pattern')">
-                    El folio no puede tener letras
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
 
             <div class="col-lg-4">
               <div class="mb-3">
@@ -382,21 +356,24 @@
                 <input
                   type="text"
                   class="form-control"
-                  formControlName="CURP"
+                  formControlName="curp"
                 />
                 <div
-                  *ngIf="simpatizanteForm.get('CURP')?.touched"
+                  *ngIf="simpatizanteForm.get('curp')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="simpatizanteForm.get('CURP')?.hasError('required')">
+                  <div *ngIf="simpatizanteForm.get('curp')?.hasError('required')">
                     El CURP es obligatorio
                   </div>
-                  <div *ngIf="simpatizanteForm.get('CURP')?.hasError('pattern')">
+                  <div *ngIf="simpatizanteForm.get('curp')?.hasError('pattern')">
                     El CURP no es valido
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div class="row">
+
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Estado*:</label>
@@ -473,7 +450,7 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Seccion*:</label>
+                <label class="form-label">Sección*:</label>
                 <ng-select
                   formControlName="seccion"
                   #selectseccion
@@ -500,7 +477,7 @@
                   class="error-message"
                 >
                   <div *ngIf="simpatizanteForm.get('seccion')?.hasError('required')">
-                    El seccion es obligatoria
+                    El sección es obligatoria
                   </div>
                 </div>
               </div>
@@ -512,14 +489,17 @@
                 <input
                   type="text"
                   class="form-control"
-                  formControlName="IDMEX"
+                  formControlName="idmex"
                 />
                 <div
-                  *ngIf="simpatizanteForm.get('IDMEX')?.touched"
+                  *ngIf="simpatizanteForm.get('idmex')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="simpatizanteForm.get('IDMEX')?.hasError('required')">
+                  <div *ngIf="simpatizanteForm.get('idmex')?.hasError('required')">
                     El IDMEX es obligatorio
+                  </div>
+                  <div *ngIf="simpatizanteForm.get('idmex')?.hasError('pattern')">
+                    El IDMEX solo contiene numeros y son 10 dijitos
                   </div>
                 </div>
               </div>
@@ -557,7 +537,7 @@
               </div>
             </div>
 
-            <div class="col-lg-6" *ngIf="visibility">
+            <div class="col-lg-4" *ngIf="visibility">
               <div class="mb-3">
                 <label class="form-label">Selecciona el programa social:</label>
                 <ng-select

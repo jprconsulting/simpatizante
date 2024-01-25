@@ -69,7 +69,7 @@
                 >
                   #
                 </th>
-                <th style="text-transform: none; font-size: inherit">Retroalimentacion</th>
+                <th style="text-transform: none; font-size: inherit">Retroalimentación</th>
                 <th style="text-transform: none; font-size: inherit">
                   Casilla
                 </th>
@@ -193,6 +193,7 @@
           class="btn-close"
           data-bs-dismiss="modal"
           aria-label="Close"
+          (click)="resetMap(); ocultar()"
         ></button>
       </div>
 
@@ -260,13 +261,23 @@
             </div>
             <div class="col-lg-12">
               <div class="mb-3">
-                <label class="form-label">Retroalimentacion de casilla:</label>
+                <label class="form-label">Retroalimentación de casilla*:</label>
                 <textarea
                   rows="4"
                   class="form-control"
                   placeholder=""
                   formControlName="retroalimentacion"
                 ></textarea>
+                <div
+                  *ngIf="incidenciasForm.get('retroalimentacion')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="incidenciasForm.get('retroalimentacion')?.hasError('required')"
+                  >
+                    La retroalimentación es obligatoria
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-12">

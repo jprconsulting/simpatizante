@@ -50,7 +50,6 @@ export class UsuariosComponent implements OnInit {
     this.getRols();
     this.getAreasAdscripcion();
     this.creteForm();
-    this.subscribeRolId();
   }
   ngOnInit(): void {
     this.isModalAdd = false;
@@ -81,30 +80,10 @@ export class UsuariosComponent implements OnInit {
         ],
       ],
       estatus: [true],
-      rolId: [null, Validators.required],
-      areaAdscripcionId: [],
+      rol: [null, Validators.required],
     });
   }
 
-  changeValidators(rolId: number) {
-    this.rolId = rolId;
-    //Si es director
-    this.usuarioForm.patchValue({ areaAdscripcionId: null });
-    if (rolId === 1) {
-      this.usuarioForm.controls["areaAdscripcionId"].enable();
-      this.usuarioForm.controls["areaAdscripcionId"].setValidators(Validators.required);
-    } else {
-      this.usuarioForm.controls["areaAdscripcionId"].disable();
-      this.usuarioForm.controls["areaAdscripcionId"].clearValidators();
-    }
-    this.usuarioForm.get("areaAdscripcionId")?.updateValueAndValidity();
-  }
-
-
-  subscribeRolId() {
-    this.usuarioForm.get("rolId")?.valueChanges
-      .subscribe(eventRolId => this.changeValidators(eventRolId));
-  }
 
   getUsuarios() {
     this.isLoading = LoadingStates.trueLoading;
@@ -130,14 +109,18 @@ export class UsuariosComponent implements OnInit {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
+
+    console.log('Search Value:', valueSearch);
+
     this.usuariosFilter = this.usuarios.filter(usuario =>
-      usuario.nombreCompleto.toLowerCase().includes(valueSearch) ||
+      usuario.nombre.toLowerCase().includes(valueSearch) ||
       usuario.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      usuario.apellidoMaterno.toLowerCase().includes(valueSearch) ||
       usuario.rol.nombreRol.toLowerCase().includes(valueSearch) ||
-      usuario.areaAdscripcion?.nombre.toLowerCase().includes(valueSearch) ||
-      usuario.correo.toLowerCase().includes(valueSearch) ||
-      usuario.id.toString().includes(valueSearch)
+      usuario.correo.toLowerCase().includes(valueSearch)
     );
+    console.log('Filtered Votantes:', this.usuariosFilter);
+
     this.configPaginator.currentPage = 1;
   }
 
@@ -154,19 +137,16 @@ export class UsuariosComponent implements OnInit {
       correo: dto.correo,
       password: dto.password,
       estatus: dto.estatus,
-      rolId: dto.rol.id,
-      areaAdscripcionId: dto.areaAdscripcion?.id
+      rol: dto.rol.id,
     });
   }
 
   editarUsuario() {
     this.usuario = this.usuarioForm.value as Usuario;
 
-    const rolId = this.usuarioForm.get('rolId')?.value;
-    const areaAdscripcionId = this.usuarioForm.get('areaAdscripcionId')?.value;
+    const rolId = this.usuarioForm.get('rol')?.value;
 
     this.usuario.rol = { id: rolId } as Rol;
-    this.usuario.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
 
     this.spinnerService.show();
     this.usuarioService.put(this.idUpdate, this.usuario).subscribe({
@@ -213,10 +193,8 @@ export class UsuariosComponent implements OnInit {
 
   agregar() {
     this.usuario = this.usuarioForm.value as Usuario;
-    const rolId = this.usuarioForm.get('rolId')?.value;
-    const areaAdscripcionId = this.usuarioForm.get('areaAdscripcionId')?.value;
+    const rolId = this.usuarioForm.get('rol')?.value;
     this.usuario.rol = { id: rolId } as Rol;
-    this.usuario.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
 
     this.spinnerService.show();
     this.usuarioService.post(this.usuario).subscribe({
@@ -233,7 +211,7 @@ export class UsuariosComponent implements OnInit {
     });
 
   }
-  
+
 
   resetForm() {
     this.closebutton.nativeElement.click();
@@ -249,7 +227,7 @@ export class UsuariosComponent implements OnInit {
 
     }
   }
-  
+
   beneficiarioSelect!: Operadores | undefined;
   beneficiarios: Operadores[] = [];
   onSelectBeneficiario(id: number) {
@@ -287,11 +265,11 @@ export class UsuariosComponent implements OnInit {
     const datosParaExportar = this.usuarios.map(usuario => {
       const estatus = usuario.estatus ? 'Activo' : 'Inactivo';
       return {
-        'Id': usuario.id,
         'Nombre': usuario.nombre,
         'Apellido Paterno': usuario.apellidoPaterno,
         'Apellido Materno': usuario.apellidoMaterno,
         'Correo': usuario.correo,
+        'Rol': usuario.rol.nombreRol,
         'Estatus': estatus,
       };
     });

@@ -75,6 +75,16 @@ const routes: Routes = [
         loadChildren: () => import('./programas-sociales/programas-sociales.module')
           .then(i => i.ProgramasSocialesModule)
       },
+      {
+        path: 'mapa-simpatizantes',
+        loadChildren: () => import('./mapa-simpatizantes/mapa-simpatizantes.module')
+          .then(i => i.MapaSimpatizantesModule)
+      },
+      {
+        path: 'mapa-incidencias',
+        loadChildren: () => import('./mapa-incidencias/mapa-incidencias.module')
+          .then(i => i.MapaIncidenciasModule)
+      },
     ]
   },
 ];

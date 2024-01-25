@@ -37,17 +37,17 @@
               </span>
             </div>
             <a
-              class="btn w-30 btn-icon"
-              aria-label="Dribbble"
-
-              title="Descargar excel de visitas"
-              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
-            >
-              <i
-                class="ti ti-cloud-down text-muted"
-                style="font-size: 28px"
-              ></i>
-            </a>
+            class="btn w-30 btn-icon"
+            aria-label="Dribbble"
+            (click)="exportarDatosAExcel()"
+            title="Descargar excel de usuarios"
+            style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+          >
+            <i
+              class="ti ti-cloud-down text-muted"
+              style="font-size: 28px"
+            ></i>
+          </a>
           </div>
         </div>
         <hr />
@@ -65,23 +65,18 @@
               <tr>
                 <th class="text-center">#</th>
                 <th style="text-transform: none; font-size: inherit">
-                  Beneficiario
+                  Simpatizante
                 </th>
                 <th style="text-transform: none; font-size: inherit">
-                  Programa Social
+                  Descripciòn
                 </th>
                 <th style="text-transform: none; font-size: inherit">
-                  Municipio
-                </th>
-                <th style="text-transform: none; font-size: inherit">
-                  Descripcion
+                  Servicios de interes
                 </th>
                 <th style="text-transform: none; font-size: inherit">
                   Evidencia
                 </th>
-                <th style="text-transform: none; font-size: inherit">
-                  Fecha Visita
-                </th>
+
                 <th style="text-transform: none; font-size: inherit">
                   Acciones
                 </th>
@@ -101,6 +96,9 @@
                       pointIndex +
                       1
                   }}
+                </td>
+                 <td class="text-muted">
+                  {{ visita.votante.nombreCompleto }}
                 </td>
                 <td class="text-muted">
                   {{ visita.descripcion }}
@@ -181,7 +179,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          {{ isModalAdd ? "Agregar" : "Actualizar" }} Visita
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} visita
         </h5>
         <button
           #closebutton
@@ -195,6 +193,42 @@
       <form [formGroup]="visitaForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="row">
+
+            <div class="mb-3">
+              <label class="form-label">Nombre del simpatizante:</label>
+              <ng-select
+                formControlName="votante"
+                #selectBeneficiario
+                [searchable]="false"
+                [items]="simpatizantes"
+                bindLabel="nombreCompleto"
+                bindValue="id"
+                placeholder="Elegir"
+                [clearable]="false"
+                (change)="onSelectCandidato($event.id)"
+              >
+                <ng-template ng-header-tmp>
+                  <input
+                    class="form-control"
+                    type="text"
+                    (input)="
+                      selectBeneficiario.filter($any($event.target).value)
+                    "
+                  />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{ item.nombreCompleto }}
+                </ng-template>
+              </ng-select>
+              <div
+                *ngIf="visitaForm.get('simpatizante')?.touched"
+                class="error-message"
+              >
+                <div *ngIf="visitaForm.get('simpatizante')?.hasError('required')">
+                  El nombre del votante es obligatorio
+                </div>
+              </div>
+            </div>
 
             <div class="col-lg-12">
               <div class="mb-3">
@@ -222,7 +256,7 @@
                     El servicio debe tener al menos 3 caracteres
                   </div>
                   <div *ngIf="visitaForm.get('servicio')?.hasError('pattern')">
-                    El servicio debe tener numeros
+                    El servicio no debe tener nùmeros
                   </div>
                 </div>
               </div>
@@ -247,20 +281,20 @@
                   <div
                     *ngIf="visitaForm.get('descripcion')?.hasError('required')"
                   >
-                    La descripcion es obligatorio
+                    La descripciòn es obligatoria
                   </div>
                   <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
-                    La descripcion no puede tener numeros
+                    La descripciòn no puede tener nùmeros
                   </div>
                   <div
                     *ngIf="visitaForm.get('descripcion')?.hasError('minlength')"
                   >
-                    La descripcion debe tener al menos 3 caracteres
+                    La descripciòn debe tener al menos 3 caracteres
                   </div>
                   <div
                     *ngIf="visitaForm.get('descripcion')?.hasError('pattern')"
                   >
-                    La descripcion no puede llevar numeros
+                    La descripciòn no puede llevar nùmeros
                   </div>
                 </div>
               </div>
