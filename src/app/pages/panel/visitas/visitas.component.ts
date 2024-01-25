@@ -34,7 +34,7 @@ export class VisitasComponent {
   visitasFilter: Visita[] = [];
   isLoading = LoadingStates.neutro;
   programasSociales: ProgramaSocial[] = [];
-  simpatizantes: Votante[] =[];
+  votantes: Votante[] =[];
   candidatoSelect!: Candidatos | undefined;
   candidato: Candidatos[] = [];
   operador: Operadores[] = [];
@@ -67,7 +67,7 @@ export class VisitasComponent {
     this.votantesService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
-          this.simpatizantes = dataFromAPI; console.log('simpatizante',this.simpatizantes)
+          this.votantes = dataFromAPI; console.log('simpatizante',this.votantes)
         },
         error: (error) => {
           console.error(error);
@@ -229,34 +229,30 @@ export class VisitasComponent {
 
   actualizarVisita() {
     this.visita = this.visitaForm.value as Visita;
-    const simpatizanteId = this.visitaForm.get('votante')?.value;
 
+    const visitaId = this.visitaForm.get('id')?.value
 
-    this.visita.votante = { id: simpatizanteId } as Votante
+    const votanteId = this.visitaForm.get('votante')?.value;
+    this.visita.votante = { id: votanteId } as Votante;
 
-    const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
+    console.log(this.visita);
 
-    if (imagenBase64) {
-      const formData = { ...this.visita, imagenBase64 };
-      this.spinnerService.show();
+    this.spinnerService.show();
 
-      this.visitasService.put(this.id, formData).subscribe({
-        next: () => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Visita actualizada correctamente');
-          this.resetForm();
-          this.configPaginator.currentPage = 1;
-        },
-        error: (error) => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeError(error);
-        }
-      });
-    } else {
-      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
-    }
+    this.visitasService.put(visitaId, this.visita).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito("Visita actualizada con éxito");
+        this.resetForm();
+
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.mensajeService.mensajeError("Error al actualizar la visista");
+        console.error(error);
+      }
+    });
   }
-
 
   handleChangeAdd() {
     this.visitaForm.reset();
