@@ -15,6 +15,7 @@ import { Operadores } from 'src/app/models/operadores';
 import { Rol } from 'src/app/models/rol';
 import { Seccion } from 'src/app/models/seccion';
 import { Usuario } from 'src/app/models/usuario';
+import { forkJoin } from 'rxjs';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -69,7 +70,6 @@ export class OperadoresComponent implements OnInit{
       {
         next: (dataFromAPI) => {
           this.secciones = dataFromAPI
-          this.seccionesFilter = this.secciones;
         }
       });
     console.log(this.secciones)
@@ -92,22 +92,27 @@ export class OperadoresComponent implements OnInit{
   }
 
 
-
   getOperadores() {
     this.isLoading = LoadingStates.trueLoading;
-    this.operadoresService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.operadores = dataFromAPI;
-          this.operadorFilter = this.operadores;
-          this.isLoading = LoadingStates.falseLoading;
-
-        },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading
-        }
+    this.operadoresService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.operadores = dataFromAPI;
+        this.operadorFilter = this.operadores;
+        this.isLoading = LoadingStates.falseLoading;
+        this.obtenerSeccionesIdsDeOperadores();
+      },
+      error: () => {
+        this.isLoading = LoadingStates.errorLoading;
       }
-    );
+    });
+  }
+
+  obtenerSeccionesIdsDeOperadores() {
+    this.operadores.forEach((operador) => {
+      const seccionesIds = operador.secciones;
+      this.seccionesFilter = this.secciones;
+      console.log(`SeccionesIds del operador ${operador.id}:`, seccionesIds);
+    });
   }
 
   onPageChange(number: number) {
@@ -245,8 +250,8 @@ export class OperadoresComponent implements OnInit{
         const estatus = operador.estatus ? 'Activo' : 'Inactivo';
         return {
           'Nombres': operador.nombres,
-          'Apellido Paterno': operador.apellidoPaterno,
-          'Apellido Materno': operador.apellidoMaterno,
+          'Apellido paterno': operador.apellidoPaterno,
+          'Apellido materno': operador.apellidoMaterno,
           'Fecha de nacimiento': operador.fechaNacimiento,
           'Secciones': operador.seccionesIds.id,
           'Estatus': estatus,
@@ -268,9 +273,6 @@ export class OperadoresComponent implements OnInit{
     a.click();
     window.URL.revokeObjectURL(url);
   }
-
-
-
 
   toggleDisabled() {
     const car: any = this.secciones[1];

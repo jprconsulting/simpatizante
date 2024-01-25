@@ -11,4 +11,5 @@ export interface Operadores {
     sexo: number;
     estatus: boolean;
     seccionesIds: Seccion;
+    secciones: string;
 }

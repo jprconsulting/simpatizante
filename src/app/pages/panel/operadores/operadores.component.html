@@ -72,7 +72,9 @@
                 <th style="text-transform: none; font-size: inherit">
                   Nombre completo
                 </th>
-                <th style="text-transform: none; font-size: inherit">Fecha de nacimiento</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Fecha de nacimiento
+                </th>
                 <th
                   style="text-transform: none; font-size: inherit"
                   class="text-center"
@@ -102,8 +104,13 @@
                       1
                   }}
                 </td>
-                <td>{{ operador.nombres }} {{ operador.apellidoPaterno }} {{ operador.apellidoMaterno }}</td>
-                <td class="text-muted">{{ operador.fechaNacimiento  | date : "dd-MM-yyy"}}</td>
+                <td>
+                  {{ operador.nombres }} {{ operador.apellidoPaterno }}
+                  {{ operador.apellidoMaterno }}
+                </td>
+                <td class="text-muted">
+                  {{ operador.fechaNacimiento | date : "dd-MM-yyy" }}
+                </td>
 
                 <td class="text-center">
                   <ng-container *ngIf="operador.estatus; else elseEstatus">
@@ -116,16 +123,20 @@
                 <td>
                   <div class="d-flex justify-content-between">
                     <button
-                    alt="Ver secciones"
-                    style="margin-right: 10px;"
+                      alt="Ver secciones"
+                      style="margin-right: 10px"
                       class="btn btn-primary btn-icon btn-sm"
                       data-bs-toggle="modal"
-                      (click)="mostrarImagenAmpliada(obtenerRutaImagen(operador.nombres))"
+                      (click)="
+                        mostrarImagenAmpliada(
+                          obtenerRutaImagen(operador.nombres)
+                        )
+                      "
                     >
                       <i class="ti ti-eye"></i>
                     </button>
                     <button
-                    style="margin-right: 10px;"
+                      style="margin-right: 10px"
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
                       data-bs-target="#modal-usuario"
@@ -204,10 +215,14 @@
                   *ngIf="operadorForm.get('nombres')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="operadorForm.get('nombres')?.hasError('required')">
+                  <div
+                    *ngIf="operadorForm.get('nombres')?.hasError('required')"
+                  >
                     <p style="color: red">El nombre es obligatorio</p>
                   </div>
-                  <div *ngIf="operadorForm.get('nombres')?.hasError('minlength')">
+                  <div
+                    *ngIf="operadorForm.get('nombres')?.hasError('minlength')"
+                  >
                     El Nombre debe tener al menos 3 caracteres
                   </div>
                   <div *ngIf="operadorForm.get('nombres')?.hasError('pattern')">
@@ -290,7 +305,6 @@
             </div>
           </div>
           <div class="row">
-
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Fecha nacimiento*:</label>
@@ -305,9 +319,7 @@
                 >
                   <div
                     *ngIf="
-                      operadorForm
-                        .get('fechaNacimiento')
-                        ?.hasError('required')
+                      operadorForm.get('fechaNacimiento')?.hasError('required')
                     "
                   >
                     la fecha de nacimiento es obligatoria
@@ -333,9 +345,7 @@
                     "
                   >
                     {{
-                      operadorForm.get("estatus")?.value
-                        ? "Activo"
-                        : "Inactivo"
+                      operadorForm.get("estatus")?.value ? "Activo" : "Inactivo"
                     }}
                   </span>
                 </label>
@@ -343,8 +353,10 @@
             </div>
             <div class="col-lg-12">
               <div class="mb-3">
-                <label class="form-label">Secciones electorales a operar*:</label>
-              <ng-select
+                <label class="form-label"
+                  >Secciones electorales a operar*:</label
+                >
+                <ng-select
                   #selectSecciones
                   [items]="secciones"
                   [searchable]="false"
@@ -378,16 +390,11 @@
                   >
                     La secciones son obligatorias
                   </div>
-
                 </div>
               </div>
             </div>
           </div>
-          <div class="row">
-
-
-
-          </div>
+          <div class="row"></div>
         </div>
         <p
           class="form-label"
@@ -408,38 +415,52 @@
     </div>
   </div>
 </div>
-<div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5);">
+<div
+  class="modal modal-highlight"
+  id="modal-imagen-ampliada"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="background: rgba(0, 0, 0, 0.5)"
+>
   <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Secciones asociadas al operador</h5>
-              <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
-          </div>
-          <div class="modal-body">
-            <table class="table table-vcenter card-table table-striped">
-              <thead>
-                <tr>
-
-                  <th style="text-transform: none; font-size: inherit">
-                    Nombre del operador
-                  </th>
-                  <th style="text-transform: none; font-size: inherit">Secciones</th>
-
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                *ngFor="
-                  let secciones of seccionesFilter"
-                >
-                  <td>{{ secciones.id}}</td>
-                  <td class="text-muted" colspan="2">
-                    <p>{{ secciones.clave}}</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">
+          Secciones asociadas al operador
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="cerrarModal()"
+        ></button>
       </div>
+      <div class="modal-body">
+        <table class="table table-vcenter card-table table-striped">
+          <thead>
+            <tr>
+              <th
+                style="
+                  text-transform: none;
+                  font-size: inherit;
+                  text-align: center;
+                "
+              >
+                Secciones
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let operadores of seccionesFilter">
+              <td>
+                <p>{{ operadores.clave}}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
