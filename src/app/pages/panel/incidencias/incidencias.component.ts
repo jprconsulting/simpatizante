@@ -356,11 +356,8 @@ export class IncidenciasComponent implements OnInit {
       retroalimentacion: dto.retroalimentacion,
       tipoIncidencia: dto.tipoIncidencia.id,
       casilla: dto.casilla.id,
-      imagenBase64: dto.imagenBase64,
       direccion: dto.direccion,
-      latitud: dto.latitud,
-      longitud: dto.longitud,
-
+      imagenBase64: dto.imagenBase64,
     });
     console.log(dto.direccion)
     // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
@@ -480,7 +477,7 @@ export class IncidenciasComponent implements OnInit {
         'casilla': incidencias.casilla.nombre,
         'tipo de incidencia': incidencias.tipoIncidencia.tipo,
         'direccion': incidencias.direccion,
-      
+
       };
     });
 
