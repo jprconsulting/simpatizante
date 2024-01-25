@@ -357,7 +357,11 @@ export class IncidenciasComponent implements OnInit {
       tipoIncidencia: dto.tipoIncidencia.id,
       casilla: dto.casilla.id,
       direccion: dto.direccion,
-      imagenBase64: dto.imagenBase64,
+      latitud: dto.latitud,
+      longitud: dto.longitud,
+
+      imagenBase64: dto.imagenBase64.toString(),
+
     });
     console.log(dto.direccion)
     // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
