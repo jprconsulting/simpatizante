@@ -245,10 +245,10 @@
                   <div
                     *ngIf="candidatoForm.get('nombres')?.hasError('minlength')"
                   >
-                    El Nombre debe tener al menos 3 caracteres
+                    El nombre debe tener al menos 3 caracteres
                   </div>
                   <div *ngIf="candidatoForm.get('nombres')?.hasError('pattern')">
-                    El Nombre no puede tener números ni signos
+                    El nombre no puede tener números ni signos
                   </div>
                 </div>
               </div>
@@ -375,7 +375,7 @@
                     class="error-message"
                   >
                     <div *ngIf="candidatoForm.get('sexo')?.hasError('required')">
-                      El genero es obligatorio
+                      El género es obligatorio
                     </div>
                   </div>
                 </div>

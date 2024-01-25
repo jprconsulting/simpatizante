@@ -529,10 +529,9 @@ export class SimpatizanteComponent implements OnInit {
         'Apellido paterno': votante.apellidoPaterno,
         'Apellido materno': votante.apellidoMaterno,
         'Fecha de nacimiento': votante.fechaNacimiento,
-        'Curp': votante.curp,
+        'CURP': votante.curp,
         'Sexo': votante.sexo === 1 ? 'Masculino' : 'Femenino',
         'Domicilio': votante.domicilio,
-        'CURP': votante.curp,
         'IDMEX': votante.idmex,
         'Estatus': estatus,
       };

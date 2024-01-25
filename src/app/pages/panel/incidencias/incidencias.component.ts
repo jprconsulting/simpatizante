@@ -478,6 +478,11 @@ export class IncidenciasComponent implements OnInit {
         'tipo de incidencia': incidencias.tipoIncidencia.tipo,
         'direccion': incidencias.direccion,
 
+        'Retroalimentación': incidencias.retroalimentacion,
+        'Casilla': incidencias.casilla.nombre,
+        'Tipo de incidencia': incidencias.tipoIncidencia.tipo,
+        'Dirección': incidencias.direccion,
+
       };
     });
 

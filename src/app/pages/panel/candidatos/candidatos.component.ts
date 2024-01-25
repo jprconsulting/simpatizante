@@ -362,11 +362,10 @@ export class CandidatosComponent {
     const datosParaExportar = this.candidato.map(candidato => {
       const estatus = candidato.estatus ? 'Activo' : 'Inactivo';
       return {
-        'Id': candidato.id,
         'Nombres': candidato.nombres,
-        'apellidoPaterno': candidato.apellidoPaterno,
-        'apellidoMaterno': candidato.apellidoMaterno,
-        'fechaNacimiento': candidato.fechaNacimiento,
+        'Apellido paterno': candidato.apellidoPaterno,
+        'Apellido materno': candidato.apellidoMaterno,
+        'Fecha nacimiento': candidato.fechaNacimiento,
         'Estatus': estatus,
 
       };
