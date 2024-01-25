@@ -363,9 +363,9 @@ export class CandidatosComponent {
       const estatus = candidato.estatus ? 'Activo' : 'Inactivo';
       return {
         'Nombres': candidato.nombres,
-        'ApellidoPaterno': candidato.apellidoPaterno,
-        'ApellidoMaterno': candidato.apellidoMaterno,
-        'FechaNacimiento': candidato.fechaNacimiento,
+        'Apellido paterno': candidato.apellidoPaterno,
+        'Apellido materno': candidato.apellidoMaterno,
+        'Fecha nacimiento': candidato.fechaNacimiento,
         'Estatus': estatus,
 
       };
