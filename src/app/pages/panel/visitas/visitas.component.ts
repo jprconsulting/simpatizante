@@ -135,7 +135,8 @@ export class VisitasComponent {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value.toLowerCase();
     this.visitasFilter = this.visitas.filter(visita =>
-      visita.votante.nombreCompleto.toLocaleLowerCase().includes(inputValue.toLowerCase())
+      visita.votante.nombreCompleto.toLocaleLowerCase().includes(inputValue.toLowerCase())||
+      visita.servicio.toLocaleLowerCase().includes(inputValue.toLowerCase())
     );
 
     this.configPaginator.currentPage = 1;
@@ -344,9 +345,9 @@ export class VisitasComponent {
 
     const datosParaExportar = this.visitas.map(visita => {
       return {
-        'Nombre': visita.votante.nombres,       
-        'servicio': visita.servicio,
-        'descripcion': visita.descripcion,
+        'Nombre completo': visita.votante.nombreCompleto,       
+        'Servicio': visita.servicio,
+        'Descripcion': visita.descripcion,
       };
     });
 
