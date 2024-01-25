@@ -92,7 +92,7 @@ getContentString(simpatizante: Votante) {
         <p style="font-weight:  bolder;" class="">
           Programa inscrito:
           <p class=" text-muted">
-            ${simpatizante.nombres}
+            ${simpatizante.programaSocial?.nombre}
           </p>
         </p>
         <p style="font-weight:  bolder;" class="" >
