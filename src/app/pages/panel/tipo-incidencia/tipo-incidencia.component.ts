@@ -7,13 +7,14 @@ import { Visita } from 'src/app/models/visita';
 import { IndicadoresService } from 'src/app/core/services/indicadores.service';
 import { Casillas } from 'src/app/models/casillas';
 import { CasillasService } from 'src/app/core/services/casilla.service';
-import { TipoIncidenciaService } from 'src/app/core/services/tipoIncidencias.service';
+import { IncidenciaService } from 'src/app/core/services/incidencias.service';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import * as XLSX from 'xlsx';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
+import { Incidencia } from 'src/app/models/incidencias';
 
 @Component({
   selector: 'app-tipo-incidencia',
@@ -58,9 +59,9 @@ export class TipoIncidenciasComponent implements OnInit {
     private mensajeService: MensajeService,
     private indicadoresService: IndicadoresService,
     private casillasService: CasillasService,
-    private TipoIncidenciaService: TipoIncidenciaService,
+    private IncidenciaService: IncidenciaService,
   ) {
-   this.TipoIncidenciaService.refreshListIncidencia.subscribe(() => this.getIncidencias());
+   this.IncidenciaService.refreshListIncidencia.subscribe(() => this.getIncidencias());
    this.creteForm();
    this.getIndicadores();
    this.getCasillas();
@@ -328,7 +329,7 @@ export class TipoIncidenciasComponent implements OnInit {
       const formData = { ...this.incidencia, imagenBase64 };
 
       this.spinnerService.show();
-      this.TipoIncidenciaService.post(formData).subscribe({
+      this.IncidenciaService.post(formData).subscribe({
         next: () => {
           this.spinnerService.hide();
           this.mensajeService.mensajeExito('Incidencia guardado correctamente');
@@ -363,7 +364,7 @@ export class TipoIncidenciasComponent implements OnInit {
        const formData = { ...this.incidencia, imagenBase64 };
        this.spinnerService.show();
 
-       this.TipoIncidenciaService.put(incidenciaId, formData).subscribe({
+       this.IncidenciaService.put(incidenciaId, formData).subscribe({
           next: () => {
              this.spinnerService.hide();
              this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
@@ -380,7 +381,7 @@ export class TipoIncidenciasComponent implements OnInit {
     }
  }
 
-  setDataModalUpdate(dto: TipoIncidencia){
+  setDataModalUpdate(dto: Incidencia){
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     this.incidenciasForm.patchValue({
@@ -406,7 +407,7 @@ export class TipoIncidenciasComponent implements OnInit {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar la incidencia?`,
       () => {
-        this.TipoIncidenciaService.delete(id).subscribe({
+        this.IncidenciaService.delete(id).subscribe({
           next: () => {
             this.mensajeService.mensajeExito('Incidencia borrada correctamente');
             this.configPaginator.currentPage = 1;
@@ -421,7 +422,7 @@ export class TipoIncidenciasComponent implements OnInit {
 
   getIncidencias() {
     this.isLoading = LoadingStates.trueLoading;
-    this.TipoIncidenciaService.getAll().subscribe(
+    this.IncidenciaService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
           this.incidencias = dataFromAPI;

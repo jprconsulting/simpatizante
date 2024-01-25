@@ -8,7 +8,7 @@
   <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
-<app-page-header headerTitle="Incidencias"></app-page-header>
+<app-page-header headerTitle="Tipo de incidencias"></app-page-header>
 
 <div class="row">
   <div class="col-12">
@@ -101,11 +101,11 @@
             </thead>
             <tbody>
               <tr
-                *ngFor="
-                  let tipoIncidencia of incidenciasFilter | paginate : configPaginator;
-                  let pointIndex = index
-                "
-              >
+              *ngFor="
+              let incidencia of incidenciasFilter | paginate : configPaginator;
+              let pointIndex = index
+            "
+          >
                 <td class="text-center">
                   {{
                     configPaginator.itemsPerPage *
@@ -116,7 +116,13 @@
                 </td>
                 <td>{{ incidencia.retroalimentacion }}</td>
                 <td class="text-muted">{{ incidencia.casilla.nombre }}</td>
-                <td class="text-center">
+                <td class="text-left">
+                  <span
+                  class="badge me-2"
+                  style="height: 14px; width: 14px"
+                  [style.backgroundColor]="incidencia.tipoIncidencia.color"
+                >
+                </span>
                   {{ incidencia.tipoIncidencia.tipo }}
                 </td>
                 <td>{{ incidencia.direccion }}</td>
