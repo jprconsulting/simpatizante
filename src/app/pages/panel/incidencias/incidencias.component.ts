@@ -473,11 +473,6 @@ export class IncidenciasComponent implements OnInit {
 
     const datosParaExportar = this.incidencias.map(incidencias => {
       return {
-        'retroalimentacion': incidencias.retroalimentacion,
-        'casilla': incidencias.casilla.nombre,
-        'tipo de incidencia': incidencias.tipoIncidencia.tipo,
-        'direccion': incidencias.direccion,
-
         'Retroalimentación': incidencias.retroalimentacion,
         'Casilla': incidencias.casilla.nombre,
         'Tipo de incidencia': incidencias.tipoIncidencia.tipo,
