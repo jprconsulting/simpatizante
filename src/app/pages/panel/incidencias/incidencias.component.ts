@@ -356,10 +356,11 @@ export class IncidenciasComponent implements OnInit {
       retroalimentacion: dto.retroalimentacion,
       tipoIncidencia: dto.tipoIncidencia.id,
       casilla: dto.casilla.id,
-      imagenBase64: dto.imagenBase64,
       direccion: dto.direccion,
       latitud: dto.latitud,
       longitud: dto.longitud,
+
+      imagenBase64: dto.imagenBase64.toString(),
 
     });
     console.log(dto.direccion)
@@ -480,7 +481,7 @@ export class IncidenciasComponent implements OnInit {
         'Casilla': incidencias.casilla.nombre,
         'Tipo de incidencia': incidencias.tipoIncidencia.tipo,
         'Dirección': incidencias.direccion,
-      
+
       };
     });
 
