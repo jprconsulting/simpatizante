@@ -172,17 +172,19 @@ getsimpatizantes() {
   });
 }
 onSelectProgramaSocial(id: number) {
-  console.log('filtro')
+  console.log('filtro');
   if (id) {
     this.clearMarkers();
     
-    this.simpatizantesFiltrados = this.simpatizantes.filter(simpatizante => simpatizante.municipio.id === id);
+    // Filtrar los simpatizantes por municipio y asignar el resultado a simpatizantesFiltrados
+    this.simpatizantesFiltrados = this.simpatizantes.filter(v => v.municipio.id === id);
     
     this.simpatizantesFiltrados.forEach(simpatizante => {
       this.setInfoWindow(this.getMarker(simpatizante), this.getContentString(simpatizante));
     });
   }
 }
+
 
 onClear() {
   this.setAllMarkers();
