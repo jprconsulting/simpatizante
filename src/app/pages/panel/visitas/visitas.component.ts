@@ -234,24 +234,27 @@ export class VisitasComponent {
 
     const votanteId = this.visitaForm.get('votante')?.value;
     this.visita.votante = { id: votanteId } as Votante;
+    const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 
     console.log(this.visita);
 
     this.spinnerService.show();
+    if (imagenBase64) {
+      const formData = { ...this.visita, imagenBase64 };
+      this.spinnerService.show();
 
-    this.visitasService.put(visitaId, this.visita).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito("Visita actualizada con éxito");
-        this.resetForm();
-
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        this.mensajeService.mensajeError("Error al actualizar la visista");
-        console.error(error);
-      }
-    });
+      this.visitasService.put(visitaId, formData).subscribe({
+         next: () => {
+            this.spinnerService.hide();
+            this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
+            this.resetForm();
+            this.configPaginator.currentPage = 1;
+         },
+         error: (error) => {
+            this.spinnerService.hide();
+            this.mensajeService.mensajeError(error);
+         }
+      });}
   }
 
   handleChangeAdd() {
