@@ -341,6 +341,31 @@ export class CandidatosComponent {
     }
 
   }
+  showModal = false;
+
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+  mostrarImagenAmpliada2(seccion: string) {
+    this.imagenAmpliada = seccion;
+    const modal = document.getElementById('modal-simpatizantes');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+  cerrarModal2() {
+    this.imagenAmpliada = null;
+    const modal = document.getElementById('modal-simpatizantes');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+    }
+  }
 
   handleChangeAdd() {
     if (this.candidatoForm) {

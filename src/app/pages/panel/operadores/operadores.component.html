@@ -136,6 +136,19 @@
                       <i class="ti ti-eye"></i>
                     </button>
                     <button
+                      alt="Ver secciones"
+                      style="margin-right: 10px"
+                      class="btn btn-secondary btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      (click)="
+                        mostrarImagenAmpliada2(
+                          obtenerRutaImagen(operador.nombres)
+                        )
+                      "
+                    >
+                    <i class="ti ti-list"></i>
+                    </button>
+                    <button
                       style="margin-right: 10px"
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
@@ -436,6 +449,7 @@
           aria-label="Close"
           (click)="cerrarModal()"
         ></button>
+        
       </div>
       <div class="modal-body">
         <table class="table table-vcenter card-table table-striped">
@@ -459,6 +473,76 @@
               </td>
             </tr>
           </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal modal-highlight"
+  id="modal-simpatizantes"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="background: rgba(0, 0, 0, 0.5)"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">
+         
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="cerrarModal2()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-vcenter card-table table-striped">
+          <thead>
+            <tr>
+              <th
+                style="
+                  text-transform: none;
+                  font-size: inherit;
+                  text-align: center;
+                "
+              >
+                 Nombre 
+              </th>
+              <th
+                style="
+                  text-transform: none;
+                  font-size: inherit;
+                  text-align: center;
+                "
+              >
+                Domicilio
+              </th>
+              <th
+                style="
+                  text-transform: none;
+                  font-size: inherit;
+                  text-align: center;
+                "
+              >
+                Genero 
+              </th>
+              <th
+                style="
+                  text-transform: none;
+                  font-size: inherit;
+                  text-align: center;
+                "
+              >
+                 Programa social 
+              </th>
+              
+            </tr>
+          </thead>
         </table>
       </div>
     </div>
