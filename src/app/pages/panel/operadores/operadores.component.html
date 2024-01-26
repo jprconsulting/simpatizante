@@ -236,10 +236,10 @@
                   <div
                     *ngIf="operadorForm.get('nombres')?.hasError('minlength')"
                   >
-                    El Nombre debe tener al menos 3 caracteres
+                    El nombre debe tener al menos 3 caracteres
                   </div>
                   <div *ngIf="operadorForm.get('nombres')?.hasError('pattern')">
-                    El Nombre no puede tener números ni signos
+                    El nombre no puede tener números ni signos
                   </div>
                 </div>
               </div>
@@ -335,7 +335,7 @@
                       operadorForm.get('fechaNacimiento')?.hasError('required')
                     "
                   >
-                    la fecha de nacimiento es obligatoria
+                    La fecha de nacimiento es obligatoria
                   </div>
                 </div>
               </div>
@@ -395,11 +395,11 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="operadorForm.get('seccion')?.touched"
+                  *ngIf="operadorForm.get('seccionesIds')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="operadorForm.get('seccion')?.hasError('required')"
+                    *ngIf="operadorForm.get('seccionesIds')?.hasError('required')"
                   >
                     La secciones son obligatorias
                   </div>

@@ -1,108 +1,238 @@
 <div class="row justify-content-center">
-    <div class="col-lg-4">
-        <div class="card shadow-lg rounded">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-5 d-flex align-items-center justify-content-center">
-                        <i class="ti ti-user-circle text-muted" style="font-size: 100px"></i>
-                    </div>
-                    <div class="col-lg-7">
-                        <div class="ps-2">
-                            <h1>BIENVENIDA</h1>
-                            <ul style="list-style: none; padding-left: 0;">
-                                <li style="display: flex; align-items: center;">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block" style="display: flex; flex-direction: column; align-items: center; margin-right: 10px;">
-                                      <i class="ti ti-user-pentagon"></i>
-                                  </span>
-                                    <h3 class="nav-link-title" style="margin-bottom: 0;">{{ dataObject?.nombreCompleto }}</h3>
-                                </li>
-                                <hr style="margin-top: 0; margin-bottom: 5px; border: 0; border-top: 1px solid #000;">
-                                <li style="display: flex; align-items: center; margin-bottom: 5px;">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block" style="display: flex; flex-direction: column; align-items: center; margin-right: 10px;">
-                                      <i class="ti ti-mail"></i>
-                                  </span>
-                                    <h4 class="nav-link-title" style="margin-bottom: 0;">{{ dataObject?.email }}</h4>
-                                </li>
-                                <li style="display: flex; align-items: center;">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block" style="display: flex; flex-direction: column; align-items: center; margin-right: 10px;">
-                                      <i class="ti ti-id-badge-2"></i>
-                                  </span>
-                                    <h4 class="nav-link-title" style="margin-bottom: 0;">{{ dataObject?.rol }}</h4>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+  <div class="col-lg-4">
+    <div class="card shadow-lg rounded">
+      <div class="card-body">
+        <div class="row">
+          <div
+            class="col-lg-5 d-flex align-items-center justify-content-center"
+          >
+            <i
+              class="ti ti-user-circle text-muted"
+              style="font-size: 100px"
+            ></i>
+          </div>
+          <div class="col-lg-7">
+            <div class="ps-2">
+              <h1>BIENVENID@</h1>
+              <ul style="list-style: none; padding-left: 0">
+                <li style="display: flex; align-items: center">
+                  <span
+                    class="nav-link-icon d-md-none d-lg-inline-block"
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      margin-right: 10px;
+                    "
+                  >
+                    <i class="ti ti-user-pentagon"></i>
+                  </span>
+                  <h3 class="nav-link-title" style="margin-bottom: 0">
+                    {{ dataObject?.nombreCompleto }}
+                  </h3>
+                </li>
+                <hr
+                  style="
+                    margin-top: 0;
+                    margin-bottom: 5px;
+                    border: 0;
+                    border-top: 1px solid #000;
+                  "
+                />
+                <li
+                  style="display: flex; align-items: center; margin-bottom: 5px"
+                >
+                  <span
+                    class="nav-link-icon d-md-none d-lg-inline-block"
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      margin-right: 10px;
+                    "
+                  >
+                    <i class="ti ti-mail"></i>
+                  </span>
+                  <h4 class="nav-link-title" style="margin-bottom: 0">
+                    {{ dataObject?.email }}
+                  </h4>
+                </li>
+                <li style="display: flex; align-items: center">
+                  <span
+                    class="nav-link-icon d-md-none d-lg-inline-block"
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      margin-right: 10px;
+                    "
+                  >
+                    <i class="ti ti-id-badge-2"></i>
+                  </span>
+                  <h4 class="nav-link-title" style="margin-bottom: 0">
+                    {{ dataObject?.rol }}
+                  </h4>
+                </li>
+              </ul>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-<br>
-<hr>
+<br />
+<hr />
 
 <div class="row">
-    <!-- Primer Beneficio -->
-    <div class="col-md-6 col-lg-3">
-        <div class="card">
-            <div class="card-stamp">
-                <div class="card-stamp-icon bg-yellow">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
-                </div>
-            </div>
-            <div class="card-body">
-                <h3 class="card-title">Simpatizantes:</h3>
-                <p class="text-muted">Este sistema es un conteo de votos y de seguimiento de líderes los cuales son encargados de tener bajo su responsabilidad a un grupo de seguidores electorales.
-                   </p>
-            </div>
+  <!-- Primer Beneficio -->
+  <div class="col-md-6 col-lg-3">
+    <div class="card">
+      <div class="card-stamp">
+        <div class="card-stamp-icon bg-yellow">
+          <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="icon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
+            />
+            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+          </svg>
         </div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Simpatizantes:</h3>
+        <p class="text-muted">
+          Este sistema es un conteo de votos y de seguimiento de líderes los
+          cuales son encargados de tener bajo su responsabilidad a un grupo de
+          seguidores electorales.
+        </p>
+      </div>
     </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="card">
-            <div class="card-stamp">
-                <div class="card-stamp-icon bg-yellow">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
-                </div>
-            </div>
-            <div class="card-body">
-                <h3 class="card-title">Importancia:</h3>
-                <p class="text-muted"> El proyecto simpatizantes es de suma impotancia con el fin de garantizar la integridad y transparencia de los procesos electorales, y busca mejorar la eficiencia y precisión en el conteo de votos además de la relación de los votantes con los líderes de los partidos políticos.  </p>
-            </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card">
+      <div class="card-stamp">
+        <div class="card-stamp-icon bg-yellow">
+          <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="icon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
+            />
+            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+          </svg>
         </div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Importancia:</h3>
+        <p class="text-muted">
+          El proyecto simpatizantes es de suma impotancia con el fin de
+          garantizar la integridad y transparencia de los procesos electorales,
+          y busca mejorar la eficiencia y precisión en el conteo de votos además
+          de la relación de los votantes con los líderes de los partidos
+          políticos.
+        </p>
+      </div>
     </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="card">
-            <div class="card-stamp">
-                <div class="card-stamp-icon bg-yellow">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
-                </div>
-            </div>
-            <div class="card-body">
-                <h3 class="card-title">Objetivo:</h3>
-                <p class="text-muted">Tiene como objetivo tener un control de las personas que ya emitieron su voto, ademas de generar reportes con base a quienes son beneficiarios con algún programa con su respectiva evidencia y procedimiento correspondiente, la generación de informes y la seguridad de datos. Además se considera la integración con otros sistemas electorales y la capacitación del personal involucrado.</p>
-            </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card">
+      <div class="card-stamp">
+        <div class="card-stamp-icon bg-yellow">
+          <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="icon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
+            />
+            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+          </svg>
         </div>
-    </div><div class="col-md-6 col-lg-3">
-        <div class="card">
-            <div class="card-stamp">
-                <div class="card-stamp-icon bg-yellow">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
-                </div>
-            </div>
-            <div class="card-body">
-                <h3 class="card-title">Objetivos del sistema:</h3>
-                <p class="text-muted">- Tener un mejor control de votos</p>
-                <p class="text-muted">- Tener acceso a las incidencias que se generen en la jornada electoral</p>
-                <p class="text-muted">- Tener control de los operadores y la gente que manejan</p>
-                <p class="text-muted">- Generación de reportes
-
-                </p>
-            </div>
-            
-        </div>
-        
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Objetivo:</h3>
+        <p class="text-muted">
+          Tiene como objetivo tener un control de las personas que ya emitieron
+          su voto, ademas de generar reportes con base a quienes son
+          beneficiarios con algún programa con su respectiva evidencia y
+          procedimiento correspondiente, la generación de informes y la
+          seguridad de datos. Además se considera la integración con otros
+          sistemas electorales y la capacitación del personal involucrado.
+        </p>
+      </div>
     </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card">
+      <div class="card-stamp">
+        <div class="card-stamp-icon bg-yellow">
+          <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="icon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
+            />
+            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+          </svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Objetivos del sistema:</h3>
+        <p class="text-muted">- Tener un mejor control de votos</p>
+        <p class="text-muted">
+          - Tener acceso a las incidencias que se generen en la jornada
+          electoral
+        </p>
+        <p class="text-muted">
+          - Tener control de los operadores y la gente que manejan
+        </p>
+        <p class="text-muted">- Generación de reportes</p>
+      </div>
+    </div>
+  </div>
 </div>
