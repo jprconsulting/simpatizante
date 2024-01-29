@@ -367,7 +367,7 @@
                   #selectCandidato
                   [searchable]="false"
                   [items]="candidatos"
-                  bindLabel="nombres"
+                  bindLabel="nombreCompleto"
                   bindValue="id"
                   placeholder="Elegir"
                   [clearable]="false"
@@ -380,7 +380,7 @@
                     />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombres }} {{ item.apellidoPaterno}} {{ item.apellidoMaterno}}
+                    {{ item.nombreCompleto }}
                   </ng-template>
                 </ng-select>
               </div>
@@ -393,7 +393,7 @@
                   #selectOperador
                   [searchable]="false"
                   [items]="operadores"
-                  bindLabel="nombres"
+                  bindLabel="nombreCompleto"
                   bindValue="id"
                   placeholder="Elegir"
                   [clearable]="false"
@@ -406,7 +406,7 @@
                     />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombres }}
+                    {{ item.nombreCompleto }}
                   </ng-template>
                 </ng-select>
               </div>

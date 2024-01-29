@@ -2,6 +2,7 @@ import { Cargo } from "./cargo";
 
 export interface Candidatos {
     id: number;
+    nombreCompleto: string;
     nombres: string;
     apellidoPaterno: string;
     apellidoMaterno: string;
