@@ -124,12 +124,12 @@
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
                     <img
-                      [src]="obtenerRutaImagen(candidato.foto)"
+                      src="{{candidato.foto}}"
                       alt="Foto de {{ candidato.foto }}"
                       width="50"
                       height="50"
                       (click)="
-                        mostrarImagenAmpliada(obtenerRutaImagen(candidato.foto))
+                        mostrarImagenAmpliada(candidato.foto)
                       "
                     />
                   </div>
@@ -138,12 +138,12 @@
                 <td>
                   <div class="flex justify-center items-center">
                   <img
-                    [src]="obtenerRutaImagen(candidato.emblema)"
+                    src="{{candidato.emblema}}"
                     alt="Foto de {{ candidato.emblema }}"
                     width="50"
                     height="50"
                     (click)="
-                      mostrarImagenAmpliada(obtenerRutaImagen(candidato.emblema))
+                      mostrarImagenAmpliada(candidato.emblema)
                     "
                   />
                 </div>
@@ -589,7 +589,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">
-         
+
         </h5>
         <button
           type="button"
@@ -609,7 +609,7 @@
                   text-align: center;
                 "
               >
-                 Nombre 
+                 Nombre
               </th>
               <th
                 style="
@@ -627,7 +627,7 @@
                   text-align: center;
                 "
               >
-                Genero 
+                Genero
               </th>
               <th
                 style="
@@ -636,9 +636,9 @@
                   text-align: center;
                 "
               >
-                 Programa social 
+                 Programa social
               </th>
-              
+
             </tr>
           </thead>
         </table>
