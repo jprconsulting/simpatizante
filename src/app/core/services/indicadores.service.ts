@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class IndicadoresService {
-  route = `${environment.apiUrl}/indicadores`;
+  route = `${environment.apiUrl}/tipos-incidencias`;
 
   constructor(private http: HttpClient) { }
 

@@ -14,4 +14,7 @@ export class SeccionService {
   getAll() {
     return this.http.get<Seccion[]>(`${this.route}/obtener-todos`);
   }
+  getById(id: number) {
+    return this.http.get<Seccion>(`${this.route}/obtener-por-id/${id}`);
+  }
 }

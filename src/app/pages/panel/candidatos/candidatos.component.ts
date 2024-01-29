@@ -341,6 +341,31 @@ export class CandidatosComponent {
     }
 
   }
+  showModal = false;
+
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+  mostrarImagenAmpliada2(seccion: string) {
+    this.imagenAmpliada = seccion;
+    const modal = document.getElementById('modal-simpatizantes');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+  cerrarModal2() {
+    this.imagenAmpliada = null;
+    const modal = document.getElementById('modal-simpatizantes');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+    }
+  }
 
   handleChangeAdd() {
     if (this.candidatoForm) {
@@ -362,11 +387,10 @@ export class CandidatosComponent {
     const datosParaExportar = this.candidato.map(candidato => {
       const estatus = candidato.estatus ? 'Activo' : 'Inactivo';
       return {
-        'Id': candidato.id,
         'Nombres': candidato.nombres,
-        'apellidoPaterno': candidato.apellidoPaterno,
-        'apellidoMaterno': candidato.apellidoMaterno,
-        'fechaNacimiento': candidato.fechaNacimiento,
+        'Apellido paterno': candidato.apellidoPaterno,
+        'Apellido materno': candidato.apellidoMaterno,
+        'Fecha nacimiento': candidato.fechaNacimiento,
         'Estatus': estatus,
 
       };

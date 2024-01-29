@@ -15,7 +15,10 @@ import { Operadores } from 'src/app/models/operadores';
 import { Rol } from 'src/app/models/rol';
 import { Seccion } from 'src/app/models/seccion';
 import { Usuario } from 'src/app/models/usuario';
+import { forkJoin } from 'rxjs';
 import * as XLSX from 'xlsx';
+import { VotantesService } from 'src/app/core/services/votante.service';
+import { Votante } from 'src/app/models/votante';
 
 @Component({
   selector: 'app-operadores',
@@ -37,6 +40,8 @@ export class OperadoresComponent implements OnInit{
   areasAdscripcion: AreaAdscripcion[] = [];
   isModalAdd = true;
   rolId = 0;
+  seccionesFilter: Seccion [] =[];
+  votantes: Votante [] =[];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -47,12 +52,14 @@ export class OperadoresComponent implements OnInit{
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
     private seccionesService: SeccionService,
+    private votantesService: VotantesService,
   ) {
     this.operadoresService.refreshListOperadores.subscribe(() => this.getOperadores());
     this.getOperadores();
     this.getSecciones();
     this.getAreasAdscripcion();
     this.creteForm();
+    this.getSimpatisantes
   }
   ngOnInit(): void {
     this.isModalAdd = false;
@@ -64,7 +71,12 @@ export class OperadoresComponent implements OnInit{
   }
 
   getSecciones() {
-    this.seccionesService.getAll().subscribe({ next: (dataFromAPI) => this.secciones = dataFromAPI });
+    this.seccionesService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.secciones = dataFromAPI
+        }
+      });
     console.log(this.secciones)
   }
 
@@ -74,32 +86,38 @@ export class OperadoresComponent implements OnInit{
 
   creteForm() {
     this.operadorForm = this.formBuilder.group({
+      id: [null],
       nombres: ['', [Validators.required,Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
-      /*secciones: [[], Validators.required],*/
+      seccionesIds: [[], Validators.required],
       estatus: [true],
     });
   }
 
 
-
   getOperadores() {
     this.isLoading = LoadingStates.trueLoading;
-    this.operadoresService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.operadores = dataFromAPI;
-          this.operadorFilter = this.operadores;
-          this.isLoading = LoadingStates.falseLoading;
-
-        },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading
-        }
+    this.operadoresService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.operadores = dataFromAPI;
+        this.operadorFilter = this.operadores;
+        this.isLoading = LoadingStates.falseLoading;
+        this.obtenerSeccionesIdsDeOperadores();
+      },
+      error: () => {
+        this.isLoading = LoadingStates.errorLoading;
       }
-    );
+    });
+  }
+
+  obtenerSeccionesIdsDeOperadores() {
+    this.operadores.forEach((operador) => {
+      const seccionesIds = operador.secciones;
+      this.seccionesFilter = this.secciones;
+      console.log(`SeccionesIds del operador ${operador.id}:`, seccionesIds);
+    });
   }
 
   onPageChange(number: number) {
@@ -138,15 +156,16 @@ export class OperadoresComponent implements OnInit{
       apellidoMaterno: dto.apellidoMaterno,
       fechaNacimiento: fechaFormateada,
       estatus: dto.estatus,
+      seccionesIds: dto.seccionesIds,
     });
   }
 
   editarOperador() {
     this.operador = this.operadorForm.value as Operadores;
     this.operador.id = this.idUpdate;
-    const seccionid = this.operadorForm.get('seccion')?.value;
+    const seccionid = this.operadorForm.get('seccionesIds')?.value;
 
-    this.operador.seccion = {id: seccionid } as Seccion;
+    this.operador.seccionesIds = {id: seccionid } as Seccion;
     this.spinnerService.show();
     this.operadoresService.put(this.idUpdate, this.operador).subscribe({
       next: () => {
@@ -179,10 +198,9 @@ export class OperadoresComponent implements OnInit{
 
   agregar() {
     this.operador = this.operadorForm.value as Operadores;
-    const seccionid = this.operadorForm.get('seccion')?.value;
-    const seccionesValue = this.operadorForm.get('secciones')?.value;
+    const seccionid = this.operadorForm.get('seccionesIds')?.value;
 
-    this.operador.seccion = {id: seccionid } as Seccion;
+    this.operador.seccionesIds = seccionid as Seccion;
     this.spinnerService.show();
     this.operadoresService.post(this.operador).subscribe({
       next: () => {
@@ -225,7 +243,35 @@ export class OperadoresComponent implements OnInit{
     }
   }
 
+  showModal = false;
 
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+  mostrarImagenAmpliada2(seccion: string) {
+    this.imagenAmpliada = seccion;
+    const modal = document.getElementById('modal-simpatizantes');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+  cerrarModal2() {
+    this.imagenAmpliada = null;
+    const modal = document.getElementById('modal-simpatizantes');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+    }
+  }
+
+  getSimpatisantes() {
+    this.votantesService.getAll().subscribe({ next: (dataFromAPI) => this.votantes = dataFromAPI });
+  }
 
   exportarDatosAExcel() {
     if (this.operadores.length === 0) {
@@ -237,10 +283,10 @@ export class OperadoresComponent implements OnInit{
         const estatus = operador.estatus ? 'Activo' : 'Inactivo';
         return {
           'Nombres': operador.nombres,
-          'Apellido Paterno': operador.apellidoPaterno,
-          'Apellido Materno': operador.apellidoMaterno,
+          'Apellido paterno': operador.apellidoPaterno,
+          'Apellido materno': operador.apellidoMaterno,
           'Fecha de nacimiento': operador.fechaNacimiento,
-          'Secciones': operador.seccion.id,
+          'Secciones': operador.seccionesIds.id,
           'Estatus': estatus,
         };
       });
@@ -260,9 +306,6 @@ export class OperadoresComponent implements OnInit{
     a.click();
     window.URL.revokeObjectURL(url);
   }
-
-
-
 
   toggleDisabled() {
     const car: any = this.secciones[1];

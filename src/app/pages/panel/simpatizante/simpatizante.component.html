@@ -80,6 +80,9 @@
                   Programa social
                 </th>
                 <th style="text-transform: none; font-size: inherit">
+                  rol
+                </th>
+                <th style="text-transform: none; font-size: inherit">
                   Municipio
                 </th>
                 <th
@@ -120,8 +123,9 @@
                 <td class="text-muted">{{ simpatizante.domicilio }}</td>
                 <td class="text-muted">{{ objGeneros[simpatizante.sexo] }}</td>
                 <td class="text-muted">{{ simpatizante.curp }}</td>
-                <td class="text-muted">{{ simpatizante.idmex }}</td>
+                <td class="text-muted">{{ simpatizante.idmex }}</td>               
                 <td class="text-muted">{{ simpatizante.programaSocial?.nombre }}</td>
+                <td class="text-muted"></td>
                 <td class="text-muted">{{ simpatizante.municipio.nombre }}</td>
                 <td class="text-center">
                   <ng-container *ngIf="simpatizante.estatus; else elseEstatus">

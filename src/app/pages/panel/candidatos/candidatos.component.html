@@ -124,12 +124,12 @@
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
                     <img
-                      [src]="obtenerRutaImagen(candidato.foto)"
+                      src="{{candidato.foto}}"
                       alt="Foto de {{ candidato.foto }}"
                       width="50"
                       height="50"
                       (click)="
-                        mostrarImagenAmpliada(obtenerRutaImagen(candidato.foto))
+                        mostrarImagenAmpliada(candidato.foto)
                       "
                     />
                   </div>
@@ -138,12 +138,12 @@
                 <td>
                   <div class="flex justify-center items-center">
                   <img
-                    [src]="obtenerRutaImagen(candidato.emblema)"
+                    src="{{candidato.emblema}}"
                     alt="Foto de {{ candidato.emblema }}"
                     width="50"
                     height="50"
                     (click)="
-                      mostrarImagenAmpliada(obtenerRutaImagen(candidato.emblema))
+                      mostrarImagenAmpliada(candidato.emblema)
                     "
                   />
                 </div>
@@ -159,8 +159,22 @@
                 <td>
                   <div class="d-flex justify-content-between">
                     <button
+                    alt="Ver secciones"
+                    style="margin-right: 10px"
+                    class="btn btn-secondary btn-icon btn-sm"
+                    data-bs-toggle="modal"
+                    (click)="
+                      mostrarImagenAmpliada2(
+                        obtenerRutaImagen(candidato.nombres)
+                      )
+                    "
+                  >
+                  <i class="ti ti-list"></i>
+                  </button>
+                    <button
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
+                      style="margin-right: 10px"
                       data-bs-target="#modal-candidato"
                       (click)="setDataModalUpdate(candidato)"
                     >
@@ -168,6 +182,7 @@
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
+                      style="margin-right: 10px"
                       (click)="deleteItem(candidato.id, candidato.nombres)"
                     >
                       <i class="ti ti-eraser"></i>
@@ -245,10 +260,10 @@
                   <div
                     *ngIf="candidatoForm.get('nombres')?.hasError('minlength')"
                   >
-                    El Nombre debe tener al menos 3 caracteres
+                    El nombre debe tener al menos 3 caracteres
                   </div>
                   <div *ngIf="candidatoForm.get('nombres')?.hasError('pattern')">
-                    El Nombre no puede tener números ni signos
+                    El nombre no puede tener números ni signos
                   </div>
                 </div>
               </div>
@@ -375,7 +390,7 @@
                     class="error-message"
                   >
                     <div *ngIf="candidatoForm.get('sexo')?.hasError('required')">
-                      El genero es obligatorio
+                      El género es obligatorio
                     </div>
                   </div>
                 </div>
@@ -559,5 +574,75 @@
               <img *ngIf="imagenAmpliada" [src]="imagenAmpliada" alt="Imagen Ampliada" class="w-100" />
           </div>
       </div>
+  </div>
+</div>
+<div
+  class="modal modal-highlight"
+  id="modal-simpatizantes"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="background: rgba(0, 0, 0, 0.5)"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">
+
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="cerrarModal2()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-vcenter card-table table-striped">
+          <thead>
+            <tr>
+              <th
+                style="
+                  text-transform: none;
+                  font-size: inherit;
+                  text-align: center;
+                "
+              >
+                 Nombre
+              </th>
+              <th
+                style="
+                  text-transform: none;
+                  font-size: inherit;
+                  text-align: center;
+                "
+              >
+                Domicilio
+              </th>
+              <th
+                style="
+                  text-transform: none;
+                  font-size: inherit;
+                  text-align: center;
+                "
+              >
+                Genero
+              </th>
+              <th
+                style="
+                  text-transform: none;
+                  font-size: inherit;
+                  text-align: center;
+                "
+              >
+                 Programa social
+              </th>
+
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

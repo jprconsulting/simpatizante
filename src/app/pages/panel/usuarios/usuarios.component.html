@@ -199,6 +199,12 @@
                     <div *ngIf="usuarioForm.get('nombre')?.hasError('required')">
                       <p style="color: red">El nombre es obligatorio</p>
                     </div>
+                    <div *ngIf="usuarioForm.get('nombre')?.hasError('pattern')">
+                      <p style="color: red">El nombre no debe tener números</p>
+                    </div>
+                    <div *ngIf="usuarioForm.get('nombre')?.hasError('pattern')">
+                      <p style="color: red">El nombre debe tener al menos 3 caracteres </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -215,7 +221,13 @@
                     class="error-message"
                   >
                     <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('required')">
-                      <p style="color: red">El nombre es obligatorio</p>
+                      <p style="color: red">El apellido paterno es obligatorio</p>
+                    </div>
+                    <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('pattern')">
+                      <p style="color: red">El apellido paterno no debe tener números</p>
+                    </div>
+                    <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('pattern')">
+                      <p style="color: red">El apellido paterno debe tener al menos 3 caracteres </p>
                     </div>
                   </div>
                 </div>
@@ -232,8 +244,14 @@
                     *ngIf="usuarioForm.get('apellidoMaterno')?.touched"
                     class="error-message"
                   >
-                    <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('required')">
-                      <p style="color: red">El nombre es obligatorio</p>
+                    <div *ngIf="usuarioForm.get('apellidoMaterno')?.hasError('required')">
+                      <p style="color: red">El apellido materno es obligatorio</p>
+                    </div>
+                    <div *ngIf="usuarioForm.get('apellidoMaterno')?.hasError('pattern')">
+                      <p style="color: red">El apellido materno no debe tener números</p>
+                    </div>
+                    <div *ngIf="usuarioForm.get('apellidoMaterno')?.hasError('pattern')">
+                      <p style="color: red">El apellido materno debe tener al menos 3 caracteres</p>
                     </div>
                   </div>
                 </div>
@@ -339,6 +357,58 @@
                     <p style="color: red">El rol es obligatorio</p>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Candidato*:</label>
+                <ng-select
+                  formControlName="candidato"
+                  #selectCandidato
+                  [searchable]="false"
+                  [items]="candidatos"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="selectCandidato.filter($any($event.target).value)"
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Operador*:</label>
+                <ng-select
+                  formControlName="operador"
+                  #selectOperador
+                  [searchable]="false"
+                  [items]="operadores"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="selectOperador.filter($any($event.target).value)"
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
               </div>
             </div>
           </div>

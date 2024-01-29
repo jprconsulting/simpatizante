@@ -68,10 +68,10 @@
                   Simpatizante
                 </th>
                 <th style="text-transform: none; font-size: inherit">
-                  Descripciòn
+                  Descripción
                 </th>
                 <th style="text-transform: none; font-size: inherit">
-                  Servicios de interes
+                  Servicios de interés
                 </th>
                 <th style="text-transform: none; font-size: inherit">
                   Evidencia
@@ -200,7 +200,7 @@
                 formControlName="votante"
                 #selectBeneficiario
                 [searchable]="false"
-                [items]="simpatizantes"
+                [items]="votantes"
                 bindLabel="nombreCompleto"
                 bindValue="id"
                 placeholder="Elegir"
@@ -232,7 +232,7 @@
 
             <div class="col-lg-12">
               <div class="mb-3">
-                <label class="form-label">Servicios de interes</label>
+                <label class="form-label">Servicios de interés</label>
                 <textarea
                   type="text"
                   class="form-control"
@@ -245,7 +245,7 @@
                   <div
                     *ngIf="visitaForm.get('servicio')?.hasError('required')"
                   >
-                    El servicio de interes es obligatorio
+                    El servicio de interés es obligatorio
                   </div>
                   <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
                     El servicio no puede tener letras
@@ -256,7 +256,7 @@
                     El servicio debe tener al menos 3 caracteres
                   </div>
                   <div *ngIf="visitaForm.get('servicio')?.hasError('pattern')">
-                    El servicio no debe tener nùmeros
+                    El servicio no debe tener números
                   </div>
                 </div>
               </div>
@@ -281,20 +281,20 @@
                   <div
                     *ngIf="visitaForm.get('descripcion')?.hasError('required')"
                   >
-                    La descripciòn es obligatoria
+                    La descripción es obligatoria
                   </div>
                   <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
-                    La descripciòn no puede tener nùmeros
+                    La descripción no puede tener nùmeros
                   </div>
                   <div
                     *ngIf="visitaForm.get('descripcion')?.hasError('minlength')"
                   >
-                    La descripciòn debe tener al menos 3 caracteres
+                    La descripción debe tener al menos 3 caracteres
                   </div>
                   <div
                     *ngIf="visitaForm.get('descripcion')?.hasError('pattern')"
                   >
-                    La descripciòn no puede llevar nùmeros
+                    La descripción no puede llevar números
                   </div>
                 </div>
               </div>
