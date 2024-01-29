@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { OperadoresService } from 'src/app/core/services/operadores.service';
 import { RolsService } from 'src/app/core/services/rols.service';
@@ -10,6 +11,7 @@ import { UsuariosService } from 'src/app/core/services/usuarios.service';
 import { LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
 import { Beneficiario } from 'src/app/models/beneficiario';
+import { Candidatos } from 'src/app/models/candidato';
 import { Operadores } from 'src/app/models/operadores';
 import { Rol } from 'src/app/models/rol';
 import { Usuario } from 'src/app/models/usuario';
@@ -31,9 +33,10 @@ export class UsuariosComponent implements OnInit {
   usuariosFilter: Usuario[] = [];
   isLoading = LoadingStates.neutro;
   rols: Rol[] = [];
-  areasAdscripcion: AreaAdscripcion[] = [];
+  candidatos: Candidatos[] = [];
+  operadores: Operadores[] = [];
   isModalAdd = true;
-  rolId = 0;
+  rol = 0;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -41,15 +44,17 @@ export class UsuariosComponent implements OnInit {
     private usuarioService: UsuariosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
-    private areasAdscripcionService: AreasAdscripcionService,
+    private candidatosService: CandidatosService,
     private rolsService: RolsService,
-    private OperadoresService: OperadoresService
+    private operadoresService: OperadoresService,
   ) {
     this.usuarioService.refreshListUsuarios.subscribe(() => this.getUsuarios());
     this.getUsuarios();
     this.getRols();
-    this.getAreasAdscripcion();
+    this.getCandidatos();
     this.creteForm();
+    this.getOperadores();
+    this.subscribeRolId();
   }
   ngOnInit(): void {
     this.isModalAdd = false;
@@ -59,9 +64,14 @@ export class UsuariosComponent implements OnInit {
     this.rolsService.getAll().subscribe({ next: (dataFromAPI) => this.rols = dataFromAPI });
   }
 
-  getAreasAdscripcion() {
-    this.areasAdscripcionService.getAll().subscribe({ next: (dataFromAPI) => this.areasAdscripcion = dataFromAPI });
+  getCandidatos() {
+    this.candidatosService.getAll().subscribe({ next: (dataFromAPI) => this.candidatos = dataFromAPI });
   }
+
+  getOperadores(){
+    this.operadoresService.getAll().subscribe({next: (dataFromAPI) => this.operadores = dataFromAPI});
+  }
+
 
   creteForm() {
     this.usuarioForm = this.formBuilder.group({
@@ -81,9 +91,47 @@ export class UsuariosComponent implements OnInit {
       ],
       estatus: [true],
       rol: [null, Validators.required],
+      operador:[],
+      candidato:[],
     });
   }
 
+
+  changeValidatorsCandidato(rol: number) {
+    this.rol = rol;
+    //Si es director
+    this.usuarioForm.patchValue({ candidatoId: null });
+    if (rol === 3) {
+      this.usuarioForm.controls["candidato"].enable();
+      this.usuarioForm.controls["candidato"].setValidators(Validators.required);
+    } else {
+      this.usuarioForm.controls["candidato"].disable();
+      this.usuarioForm.controls["candidato"].clearValidators();
+    }
+    this.usuarioForm.get("candidato")?.updateValueAndValidity();
+  }
+
+  changeValidatorsOperador(rol: number) {
+    this.rol = rol;
+    //Si es director
+    this.usuarioForm.patchValue({ operadorId: null });
+    if (rol === 2) {
+      this.usuarioForm.controls["operador"].enable();
+      this.usuarioForm.controls["operador"].setValidators(Validators.required);
+    } else {
+      this.usuarioForm.controls["operador"].disable();
+      this.usuarioForm.controls["operador"].clearValidators();
+    }
+    this.usuarioForm.get("operador")?.updateValueAndValidity();
+  }
+
+
+  subscribeRolId() {
+    this.usuarioForm.get("rol")?.valueChanges
+      .subscribe(eventRolId => this.changeValidatorsCandidato(eventRolId));
+    this.usuarioForm.get("rol")?.valueChanges
+      .subscribe(eventRolId => this.changeValidatorsOperador(eventRolId));
+  }
 
   getUsuarios() {
     this.isLoading = LoadingStates.trueLoading;
@@ -145,7 +193,11 @@ export class UsuariosComponent implements OnInit {
     this.usuario = this.usuarioForm.value as Usuario;
 
     const rolId = this.usuarioForm.get('rol')?.value;
+    const candidatoId = this.usuarioForm.get('candidato')?.value;
+    const operadorId = this.usuarioForm.get('operador')?.value;
 
+    this.usuario.operador = { id: operadorId} as Operadores;
+    this.usuario.candidato = { id: candidatoId} as Candidatos;
     this.usuario.rol = { id: rolId } as Rol;
 
     this.spinnerService.show();
@@ -178,24 +230,16 @@ export class UsuariosComponent implements OnInit {
     );
   }
 
-  getBeneficiarios() {
-    this.OperadoresService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.beneficiarios = dataFromAPI;
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      }
-    );
-  }
 
   agregar() {
     this.usuario = this.usuarioForm.value as Usuario;
     const rolId = this.usuarioForm.get('rol')?.value;
-    this.usuario.rol = { id: rolId } as Rol;
+    const candidatoId = this.usuarioForm.get('candidato')?.value;
+    const operadorId = this.usuarioForm.get('operador')?.value;
 
+    this.usuario.operador = { id: operadorId} as Operadores;
+    this.usuario.candidato = { id: candidatoId} as Candidatos;
+    this.usuario.rol = { id: rolId } as Rol;
     this.spinnerService.show();
     this.usuarioService.post(this.usuario).subscribe({
       next: () => {
