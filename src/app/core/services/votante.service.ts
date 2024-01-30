@@ -26,6 +26,14 @@ export class VotantesService {
     return this.http.get<Votante>(`${this.route}/obtener-por-id/${id}`);
   }
 
+  getSimpatizantesPorCandidatoId(candidatoId: number) {
+    return this.http.get<Votante[]>(`${this.route}/obtener-simpatizantes-por-candidato-id/${candidatoId}`);
+  }
+
+  getSimpatizantesPorOperadorId(operadorId: number) {
+    return this.http.get<Votante[]>(`${this.route}/obtener-simpatizantes-por-operador-id/${operadorId}`);
+  }
+
   getAll() {
     return this.http.get<Votante[]>(`${this.route}/obtener-todos`);
   }

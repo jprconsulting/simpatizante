@@ -98,7 +98,7 @@
                   }}
                 </td>
                  <td class="text-muted">
-                  {{ visita.votante.nombreCompleto }}
+                  {{ visita.simpatizante.nombreCompleto }}
                 </td>
                 <td class="text-muted">
                   {{ visita.descripcion }}
@@ -197,7 +197,7 @@
             <div class="mb-3">
               <label class="form-label">Nombre del simpatizante:</label>
               <ng-select
-                formControlName="votante"
+                formControlName="simpatizante"
                 #selectBeneficiario
                 [searchable]="false"
                 [items]="votantes"

@@ -11,6 +11,8 @@ import { CargoService } from 'src/app/core/services/cargo.service';
 import { Cargo } from 'src/app/models/cargo';
 import { Candidatos } from 'src/app/models/candidato';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
+import { VotantesService } from 'src/app/core/services/votante.service';
+import { Votante } from 'src/app/models/votante';
 @Component({
   selector: 'app-candidatos',
   templateUrl: './candidatos.component.html',
@@ -32,6 +34,7 @@ export class CandidatosComponent {
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
   idUpdate!: number;
+  votantes: Votante [] =[];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -41,11 +44,13 @@ export class CandidatosComponent {
     private formBuilder: FormBuilder,
     private cargoService: CargoService,
     private candidatosService: CandidatosService,
+    private votantesService: VotantesService,
   ) {
     this.candidatosService.refreshListCandidatos.subscribe(() => this.getCandidatos());
     this.getCandidatos();
     this.createForm();
     this.getCargos();
+    this.getSimpatisantes
   }
 
   estatusBtn = true;
@@ -110,6 +115,9 @@ export class CandidatosComponent {
   }
   getCargos() {
     this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
+  }
+  getSimpatisantes() {
+    this.votantesService.getAll().subscribe({ next: (dataFromAPI) => this.votantes = dataFromAPI });
   }
 
   onFileChange(event: Event) {

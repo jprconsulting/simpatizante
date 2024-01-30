@@ -449,31 +449,47 @@
           aria-label="Close"
           (click)="cerrarModal()"
         ></button>
-        
+
       </div>
       <div class="modal-body">
-        <table class="table table-vcenter card-table table-striped">
-          <thead>
-            <tr>
-              <th
-                style="
-                  text-transform: none;
-                  font-size: inherit;
-                  text-align: center;
-                "
-              >
-                Secciones
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let operadores of seccionesFilter">
-              <td>
-                <p>{{ operadores.clave}}</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="col-md-6 col-lg-12">
+          <div class="card">
+            <table class="table table-vcenter card-table table-striped">
+              <thead>
+                <tr>
+                  <th
+                    style="
+                      text-transform: none;
+                      font-size: inherit;
+                      text-align: center;
+                    "
+                  >
+                    Sección
+                  </th>
+                  <th
+                    style="
+                      text-transform: none;
+                      font-size: inherit;
+                    "
+                  >
+                    Municipio
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let operadores of seccionesFilter">
+                  <td style="text-align: center;">
+                    <p>{{ operadores.clave}}</p>
+                  </td>
+                  <td>
+                    <p>{{ operadores.municipio.nombre}}</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -491,7 +507,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">
-         
+
         </h5>
         <button
           type="button"
@@ -511,7 +527,7 @@
                   text-align: center;
                 "
               >
-                 Nombre 
+                 Nombre
               </th>
               <th
                 style="
@@ -529,7 +545,7 @@
                   text-align: center;
                 "
               >
-                Genero 
+                Genero
               </th>
               <th
                 style="
@@ -538,9 +554,9 @@
                   text-align: center;
                 "
               >
-                 Programa social 
+                 Programa social
               </th>
-              
+
             </tr>
           </thead>
         </table>
