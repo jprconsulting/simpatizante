@@ -17,8 +17,8 @@ import { Seccion } from 'src/app/models/seccion';
 import { Usuario } from 'src/app/models/usuario';
 import { forkJoin } from 'rxjs';
 import * as XLSX from 'xlsx';
-import { VotantesService } from 'src/app/core/services/votante.service';
-import { Votante } from 'src/app/models/votante';
+import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
+import { Simpatizante } from 'src/app/models/votante';
 
 @Component({
   selector: 'app-operadores',
@@ -41,7 +41,7 @@ export class OperadoresComponent implements OnInit{
   isModalAdd = true;
   rolId = 0;
   seccionesFilter: Seccion [] =[];
-  votantes: Votante [] =[];
+  votantes: Simpatizante [] =[];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -52,7 +52,7 @@ export class OperadoresComponent implements OnInit{
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
     private seccionesService: SeccionService,
-    private votantesService: VotantesService,
+    private simpatizantesService: SimpatizantesService,
   ) {
     this.operadoresService.refreshListOperadores.subscribe(() => this.getOperadores());
     this.getOperadores();
@@ -270,7 +270,7 @@ export class OperadoresComponent implements OnInit{
   }
 
   getSimpatisantes() {
-    this.votantesService.getAll().subscribe({ next: (dataFromAPI) => this.votantes = dataFromAPI });
+    this.simpatizantesService.getAll().subscribe({ next: (dataFromAPI) => this.votantes = dataFromAPI });
   }
 
   exportarDatosAExcel() {

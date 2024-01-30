@@ -1,7 +1,7 @@
 import { Beneficiario } from "./beneficiario"
 import { Candidatos } from "./candidato";
 import { Operadores } from "./operadores";
-import { Votante } from "./votante";
+import { Simpatizante } from "./votante";
 
 export interface Visita {
     id: number;
@@ -11,5 +11,5 @@ export interface Visita {
     foto: string;
     candidato: Candidatos;
     operador: Operadores;
-    simpatizante: Votante;
+    simpatizante: Simpatizante;
 }

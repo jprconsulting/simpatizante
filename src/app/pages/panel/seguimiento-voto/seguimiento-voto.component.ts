@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
-import { Votante } from 'src/app/models/votante';
+import { Simpatizante } from 'src/app/models/votante';
 import { Candidatos } from 'src/app/models/candidato';
 import { Visita } from 'src/app/models/visita';
 
@@ -34,7 +34,7 @@ export class SeguimientoVotoComponent implements OnInit{
 
   candidato: Candidatos[] = [];
   candidatosSelect: any;
-  simpatizantes: Votante[] =[];
+  simpatizantes: Simpatizante[] =[];
 
   onSelectCandidato(id: number) {
     if (id) {

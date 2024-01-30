@@ -16,8 +16,8 @@ import { Seccion } from 'src/app/models/seccion';
 import { SeccionService } from 'src/app/core/services/seccion.service';
 import { Estado } from 'src/app/models/estados';
 import { EstadoService } from 'src/app/core/services/estados.service';
-import { VotantesService } from 'src/app/core/services/votante.service';
-import { Votante } from 'src/app/models/votante';
+import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
+import { Simpatizante } from 'src/app/models/votante';
 
 
 @Component({
@@ -36,14 +36,14 @@ export class SimpatizanteComponent implements OnInit {
 
   municipiosSelect!: Municipio | undefined;
   canvas!: HTMLElement;
-  votante!: Votante;
+  votante!: Simpatizante;
   simpatizanteForm!: FormGroup;
   busqueda!: FormGroup;
   beneficiarios: Beneficiario[] = [];
-  votantesFilter: Votante[] = [];
+  votantesFilter: Simpatizante[] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
-  votantes: Votante [] = [];
+  votantes: Simpatizante [] = [];
   municipios: Municipio[] = [];
   seccion: Seccion[] = [];
   programaSocial: ProgramaSocial[] = [];
@@ -78,9 +78,9 @@ export class SimpatizanteComponent implements OnInit {
     private seccionService: SeccionService,
     private estadoService: EstadoService,
     private programasSociales: ProgramaSocialService,
-    private votantesService: VotantesService
+    private simpatizantesService: SimpatizantesService,
   ) {
-    this.votantesService.refreshListVotantes.subscribe(() => this.getVotantes());
+    this.simpatizantesService.refreshListSimpatizantes.subscribe(() => this.getVotantes());
     this.getVotantes();
     this.getMunicipios();
     this.creteForm();
@@ -315,7 +315,7 @@ export class SimpatizanteComponent implements OnInit {
   }
   getVotantes() {
     this.isLoading = LoadingStates.trueLoading;
-    this.votantesService.getAll().subscribe(
+    this.simpatizantesService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
           this.votantes = dataFromAPI;
@@ -371,7 +371,7 @@ export class SimpatizanteComponent implements OnInit {
 
   idUpdate!: number;
 
-  setDataModalUpdate(dto: Votante) {
+  setDataModalUpdate(dto: Simpatizante) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
@@ -399,7 +399,7 @@ export class SimpatizanteComponent implements OnInit {
   }
 
   actualizar() {
-    this.votante = this.simpatizanteForm.value as Votante;
+    this.votante = this.simpatizanteForm.value as Simpatizante;
 
     const votanteId = this.simpatizanteForm.get('id')?.value
 
@@ -417,7 +417,7 @@ export class SimpatizanteComponent implements OnInit {
 
     this.spinnerService.show();
 
-    this.votantesService.put(votanteId, this.votante).subscribe({
+    this.simpatizantesService.put(votanteId, this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito("Simpatizante actualizado con éxito");
@@ -442,7 +442,7 @@ export class SimpatizanteComponent implements OnInit {
       `¿Estás seguro de eliminar el simpatizante: ${nameItem}?`,
       () => {
         console.log('Confirmation callback executed');
-        this.votantesService.delete(id).subscribe({
+        this.simpatizantesService.delete(id).subscribe({
           next: () => {
             console.log('Delete success callback executed');
             this.mensajeService.mensajeExito('Simpatizante borrado correctamente');
@@ -475,7 +475,7 @@ export class SimpatizanteComponent implements OnInit {
   }
 
   agregar() {
-    this.votante = this.simpatizanteForm.value as Votante;
+    this.votante = this.simpatizanteForm.value as Simpatizante;
 
     const programaSocialId = this.simpatizanteForm.get('programaSocial')?.value;
     const municipioId = this.simpatizanteForm.get('municipio')?.value;
@@ -490,7 +490,7 @@ export class SimpatizanteComponent implements OnInit {
     console.log(this.votante);
 
     this.spinnerService.show();
-    this.votantesService.post(this.votante).subscribe({
+    this.simpatizantesService.post(this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito('Simpatizante guardado correctamente');
