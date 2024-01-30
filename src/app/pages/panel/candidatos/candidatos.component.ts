@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenericType, LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
@@ -18,7 +18,7 @@ import { Simpatizante } from 'src/app/models/votante';
   templateUrl: './candidatos.component.html',
   styleUrls: ['./candidatos.component.css']
 })
-export class CandidatosComponent {
+export class CandidatosComponent implements OnInit{
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -36,6 +36,7 @@ export class CandidatosComponent {
   idUpdate!: number;
   votantes: Simpatizante [] =[];
   simpatizantesFilter: Simpatizante[] = [];
+  simpatizantes: Simpatizante[] = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -51,6 +52,9 @@ export class CandidatosComponent {
     this.getCandidatos();
     this.createForm();
     this.getCargos();
+  }
+  ngOnInit(): void {
+    this.loadSimpatizantes();
   }
 
   estatusBtn = true;
@@ -116,11 +120,14 @@ export class CandidatosComponent {
   getCargos() {
     this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
   }
-  getSimpatizantesCandidatos(id: number) {
-    this.simpatizantesService.getSimpatizantesPorCandidatoId(id).subscribe({ next: (dataFromAPI) => {
-      this.votantes = dataFromAPI
-      this.simpatizantesFilter = this.votantes;
-    }});
+
+   loadSimpatizantes() {
+    // Assuming you have a candidateId, replace it with the actual value
+    const candidateId = 1; // Replace with the actual candidateId
+    this.simpatizantesService.getSimpatizantesPorCandidatoId(candidateId)
+      .subscribe(data => {
+        this.simpatizantes = data;
+      });
   }
 
 

@@ -42,6 +42,7 @@ export class OperadoresComponent implements OnInit{
   rolId = 0;
   seccionesFilter: Seccion [] =[];
   votantes: Simpatizante [] =[];
+  simpatizantes: Simpatizante[] = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -59,10 +60,10 @@ export class OperadoresComponent implements OnInit{
     this.getSecciones();
     this.getAreasAdscripcion();
     this.creteForm();
-    this.getSimpatisantes
   }
   ngOnInit(): void {
     this.isModalAdd = false;
+    this.loadSimpatizantes();
   }
 
   getGeneroName(id: number): string {
@@ -269,9 +270,15 @@ export class OperadoresComponent implements OnInit{
     }
   }
 
-  getSimpatisantes() {
-    this.simpatizantesService.getAll().subscribe({ next: (dataFromAPI) => this.votantes = dataFromAPI });
+  loadSimpatizantes() {
+    // Assuming you have a candidateId, replace it with the actual value
+    const candidateId = 1; // Replace with the actual candidateId
+    this.simpatizantesService.getSimpatizantesPorOperadorId(candidateId)
+      .subscribe(data => {
+        this.simpatizantes = data;
+      });
   }
+
 
   exportarDatosAExcel() {
     if (this.operadores.length === 0) {
