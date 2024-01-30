@@ -35,6 +35,7 @@ export class CandidatosComponent {
   isModalAdd: boolean = true;
   idUpdate!: number;
   votantes: Simpatizante [] =[];
+  simpatizantesFilter: Simpatizante[] = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -50,7 +51,6 @@ export class CandidatosComponent {
     this.getCandidatos();
     this.createForm();
     this.getCargos();
-    this.getSimpatisantes
   }
 
   estatusBtn = true;
@@ -116,9 +116,13 @@ export class CandidatosComponent {
   getCargos() {
     this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
   }
-  getSimpatisantes() {
-    this.simpatizantesService.getAll().subscribe({ next: (dataFromAPI) => this.votantes = dataFromAPI });
+  getSimpatizantesCandidatos(id: number) {
+    this.simpatizantesService.getSimpatizantesPorCandidatoId(id).subscribe({ next: (dataFromAPI) => {
+      this.votantes = dataFromAPI
+      this.simpatizantesFilter = this.votantes;
+    }});
   }
+
 
   onFileChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;

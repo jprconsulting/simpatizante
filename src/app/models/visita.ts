@@ -9,7 +9,5 @@ export interface Visita {
     servicio: string;
     imagenBase64: string;
     foto: string;
-    candidato: Candidatos;
-    operador: Operadores;
     simpatizante: Simpatizante;
 }

@@ -50,7 +50,6 @@
           </a>
           </div>
         </div>
-        <hr />
 
       </div>
       <ng-container [ngSwitch]="isLoading">
@@ -98,7 +97,7 @@
                   }}
                 </td>
                  <td class="text-muted">
-                  {{ visita.simpatizante.nombreCompleto }}
+                  {{visita.simpatizante.nombreCompleto}}
                 </td>
                 <td class="text-muted">
                   {{ visita.descripcion }}
@@ -110,12 +109,12 @@
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
                     <img
-                      [src]="obtenerRutaImagen(visita.foto)"
+                      src="{{visita.foto}}"
                       alt="Foto de {{ visita.foto }}"
                       width="50"
                       height="50"
                       (click)="
-                        mostrarImagenAmpliada(obtenerRutaImagen(visita.foto))
+                        mostrarImagenAmpliada(visita.foto)
                       "
                     />
                   </div>
@@ -225,7 +224,7 @@
                 class="error-message"
               >
                 <div *ngIf="visitaForm.get('simpatizante')?.hasError('required')">
-                  El nombre del votante es obligatorio
+                  El simpatizante es obligatorio
                 </div>
               </div>
             </div>
