@@ -105,7 +105,7 @@ export class VisitasComponent {
       servicio:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       descripcion:  ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       imagenBase64: ['', Validators.required],
-      votante:[null]
+      simpatizante:[null, Validators.required]
     });
   }
 
@@ -135,7 +135,7 @@ export class VisitasComponent {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value.toLowerCase();
     this.visitasFilter = this.visitas.filter(visita =>
-      visita.votante.nombreCompleto.toLocaleLowerCase().includes(inputValue.toLowerCase())||
+      visita.simpatizante.nombreCompleto.toLocaleLowerCase().includes(inputValue.toLowerCase())||
       visita.servicio.toLocaleLowerCase().includes(inputValue.toLowerCase())
     );
 
@@ -152,7 +152,7 @@ export class VisitasComponent {
       id: dto.id,
       descripcion: dto.descripcion,
       servicio: dto.servicio,
-      votante: dto.votante.id,
+      votante: dto.simpatizante.id,
       imagenBase64: dto.imagenBase64
     });
 
@@ -201,7 +201,7 @@ export class VisitasComponent {
     const simpatizanteId = this.visitaForm.get('votante')?.value;
 
 
-    this.visita.votante = { id: simpatizanteId } as Votante
+    this.visita.simpatizante = { id: simpatizanteId } as Votante
     this.spinnerService.show();
     console.log('data:', this.visita);
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
@@ -233,7 +233,7 @@ export class VisitasComponent {
     const visitaId = this.visitaForm.get('id')?.value
 
     const votanteId = this.visitaForm.get('votante')?.value;
-    this.visita.votante = { id: votanteId } as Votante;
+    this.visita.simpatizante = { id: votanteId } as Votante;
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 
     console.log(this.visita);
@@ -344,7 +344,7 @@ export class VisitasComponent {
 
     const datosParaExportar = this.visitas.map(visita => {
       return {
-        'Nombre completo': visita.votante.nombreCompleto,       
+        'Nombre completo': visita.simpatizante.nombreCompleto,       
         'Servicio': visita.servicio,
         'Descripcion': visita.descripcion,
       };

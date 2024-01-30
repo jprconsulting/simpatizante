@@ -11,5 +11,5 @@ export interface Visita {
     foto: string;
     candidato: Candidatos;
     operador: Operadores;
-    votante: Votante;
+    simpatizante: Votante;
 }
