@@ -641,6 +641,35 @@
 
             </tr>
           </thead>
+          <tbody>
+            <tr
+                *ngFor="
+                  let simpatizante of simpatizantesFilter | paginate : configPaginator;
+                  let pointIndex = index
+                "
+              >
+                <td class="text-center">
+                  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}
+                </td>
+                <td class="text-center">
+                  {{simpatizante.nombreCompleto}}
+                </td>
+                 <td class="text-muted">
+                  gfchgfghf
+                </td>
+                <td class="text-muted">
+                  ghuhuihui
+                </td>
+                <td class="text-muted">
+                  jbhjbghjbhj
+                </td>
+              </tr>
+          </tbody>
         </table>
       </div>
     </div>

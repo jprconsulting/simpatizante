@@ -151,7 +151,7 @@ export class VisitasComponent {
       id: dto.id,
       descripcion: dto.descripcion,
       servicio: dto.servicio,
-      votante: dto.simpatizante.id,
+      simpatizante: dto.simpatizante.id,
       imagenBase64: dto.imagenBase64
     });
 
@@ -197,7 +197,7 @@ export class VisitasComponent {
 
   agregar() {
     this.visita = this.visitaForm.value as Visita;
-    const simpatizanteId = this.visitaForm.get('votante')?.value;
+    const simpatizanteId = this.visitaForm.get('simpatizante')?.value;
 
 
     this.visita.simpatizante = { id: simpatizanteId } as Simpatizante
@@ -231,7 +231,7 @@ export class VisitasComponent {
 
     const visitaId = this.visitaForm.get('id')?.value
 
-    const votanteId = this.visitaForm.get('votante')?.value;
+    const votanteId = this.visitaForm.get('simpatizante')?.value;
     this.visita.simpatizante = { id: votanteId } as Simpatizante;
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 

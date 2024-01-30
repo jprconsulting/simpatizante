@@ -165,7 +165,7 @@ export class OperadoresComponent implements OnInit{
     this.operador.id = this.idUpdate;
     const seccionid = this.operadorForm.get('seccionesIds')?.value;
 
-    this.operador.seccionesIds = {id: seccionid } as Seccion;
+    this.operador.seccionesIds = seccionid  as Seccion;
     this.spinnerService.show();
     this.operadoresService.put(this.idUpdate, this.operador).subscribe({
       next: () => {
@@ -286,7 +286,6 @@ export class OperadoresComponent implements OnInit{
           'Apellido paterno': operador.apellidoPaterno,
           'Apellido materno': operador.apellidoMaterno,
           'Fecha de nacimiento': operador.fechaNacimiento,
-          'Secciones': operador.seccionesIds.id,
           'Estatus': estatus,
         };
       });
