@@ -1,5 +1,5 @@
 import { TipoIncidencia } from 'src/app/models/tipoIncidencias';
-import {  Component, ElementRef, Inject,  OnInit,  ViewChild } from '@angular/core';
+import {  Component, ElementRef, Inject,  OnInit,  ViewChild,  } from '@angular/core';
 import {  FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
 import { Indicadores } from 'src/app/models/indicadores';
@@ -15,13 +15,20 @@ import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion
 import * as XLSX from 'xlsx';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
 import { Incidencia } from 'src/app/models/incidencias';
+import { ColorPickerService, Rgba } from 'ngx-color-picker';
+
 
 @Component({
   selector: 'app-tipo-incidencia',
+  template: `
+    <color-picker [(color)]="color"></color-picker>`,
   templateUrl: './tipo-incidencia.component.html',
   styleUrls: ['./tipo-incidencia.component.css']
 })
 export class TipoIncidenciasComponent implements OnInit {
+selectedColor: any;
+selectedColorCode: string = '#206bc4';
+[x: string]: any;
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -46,6 +53,9 @@ export class TipoIncidenciasComponent implements OnInit {
   formData: any;
   latitude: number = 19.316818295403003;
   longitude: number = -98.23837658175323;
+  color: Rgba = { r: 255, g: 0, b: 0, a: 1 };
+
+
   options = {
     types: [],
     componentRestrictions: { country: 'MX' }
@@ -60,6 +70,7 @@ export class TipoIncidenciasComponent implements OnInit {
     private indicadoresService: IndicadoresService,
     private casillasService: CasillasService,
     private IncidenciaService: IncidenciaService,
+    private cpService: ColorPickerService
   ) {
    this.IncidenciaService.refreshListIncidencia.subscribe(() => this.getIncidencias());
    this.creteForm();
@@ -68,7 +79,12 @@ export class TipoIncidenciasComponent implements OnInit {
    this.getIncidencias();
    this.configPaginator.itemsPerPage = 10;
   }
+
+
   ngOnInit(): void {
+    this.selectedColor = 0;
+    this.getIndicadores();
+
 
   }
   creteForm() {
@@ -76,12 +92,15 @@ export class TipoIncidenciasComponent implements OnInit {
       id:[null],
       retroalimentacion: [''],
       tipoIncidencia:  [null,Validators.required],
-      casilla: [null,Validators.required],
-      imagenBase64: ['',Validators.required],
-      direccion: [null, Validators.required],
-      latitud: [null, Validators.required],
-      longitud: [null, Validators.required],
+      color: ['#000000']
     });
+  }
+
+  updateColorCode(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target) {
+      this.selectedColorCode = target.value;
+    }
   }
 
   resetMap() {
@@ -89,6 +108,8 @@ export class TipoIncidenciasComponent implements OnInit {
     this.setCurrentLocation();
     this.ngAfterViewInit()
   }
+
+
 
   setCurrentLocation() {
     if ('geolocation' in navigator) {
@@ -99,22 +120,9 @@ export class TipoIncidenciasComponent implements OnInit {
     }
   }
 
-  mapa() {
-    this.setCurrentLocation();
-
-    // Puedes proporcionar un valor predeterminado o nulo, según tus necesidades
-    const dummyPlace: google.maps.places.PlaceResult = {
-      geometry: {
-        location: new google.maps.LatLng(0, 0), // Coordenadas predeterminadas o nulas
-      },
-      formatted_address: '',
-      name: '',
-      // Otras propiedades según tus necesidades
-    };
-
-    this.selectAddress2(dummyPlace);
+  convertColorToHex(color: Rgba): string {
+    return this.cpService.rgbaToHex(color);
   }
-
 
 
   ngAfterViewInit() {
@@ -173,6 +181,7 @@ export class TipoIncidenciasComponent implements OnInit {
           elementType: "all",
           stylers: [{ color: "#0ba4e2" }, { visibility: "on" }],
         },
+
       ],
     };
 
@@ -321,6 +330,9 @@ export class TipoIncidenciasComponent implements OnInit {
     const indicadorid = this.incidenciasForm.get('tipoIncidencia')?.value;
     const casillaid = this.incidenciasForm.get('casilla')?.value;
     const imagenBase64 = this.incidenciasForm.get('imagenBase64')?.value;
+    const colorHex = this.convertColorToHex(this.incidenciasForm.value.color);
+    const formData = { ...this.incidencia, imagenBase64, color: colorHex };
+
 
     this.incidencia.casilla = {id: casillaid } as Casillas
     this.incidencia.tipoIncidencia = { id: indicadorid } as Indicadores
@@ -381,39 +393,34 @@ export class TipoIncidenciasComponent implements OnInit {
     }
  }
 
-  setDataModalUpdate(dto: Incidencia){
+  setDataModalUpdate(indicadores: Indicadores){
     this.isModalAdd = false;
-    this.idUpdate = dto.id;
+    this.idUpdate = indicadores.id;
     this.incidenciasForm.patchValue({
-      id: dto.id,
-      retroalimentacion: dto.retroalimentacion,
-      tipoIncidencia: dto.tipoIncidencia.id,
-      casilla: dto.casilla.id,
-      imagenBase64: dto.imagenBase64,
-      direccion: dto.direccion,
-      latitud: dto.latitud,
-      longitud: dto.longitud,
+      id: indicadores.id,
+      tipo: indicadores.tipo,
+      color: indicadores.color
 
     });
 
     // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
     console.log(this.incidenciasForm.value);
-    console.log(dto);
+    console.log(indicadores);
   }
 
 
 
   deleteItem(id: number) {
     this.mensajeService.mensajeAdvertencia(
-      `¿Estás seguro de eliminar la incidencia?`,
+      `¿Estás seguro de eliminar el tipo de incidencia?`,
       () => {
-        this.IncidenciaService.delete(id).subscribe({
+        this['IndicadoresService'].delete(id).subscribe({
           next: () => {
             this.mensajeService.mensajeExito('Incidencia borrada correctamente');
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
-          error: (error) => this.mensajeService.mensajeError(error)
+          error: (error: string) => this.mensajeService.mensajeError(error)
         });
       }
     );
@@ -437,13 +444,15 @@ export class TipoIncidenciasComponent implements OnInit {
   }
 
   getIndicadores() {
-    this.indicadoresService.getAll().subscribe(
-      {
+    this.indicadoresService.getAll().subscribe({
         next: (dataFromAPI) => {
-          this.indicadores = dataFromAPI;},
-      }
-    );
-  }
+            this.indicadores = dataFromAPI;
+        },
+        error: (error) => {
+            console.error('Error al cargar los indicadores', error);
+        }
+    });
+}
 
   getCasillas() {
     this.casillasService.getAll().subscribe(
