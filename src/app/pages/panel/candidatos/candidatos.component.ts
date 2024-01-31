@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenericType, LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
@@ -11,14 +11,14 @@ import { CargoService } from 'src/app/core/services/cargo.service';
 import { Cargo } from 'src/app/models/cargo';
 import { Candidatos } from 'src/app/models/candidato';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
-import { VotantesService } from 'src/app/core/services/votante.service';
-import { Votante } from 'src/app/models/votante';
+import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
+import { Simpatizante } from 'src/app/models/votante';
 @Component({
   selector: 'app-candidatos',
   templateUrl: './candidatos.component.html',
   styleUrls: ['./candidatos.component.css']
 })
-export class CandidatosComponent {
+export class CandidatosComponent implements OnInit{
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -34,7 +34,9 @@ export class CandidatosComponent {
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
   idUpdate!: number;
-  votantes: Votante [] =[];
+  votantes: Simpatizante [] =[];
+  simpatizantesFilter: Simpatizante[] = [];
+  simpatizantes: Simpatizante[] = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -44,13 +46,15 @@ export class CandidatosComponent {
     private formBuilder: FormBuilder,
     private cargoService: CargoService,
     private candidatosService: CandidatosService,
-    private votantesService: VotantesService,
+    private simpatizantesService: SimpatizantesService,
   ) {
     this.candidatosService.refreshListCandidatos.subscribe(() => this.getCandidatos());
     this.getCandidatos();
     this.createForm();
     this.getCargos();
-    this.getSimpatisantes
+  }
+  ngOnInit(): void {
+    this.loadSimpatizantes();
   }
 
   estatusBtn = true;
@@ -116,9 +120,16 @@ export class CandidatosComponent {
   getCargos() {
     this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
   }
-  getSimpatisantes() {
-    this.votantesService.getAll().subscribe({ next: (dataFromAPI) => this.votantes = dataFromAPI });
+
+   loadSimpatizantes() {
+    // Assuming you have a candidateId, replace it with the actual value
+    const candidateId = 1; // Replace with the actual candidateId
+    this.simpatizantesService.getSimpatizantesPorCandidatoId(candidateId)
+      .subscribe(data => {
+        this.simpatizantes = data;
+      });
   }
+
 
   onFileChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;

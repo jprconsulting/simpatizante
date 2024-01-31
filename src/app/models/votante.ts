@@ -3,7 +3,7 @@ import { Municipio } from "./municipio"
 import { ProgramaSocial } from "./programa-social";
 import { Seccion } from "./seccion";
 
-export interface Votante {
+export interface Simpatizante {
     id: number;
     nombres: string;
     nombreCompleto: string;
@@ -19,7 +19,7 @@ export interface Votante {
     estatus: boolean;
     programaSocial: ProgramaSocial | null;
     municipio: Municipio;
-    votante: Votante;
+    votante: Simpatizante;
     seccion: Seccion;
     estado: Estado;
     idmex: string;

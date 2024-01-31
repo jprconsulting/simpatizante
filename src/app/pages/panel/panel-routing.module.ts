@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PanelComponent } from './panel.component';
+import { IncidenciasModule } from './incidencias/incidencias.module';
 
 const routes: Routes = [
   {
@@ -63,6 +64,11 @@ const routes: Routes = [
         path: 'simpatizantes',
         loadChildren: () => import('./simpatizante/simpatizante.module')
           .then(i => i.SimpatizanteModule)
+      },
+      {
+        path: 'tipoincidencias',
+        loadChildren: () => import('./tipo-incidencia/tipoincidencia.module')
+          .then(i => i.tipoIncidenciasModule)
       },
       {
         path: 'programas-sociales',

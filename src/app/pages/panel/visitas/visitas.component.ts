@@ -15,8 +15,8 @@ import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { Candidatos } from 'src/app/models/candidato';
 import { Operadores } from 'src/app/models/operadores';
 import { OperadoresService } from 'src/app/core/services/operadores.service';
-import { Votante } from 'src/app/models/votante';
-import { VotantesService } from 'src/app/core/services/votante.service';
+import { Simpatizante } from 'src/app/models/votante';
+import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 
 @Component({
   selector: 'app-visitas',
@@ -34,7 +34,7 @@ export class VisitasComponent {
   visitasFilter: Visita[] = [];
   isLoading = LoadingStates.neutro;
   programasSociales: ProgramaSocial[] = [];
-  votantes: Votante[] =[];
+  votantes: Simpatizante[] =[];
   candidatoSelect!: Candidatos | undefined;
   candidato: Candidatos[] = [];
   operador: Operadores[] = [];
@@ -53,7 +53,7 @@ export class VisitasComponent {
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private operadoresService: OperadoresService,
-    private votantesService: VotantesService,
+    private simpatizantesService: SimpatizantesService,
 
   ) {
     this.visitasService.refreshListVisitas.subscribe(() => this.getVisitas());
@@ -64,7 +64,7 @@ export class VisitasComponent {
     this.getSimpatizante();
   }
   getSimpatizante() {
-    this.votantesService.getAll().subscribe(
+    this.simpatizantesService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
           this.votantes = dataFromAPI; console.log('simpatizante',this.votantes)
@@ -118,7 +118,6 @@ export class VisitasComponent {
           this.visitas = dataFromAPI;
           this.visitasFilter = this.visitas;
           this.isLoading = LoadingStates.falseLoading;
-
         },
         error: () => {
           this.isLoading = LoadingStates.errorLoading;
@@ -152,7 +151,7 @@ export class VisitasComponent {
       id: dto.id,
       descripcion: dto.descripcion,
       servicio: dto.servicio,
-      votante: dto.simpatizante.id,
+      simpatizante: dto.simpatizante.id,
       imagenBase64: dto.imagenBase64
     });
 
@@ -198,10 +197,10 @@ export class VisitasComponent {
 
   agregar() {
     this.visita = this.visitaForm.value as Visita;
-    const simpatizanteId = this.visitaForm.get('votante')?.value;
+    const simpatizanteId = this.visitaForm.get('simpatizante')?.value;
 
 
-    this.visita.simpatizante = { id: simpatizanteId } as Votante
+    this.visita.simpatizante = { id: simpatizanteId } as Simpatizante
     this.spinnerService.show();
     console.log('data:', this.visita);
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
@@ -232,8 +231,8 @@ export class VisitasComponent {
 
     const visitaId = this.visitaForm.get('id')?.value
 
-    const votanteId = this.visitaForm.get('votante')?.value;
-    this.visita.simpatizante = { id: votanteId } as Votante;
+    const votanteId = this.visitaForm.get('simpatizante')?.value;
+    this.visita.simpatizante = { id: votanteId } as Simpatizante;
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 
     console.log(this.visita);
@@ -344,7 +343,7 @@ export class VisitasComponent {
 
     const datosParaExportar = this.visitas.map(visita => {
       return {
-        'Nombre completo': visita.simpatizante.nombreCompleto,       
+        'Nombre completo': visita.simpatizante.nombreCompleto,
         'Servicio': visita.servicio,
         'Descripcion': visita.descripcion,
       };

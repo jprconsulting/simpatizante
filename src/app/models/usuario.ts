@@ -1,4 +1,3 @@
-import { AreaAdscripcion } from "./area-adscripcion"
 import { Candidatos } from "./candidato";
 import { Operadores } from "./operadores";
 import { Rol } from "./rol"

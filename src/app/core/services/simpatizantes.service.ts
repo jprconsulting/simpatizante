@@ -2,57 +2,57 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
-import { Votante } from 'src/app/models/votante';
+import { Simpatizante } from 'src/app/models/votante';
 import { Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class VotantesService {
-  route = `${environment.apiUrl}/votantes`;
-  private _refreshListVotante$ = new Subject<Votante | null>();
+export class SimpatizantesService {
+  route = `${environment.apiUrl}/simpatizantes`;
+  private _refreshListSimpatizante$ = new Subject<Simpatizante | null>();
 
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
   ) { }
 
-  get refreshListVotantes() {
-    return this._refreshListVotante$;
+  get refreshListSimpatizantes() {
+    return this._refreshListSimpatizante$;
   }
 
   getById(id: number) {
-    return this.http.get<Votante>(`${this.route}/obtener-por-id/${id}`);
+    return this.http.get<Simpatizante>(`${this.route}/obtener-por-id/${id}`);
   }
 
   getSimpatizantesPorCandidatoId(candidatoId: number) {
-    return this.http.get<Votante[]>(`${this.route}/obtener-simpatizantes-por-candidato-id/${candidatoId}`);
+    return this.http.get<Simpatizante[]>(`${this.route}/obtener-simpatizantes-por-candidato-id/${candidatoId}`);
   }
 
   getSimpatizantesPorOperadorId(operadorId: number) {
-    return this.http.get<Votante[]>(`${this.route}/obtener-simpatizantes-por-operador-id/${operadorId}`);
+    return this.http.get<Simpatizante[]>(`${this.route}/obtener-simpatizantes-por-operador-id/${operadorId}`);
   }
 
   getAll() {
-    return this.http.get<Votante[]>(`${this.route}/obtener-todos`);
+    return this.http.get<Simpatizante[]>(`${this.route}/obtener-todos`);
   }
 
-  post(dto: Votante) {
-    return this.http.post<Votante>(`${this.route}/crear`, dto)
+  post(dto: Simpatizante) {
+    return this.http.post<Simpatizante>(`${this.route}/crear`, dto)
       .pipe(
         tap(() => {
-          this._refreshListVotante$.next(null);
+          this._refreshListSimpatizante$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );
   }
 
-  put(id: number, dto: Votante) {
-    return this.http.put<Votante>(`${this.route}/actualizar/${id}`, dto)
+  put(id: number, dto: Simpatizante) {
+    return this.http.put<Simpatizante>(`${this.route}/actualizar/${id}`, dto)
       .pipe(
         tap(() => {
-          this._refreshListVotante$.next(null);
+          this._refreshListSimpatizante$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );
@@ -62,7 +62,7 @@ export class VotantesService {
     return this.http.delete(`${this.route}/eliminar/${id}`)
       .pipe(
         tap(() => {
-          this._refreshListVotante$.next(null);
+          this._refreshListSimpatizante$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );

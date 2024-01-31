@@ -17,8 +17,8 @@ import { Seccion } from 'src/app/models/seccion';
 import { Usuario } from 'src/app/models/usuario';
 import { forkJoin } from 'rxjs';
 import * as XLSX from 'xlsx';
-import { VotantesService } from 'src/app/core/services/votante.service';
-import { Votante } from 'src/app/models/votante';
+import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
+import { Simpatizante } from 'src/app/models/votante';
 
 @Component({
   selector: 'app-operadores',
@@ -41,7 +41,8 @@ export class OperadoresComponent implements OnInit{
   isModalAdd = true;
   rolId = 0;
   seccionesFilter: Seccion [] =[];
-  votantes: Votante [] =[];
+  votantes: Simpatizante [] =[];
+  simpatizantes: Simpatizante[] = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -52,17 +53,17 @@ export class OperadoresComponent implements OnInit{
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
     private seccionesService: SeccionService,
-    private votantesService: VotantesService,
+    private simpatizantesService: SimpatizantesService,
   ) {
     this.operadoresService.refreshListOperadores.subscribe(() => this.getOperadores());
     this.getOperadores();
     this.getSecciones();
     this.getAreasAdscripcion();
     this.creteForm();
-    this.getSimpatisantes
   }
   ngOnInit(): void {
     this.isModalAdd = false;
+    this.loadSimpatizantes();
   }
 
   getGeneroName(id: number): string {
@@ -165,7 +166,7 @@ export class OperadoresComponent implements OnInit{
     this.operador.id = this.idUpdate;
     const seccionid = this.operadorForm.get('seccionesIds')?.value;
 
-    this.operador.seccionesIds = {id: seccionid } as Seccion;
+    this.operador.seccionesIds = seccionid  as Seccion;
     this.spinnerService.show();
     this.operadoresService.put(this.idUpdate, this.operador).subscribe({
       next: () => {
@@ -269,9 +270,15 @@ export class OperadoresComponent implements OnInit{
     }
   }
 
-  getSimpatisantes() {
-    this.votantesService.getAll().subscribe({ next: (dataFromAPI) => this.votantes = dataFromAPI });
+  loadSimpatizantes() {
+    // Assuming you have a candidateId, replace it with the actual value
+    const candidateId = 1; // Replace with the actual candidateId
+    this.simpatizantesService.getSimpatizantesPorOperadorId(candidateId)
+      .subscribe(data => {
+        this.simpatizantes = data;
+      });
   }
+
 
   exportarDatosAExcel() {
     if (this.operadores.length === 0) {
@@ -286,7 +293,6 @@ export class OperadoresComponent implements OnInit{
           'Apellido paterno': operador.apellidoPaterno,
           'Apellido materno': operador.apellidoMaterno,
           'Fecha de nacimiento': operador.fechaNacimiento,
-          'Secciones': operador.seccionesIds.id,
           'Estatus': estatus,
         };
       });
