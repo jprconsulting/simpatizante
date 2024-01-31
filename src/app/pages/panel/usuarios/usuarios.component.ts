@@ -183,7 +183,6 @@ export class UsuariosComponent implements OnInit {
       password: dto.password,
       estatus: dto.estatus,
       rol: dto.rol.id,
-      operador: dto.operador.id,
     });
   }
 
