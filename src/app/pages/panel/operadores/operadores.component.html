@@ -503,11 +503,11 @@
   aria-hidden="true"
   style="background: rgba(0, 0, 0, 0.5)"
 >
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">
-
+          Simpatizantes asociados
         </h5>
         <button
           type="button"
@@ -517,49 +517,29 @@
         ></button>
       </div>
       <div class="modal-body">
-        <table class="table table-vcenter card-table table-striped">
-          <thead>
-            <tr>
-              <th
-                style="
-                  text-transform: none;
-                  font-size: inherit;
-                  text-align: center;
-                "
-              >
-                 Nombre
-              </th>
-              <th
-                style="
-                  text-transform: none;
-                  font-size: inherit;
-                  text-align: center;
-                "
-              >
-                Domicilio
-              </th>
-              <th
-                style="
-                  text-transform: none;
-                  font-size: inherit;
-                  text-align: center;
-                "
-              >
-                Genero
-              </th>
-              <th
-                style="
-                  text-transform: none;
-                  font-size: inherit;
-                  text-align: center;
-                "
-              >
-                 Programa social
-              </th>
+        <div class="col-md-6 col-lg-12">
+          <div class="card">
+            <table class="table table-vcenter card-table table-striped">
+              <thead>
+                <tr>
+                  <th>Nombre completo</th>
+                  <th>Domicilio</th>
+                  <th>Genero</th>
+                  <th>Programa social</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let simpatizante of simpatizantes">
+                  <td>{{ simpatizante.nombreCompleto }}</td>
+                  <td>{{ simpatizante.domicilio }}</td>
+                  <td>{{ objGeneros[simpatizante.sexo]}}</td>
+                  <td>{{ simpatizante.programaSocial?.nombre}}</td>
+                </tr>
+              </tbody>
+          </table>
+          </div>
+        </div>
 
-            </tr>
-          </thead>
-        </table>
       </div>
     </div>
   </div>

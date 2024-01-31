@@ -1,9 +1,9 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { color } from 'highcharts';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
-import { VotantesService } from 'src/app/core/services/votante.service';
+import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 import { Municipio } from 'src/app/models/municipio';
-import { Votante } from 'src/app/models/votante';
+import { Simpatizante } from 'src/app/models/votante';
 declare const google: any;
 
 @Component({
@@ -13,17 +13,17 @@ declare const google: any;
 })
 export class MapaSimpatizantesComponent implements AfterViewInit {
 
-simpatizantes: Votante [] = [];
+simpatizantes: Simpatizante [] = [];
 infowindow = new google.maps.InfoWindow();
 markers: google.maps.Marker[] = [];
 map: any = {};
-simpatizantesFiltrados: Votante[] = [];
+simpatizantesFiltrados: Simpatizante[] = [];
 municipios: Municipio[] = [];
 
 constructor(
-  private simpatizantesService: VotantesService,
+  private simpatizantesService: SimpatizantesService,
   private municipiosService: MunicipiosService
- 
+
 ) {
   this.getsimpatizantes();
   this.getMunicipios();
@@ -42,7 +42,7 @@ clearMarkers() {
   this.markers = [];
 }
 
-getMarker(simpatizante: Votante) {
+getMarker(simpatizante: Simpatizante) {
   const marker = new google.maps.Marker({
     position: new google.maps.LatLng(simpatizante.latitud, simpatizante.longitud),
     map: this.map,
@@ -75,7 +75,7 @@ getMunicipios() {
 }
 
 
-getContentString(simpatizante: Votante) {
+getContentString(simpatizante: Simpatizante) {
   return `
     <div style="width: 450px; height: auto;" class=" text-center">
       <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
@@ -175,10 +175,10 @@ onSelectProgramaSocial(id: number) {
   console.log('filtro');
   if (id) {
     this.clearMarkers();
-    
+
     // Filtrar los simpatizantes por municipio y asignar el resultado a simpatizantesFiltrados
     this.simpatizantesFiltrados = this.simpatizantes.filter(v => v.municipio.id === id);
-    
+
     this.simpatizantesFiltrados.forEach(simpatizante => {
       this.setInfoWindow(this.getMarker(simpatizante), this.getContentString(simpatizante));
     });

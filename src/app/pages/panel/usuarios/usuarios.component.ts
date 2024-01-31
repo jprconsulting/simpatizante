@@ -2,15 +2,12 @@ import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { OperadoresService } from 'src/app/core/services/operadores.service';
 import { RolsService } from 'src/app/core/services/rols.service';
 import { UsuariosService } from 'src/app/core/services/usuarios.service';
 import { LoadingStates } from 'src/app/global/global';
-import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
-import { Beneficiario } from 'src/app/models/beneficiario';
 import { Candidatos } from 'src/app/models/candidato';
 import { Operadores } from 'src/app/models/operadores';
 import { Rol } from 'src/app/models/rol';
@@ -91,8 +88,8 @@ export class UsuariosComponent implements OnInit {
       ],
       estatus: [true],
       rol: [null, Validators.required],
-      operador:[],
-      candidato:[],
+      operador:[''],
+      candidato:[''],
     });
   }
 
@@ -186,6 +183,7 @@ export class UsuariosComponent implements OnInit {
       password: dto.password,
       estatus: dto.estatus,
       rol: dto.rol.id,
+      operador: dto.operador.id,
     });
   }
 
