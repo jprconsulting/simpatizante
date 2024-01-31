@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: SeguimientoVotoComponent,
+    canActivate: [AuthGuard], data: { claimType: 'CanAccessSeguimientoVoto'}
   }
 ];
 

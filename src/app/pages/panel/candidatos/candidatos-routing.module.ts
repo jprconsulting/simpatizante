@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: CandidatosComponent,
+    canActivate: [AuthGuard], data: { claimType: 'CanAccessCandidatos'}
   }
 ];
 

@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: UsuariosComponent,
+    canActivate: [AuthGuard], data: { claimType: 'CanAccessUsuarios'}
   }
 ];
 
