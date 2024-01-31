@@ -43,7 +43,7 @@ export class SimpatizanteComponent implements OnInit {
   votantesFilter: Simpatizante[] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
-  votantes: Simpatizante [] = [];
+  votantes: Simpatizante[] = [];
   municipios: Municipio[] = [];
   seccion: Seccion[] = [];
   programaSocial: ProgramaSocial[] = [];
@@ -97,6 +97,53 @@ export class SimpatizanteComponent implements OnInit {
 
 
   }
+  getCurrentLocation() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.latitude = position.coords.latitude;
+          this.longitude = position.coords.longitude;
+
+          // Llamada a la API de geocodificación inversa
+          const geocoder = new google.maps.Geocoder();
+          const latLng = new google.maps.LatLng(this.latitude, this.longitude);
+
+          geocoder.geocode({ 'location': latLng }, (results, status) => {
+            if (status === 'OK') {
+              if (results && results[0]) {
+                const place = results[0];
+                if (place.formatted_address) {
+                  this.simpatizanteForm.patchValue({
+                    domicilio: place.formatted_address
+                  });
+                } else {
+                  console.log('No se pudo obtener la dirección.');
+                }
+                this.selectAddress(place);
+
+              } else {
+                console.error('No se encontraron resultados de geocodificación.');
+              }
+            } else {
+              console.error('Error en la solicitud de geocodificación inversa:', status);
+            }
+          });
+        },
+        (error) => {
+          if (error.code === 1) {
+            console.error('El usuario ha denegado el acceso a la geolocalización.');
+            alert('La geolocalización está desactivada. Habilítala para obtener tu ubicación.');
+          } else {
+            console.error('Error al obtener la posición actual:', error);
+          }
+        }
+      );
+    } else {
+      console.error('La geolocalización no está habilitada en este navegador.');
+    }
+  }
+
+
 
   resetMap() {
     this.ubicacionInput.nativeElement.value = '';
@@ -116,7 +163,7 @@ export class SimpatizanteComponent implements OnInit {
       // Otras propiedades según tus necesidades
     };
 
-    this.selectAddress(dummyPlace);
+    this.selectAddress2(dummyPlace);
   }
 
   selectAddress(place: google.maps.places.PlaceResult) {
@@ -124,6 +171,7 @@ export class SimpatizanteComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
+
     if (place.formatted_address) {
       this.simpatizanteForm.patchValue({
         domicilio: place.formatted_address
@@ -157,19 +205,19 @@ export class SimpatizanteComponent implements OnInit {
 
     this.canvas.setAttribute("data-lat", selectedLat.toString());
     this.canvas.setAttribute("data-lng", selectedLng.toString());
-      const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
+    const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
     this.maps.setCenter(newLatLng);
     this.maps.setZoom(15);
-     const marker = new google.maps.Marker({
-    position: newLatLng,
-    map: this.maps,
-    animation: google.maps.Animation.DROP,
-    title: this.simpatizanteForm.value.nombres, // Usa un campo relevante como título
-  });
-  this.simpatizanteForm.patchValue({
-    longitud: selectedLng,
-    latitud: selectedLat
-  });
+    const marker = new google.maps.Marker({
+      position: newLatLng,
+      map: this.maps,
+      animation: google.maps.Animation.DROP,
+      title: this.simpatizanteForm.value.nombres, // Usa un campo relevante como título
+    });
+    this.simpatizanteForm.patchValue({
+      longitud: selectedLng,
+      latitud: selectedLat
+    });
   }
 
   setEstatus() {
@@ -254,7 +302,8 @@ export class SimpatizanteComponent implements OnInit {
     this.seccionService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
-          this.seccion = dataFromAPI;},
+          this.seccion = dataFromAPI;
+        },
       }
     );
   }
@@ -263,7 +312,8 @@ export class SimpatizanteComponent implements OnInit {
     this.estadoService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
-          this.estado = dataFromAPI;},
+          this.estado = dataFromAPI;
+        },
 
       }
     );
@@ -273,7 +323,8 @@ export class SimpatizanteComponent implements OnInit {
     this.programasSociales.getAll().subscribe(
       {
         next: (dataFromAPI) => {
-          this.programaSocial = dataFromAPI;},
+          this.programaSocial = dataFromAPI;
+        },
 
       }
     );
@@ -287,24 +338,24 @@ export class SimpatizanteComponent implements OnInit {
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
-      estado:[null, Validators.required],
+      estado: [null, Validators.required],
       seccion: [null, Validators.required],
       sexo: [null, Validators.required],
       curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
       programaSocial: [null],
       municipio: [null, Validators.required],
-      domicilio: ['', Validators.required],
+      domicilio: [''],
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
       idmex: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
     });
   }
 
-  mostrar(){
+  mostrar() {
     this.visibility = true;
   }
-  ocultar(){
+  ocultar() {
     this.visibility = false;
     const radioElement = document.getElementById('flexRadioDefault2') as HTMLInputElement;
 
@@ -320,7 +371,7 @@ export class SimpatizanteComponent implements OnInit {
         next: (dataFromAPI) => {
           this.votantes = dataFromAPI;
           this.votantesFilter = this.votantes;
-          this.isLoading = LoadingStates.falseLoading;console.log('dfsjncjk', this.votantesFilter);
+          this.isLoading = LoadingStates.falseLoading; console.log('dfsjncjk', this.votantesFilter);
 
         },
         error: () => {
@@ -410,7 +461,7 @@ export class SimpatizanteComponent implements OnInit {
 
     this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
     this.votante.municipio = { id: municipioId } as Municipio;
-    this.votante.estado = {id: estadoId} as Estado;
+    this.votante.estado = { id: estadoId } as Estado;
     this.votante.seccion = { id: seccionId } as Seccion
 
     console.log(this.votante);
@@ -461,8 +512,6 @@ export class SimpatizanteComponent implements OnInit {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.simpatizanteForm.reset();
-
-
   }
   submit() {
     if (this.isModalAdd === false) {
@@ -484,7 +533,7 @@ export class SimpatizanteComponent implements OnInit {
 
     this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
     this.votante.municipio = { id: municipioId } as Municipio;
-    this.votante.estado = {id: estadoId} as Estado;
+    this.votante.estado = { id: estadoId } as Estado;
     this.votante.seccion = { id: seccionId } as Seccion
 
     console.log(this.votante);
@@ -503,6 +552,7 @@ export class SimpatizanteComponent implements OnInit {
         this.mensajeService.mensajeError(error);
       }
     });
+
   }
 
   handleChangeAdd() {
