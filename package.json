@@ -26,6 +26,7 @@
     "@types/google.maps": "^3.54.10",
     "highcharts": "^11.2.0",
     "highcharts-angular": "^4.0.0",
+    "ngx-color-picker": "^16.0.0",
     "ngx-pagination": "^6.0.3",
     "ngx-spinner": "^16.0.2",
     "rxjs": "~7.8.0",
