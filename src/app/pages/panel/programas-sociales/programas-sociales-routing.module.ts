@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: ProgramasSocialesComponent,
+    canActivate: [AuthGuard], data: { claimType: 'CanAccessProgramasSociales'}
   }
 ];
 
