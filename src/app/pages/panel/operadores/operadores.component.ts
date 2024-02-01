@@ -288,11 +288,14 @@ export class OperadoresComponent implements OnInit{
 
     const datosParaExportar = this.operadores.map(operador => {
         const estatus = operador.estatus ? 'Activo' : 'Inactivo';
+        const fechaNacimiento = operador.fechaNacimiento ?
+          new Date(operador.fechaNacimiento).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) :
+          '';
         return {
           'Nombres': operador.nombres,
           'Apellido paterno': operador.apellidoPaterno,
           'Apellido materno': operador.apellidoMaterno,
-          'Fecha de nacimiento': operador.fechaNacimiento,
+          'Fecha de nacimiento': fechaNacimiento,
           'Estatus': estatus,
         };
       });
