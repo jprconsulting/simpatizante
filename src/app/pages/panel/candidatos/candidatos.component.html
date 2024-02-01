@@ -600,7 +600,24 @@
       </div>
       <div class="modal-body">
         <div class="col-md-12 col-lg-12">
+
+          <div class="row d-flex justify-content-end mt-0 mb-3">
+            <div class="input-icon col-6">
+              <input
+                #searchItem
+                type="text"
+                class="form-control form-control-rounded"
+                placeholder="Buscar"
+                (input)="handleChangeSearchModal($event)"
+              />
+              <span class="input-icon-addon">
+                <i class="ti ti-search"></i>
+              </span>
+            </div>
+          </div>
+
           <div class="card">
+
             <table class="table table-vcenter card-table table-striped">
               <thead>
                 <tr>
@@ -620,6 +637,21 @@
               </tbody>
           </table>
           </div>
+
+          <div class="card-footer d-flex align-items-center">
+            <p class="m-0 text-muted">
+              Total de registros: <b>{{ simpatizantes.length }}</b>
+            </p>
+            <div class="m-0 ms-auto">
+              <pagination-controls
+                (pageChange)="onPageChange($event)"
+                previousLabel=""
+                nextLabel=""
+              >
+              </pagination-controls>
+            </div>
+          </div>
+
         </div>
 
       </div>

@@ -37,6 +37,7 @@ export class CandidatosComponent implements OnInit{
   votantes: Simpatizante [] =[];
   simpatizantesFilter: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
+  simpatizanteFilter: Simpatizante[] = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -127,6 +128,7 @@ export class CandidatosComponent implements OnInit{
     this.simpatizantesService.getSimpatizantesPorCandidatoId(candidateId)
       .subscribe(data => {
         this.simpatizantes = data;
+        this.simpatizanteFilter = this.simpatizantes;
       });
   }
 
@@ -241,6 +243,24 @@ export class CandidatosComponent implements OnInit{
     this.configPaginator.currentPage = 1;
   }
 
+  handleChangeSearchModal( event: any ){
+    const inputValue = event.target.value;
+    const valueSearch = inputValue.toLowerCase();
+
+    this.simpatizanteFilter = this.simpatizantes.filter( Simpatizante => {
+      Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
+      Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)||
+      this.getGeneroName(Simpatizante.sexo).toLowerCase().includes(valueSearch)
+    })
+
+    console.log('Simpatizantes filtrados: ', this.simpatizanteFilter);
+    
+    this.configPaginator.currentPage = 1;
+
+  }
+
   formData: any;
 
 
@@ -266,7 +286,7 @@ export class CandidatosComponent implements OnInit{
     console.log(dto);
     console.log(this.candidatoForm.value);
   }
-
+ 
 
   editarCandidato() {
     this.candidatos = this.candidatoForm.value as Candidatos;
