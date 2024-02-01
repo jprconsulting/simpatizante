@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
 import { Simpatizante } from 'src/app/models/votante';
@@ -15,7 +15,7 @@ import { SimpatizantesService } from 'src/app/core/services/simpatizantes.servic
   templateUrl: './seguimiento-voto.component.html',
   styleUrls: ['./seguimiento-voto.component.css']
 })
-export class SeguimientoVotoComponent implements OnInit{
+export class SeguimientoVotoComponent implements OnInit {
   @ViewChild('searchItem') searchItem!: ElementRef;
   @ViewChild('closebutton') closebutton!: ElementRef;
 
@@ -40,13 +40,15 @@ export class SeguimientoVotoComponent implements OnInit{
 
 
   ) {
+   this.votoService.refreshListVisitas.subscribe(() => this.actualizarVisita());
    this.creteForm();
    this.getVotantes();
   }
 
   ngOnInit(): void {
-
+    this.actualizarVisita();
   }
+
 
   creteForm() {
     this.seguimientoForm = this.formBuilder.group({
@@ -129,7 +131,22 @@ export class SeguimientoVotoComponent implements OnInit{
     }
   }
   actualizarVisita() {
-
+    this.isLoading = LoadingStates.falseLoading;
+    this.votoService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          console.log(dataFromAPI);
+          
+          this.voto = dataFromAPI;
+          // console.log(this.voto);
+          
+          
+        },
+        error: () => {
+          this.isLoading = LoadingStates.errorLoading
+        }
+      }
+    );
   }
   onPageChange(number: number) {
 
@@ -155,6 +172,7 @@ export class SeguimientoVotoComponent implements OnInit{
       {
         next: (dataFromAPI) => {
           this.simpatizantes = dataFromAPI;
+          
         },
         error: () => {
           this.isLoading = LoadingStates.errorLoading
@@ -162,4 +180,44 @@ export class SeguimientoVotoComponent implements OnInit{
       }
     );
   }
+
+  idUpdate!: number;
+
+  setDataModalUpdate(dto: Voto){
+    this.isModalAdd = false;
+    this.idUpdate = dto.id;
+
+    this.seguimientoForm.patchValue({
+      id: dto.id,
+      estatusVoto: dto.estatusVoto,
+    })
+
+  }
+
+  deleteItem(id: number, nameItem: string){
+
+    this.mensajeService.mensajeAdvertencia(
+      `¿Estás seguro de eliminar el simpatizante: ${nameItem}?`,
+      () => {
+        console.log('Confirmation callback executed');
+        this.votoService.delete(id).subscribe({
+          next: () => {
+            console.log('Delete success callback executed');
+            this.mensajeService.mensajeExito('Simpatizante borrado correctamente');
+            this.configPaginator.currentPage = 1;
+            this.searchItem.nativeElement.value = '';
+
+          },
+          error: (error) => {
+            console.log('Delete error callback executed', error);
+            this.mensajeService.mensajeError(error);
+          }
+        });
+      }
+    );
+  }
+
+
 }
+
+

@@ -25,14 +25,112 @@
                     </div>
                 </div>
             </div>
+
+
+
             <ng-container [ngSwitch]="isLoading">
                 <div style="height: 300px" *ngSwitchCase="2">
                     <div class="progress">
                         <div class="progress-bar progress-bar-indeterminate bg-green"></div>
                     </div>
                 </div>
-                <div>
-                    <table class="table table-vcenter card-table table-striped">
+
+
+                <div class="table-responsive">
+                  <table class="table table-vcenter card-table table-striped">
+                    <thead>
+                      <tr>
+                        <th
+                          style="text-transform: none; font-size: inherit"
+                          class="text-center"
+                        >
+                          #
+                        </th>
+                        <th style="text-transform: none; font-size: inherit">
+                          Nombre completo
+                        </th>
+                        <th style="text-transform: none; font-size: inherit">Voto</th>
+                        <th style="text-transform: none; font-size: inherit">Fecha</th>
+                        <th
+                          style="text-transform: none; font-size: inherit"
+                          class="text-center"
+                        >
+                          Foto
+                        </th>
+                        <th
+                          style="text-transform: none; font-size: inherit"
+                          class="w-1"
+                        >
+                          Acciones
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                      <tr
+                      *ngFor="
+                        let usuario of voto | paginate : configPaginator;
+                        let pointIndex = index
+                      "
+                    >
+                      <td class="text-center">
+                        {{
+                          configPaginator.itemsPerPage *
+                            (configPaginator.currentPage - 1) +
+                            pointIndex +
+                            1
+                        }}
+                      </td>
+                      <td>{{ usuario.simpatizante.nombreCompleto }}</td>
+                      <td class="text-start">
+                        <ng-container *ngIf="usuario.estatusVoto; else elseEstatus">
+                          <span class="badge bg-success me-1"> </span> Voto
+                        </ng-container>
+                        <ng-template #elseEstatus>
+                          <span class="badge bg-warning me-1"></span> No voto
+                        </ng-template>
+                      </td>
+                      <td class="text-muted">{{ usuario.fechaHoraVot | date:'dd/MM/yyyy' }}</td>
+                      <!-- <td class="text-muted">2024-02-01</td> -->
+                      <td class="text-muted text-center">
+                        <div class="flex justify-center items-center">
+                          <img
+                            src="{{usuario.foto}}"
+                            alt="Foto de {{ usuario.foto }}"
+                            width="50"
+                            height="50"
+                            
+                          />
+                        </div>
+                      </td>
+
+
+                      <td>
+                        <div class="d-flex justify-content-between">
+                          <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#modal-seguimiento" (click)="setDataModalUpdate(usuario);">
+                            <i class="ti ti-edit"></i>
+                          </button>
+                          <button class="btn btn-danger btn-icon btn-sm"
+                            (click)="deleteItem(usuario.id, usuario.simpatizante.nombreCompleto)">
+                            <i class="ti ti-eraser"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+    
+    
+                    </tbody>
+                  </table>
+                </div>
+
+
+                <app-no-results *ngSwitchCase="4"></app-no-results>
+
+
+
+                <!-- <div class="mt-5">
+                    <table class="table card-table table-striped">
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
@@ -57,14 +155,13 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </div> -->
 
-                <app-no-results *ngSwitchCase="4"></app-no-results>
             </ng-container>
             <!-- Fin *ngSwitchCase-->
 
             <div class="card-footer d-flex align-items-center">
-                <p class="m-0 text-muted">Total de registros: <b>1</b></p>
+                <p class="m-0 text-muted">Total de registros: <b>{{ voto.length }}</b></p>
                 <div class="m-0 ms-auto">
                     <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
                     </pagination-controls>
@@ -79,7 +176,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    Seguimiento del voto
+                    {{ isModalAdd ? 'Agregar' : 'Actualizar' }} voto
                 </h5>
                 <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -153,8 +250,8 @@
                     Todos los campos marcados con * son requeridos
                 </p>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" [disabled]="!seguimientoForm.valid">
-            Guardar
+                    <button type="submit" class="btn btn-success">
+            {{ isModalAdd ? 'Agregar' : 'Actualizar' }}
           </button>
                 </div>
             </form>
