@@ -26,74 +26,14 @@ export class DashboardComponent implements AfterViewInit {
   optionsNubePalabras: Highcharts.Options = {};
 
   constructor(private dashboardService: DashboardService) {
-    this.getTotalBeneficiariosPorProgramaSocial();
+    
     this.getTotalVisitasPorProgramaSocial();
     this.getTotalBeneficiariosPorMunicipio();
     this.getTotalGeneral();
     this.getWordCloud();
   }
 
-  getTotalBeneficiariosPorProgramaSocial() {
-    this.dashboardService.getTotalBeneficiariosPorProgramaSocial().subscribe({
-        next: (dataFromAPI) => {
-            const langConfig = {
-                viewFullscreen: "Ver en pantalla completa",
-                printChart: "Imprimir gráfica",
-                downloadPNG: 'Descargar imagen PNG',
-                downloadJPEG: 'Descargar imagen JPEG',
-                downloadPDF: 'Descargar en formato PDF',
-                downloadSVG: 'Descargar imagen vectorial en SVG',
-              };
 
-            this.optionsBeneficiariosPorProgramaSocial = {
-                chart: {
-                    type: 'pie'
-                },
-                title: {
-                    text: 'Beneficiarios por programa social',
-                    align: 'left'
-                },
-                tooltip: {
-                    pointFormat: `
-                        {series.name}:
-                        <b>{point.percentage:.1f}%</b> <br>
-                        Beneficiarios: <b>{point.totalItems}</b>
-                    `
-                },
-                lang: langConfig,
-                subtitle: {
-                    text: ''
-                },
-                credits: {
-                    enabled: false
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            distance: 20,
-                            format: '{point.name}: {point.percentage:.1f}%',
-                            style: {
-                                fontSize: '0.8rem',
-                                textOutline: 'none',
-                                opacity: 0.7
-                            },
-                        },
-                    }
-                },
-                series: [{
-                    type: 'pie',
-                    name: 'Porcentaje',
-                    data: dataFromAPI.map((d) => ({ name: d.nombre, y: d.porcentaje, totalItems: d.totalBeneficiarios }) as PointOptionsWithTotal)
-                }]
-            };
-
-            Highcharts.chart('container-beneficiarios-por-programa-social', this.optionsBeneficiariosPorProgramaSocial);
-        }
-    });
-}
 
 getTotalVisitasPorProgramaSocial() {
   const container = document.getElementById('container-visitas-por-programa-social');

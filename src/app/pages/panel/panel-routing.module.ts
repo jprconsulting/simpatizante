@@ -85,6 +85,11 @@ const routes: Routes = [
         loadChildren: () => import('./mapa-incidencias/mapa-incidencias.module')
           .then(i => i.MapaIncidenciasModule)
       },
+      {
+        path: 'deshboard',
+        loadChildren: () => import('./dashboard/dashboard.module')
+          .then(i => i.DashboardModule)
+      },
     ]
   },
 ];
