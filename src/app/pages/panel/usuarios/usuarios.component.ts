@@ -96,7 +96,7 @@ export class UsuariosComponent implements OnInit {
 
   changeValidatorsCandidato(rol: number) {
     this.rol = rol;
-    //Si es director
+    //Si es candidato
     this.usuarioForm.patchValue({ candidatoId: null });
     if (rol === 3) {
       this.usuarioForm.controls["candidato"].enable();
@@ -110,7 +110,7 @@ export class UsuariosComponent implements OnInit {
 
   changeValidatorsOperador(rol: number) {
     this.rol = rol;
-    //Si es director
+    //Si es operador
     this.usuarioForm.patchValue({ operadorId: null });
     if (rol === 2) {
       this.usuarioForm.controls["operador"].enable();
@@ -124,10 +124,10 @@ export class UsuariosComponent implements OnInit {
 
 
   subscribeRolId() {
-    this.usuarioForm.get("rol")?.valueChanges
-      .subscribe(eventRolId => this.changeValidatorsCandidato(eventRolId));
-    this.usuarioForm.get("rol")?.valueChanges
-      .subscribe(eventRolId => this.changeValidatorsOperador(eventRolId));
+    this.usuarioForm.get("rol")?.valueChanges.subscribe(eventRolId => {
+      this.changeValidatorsCandidato(eventRolId);
+      this.changeValidatorsOperador(eventRolId);
+    });
   }
 
   getUsuarios() {
@@ -183,7 +183,11 @@ export class UsuariosComponent implements OnInit {
       password: dto.password,
       estatus: dto.estatus,
       rol: dto.rol.id,
+      candidato: dto.candidato?.id,
+      operador: dto.operador?.id,
     });
+    this.changeValidatorsCandidato(dto.rol.id);
+    this.changeValidatorsOperador(dto.rol.id);
   }
 
   editarUsuario() {
