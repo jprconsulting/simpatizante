@@ -157,7 +157,7 @@ export class OperadoresComponent implements OnInit{
       apellidoMaterno: dto.apellidoMaterno,
       fechaNacimiento: fechaFormateada,
       estatus: dto.estatus,
-      seccionesIds: dto.seccionesIds,
+      seccionesIds: dto.secciones,
     });
   }
 
