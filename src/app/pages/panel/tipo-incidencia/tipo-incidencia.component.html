@@ -204,6 +204,18 @@
               value="#206bc4"
               (input)="updateColorCode($event)"
             />
+            <div
+              *ngIf="incidenciasForm.get('color')?.touched"
+              class="error-message"
+            >
+              <div
+                *ngIf="
+                  incidenciasForm.get('color')?.hasError('required')
+                "
+              >
+                El color es obligatorio
+              </div>
+            </div>
           </div>
         </div>
         

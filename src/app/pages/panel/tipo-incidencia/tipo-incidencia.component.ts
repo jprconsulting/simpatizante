@@ -49,6 +49,7 @@ selectedColorCode: string = '#206bc4';
   canvas!: HTMLElement;
   isModalAdd = true;
   incidenciasFilter: TipoIncidencia[] = [];
+  indicadoresFilter: Indicadores[] = [];
   idUpdate!: number;
   formData: any;
   latitude: number = 19.316818295403003;
@@ -133,11 +134,9 @@ selectedColorCode: string = '#206bc4';
 
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    this.incidenciasFilter = this.incidencias.filter(incidencia =>
-      incidencia.retroalimentacion.toLowerCase().includes(inputValue.toLowerCase())||
-      incidencia.tipoIncidencia.tipo.toLowerCase().includes(inputValue.toLowerCase())||
-      incidencia.casilla.nombre.toLocaleLowerCase().includes(inputValue.toLowerCase())||
-      incidencia.direccion.toLowerCase().includes(inputValue)
+    this.indicadoresFilter = this.indicadores.filter(indicador =>
+      indicador.color.toLowerCase().includes(inputValue.toLowerCase())||
+      indicador.tipo.toLowerCase().includes(inputValue.toLowerCase())
     );
     this.configPaginator.currentPage = 1;
   }
@@ -284,7 +283,6 @@ selectedColorCode: string = '#206bc4';
       return {
         'casilla': incidencias.casilla.nombre,
         'tipo de incidencia': incidencias.tipoIncidencia.tipo,
-        'direccion': incidencias.direccion,
 
       };
     });

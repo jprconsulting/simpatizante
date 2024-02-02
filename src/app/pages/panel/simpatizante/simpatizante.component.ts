@@ -37,6 +37,7 @@ export class SimpatizanteComponent implements OnInit {
 
 
   municipiosSelect!: Municipio | undefined;
+  votantesSelect!: Simpatizante | undefined;
   canvas!: HTMLElement;
   votante!: Simpatizante;
   simpatizanteForm!: FormGroup;
@@ -146,7 +147,14 @@ export class SimpatizanteComponent implements OnInit {
       console.error('La geolocalización no está habilitada en este navegador.');
     }
   }
+  onSelectOperador(id: number | null) {
+    if (id) {
+      this.votantesSelect = this.votantes.find(b => b.id === id);
+    }
+  }
 
+  onClear() {
+  }
 
 
   resetMap() {

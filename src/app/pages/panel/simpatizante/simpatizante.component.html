@@ -39,8 +39,10 @@
             [items]="operadores"
             bindLabel="nombreCompleto"
             bindValue="id"
-            placeholder="Elegir"
-            [clearable]="false"
+            placeholder="Todos los operadores"
+            [clearable]="true"
+            (change)="onSelectOperador($event?.id)"
+              (clear)="onClear()"
           >
             <ng-template ng-header-tmp>
               <input
