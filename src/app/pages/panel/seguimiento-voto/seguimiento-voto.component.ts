@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
 import { Simpatizante } from 'src/app/models/votante';
@@ -15,7 +15,7 @@ import { SimpatizantesService } from 'src/app/core/services/simpatizantes.servic
   templateUrl: './seguimiento-voto.component.html',
   styleUrls: ['./seguimiento-voto.component.css']
 })
-export class SeguimientoVotoComponent implements OnInit{
+export class SeguimientoVotoComponent implements OnInit {
   @ViewChild('searchItem') searchItem!: ElementRef;
   @ViewChild('closebutton') closebutton!: ElementRef;
 
@@ -24,6 +24,7 @@ export class SeguimientoVotoComponent implements OnInit{
   candidato: Candidatos[] = [];
   voto: Voto[] = [];
   votos!: Voto;
+  votoFilter: Voto[] = [];
   candidatosSelect: any;
   simpatizantes: Simpatizante[] =[];
   isLoading = LoadingStates.neutro;
@@ -40,13 +41,16 @@ export class SeguimientoVotoComponent implements OnInit{
 
 
   ) {
+   this.votoService.refreshListVisitas.subscribe(() => this.actualizarVisita());
+   this.actualizarVisita();
    this.creteForm();
    this.getVotantes();
   }
 
   ngOnInit(): void {
-
+    this.getVotantes();
   }
+
 
   creteForm() {
     this.seguimientoForm = this.formBuilder.group({
@@ -83,10 +87,42 @@ export class SeguimientoVotoComponent implements OnInit{
     }
   }
 
+  editarVoto(){
+    this.votos = this.seguimientoForm.value as Voto;
+    const simpatizanteId = this.seguimientoForm.get('simpatizante')?.value;
+
+
+    this.votos.simpatizante = { id: simpatizanteId } as Simpatizante
+    this.spinnerService.show();
+    console.log('data:', this.votos);
+    const imagenBase64 = this.seguimientoForm.get('imagenBase64')?.value;
+
+    if (imagenBase64) {
+      const formData = { ...this.votos, imagenBase64 };
+
+      this.spinnerService.show();
+      this.votoService.put(simpatizanteId, formData).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Voto actualizado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        }
+      });
+    } else {
+      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+    }
+  }
+
+
   submit() {
     if (this.isModalAdd === false) {
 
-      this.actualizarVisita();
+      this.editarVoto();
     } else {
       this.agregar();
 
@@ -128,11 +164,27 @@ export class SeguimientoVotoComponent implements OnInit{
       console.error('Error: No se encontró una representación válida en base64 de la imagen.');
     }
   }
+
   actualizarVisita() {
-
+    this.isLoading = LoadingStates.trueLoading;
+    this.votoService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => { 
+          this.voto = dataFromAPI;
+          this.votoFilter = this.voto;
+          this.isLoading = LoadingStates.falseLoading;
+          
+        },
+        error: () => {
+          this.isLoading = LoadingStates.errorLoading
+        }
+      }
+    );
   }
-  onPageChange(number: number) {
 
+
+  onPageChange(number: number) {
+    this.configPaginator.currentPage = number;
   }
 
   handleChangeAdd() {
@@ -155,6 +207,7 @@ export class SeguimientoVotoComponent implements OnInit{
       {
         next: (dataFromAPI) => {
           this.simpatizantes = dataFromAPI;
+          
         },
         error: () => {
           this.isLoading = LoadingStates.errorLoading
@@ -162,4 +215,63 @@ export class SeguimientoVotoComponent implements OnInit{
       }
     );
   }
+
+
+  handleChangeSearch( event: any){
+    const inputValue = event.target.value;
+    const valueSearch = inputValue.toLowerCase();
+
+    this.votoFilter = this.voto.filter(Voto => 
+      Voto.simpatizante.nombreCompleto.toLowerCase().includes(valueSearch) ||
+      Voto.simpatizante.nombres.toLowerCase().includes(valueSearch) ||
+      Voto.simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      Voto.simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch)
+    );
+
+    console.log("Votantes filtrados: ", this.votoFilter);
+    
+    this.configPaginator.currentPage = 1;
+
+  }
+
+
+  idUpdate!: number;
+
+  setDataModalUpdate(dto: Voto){
+    this.isModalAdd = false;
+    this.idUpdate = dto.id;
+
+    this.seguimientoForm.patchValue({
+      id: dto.id,
+      estatusVoto: dto.estatusVoto,
+    })
+
+  }
+
+  deleteItem(id: number, nameItem: string){
+
+    this.mensajeService.mensajeAdvertencia(
+      `¿Estás seguro de eliminar el simpatizante: ${nameItem}?`,
+      () => {
+        console.log('Confirmation callback executed');
+        this.votoService.delete(id).subscribe({
+          next: () => {
+            console.log('Delete success callback executed');
+            this.mensajeService.mensajeExito('Simpatizante borrado correctamente');
+            this.configPaginator.currentPage = 1;
+            this.searchItem.nativeElement.value = '';
+
+          },
+          error: (error) => {
+            console.log('Delete error callback executed', error);
+            this.mensajeService.mensajeError(error);
+          }
+        });
+      }
+    );
+  }
+
+
 }
+
+
