@@ -89,7 +89,7 @@ selectedColorCode: string = '#206bc4';
     this.incidenciasForm = this.formBuilder.group({
       id:[null],
       retroalimentacion:  [null,Validators.required],
-      color: ['#000000']
+      color: ['#000000',Validators.required]
     });
   }
 
