@@ -1,6 +1,6 @@
-<div class="row row-deck row-cards">
-  <div class="col-sm-6 col-lg-3">
-    <div class="card">
+<div class="row row-deck row-cards justify-content-center">
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card mb-0 mx-auto">
       <div class="card-body">
         <div class="d-flex align-items-center">
           <div class="subheader">Total Usuarios</div>
@@ -9,28 +9,38 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-lg-3">
-    <div class="card">
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card mb-0 mx-auto">
       <div class="card-body">
         <div class="d-flex align-items-center">
-          <div class="subheader">Total Programas Sociales</div>
+          <div class="subheader">Total Operadores</div>
         </div>
-        <div class="h1">{{ totalGeneral.totalProgramasSociales }}</div>
+        <div class="h1">{{ totalGeneral.totalOperadores }}</div>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-lg-3">
-    <div class="card">
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card mb-0 mx-auto">
       <div class="card-body">
         <div class="d-flex align-items-center">
-          <div class="subheader">Total Beneficiarios</div>
+          <div class="subheader">Total Simpatizantes</div>
         </div>
-        <div class="h1">{{ totalGeneral.totalBeneficiarios }}</div>
+        <div class="h1">{{ totalGeneral.totalSimpatizantes }}</div>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-lg-3">
-    <div class="card">
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card mb-0 mx-auto">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="subheader">Total Candidatos</div>
+        </div>
+        <div class="h1">{{ totalGeneral.totalCandidatos }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card mb-0 mx-auto">
       <div class="card-body">
         <div class="d-flex align-items-center">
           <div class="subheader">Total Visitas</div>
@@ -39,10 +49,15 @@
       </div>
     </div>
   </div>
+
+
+
+
+
   <div class="col-lg-6">
     <div class="card">
       <div
-        id="container-beneficiarios-por-programa-social"
+        id="container-simpatizantes-por-genero"
         style="height: 400px"
       ></div>
     </div>
@@ -50,7 +65,7 @@
   <div class="col-lg-6">
     <div class="card">
       <div
-        id="container-visitas-por-programa-social"
+        id="container-simpatizantes-por-programa-social"
         style="height: 400px"
       ></div>
     </div>
@@ -58,7 +73,7 @@
   <div class="col-lg-12">
     <div class="card">
       <div
-        id="container-beneficiarios-por-municipio"
+        id="container-simpatizantes-por-edad"
         style="height: 600px"
       ></div>
     </div>
