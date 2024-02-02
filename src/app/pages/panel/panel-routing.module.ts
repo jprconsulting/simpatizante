@@ -76,6 +76,11 @@ const routes: Routes = [
           .then(i => i.ProgramasSocialesModule)
       },
       {
+        path: 'nube-palabras',
+        loadChildren: () => import('./nube-palabras/nube-palabras.module')
+          .then(i => i.NubePalabrasModule)
+      },
+      {
         path: 'mapa-simpatizantes',
         loadChildren: () => import('./mapa-simpatizantes/mapa-simpatizantes.module')
           .then(i => i.MapaSimpatizantesModule)
@@ -84,6 +89,11 @@ const routes: Routes = [
         path: 'mapa-incidencias',
         loadChildren: () => import('./mapa-incidencias/mapa-incidencias.module')
           .then(i => i.MapaIncidenciasModule)
+      },
+      {
+        path: 'deshboard',
+        loadChildren: () => import('./dashboard/dashboard.module')
+          .then(i => i.DashboardModule)
       },
     ]
   },

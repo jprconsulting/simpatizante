@@ -123,12 +123,12 @@
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
                     <img
-                      [src]="obtenerRutaImagen(incidencia.foto)"
+                      src="{{incidencia.foto}}"
                       alt="Foto de {{ incidencia.foto }}"
                       width="50"
                       height="50"
                       (click)="
-                        mostrarImagenAmpliada(obtenerRutaImagen(incidencia.foto))
+                        mostrarImagenAmpliada(incidencia.foto)
                       "
                     />
                   </div>

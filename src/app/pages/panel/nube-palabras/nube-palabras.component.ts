@@ -2,7 +2,6 @@ import { AfterViewInit, Component } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import Histogram from 'highcharts/modules/histogram-bellcurve';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
-import { VisitasService } from 'src/app/core/services/visitas.service';
 import { Municipio } from 'src/app/models/municipio';
 import { GeneralWordCloud } from 'src/app/models/word-cloud';
 
@@ -92,7 +91,7 @@ export class NubePalabrasComponent implements AfterViewInit {
                     borderColor: 'none',
                     headerFormat: '',
                     followPointer: false,
-                    stickOnContact: true,
+                    stickOnContact: false,
                     shared: false,
                     pointFormat: `
                         <div
@@ -121,7 +120,7 @@ export class NubePalabrasComponent implements AfterViewInit {
                             >
                                 <div class="d-flex flex-row">
                                 <span class="px14 text-muted" style="font-size: 17px"
-                                    >Número de repeticiones</span
+                                    >Veces que se repite</span
                                 >
                                 </div>
                                 <span
