@@ -13,14 +13,14 @@ export class DashboardService {
 
   private dataWordCloudSubject = new BehaviorSubject<WordCloud[]>([]);
   dataWordCloud$ = this.dataWordCloudSubject.asObservable();
-  
-  constructor( private http: HttpClient) { }
+
+  constructor(private http: HttpClient) { }
 
   updateWordCloud(newData: WordCloud[]) {
     this.dataWordCloudSubject.next(newData);
   }
 
- 
+
 
   getTotalSimpatizantesPorProgramaSocial() {
     return this.http.get<Estadistica[]>(`${this.route}/total-Simpatizantes-por-programa-social`);

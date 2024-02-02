@@ -27,7 +27,7 @@ export class DashboardComponent implements AfterViewInit {
   optionsNubePalabras: Highcharts.Options = {};
 
   constructor(private dashboardService: DashboardService) {
-    
+
     this.getTotalsimpatizantesPorProgramaSocial();
     this.getTotalSimpatizantesPorEdad();
     this.getTotalGeneral();
@@ -39,11 +39,11 @@ export class DashboardComponent implements AfterViewInit {
     if (container) {
       container.style.display = 'none';
     }
-  
+
     this.dashboardService.getSimpatizantesPorGenero().subscribe({
       next: (dataFromAPI) => {
         const hasData = dataFromAPI && dataFromAPI.length > 0;
-  
+
         if (hasData) {
           this.optionssimpatizantesPorGenero = {
             chart: {
@@ -72,12 +72,12 @@ export class DashboardComponent implements AfterViewInit {
               data: dataFromAPI.map((d) => ({ name: d.genero, y: d.totalSinpatizantes }))
             }]
           };
-  
+
           if (container) {
             container.style.display = 'block';
           }
-  
-          Highcharts.chart('container-simpatizantes-por-genero', this.optionssimpatizantesPorGenero); console.log('dnji',this.optionssimpatizantesPorGenero)
+
+          Highcharts.chart('container-simpatizantes-por-genero', this.optionssimpatizantesPorGenero); console.log('dnji', this.optionssimpatizantesPorGenero)
         } else {
           if (container) {
             container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
@@ -89,149 +89,149 @@ export class DashboardComponent implements AfterViewInit {
   }
 
 
-getTotalsimpatizantesPorProgramaSocial() {
-  const container = document.getElementById('container-simpatizantes-por-programa-social');
-  if (container) {
-    container.style.display = 'none';
+  getTotalsimpatizantesPorProgramaSocial() {
+    const container = document.getElementById('container-simpatizantes-por-programa-social');
+    if (container) {
+      container.style.display = 'none';
+    }
+
+    this.dashboardService.getTotalSimpatizantesPorProgramaSocial().subscribe({
+      next: (dataFromAPI) => {
+        const hasData = dataFromAPI && dataFromAPI.length > 0;
+
+        if (hasData) {
+          this.optionsSimpatizantesPorProgramaSocial = {
+            chart: {
+              type: 'pie',
+              renderTo: 'container-simpatizantes-por-programa-social'
+            },
+            title: {
+              text: 'Simpatizantes por programa social',
+              align: 'left'
+            },
+            credits: {
+              enabled: false
+            },
+            subtitle: {
+              text: ''
+            },
+            plotOptions: {
+              pie: {
+                innerSize: 100,
+                depth: 45
+              }
+            },
+            series: [{
+              type: 'pie',
+              name: 'nombre',
+              data: dataFromAPI.map((d) => ({ name: d.nombre, y: d.totalSinpatizantes }))
+            }]
+          };
+
+          if (container) {
+            container.style.display = 'block';
+          }
+
+          Highcharts.chart('container-simpatizantes-por-programa-social', this.optionsSimpatizantesPorProgramaSocial); console.log('dnji', this.optionsSimpatizantesPorProgramaSocial)
+        } else {
+          if (container) {
+            container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
+            container.style.display = 'block';
+          }
+        }
+      }
+    });
   }
 
-  this.dashboardService.getTotalSimpatizantesPorProgramaSocial().subscribe({
-    next: (dataFromAPI) => {
-      const hasData = dataFromAPI && dataFromAPI.length > 0;
+  getTotalSimpatizantesPorEdad() {
+    this.dashboardService.getTotalSimpatizantesPorEdad().subscribe({
+      next: (dataFromAPI) => {
+        const langConfig = {
+          viewFullscreen: "Ver en pantalla completa",
+          printChart: "Imprimir gráfica",
+          downloadPNG: 'Descargar imagen PNG',
+          downloadJPEG: 'Descargar imagen JPEG',
+          downloadPDF: 'Descargar en formato PDF',
+          downloadSVG: 'Descargar imagen vectorial en SVG',
+        };
 
-      if (hasData) {
-        this.optionsSimpatizantesPorProgramaSocial = {
+        this.optionssimpatizantesPoEdad = {
           chart: {
-            type: 'pie',
-            renderTo: 'container-simpatizantes-por-programa-social'
+            type: 'column'
           },
           title: {
-            text: 'Simpatizantes por programa social',
+            text: 'Simpatizantes por edad',
             align: 'left'
-          },
-          credits: {
-            enabled: false
           },
           subtitle: {
             text: ''
           },
-          plotOptions: {
-            pie: {
-              innerSize: 100,
-              depth: 45
+          credits: {
+            enabled: false
+          },
+          lang: langConfig,
+          xAxis: {
+            type: 'category',
+            labels: {
+              autoRotation: [-45, -90],
+              style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+              }
             }
           },
+          yAxis: {
+            min: 0,
+            title: {
+              text: 'Total de Simpatizantes'
+            }
+          },
+          legend: {
+            enabled: false
+          },
+          tooltip: {
+
+          },
           series: [{
-            type: 'pie',
-            name: 'nombre',
-            data: dataFromAPI.map((d) => ({ name: d.nombre, y: d.totalSinpatizantes }))
+            type: 'column',
+            name: 'Simpatizantes',
+            colors: [
+              '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
+              '#6225ed', '#5b30e7', '#533be1', '#4c46db', '#4551d5', '#3e5ccf',
+              '#3667c9', '#2f72c3', '#277dbd', '#1f88b7', '#1693b1', '#0a9eaa',
+              '#03c69b', '#00f194'
+            ],
+            colorByPoint: true,
+            groupPadding: 0,
+            data: dataFromAPI.map((d) => ({
+              name: `${d.rangoEdad} (${d.porcentaje.toFixed(2)}%)`,
+              y: d.totalSinpatizantes
+            })),
+            dataLabels: {
+              enabled: true,
+              rotation: -90,
+              color: '#FFFFFF',
+              align: 'right',
+              y: 10,
+              style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+              }
+            }
           }]
         };
 
-        if (container) {
-          container.style.display = 'block';
-        }
-
-        Highcharts.chart('container-simpatizantes-por-programa-social', this.optionsSimpatizantesPorProgramaSocial); console.log('dnji',this.optionsSimpatizantesPorProgramaSocial)
-      } else {
-        if (container) {
-          container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
-          container.style.display = 'block';
-        }
-      }
-    }
-  });
-}
-
-getTotalSimpatizantesPorEdad() {
-  this.dashboardService.getTotalSimpatizantesPorEdad().subscribe({
-      next: (dataFromAPI) => {
-          const langConfig = {
-              viewFullscreen: "Ver en pantalla completa",
-              printChart: "Imprimir gráfica",
-              downloadPNG: 'Descargar imagen PNG',
-              downloadJPEG: 'Descargar imagen JPEG',
-              downloadPDF: 'Descargar en formato PDF',
-              downloadSVG: 'Descargar imagen vectorial en SVG',
-          };
-
-          this.optionssimpatizantesPoEdad = {
-              chart: {
-                  type: 'column'
-              },
-              title: {
-                  text: 'Simpatizantes por edad',
-                  align: 'left'
-              },
-              subtitle: {
-                  text: ''
-              },
-              credits: {
-                  enabled: false
-              },
-              lang: langConfig,
-              xAxis: {
-                  type: 'category',
-                  labels: {
-                      autoRotation: [-45, -90],
-                      style: {
-                          fontSize: '13px',
-                          fontFamily: 'Verdana, sans-serif'
-                      }
-                  }
-              },
-              yAxis: {
-                  min: 0,
-                  title: {
-                      text: 'Total de Simpatizantes'
-                  }
-              },
-              legend: {
-                  enabled: false
-              },
-              tooltip: {
-                  
-              },
-              series: [{
-                  type: 'column',
-                  name: 'Simpatizantes',
-                  colors: [
-                      '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
-                      '#6225ed', '#5b30e7', '#533be1', '#4c46db', '#4551d5', '#3e5ccf',
-                      '#3667c9', '#2f72c3', '#277dbd', '#1f88b7', '#1693b1', '#0a9eaa',
-                      '#03c69b', '#00f194'
-                  ],
-                  colorByPoint: true,
-                  groupPadding: 0,
-                  data: dataFromAPI.map((d) => ({
-                    name: `${d.rangoEdad} (${d.porcentaje.toFixed(2)}%)`,
-                    y: d.totalSinpatizantes
-                  })),
-                  dataLabels: {
-                      enabled: true,
-                      rotation: -90,
-                      color: '#FFFFFF',
-                      align: 'right',
-                      y: 10,
-                      style: {
-                          fontSize: '13px',
-                          fontFamily: 'Verdana, sans-serif'
-                      }
-                  }
-              }]
-          };
-
-          if (!dataFromAPI || dataFromAPI.length === 0) {
-              const container = document.getElementById('container-simpatizantes-por-edad');
-              if (container) {
-                  container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
-              }
-          } else {
-              Highcharts.chart('container-simpatizantes-por-edad', this.optionssimpatizantesPoEdad);
+        if (!dataFromAPI || dataFromAPI.length === 0) {
+          const container = document.getElementById('container-simpatizantes-por-edad');
+          if (container) {
+            container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
           }
+        } else {
+          Highcharts.chart('container-simpatizantes-por-edad', this.optionssimpatizantesPoEdad);
+        }
       }
-  });
-}
+    });
+  }
 
   getTotalGeneral() {
     this.dashboardService.getTotalGeneral().subscribe({
@@ -243,50 +243,50 @@ getTotalSimpatizantesPorEdad() {
 
   getWordCloud() {
     this.dashboardService.getWordCloud().subscribe({
-        next: (dataFromAPI) => {
-            const langConfig = {
-                viewFullscreen: "Ver en pantalla completa",
-                printChart: "Imprimir gráfica",
-                downloadPNG: 'Descargar imagen PNG',
-                downloadJPEG: 'Descargar imagen JPEG',
-                downloadPDF: 'Descargar en formato PDF',
-                downloadSVG: 'Descargar imagen vectorial en SVG',
-            };
+      next: (dataFromAPI) => {
+        const langConfig = {
+          viewFullscreen: "Ver en pantalla completa",
+          printChart: "Imprimir gráfica",
+          downloadPNG: 'Descargar imagen PNG',
+          downloadJPEG: 'Descargar imagen JPEG',
+          downloadPDF: 'Descargar en formato PDF',
+          downloadSVG: 'Descargar imagen vectorial en SVG',
+        };
 
-            Highcharts.setOptions({
-                lang: langConfig
-            });
+        Highcharts.setOptions({
+          lang: langConfig
+        });
 
-            this.optionsNubePalabras = {
-                series: [{
-                    rotation: {
-                        from: -60,
-                        to: 60,
-                        orientations: 5
-                    },
-                    type: 'wordcloud',
-                    data: dataFromAPI.generalWordCloud,
-                }],
-                title: {
-                    text: 'Nube de palabras',
-                    align: 'left'
-                },
-                lang: {
-                    noData: '<h2 class="page-title">Sin datos</h2>'
-                },
-                tooltip: {
-                  useHTML: true,
-                  padding: 0,
-                  borderRadius: 0,
-                  borderWidth: 0,
-                  shadow: false,
-                  backgroundColor: 'none',
-                  borderColor: 'none',
-                  headerFormat: '',
-                  followPointer: false,
-                  stickOnContact: false,
-                  shared: false,
-                  pointFormat: `
+        this.optionsNubePalabras = {
+          series: [{
+            rotation: {
+              from: -60,
+              to: 60,
+              orientations: 5
+            },
+            type: 'wordcloud',
+            data: dataFromAPI.generalWordCloud,
+          }],
+          title: {
+            text: 'Nube de palabras',
+            align: 'left'
+          },
+          lang: {
+            noData: '<h2 class="page-title">Sin datos</h2>'
+          },
+          tooltip: {
+            useHTML: true,
+            padding: 0,
+            borderRadius: 0,
+            borderWidth: 0,
+            shadow: false,
+            backgroundColor: 'none',
+            borderColor: 'none',
+            headerFormat: '',
+            followPointer: false,
+            stickOnContact: false,
+            shared: false,
+            pointFormat: `
                       <div
                       style="
                           width: 220px;
@@ -325,18 +325,18 @@ getTotalSimpatizantesPorEdad() {
                           </div>
                       </div>
                   `
-              },
-                subtitle: {
-                    text: ''
-                },
-                credits: {
-                    enabled: false
-                },
-            };
-            Highcharts.chart('container-nube-palabras', this.optionsNubePalabras);
-        }
+          },
+          subtitle: {
+            text: ''
+          },
+          credits: {
+            enabled: false
+          },
+        };
+        Highcharts.chart('container-nube-palabras', this.optionsNubePalabras);
+      }
     })
-}
+  }
 
   ngAfterViewInit() {
     Highcharts.chart('container-simpatizantes-por-programa-social', this.optionsBeneficiariosPorProgramaSocial);
