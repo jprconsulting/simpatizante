@@ -22,16 +22,19 @@ export class DashboardService {
 
  
 
-  getTotalVisitasPorProgramaSocial() {
-    return this.http.get<Estadistica[]>(`${this.route}/total-visitas-por-programa-social`);
+  getTotalSimpatizantesPorProgramaSocial() {
+    return this.http.get<Estadistica[]>(`${this.route}/total-Simpatizantes-por-programa-social`);
   }
 
-  getTotalBeneficiariosPorMunicipio() {
-    return this.http.get<Estadistica[]>(`${this.route}/total-beneficiarios-por-municipio`);
+  getTotalSimpatizantesPorEdad() {
+    return this.http.get<Estadistica[]>(`${this.route}/total-Simpatizantes-por-edad`);
   }
 
   getTotalGeneral() {
     return this.http.get<TotalGeneral>(`${this.route}/total-general`);
+  }
+  getSimpatizantesPorGenero() {
+    return this.http.get<Estadistica[]>(`${this.route}/total-Simpatizantes-por-genero`);
   }
 
   getWordCloud() {

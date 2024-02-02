@@ -1,12 +1,15 @@
 export interface Estadistica {
     nombre: string;
     porcentaje: number;
-    total: number;
+    totalSinpatizantes: number;
+    rangoEdad: string;
+    genero: number;
 }
 
 export interface TotalGeneral {
     totalUsuarios: number;
-    totalProgramasSociales: number;
-    totalBeneficiarios: number;
+    totalSimpatizantes: number;
+    totalCandidatos: number;
     totalVisitas: number;
+    totalOperadores: number;
 }
