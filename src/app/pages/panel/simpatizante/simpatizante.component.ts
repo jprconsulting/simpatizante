@@ -18,6 +18,8 @@ import { Estado } from 'src/app/models/estados';
 import { EstadoService } from 'src/app/core/services/estados.service';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 import { Simpatizante } from 'src/app/models/votante';
+import { Operadores } from 'src/app/models/operadores';
+import { OperadoresService } from 'src/app/core/services/operadores.service';
 
 
 @Component({
@@ -48,6 +50,7 @@ export class SimpatizanteComponent implements OnInit {
   seccion: Seccion[] = [];
   programaSocial: ProgramaSocial[] = [];
   estado: Estado[] = [];
+  operadores: Operadores[] = [];
   rolId = 0;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   estatusBtn = true;
@@ -78,6 +81,7 @@ export class SimpatizanteComponent implements OnInit {
     private seccionService: SeccionService,
     private estadoService: EstadoService,
     private programasSociales: ProgramaSocialService,
+    private operadoresService: OperadoresService,
     private simpatizantesService: SimpatizantesService,
   ) {
     this.simpatizantesService.refreshListSimpatizantes.subscribe(() => this.getVotantes());
@@ -89,7 +93,7 @@ export class SimpatizanteComponent implements OnInit {
     this.getMunicipios();
     this.getProgramas();
     this.getSeccion();
-
+    this.getOperadores();
   }
 
 
@@ -324,6 +328,17 @@ export class SimpatizanteComponent implements OnInit {
       {
         next: (dataFromAPI) => {
           this.programaSocial = dataFromAPI;
+        },
+
+      }
+    );
+  }
+  getOperadores() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.operadoresService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.operadores = dataFromAPI;
         },
 
       }
