@@ -13,6 +13,7 @@ import { Candidatos } from 'src/app/models/candidato';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 import { Simpatizante } from 'src/app/models/votante';
+
 @Component({
   selector: 'app-candidatos',
   templateUrl: './candidatos.component.html',
@@ -57,7 +58,6 @@ export class CandidatosComponent implements OnInit{
   ngOnInit(): void {
     this.loadSimpatizantes();
   }
-
   estatusBtn = true;
   verdadero = "Activo";
   falso = "Inactivo";
@@ -247,13 +247,13 @@ export class CandidatosComponent implements OnInit{
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.simpatizanteFilter = this.simpatizantes.filter( Simpatizante => {
+    this.simpatizanteFilter = this.simpatizantes.filter( Simpatizante => 
       Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
       Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
       Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
       Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)||
       this.getGeneroName(Simpatizante.sexo).toLowerCase().includes(valueSearch)
-    })
+    )
 
     console.log('Simpatizantes filtrados: ', this.simpatizanteFilter);
     
@@ -288,6 +288,7 @@ export class CandidatosComponent implements OnInit{
   }
  
 
+  
   editarCandidato() {
     this.candidatos = this.candidatoForm.value as Candidatos;
     const candidatoId = this.candidatoForm.get('id')?.value

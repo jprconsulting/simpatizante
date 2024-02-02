@@ -14,7 +14,13 @@
           </button>
                     <div class="ms-auto d-flex align-items-center">
                         <div class="input-icon">
-                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" />
+                            <input 
+                            #searchItem 
+                            type="text" 
+                            class="form-control form-control-rounded" 
+                            placeholder="Buscar"
+                            (input)="handleChangeSearch($event)" 
+                            />
                             <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
               </span>
@@ -161,9 +167,14 @@
             <!-- Fin *ngSwitchCase-->
 
             <div class="card-footer d-flex align-items-center">
-                <p class="m-0 text-muted">Total de registros: <b>{{ voto.length }}</b></p>
+                <p class="m-0 text-muted">
+                  Total de registros: <b>{{ votoFilter.length }}</b>
+                </p>
                 <div class="m-0 ms-auto">
-                    <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
+                    <pagination-controls 
+                      (pageChange)="onPageChange($event)" 
+                      previousLabel="" 
+                      nextLabel="">
                     </pagination-controls>
                 </div>
             </div>
