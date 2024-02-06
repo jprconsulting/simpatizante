@@ -19,6 +19,8 @@ import { forkJoin } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 import { Simpatizante } from 'src/app/models/votante';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
+import { Candidatos } from 'src/app/models/candidato';
 
 @Component({
   selector: 'app-operadores',
@@ -43,12 +45,15 @@ export class OperadoresComponent implements OnInit{
   seccionesFilter: Seccion [] =[];
   votantes: Simpatizante [] =[];
   simpatizantes: Simpatizante[] = [];
+  candidatos: Candidatos[] = [];
+  candidatoSelect!: Candidatos;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
     private spinnerService: NgxSpinnerService,
     private operadoresService: OperadoresService,
+    private candidatosService: CandidatosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
@@ -111,6 +116,30 @@ export class OperadoresComponent implements OnInit{
         this.isLoading = LoadingStates.errorLoading;
       }
     });
+  }
+
+  getCandidatos() {
+    this.candidatosService.getAll().subscribe({
+      next: ( dataFromAPI ) => {
+        this.candidatos = dataFromAPI;
+        console.log('candidatos: ', this.candidatos);
+        
+      },
+      error: () => {
+        console.log("No se cargaron los candidatos");
+        
+      }
+    })
+  }
+
+  onSelectCandidato(id: number) {
+    if (id) {
+      const data = this.candidatos.find(b => b.id === id);
+
+      if ( !data ) return console.error("No se eligio candidato");
+      
+      this.candidatoSelect = data;
+    }
   }
 
   obtenerSeccionesIdsDeOperadores() {
