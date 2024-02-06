@@ -8,10 +8,9 @@ declare const google: any;
 @Component({
   selector: 'app-mapa-incidencias',
   templateUrl: './mapa-incidencias.component.html',
-  styleUrls: ['./mapa-incidencias.component.css']
+  styleUrls: ['./mapa-incidencias.component.css'],
 })
 export class MapaIncidenciasComponent implements AfterViewInit {
-
   map: any = {};
   infowindow = new google.maps.InfoWindow();
   markers: google.maps.Marker[] = [];
@@ -21,16 +20,17 @@ export class MapaIncidenciasComponent implements AfterViewInit {
 
   constructor(
     private indicadorService: IndicadoresService,
-    private incidenciasService: IncidenciaService,
+    private incidenciasService: IncidenciaService
   ) {
+    this.loadIndicadores();
     this.getIndicadores();
     this.getIncidencias();
   }
 
   ngAfterViewInit() {
-    const mapElement = document.getElementById("map-canvas") || null;
-    const lat = mapElement?.getAttribute("data-lat") || null;
-    const lng = mapElement?.getAttribute("data-lng") || null;
+    const mapElement = document.getElementById('map-canvas') || null;
+    const lat = mapElement?.getAttribute('data-lat') || null;
+    const lng = mapElement?.getAttribute('data-lng') || null;
     const myLatlng = new google.maps.LatLng(lat, lng);
 
     const mapOptions = {
@@ -40,55 +40,66 @@ export class MapaIncidenciasComponent implements AfterViewInit {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       styles: [
         {
-          featureType: "administrative",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#444444" }],
+          featureType: 'administrative',
+          elementType: 'labels.text.fill',
+          stylers: [{ color: '#444444' }],
         },
         {
-          featureType: "landscape",
-          elementType: "all",
-          stylers: [{ color: "#f2f2f2" }],
+          featureType: 'landscape',
+          elementType: 'all',
+          stylers: [{ color: '#f2f2f2' }],
         },
         {
-          featureType: "poi",
-          elementType: "all",
-          stylers: [{ visibility: "off" }],
+          featureType: 'poi',
+          elementType: 'all',
+          stylers: [{ visibility: 'off' }],
         },
         {
-          featureType: "road",
-          elementType: "all",
+          featureType: 'road',
+          elementType: 'all',
           stylers: [{ saturation: -100 }, { lightness: 45 }],
         },
         {
-          featureType: "road.highway",
-          elementType: "all",
-          stylers: [{ visibility: "simplified" }],
+          featureType: 'road.highway',
+          elementType: 'all',
+          stylers: [{ visibility: 'simplified' }],
         },
         {
-          featureType: "road.arterial",
-          elementType: "labels.icon",
-          stylers: [{ visibility: "off" }],
+          featureType: 'road.arterial',
+          elementType: 'labels.icon',
+          stylers: [{ visibility: 'off' }],
         },
         {
-          featureType: "transit",
-          elementType: "all",
-          stylers: [{ visibility: "off" }],
+          featureType: 'transit',
+          elementType: 'all',
+          stylers: [{ visibility: 'off' }],
         },
         {
-          featureType: "water",
-          elementType: "all",
-          stylers: [{ color: "#0ba4e2" }, { visibility: "on" }],
+          featureType: 'water',
+          elementType: 'all',
+          stylers: [{ color: '#0ba4e2' }, { visibility: 'on' }],
         },
       ],
     };
     this.map = new google.maps.Map(mapElement, mapOptions);
   }
 
+  loadIndicadores(): void {
+    this.indicadorService.getByIncidencias().subscribe(
+      (data: Indicadores[]) => {
+        this.indicadores = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
   getIndicadores() {
     this.indicadorService.getAll().subscribe({
       next: (dataFromAPI) => {
         this.indicadores = dataFromAPI;
-      }
+      },
     });
   }
 
@@ -98,23 +109,31 @@ export class MapaIncidenciasComponent implements AfterViewInit {
         this.incidencias = dataFromAPI;
         this.incidenciasFiltradas = this.incidencias;
         this.setAllMarkers();
-      }
+      },
     });
   }
 
   onSelectIncidencias(id: number) {
     if (id) {
       this.clearMarkers();
-      this.incidencias.filter(b => b.tipoIncidencia.id == id).forEach(incidencica => {
-        this.setInfoWindow(this.getMarker(incidencica), this.getContentString(incidencica));
-      });
+      this.incidencias
+        .filter((b) => b.tipoIncidencia.id == id)
+        .forEach((incidencica) => {
+          this.setInfoWindow(
+            this.getMarker(incidencica),
+            this.getContentString(incidencica)
+          );
+        });
     }
   }
 
   setAllMarkers() {
     this.clearMarkers();
-    this.incidencias.forEach(incidencia => {
-      this.setInfoWindow(this.getMarker(incidencia), this.getContentString(incidencia));
+    this.incidencias.forEach((incidencia) => {
+      this.setInfoWindow(
+        this.getMarker(incidencia),
+        this.getContentString(incidencia)
+      );
     });
   }
 
@@ -156,14 +175,17 @@ export class MapaIncidenciasComponent implements AfterViewInit {
 
   getMarker(incidencias: Incidencia) {
     const marker = new google.maps.Marker({
-      position: new google.maps.LatLng(incidencias.latitud, incidencias.longitud),
+      position: new google.maps.LatLng(
+        incidencias.latitud,
+        incidencias.longitud
+      ),
       map: this.map,
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
         fillColor: incidencias.tipoIncidencia.color,
         fillOpacity: 1,
         strokeWeight: 0,
-        scale: 10
+        scale: 10,
       },
       title: `${incidencias.tipoIncidencia.tipo}`,
     });
@@ -171,9 +193,8 @@ export class MapaIncidenciasComponent implements AfterViewInit {
     return marker;
   }
 
-
   setInfoWindow(marker: any, contentString: string) {
-    google.maps.event.addListener(marker, "click", () => {
+    google.maps.event.addListener(marker, 'click', () => {
       if (this.infowindow && this.infowindow.getMap()) {
         this.infowindow.close();
       }
@@ -183,16 +204,14 @@ export class MapaIncidenciasComponent implements AfterViewInit {
     });
   }
 
-
   onClear() {
     this.setAllMarkers();
   }
 
   clearMarkers() {
-    this.markers.forEach(marker => {
+    this.markers.forEach((marker) => {
       marker.setMap(null);
     });
     this.markers = [];
   }
-
 }
