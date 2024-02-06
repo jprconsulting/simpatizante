@@ -1,18 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Indicadores } from 'src/app/models/indicadores';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IndicadoresService {
   route = `${environment.apiUrl}/tipos-incidencias`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAll() {
     return this.http.get<Indicadores[]>(`${this.route}/obtener-todos`);
+  }
+
+  getByIncidencias(): Observable<Indicadores[]> {
+    return this.http.get<Indicadores[]>(
+      `${this.route}/obtener-por-incidencias`
+    );
   }
 
   create(tipoIncidencia: Indicadores) {
@@ -27,4 +34,3 @@ export class IndicadoresService {
     return this.http.delete(`${this.route}/eliminar/${id}`);
   }
 }
-
