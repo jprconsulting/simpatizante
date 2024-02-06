@@ -161,11 +161,7 @@
                       style="margin-right: 10px"
                       class="btn btn-secondary btn-icon btn-sm"
                       data-bs-toggle="modal"
-                      (click)="
-                        mostrarImagenAmpliada2(
-                          obtenerRutaImagen(candidato.nombres)
-                        )
-                      "
+                      (click)="modalSimpatizantes()"
                     >
                       <i class="ti ti-list"></i>
                     </button>
@@ -603,6 +599,8 @@
   aria-hidden="true"
   style="background: rgba(0, 0, 0, 0.5)"
 >
+
+
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -652,7 +650,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let simpatizante of simpatizantes">
+                <tr *ngFor="let simpatizante of simpatizanteFilter">
                   <td>{{ simpatizante.nombreCompleto }}</td>
                   <td>{{ simpatizante.domicilio }}</td>
                   <td>{{ objGeneros[simpatizante.sexo] }}</td>
@@ -662,13 +660,15 @@
             </table>
           </div>
 
+
+
           <div class="card-footer d-flex align-items-center">
-            <p class="m-0 text-muted">
-              Total de registros: <b>{{ simpatizantes.length }}</b>
+            <p class="m-0 mt-4  text-muted">
+              Total de registros: <b>{{ simpatizanteFilter.length }}</b>
             </p>
             <div class="m-0 ms-auto">
               <pagination-controls
-                (pageChange)="onPageChange($event)"
+                (pageChange)="onPageChangeModal($event)"
                 previousLabel=""
                 nextLabel=""
               >

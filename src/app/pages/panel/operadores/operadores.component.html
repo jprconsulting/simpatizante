@@ -397,43 +397,6 @@
             </div>
 
 
-            <div class="col-lg-6">
-              <div class="mb-3">
-                <label class="form-label"
-                  >Candidatos*:</label
-                >
-
-                <ng-select 
-                formControlName="simpatizante" 
-                #selectCandidato 
-                [searchable]="false" 
-                [items]="simpatizantes" 
-                bindLabel="nombreCompleto" 
-                bindValue="id" 
-                placeholder="Elegir" 
-                [clearable]="false" 
-                (change)="onSelectCandidato($event.id)">
-                  <ng-template ng-header-tmp>
-                      <input class="form-control" 
-                      type="text" 
-                      (input)="selectCandidato.filter($any($event.target).value)" 
-                      />
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item" let-index="index">
-                      {{ item.nombreCompleto }}
-                  </ng-template>
-              </ng-select>
-              <!-- <div *ngIf="seguimientoForm.get('simpatizante')?.touched" class="error-message">
-                  <div *ngIf="seguimientoForm.get('simpatizante')?.hasError('required')">
-                      El nombre del candidato es obligatorio
-                  </div>
-              </div> -->
-
-              </div>
-            </div>
-
-
-
             <div class="col-lg-12">
               <div class="mb-3">
                 <label class="form-label"

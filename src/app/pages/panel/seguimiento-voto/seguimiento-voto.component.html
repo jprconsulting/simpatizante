@@ -75,7 +75,7 @@
                       
                       <tr
                       *ngFor="
-                        let usuario of voto | paginate : configPaginator;
+                        let usuario of votoFilter | paginate : configPaginator;
                         let pointIndex = index
                       "
                     >
