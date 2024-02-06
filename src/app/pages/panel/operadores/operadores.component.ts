@@ -40,6 +40,7 @@ export class OperadoresComponent implements OnInit {
   seccionesFilter: Seccion[] = [];
   votantes: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
+  simpatizanteFilter: Simpatizante[] = [];
   candidatos: Candidato[] = [];
   currentUser!: AppUserAuth | null;
   readonlySelectCandidato = true;
@@ -117,6 +118,8 @@ export class OperadoresComponent implements OnInit {
         this.operadorFilter = this.operadores;
         this.isLoading = LoadingStates.falseLoading;
         this.obtenerSeccionesIdsDeOperadores();
+        const secciones = this.operadores.map(operador => operador.secciones);
+        console.log(secciones);
       },
       error: () => {
         this.isLoading = LoadingStates.errorLoading;
@@ -150,6 +153,21 @@ export class OperadoresComponent implements OnInit {
       operador.apellidoMaterno.toLowerCase().includes(valueSearch)
 
     );
+    this.configPaginator.currentPage = 1;
+  }
+
+  handleChangeSearchModal( event: any ){
+    const inputValue = event.target.value;
+    const valueSearch = inputValue.toLowerCase();
+
+    this.simpatizanteFilter = this.simpatizantes.filter( Simpatizante => 
+      Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
+      Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)||
+      this.getGeneroName(Simpatizante.sexo).toLowerCase().includes(valueSearch)
+    )
+    
     this.configPaginator.currentPage = 1;
   }
 

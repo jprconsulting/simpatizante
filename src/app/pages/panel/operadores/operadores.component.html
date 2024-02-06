@@ -491,27 +491,21 @@
             <table class="table table-vcenter card-table table-striped">
               <thead>
                 <tr>
-                  <th
-                    style="
-                      text-transform: none;
-                      font-size: inherit;
-                      text-align: center;
-                    "
-                  >
+                  <th style="text-transform: none; font-size: inherit; text-align: center;">
                     Sección
                   </th>
-                  <th style="text-transform: none; font-size: inherit">
+                  <th style="text-transform: none; font-size: inherit; text-align: center;">
                     Municipio
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let operadores of seccionesFilter">
-                  <td style="text-align: center">
-                    <p>{{ operadores.clave }}</p>
+                <tr *ngFor="let operador of operadores">
+                  <td *ngFor="let seccion of operador.secciones" style="text-align: center;">
+                    <p>{{ seccion.clave }}</p>
                   </td>
-                  <td>
-                    <p>{{ operadores.municipio.nombre }}</p>
+                  <td *ngFor="let seccion of operador.secciones" style="text-align: center;">
+                    <p>{{ seccion.municipio.nombre }}</p>
                   </td>
                 </tr>
               </tbody>
@@ -531,7 +525,7 @@
   aria-hidden="true"
   style="background: rgba(0, 0, 0, 0.5)"
 >
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-full-width modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">
@@ -546,6 +540,35 @@
       </div>
       <div class="modal-body">
         <div class="col-md-6 col-lg-12">
+          <div class="row d-flex justify-content-end mt-0 mb-3">
+            <div class="ms-auto d-flex align-items-end">
+              <div class="input-icon">
+                <input
+                  #searchItem
+                  type="text"
+                  class="form-control form-control-rounded"
+                  placeholder="Buscar"
+                  (input)="handleChangeSearchModal($event)"
+                />
+                <span class="input-icon-addon">
+                  <i class="ti ti-search"></i>
+                </span>
+              </div>
+              <a
+                class="btn w-30 btn-icon"
+                aria-label="Dribbble"
+                
+                title="Descargar datos de simpatizantes"
+                style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+              >
+                <i
+                  class="ti ti-cloud-down text-muted"
+                  style="font-size: 28px"
+                ></i>
+              </a>
+            </div>
+            
+          </div>
           <div class="card">
             <table class="table table-vcenter card-table table-striped">
               <thead>
@@ -571,8 +594,25 @@
                   <td>{{ objGeneros[simpatizante.sexo] }}</td>
                   <td>{{ simpatizante.programaSocial?.nombre }}</td>
                 </tr>
+                <tr *ngIf="simpatizantes.length === 0">
+                  <td colspan="4" class="text-center">No hay simpatizantes asociados a este candidato.</td>
+                </tr>
               </tbody>
             </table>
+          </div>
+          <br>
+          <div class="card-footer d-flex align-items-center">
+            <p class="m-0 text-muted">
+              Total de registros: <b>{{ simpatizantes.length }}</b>
+            </p>
+            <div class="m-0 ms-auto">
+              <pagination-controls
+                (pageChange)="onPageChange($event)"
+                previousLabel=""
+                nextLabel=""
+              >
+              </pagination-controls>
+            </div>
           </div>
         </div>
       </div>

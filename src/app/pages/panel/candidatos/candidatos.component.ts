@@ -35,10 +35,9 @@ export class CandidatosComponent implements OnInit{
   isModalAdd: boolean = true;
   idUpdate!: number;
   votantes: Simpatizante [] =[];
+  simpatizantesFilter: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
   simpatizanteFilter: Simpatizante[] = [];
-  simpatizanteAsociado!: Candidato;
-  simpatizantesAsociados = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -55,10 +54,9 @@ export class CandidatosComponent implements OnInit{
     this.getCandidatos();
     this.createForm();
     this.getCargos();
-    // this.getCandidatoId(1);
   }
   ngOnInit(): void {
-    // this.loadSimpatizantes();
+    this.loadSimpatizantes();
   }
   estatusBtn = true;
   verdadero = "Activo";
@@ -75,7 +73,6 @@ export class CandidatosComponent implements OnInit{
     }
     return ''; // O una URL predeterminada si no hay nombre de archivo
   }
-
 
   imagenAmpliada: string | null = null;
 
@@ -125,11 +122,15 @@ export class CandidatosComponent implements OnInit{
     this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
   }
 
-  //  loadSimpatizantes( ) {
-  //   // Assuming you have a candidateId, replace it with the actual value
-  //   const candidateId = 1; // Replace with the actual candidateId
-
-  // }
+   loadSimpatizantes() {
+    // Assuming you have a candidateId, replace it with the actual value
+    const candidateId = 1; // Replace with the actual candidateId
+    this.simpatizantesService.getSimpatizantesPorCandidatoId(candidateId)
+      .subscribe(data => {
+        this.simpatizantes = data;
+        this.simpatizanteFilter = this.simpatizantes;
+      });
+  }
 
 
   onFileChange(event: Event) {
@@ -206,31 +207,6 @@ export class CandidatosComponent implements OnInit{
     );
   }
 
-  obtenerSimpatizantesId( candidatoId : number ) {
-    this.isLoading = LoadingStates.trueLoading;
-    this.simpatizantesService.getSimpatizantesPorCandidatoId( candidatoId )
-    // .subscribe(data => {
-    //   this.simpatizantes = data;
-    //   this.simpatizanteFilter = this.simpatizantes;
-    //   console.log('Simpatizantes filter', this.simpatizanteFilter);
-      
-    // });
-      .subscribe(
-        {
-          next: ( dataFromAPI ) => {
-            this.simpatizantes = dataFromAPI;
-            this.simpatizanteFilter = this.simpatizantes;
-            this.isLoading = LoadingStates.falseLoading;
-            console.log(this.simpatizanteFilter);
-            
-          },
-          error: () => {
-            this.isLoading = LoadingStates.errorLoading;
-          }
-        }
-      )
-  }
-
 
   formatoFecha(fecha: string): string {
     // Aquí puedes utilizar la lógica para formatear la fecha según tus necesidades
@@ -240,10 +216,6 @@ export class CandidatosComponent implements OnInit{
 
 
   onPageChange(number: number) {
-    this.configPaginator.currentPage = number;
-  }
-
-  onPageChangeModal( number : number ) {
     this.configPaginator.currentPage = number;
   }
 
@@ -275,8 +247,6 @@ export class CandidatosComponent implements OnInit{
       Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)||
       this.getGeneroName(Simpatizante.sexo).toLowerCase().includes(valueSearch)
     )
-    
-    console.log(this.simpatizanteFilter);
     
     this.configPaginator.currentPage = 1;
   }
@@ -408,20 +378,6 @@ export class CandidatosComponent implements OnInit{
   closeModal() {
     this.showModal = false;
   }
-  mostrarImagenAmpliada2(seccion: string) {
-    console.log('seccion', seccion);
-    
-    this.imagenAmpliada = seccion;
-    const modal = document.getElementById('modal-simpatizantes');
-    if (modal) {
-      modal.classList.add('show');
-      modal.style.display = 'block';
-    }
-  }
-
-  mostrarModalSimpatizantesAsociados() {
-
-  }
 
   modalSimpatizantes() {
     const modal = document.getElementById('modal-simpatizantes');
@@ -430,7 +386,6 @@ export class CandidatosComponent implements OnInit{
       modal.style.display = 'block';
     }
   }
-
   cerrarModal2() {
     this.imagenAmpliada = null;
     const modal = document.getElementById('modal-simpatizantes');
@@ -485,5 +440,6 @@ export class CandidatosComponent implements OnInit{
     a.click();
     window.URL.revokeObjectURL(url);
   }
+  
 
 }
