@@ -378,8 +378,8 @@ export class CandidatosComponent implements OnInit{
   closeModal() {
     this.showModal = false;
   }
-  mostrarImagenAmpliada2(seccion: string) {
-    this.imagenAmpliada = seccion;
+
+  modalSimpatizantes() {
     const modal = document.getElementById('modal-simpatizantes');
     if (modal) {
       modal.classList.add('show');
@@ -440,5 +440,6 @@ export class CandidatosComponent implements OnInit{
     a.click();
     window.URL.revokeObjectURL(url);
   }
+  
 
 }
