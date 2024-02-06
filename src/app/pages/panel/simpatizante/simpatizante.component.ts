@@ -37,7 +37,7 @@ export class SimpatizanteComponent {
   @ViewChild('mapCanvas') mapCanvas!: ElementRef<HTMLElement>;
   @ViewChild('ubicacionInput', { static: false }) ubicacionInput!: ElementRef;
 
-
+  programasocial: any;
   municipiosSelect!: Municipio | undefined;
   votantesSelect!: Simpatizante | undefined;
   canvas!: HTMLElement;
@@ -121,9 +121,7 @@ export class SimpatizanteComponent {
       this.getTodosOperadores();
     }
 
-
   }
-
 
 
   getCurrentLocation() {
@@ -133,42 +131,10 @@ export class SimpatizanteComponent {
           this.latitude = position.coords.latitude;
           this.longitude = position.coords.longitude;
 
-          // Llamada a la API de geocodificación inversa
           const geocoder = new google.maps.Geocoder();
           const latLng = new google.maps.LatLng(this.latitude, this.longitude);
-
-          geocoder.geocode({ 'location': latLng }, (results, status) => {
-            if (status === 'OK') {
-              if (results && results[0]) {
-                const place = results[0];
-                if (place.formatted_address) {
-                  this.simpatizanteForm.patchValue({
-                    domicilio: place.formatted_address
-                  });
-                } else {
-                  console.log('No se pudo obtener la dirección.');
-                }
-                this.selectAddress(place);
-
-              } else {
-                console.error('No se encontraron resultados de geocodificación.');
-              }
-            } else {
-              console.error('Error en la solicitud de geocodificación inversa:', status);
-            }
-          });
-        },
-        (error) => {
-          if (error.code === 1) {
-            console.error('El usuario ha denegado el acceso a la geolocalización.');
-            alert('La geolocalización está desactivada. Habilítala para obtener tu ubicación.');
-          } else {
-            console.error('Error al obtener la posición actual:', error);
-          }
-        }
-      );
-    } else {
-      console.error('La geolocalización no está habilitada en este navegador.');
+          this.adress();
+        });
     }
   }
   onSelectOperador(id: number | null) {
@@ -177,10 +143,6 @@ export class SimpatizanteComponent {
     }
   }
 
-  onClear() {
-  }
-
-
   resetMap() {
     this.ubicacionInput.nativeElement.value = '';
     this.setCurrentLocation();
@@ -188,21 +150,19 @@ export class SimpatizanteComponent {
   }
   mapa() {
     this.setCurrentLocation();
-
-    // Puedes proporcionar un valor predeterminado o nulo, según tus necesidades
     const dummyPlace: google.maps.places.PlaceResult = {
       geometry: {
-        location: new google.maps.LatLng(0, 0), // Coordenadas predeterminadas o nulas
+        location: new google.maps.LatLng(0, 0),
       },
       formatted_address: '',
       name: '',
-      // Otras propiedades según tus necesidades
     };
 
     this.selectAddress2(dummyPlace);
   }
 
   selectAddress(place: google.maps.places.PlaceResult) {
+
     if (!place.geometry) {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
@@ -218,11 +178,13 @@ export class SimpatizanteComponent {
 
     this.canvas.setAttribute("data-lat", selectedLat.toString());
     this.canvas.setAttribute("data-lng", selectedLng.toString());
-
     const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
     this.maps.setCenter(newLatLng);
     this.maps.setZoom(15);
-    const marker = new google.maps.Marker({
+    if (this.marker) {
+      this.marker.setMap(null);
+    }
+    this.marker = new google.maps.Marker({
       position: newLatLng,
       map: this.maps,
       animation: google.maps.Animation.DROP,
@@ -232,8 +194,8 @@ export class SimpatizanteComponent {
       longitud: selectedLng,
       latitud: selectedLat
     });
-
-
+  }
+  onClear() {
   }
   selectAddress2(place: google.maps.places.PlaceResult) {
     const selectedLat = this.simpatizanteForm.value.latitud;
@@ -244,16 +206,16 @@ export class SimpatizanteComponent {
     const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
     this.maps.setCenter(newLatLng);
     this.maps.setZoom(15);
-    const marker = new google.maps.Marker({
+    if (this.marker) {
+      this.marker.setMap(null);
+    }
+    this.marker = new google.maps.Marker({
       position: newLatLng,
       map: this.maps,
       animation: google.maps.Animation.DROP,
-      title: this.simpatizanteForm.value.nombres, // Usa un campo relevante como título
+      title: this.simpatizanteForm.value.nombres,
     });
-    this.simpatizanteForm.patchValue({
-      longitud: selectedLng,
-      latitud: selectedLat
-    });
+
   }
 
   setEstatus() {
@@ -320,7 +282,51 @@ export class SimpatizanteComponent {
     };
 
     this.maps = new google.maps.Map(this.canvas, mapOptions);
+
+    google.maps.event.addListener(this.maps, 'click', (event: google.maps.KmlMouseEvent) => {
+      this.handleMapClick(event);
+    });
+
   }
+  handleMapClick(event: google.maps.KmlMouseEvent | google.maps.IconMouseEvent) {
+    if (event.latLng) {
+      this.latitude = event.latLng.lat();
+      this.longitude = event.latLng.lng();
+      this.simpatizanteForm.patchValue({
+        latitud: this.latitude,
+        longitud: this.longitude,
+      });
+    } else {
+      console.error('No se pudo obtener la posición al hacer clic en el mapa.');
+    }
+    this.adress();
+  }
+
+  adress() {
+    const geocoder = new google.maps.Geocoder();
+    const latLng = new google.maps.LatLng(this.latitude, this.longitude);
+    geocoder.geocode({ 'location': latLng }, (results, status) => {
+      if (status === 'OK') {
+        if (results && results[0]) {
+          const place = results[0];
+          if (place.formatted_address) {
+            this.simpatizanteForm.patchValue({
+              domicilio: place.formatted_address
+            });
+          } else {
+            console.log('No se pudo obtener la dirección.');
+          }
+          this.selectAddress(place);
+        } else {
+          console.error('No se encontraron resultados de geocodificación.');
+        }
+      } else {
+        console.error('Error en la solicitud de geocodificación inversa:', status);
+      }
+    });
+  }
+
+
   setCurrentLocation() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -388,7 +394,7 @@ export class SimpatizanteComponent {
       sexo: [null, Validators.required],
       curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
-      programaSocial: [null],
+      programaSocial: [''],
       municipio: [null, Validators.required],
       domicilio: [''],
       latitud: ['', Validators.required],
@@ -399,6 +405,7 @@ export class SimpatizanteComponent {
 
   mostrar() {
     this.visibility = true;
+    this.programasocial = 'null';
   }
   ocultar() {
     this.visibility = false;
@@ -408,6 +415,7 @@ export class SimpatizanteComponent {
       radioElement.checked = true;
       radioElement.click();
     }
+    this.programasocial = null;
   }
   getVotantes() {
     this.isLoading = LoadingStates.trueLoading;
@@ -468,6 +476,11 @@ export class SimpatizanteComponent {
   idUpdate!: number;
 
   setDataModalUpdate(dto: Simpatizante) {
+    if (dto.programaSocial === null) {
+      this.ocultar();
+    } else {
+      this.mostrar();
+    }
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
@@ -497,23 +510,25 @@ export class SimpatizanteComponent {
 
   actualizar() {
     this.votante = this.simpatizanteForm.value as Simpatizante;
-
     const votanteId = this.simpatizanteForm.get('id')?.value
 
     const programaSocialId = this.simpatizanteForm.get('programaSocial')?.value;
     const municipioId = this.simpatizanteForm.get('municipio')?.value;
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
+    const operadorId = this.simpatizanteForm.get('operadorId')?.value;
 
-    this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
+
     this.votante.municipio = { id: municipioId } as Municipio;
     this.votante.estado = { id: estadoId } as Estado;
     this.votante.seccion = { id: seccionId } as Seccion
+    this.votante.operador = { id: operadorId } as Operador
+    this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
 
-    console.log(this.votante);
+
 
     this.spinnerService.show();
-
+    console.log(this.votante);
     this.simpatizantesService.put(votanteId, this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
@@ -523,6 +538,7 @@ export class SimpatizanteComponent {
         this.configPaginator.currentPage = 1;
       },
       error: (error) => {
+        this.spinnerService.hide();
         this.mensajeService.mensajeError("Error al actualizar el simpatizante");
         console.error(error);
       }
@@ -539,14 +555,17 @@ export class SimpatizanteComponent {
       `¿Estás seguro de eliminar el simpatizante: ${nameItem}?`,
       () => {
         console.log('Confirmation callback executed');
+        this.spinnerService.show();
         this.simpatizantesService.delete(id).subscribe({
           next: () => {
             console.log('Delete success callback executed');
+            this.spinnerService.hide();
             this.mensajeService.mensajeExito('Simpatizante borrado correctamente');
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
           error: (error) => {
+            this.spinnerService.hide();
             console.log('Delete error callback executed', error);
             this.mensajeService.mensajeError(error);
           }
@@ -681,7 +700,6 @@ export class SimpatizanteComponent {
     this.buscar = event.target.value;
     this.beneficiarioFiltrado = this.filtrarBeneficiario();
   }
-
 
 }
 
