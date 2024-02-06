@@ -343,7 +343,7 @@
                   bindValue="id"
                   [searchable]="false"
                   [clearable]="false"
-                  formControlName="rol"
+                  formControlName="rolId"
                 >
                   <ng-template ng-option-tmp let-item="item">
                     {{ item.nombreRol }}
@@ -363,7 +363,7 @@
               <div class="mb-3">
                 <label class="form-label">Candidato*:</label>
                 <ng-select
-                  formControlName="candidato"
+                  formControlName="candidatoId"
                   #selectCandidato
                   [searchable]="false"
                   [items]="candidatos"
@@ -391,7 +391,7 @@
               <div class="mb-3">
                 <label class="form-label">Operador*:</label>
                 <ng-select
-                  formControlName="operador"
+                  formControlName="operadorId"
                   #selectOperador
                   [searchable]="false"
                   [items]="operadores"

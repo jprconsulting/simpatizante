@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { GenericType, LoadingStates } from 'src/app/global/global';
+import { GenericType, LoadingStates, RolesBD } from 'src/app/global/global';
 import { Beneficiario } from 'src/app/models/beneficiario';
 import { Municipio } from 'src/app/models/municipio';
 import { ProgramaSocial } from 'src/app/models/programa-social';
@@ -18,6 +18,10 @@ import { Estado } from 'src/app/models/estados';
 import { EstadoService } from 'src/app/core/services/estados.service';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 import { Simpatizante } from 'src/app/models/votante';
+import { Operador } from 'src/app/models/operador';
+import { OperadoresService } from 'src/app/core/services/operadores.service';
+import { SecurityService } from 'src/app/core/services/security.service';
+import { AppUserAuth } from 'src/app/models/login';
 
 
 @Component({
@@ -25,7 +29,7 @@ import { Simpatizante } from 'src/app/models/votante';
   templateUrl: './simpatizante.component.html',
   styleUrls: ['./simpatizante.component.css']
 })
-export class SimpatizanteComponent implements OnInit {
+export class SimpatizanteComponent {
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -35,6 +39,7 @@ export class SimpatizanteComponent implements OnInit {
 
 
   municipiosSelect!: Municipio | undefined;
+  votantesSelect!: Simpatizante | undefined;
   canvas!: HTMLElement;
   votante!: Simpatizante;
   simpatizanteForm!: FormGroup;
@@ -48,7 +53,13 @@ export class SimpatizanteComponent implements OnInit {
   seccion: Seccion[] = [];
   programaSocial: ProgramaSocial[] = [];
   estado: Estado[] = [];
+  operadores: Operador[] = [];
   rolId = 0;
+  readonlySelectOperador = true;
+  currentUser!: AppUserAuth | null;
+  candidatoId = 0;
+  operadorId = 0;
+
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   estatusBtn = true;
   verdadero = "Activo";
@@ -78,9 +89,12 @@ export class SimpatizanteComponent implements OnInit {
     private seccionService: SeccionService,
     private estadoService: EstadoService,
     private programasSociales: ProgramaSocialService,
+    private operadoresService: OperadoresService,
     private simpatizantesService: SimpatizantesService,
+    private securityService: SecurityService
   ) {
     this.simpatizantesService.refreshListSimpatizantes.subscribe(() => this.getVotantes());
+    this.currentUser = securityService.getDataUser();
     this.getVotantes();
     this.getMunicipios();
     this.creteForm();
@@ -90,13 +104,28 @@ export class SimpatizanteComponent implements OnInit {
     this.getProgramas();
     this.getSeccion();
 
+    if (this.currentUser?.rolId === RolesBD.operador) {
+      this.operadorId = this.currentUser?.operadorId;
+      console.log('asdfads', this.operadorId);
+      this.operadores.push({ id: this.operadorId, nombreCompleto: this.currentUser?.nombreCompleto } as Operador);
+    }
+
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.readonlySelectOperador = false;
+      this.candidatoId = this.currentUser?.candidatoId;
+      this.getOperadoresPorCandidatoId();
+    }
+
+    if (this.currentUser?.rolId === RolesBD.administrador) {
+      this.readonlySelectOperador = false;
+      this.getTodosOperadores();
+    }
+
+
   }
 
 
-  ngOnInit() {
 
-
-  }
   getCurrentLocation() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -142,7 +171,14 @@ export class SimpatizanteComponent implements OnInit {
       console.error('La geolocalización no está habilitada en este navegador.');
     }
   }
+  onSelectOperador(id: number | null) {
+    if (id) {
+      this.votantesSelect = this.votantes.find(b => b.id === id);
+    }
+  }
 
+  onClear() {
+  }
 
 
   resetMap() {
@@ -330,10 +366,19 @@ export class SimpatizanteComponent implements OnInit {
     );
   }
 
+  getTodosOperadores() {
+    this.operadoresService.getAll().subscribe({ next: (dataFromAPI) => this.operadores = dataFromAPI });
+  }
+
+  getOperadoresPorCandidatoId() {
+    this.operadoresService.getOperadoresPorCandidatoId(this.candidatoId).subscribe({ next: (dataFromAPI) => this.operadores = dataFromAPI });
+  }
+
 
   creteForm() {
     this.simpatizanteForm = this.formBuilder.group({
       id: [null],
+      operadorId: [null],
       nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
@@ -428,6 +473,7 @@ export class SimpatizanteComponent implements OnInit {
     const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
     this.simpatizanteForm.patchValue({
       id: dto.id,
+      operadorId: dto.operador.id,
       nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
@@ -530,11 +576,13 @@ export class SimpatizanteComponent implements OnInit {
     const municipioId = this.simpatizanteForm.get('municipio')?.value;
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
+    const operadorId = this.simpatizanteForm.get('operadorId')?.value;
 
     this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
     this.votante.municipio = { id: municipioId } as Municipio;
     this.votante.estado = { id: estadoId } as Estado;
     this.votante.seccion = { id: seccionId } as Seccion
+    this.votante.operador = { id: operadorId } as Operador
 
     console.log(this.votante);
 
@@ -558,6 +606,11 @@ export class SimpatizanteComponent implements OnInit {
   handleChangeAdd() {
     if (this.simpatizanteForm) {
       this.simpatizanteForm.reset();
+
+      if (this.currentUser?.rolId === RolesBD.operador) {
+        this.simpatizanteForm.controls['operadorId'].setValue(this.operadorId);
+      }
+
       const estatusControl = this.simpatizanteForm.get('estatus');
       if (estatusControl) {
         estatusControl.setValue(true);

@@ -2,7 +2,7 @@ import { Component, ElementRef, Inject, OnChanges, OnInit, SimpleChanges, ViewCh
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
 import { Simpatizante } from 'src/app/models/votante';
-import { Candidatos } from 'src/app/models/candidato';
+import { Candidato } from 'src/app/models/candidato';
 import { Visita } from 'src/app/models/visita';
 import { VotoService} from 'src/app/core/services/voto.service';
 import { Voto } from 'src/app/models/voto';
@@ -21,7 +21,7 @@ export class SeguimientoVotoComponent implements OnInit {
 
   seguimientoForm!: FormGroup;
   vistas: Visita [] = [];
-  candidato: Candidatos[] = [];
+  candidato: Candidato[] = [];
   voto: Voto[] = [];
   votos!: Voto;
   votoFilter: Voto[] = [];

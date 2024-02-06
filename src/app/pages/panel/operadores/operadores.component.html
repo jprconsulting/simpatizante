@@ -146,7 +146,7 @@
                         )
                       "
                     >
-                    <i class="ti ti-list"></i>
+                      <i class="ti ti-list"></i>
                     </button>
                     <button
                       style="margin-right: 10px"
@@ -215,6 +215,37 @@
 
       <form [formGroup]="operadorForm" (ngSubmit)="submit()">
         <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label class="form-label">Candidato*:</label>
+                <ng-select
+                  formControlName="candidatoId"
+                  [readonly]="readonlySelectCandidato"
+                  #selectCandidato
+                  [searchable]="false"
+                  [items]="candidatos"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectCandidato.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
@@ -438,7 +469,9 @@
                   class="error-message"
                 >
                   <div
-                    *ngIf="operadorForm.get('seccionesIds')?.hasError('required')"
+                    *ngIf="
+                      operadorForm.get('seccionesIds')?.hasError('required')
+                    "
                   >
                     La secciones son obligatorias
                   </div>
@@ -488,7 +521,6 @@
           aria-label="Close"
           (click)="cerrarModal()"
         ></button>
-
       </div>
       <div class="modal-body">
         <div class="col-md-6 col-lg-12">
@@ -505,30 +537,24 @@
                   >
                     Sección
                   </th>
-                  <th
-                    style="
-                      text-transform: none;
-                      font-size: inherit;
-                    "
-                  >
+                  <th style="text-transform: none; font-size: inherit">
                     Municipio
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let operadores of seccionesFilter">
-                  <td style="text-align: center;">
-                    <p>{{ operadores.clave}}</p>
+                  <td style="text-align: center">
+                    <p>{{ operadores.clave }}</p>
                   </td>
                   <td>
-                    <p>{{ operadores.municipio.nombre}}</p>
+                    <p>{{ operadores.municipio.nombre }}</p>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -561,24 +587,31 @@
             <table class="table table-vcenter card-table table-striped">
               <thead>
                 <tr>
-                  <th style="text-transform: none; font-size: inherit">Nombre completo</th>
-                  <th style="text-transform: none; font-size: inherit">Domicilio</th>
-                  <th style="text-transform: none; font-size: inherit">Genero</th>
-                  <th style="text-transform: none; font-size: inherit">Programa social</th>
+                  <th style="text-transform: none; font-size: inherit">
+                    Nombre completo
+                  </th>
+                  <th style="text-transform: none; font-size: inherit">
+                    Domicilio
+                  </th>
+                  <th style="text-transform: none; font-size: inherit">
+                    Genero
+                  </th>
+                  <th style="text-transform: none; font-size: inherit">
+                    Programa social
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let simpatizante of simpatizantes">
                   <td>{{ simpatizante.nombreCompleto }}</td>
                   <td>{{ simpatizante.domicilio }}</td>
-                  <td>{{ objGeneros[simpatizante.sexo]}}</td>
-                  <td>{{ simpatizante.programaSocial?.nombre}}</td>
+                  <td>{{ objGeneros[simpatizante.sexo] }}</td>
+                  <td>{{ simpatizante.programaSocial?.nombre }}</td>
                 </tr>
               </tbody>
-          </table>
+            </table>
           </div>
         </div>
-
       </div>
     </div>
   </div>

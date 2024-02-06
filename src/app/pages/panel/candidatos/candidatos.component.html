@@ -72,7 +72,7 @@
                 <th style="text-transform: none; font-size: inherit">
                   Nombre completo
                 </th>
-                <th style="text-transform: none; font-size: inherit">
+                <th class="text-center" style="text-transform: none; font-size: inherit">
                   Fecha de nacimiento
                 </th>
                 <th style="text-transform: none; font-size: inherit">Género</th>
@@ -103,8 +103,7 @@
             <tbody>
               <tr
                 *ngFor="
-                  let candidato of candidatoFilter
-                    | paginate : configPaginator;
+                  let candidato of candidatoFilter | paginate : configPaginator;
                   let pointIndex = index
                 "
               >
@@ -116,38 +115,37 @@
                       1
                   }}
                 </td>
-                <td>{{ candidato.nombres }} {{ candidato.apellidoPaterno}} {{candidato.apellidoMaterno}}</td>
-                <td>{{ candidato.fechaNacimiento  | date : "dd-MM-yyy"}}</td>
+                <td>
+                  {{ candidato.nombres }} {{ candidato.apellidoPaterno }}
+                  {{ candidato.apellidoMaterno }}
+                </td>
+                <td class="text-center">{{ candidato.strFechaNacimiento }}</td>
                 <td>{{ objGeneros[candidato.sexo] }}</td>
                 <td>{{ candidato.sobrenombre }}</td>
                 <td class="text-muted">{{ candidato.cargo.nombre }}</td>
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
                     <img
-                      src="{{candidato.foto}}"
+                      src="{{ candidato.foto }}"
                       alt="Foto de {{ candidato.foto }}"
                       width="50"
                       height="50"
-                      (click)="
-                        mostrarImagenAmpliada(candidato.foto)
-                      "
+                      (click)="mostrarImagenAmpliada(candidato.foto)"
                     />
                   </div>
                 </td>
 
                 <td>
                   <div class="flex justify-center items-center">
-                  <img
-                    src="{{candidato.emblema}}"
-                    alt="Foto de {{ candidato.emblema }}"
-                    width="50"
-                    height="50"
-                    (click)="
-                      mostrarImagenAmpliada(candidato.emblema)
-                    "
-                  />
-                </div>
-              </td>
+                    <img
+                      src="{{ candidato.emblema }}"
+                      alt="Foto de {{ candidato.emblema }}"
+                      width="50"
+                      height="50"
+                      (click)="mostrarImagenAmpliada(candidato.emblema)"
+                    />
+                  </div>
+                </td>
                 <td class="text-center">
                   <ng-container *ngIf="candidato.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
@@ -159,18 +157,18 @@
                 <td>
                   <div class="d-flex justify-content-between">
                     <button
-                    alt="Ver secciones"
-                    style="margin-right: 10px"
-                    class="btn btn-secondary btn-icon btn-sm"
-                    data-bs-toggle="modal"
-                    (click)="
-                      mostrarImagenAmpliada2(
-                        obtenerRutaImagen(candidato.nombres)
-                      )
-                    "
-                  >
-                  <i class="ti ti-list"></i>
-                  </button>
+                      alt="Ver secciones"
+                      style="margin-right: 10px"
+                      class="btn btn-secondary btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      (click)="
+                        mostrarImagenAmpliada2(
+                          obtenerRutaImagen(candidato.nombres)
+                        )
+                      "
+                    >
+                      <i class="ti ti-list"></i>
+                    </button>
                     <button
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
@@ -262,7 +260,9 @@
                   >
                     El nombre debe tener al menos 3 caracteres
                   </div>
-                  <div *ngIf="candidatoForm.get('nombres')?.hasError('pattern')">
+                  <div
+                    *ngIf="candidatoForm.get('nombres')?.hasError('pattern')"
+                  >
                     El nombre no puede tener números ni signos
                   </div>
                 </div>
@@ -389,7 +389,9 @@
                     *ngIf="candidatoForm.get('sexo')?.touched"
                     class="error-message"
                   >
-                    <div *ngIf="candidatoForm.get('sexo')?.hasError('required')">
+                    <div
+                      *ngIf="candidatoForm.get('sexo')?.hasError('required')"
+                    >
                       El género es obligatorio
                     </div>
                   </div>
@@ -493,7 +495,9 @@
                   class="error-message"
                 >
                   <div
-                    *ngIf="candidatoForm.get('imagenBase64')?.hasError('required')"
+                    *ngIf="
+                      candidatoForm.get('imagenBase64')?.hasError('required')
+                    "
                   >
                     La imagen es obligatoria
                   </div>
@@ -551,11 +555,7 @@
           Todos los campos marcados con * son requeridos
         </p>
         <div class="modal-footer">
-          <button
-            type="submit"
-            class="btn btn-success"
-
-          >
+          <button type="submit" class="btn btn-success">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
@@ -564,16 +564,34 @@
   </div>
 </div>
 
-<div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5);">
+<div
+  class="modal modal-highlight"
+  id="modal-imagen-ampliada"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="background: rgba(0, 0, 0, 0.5)"
+>
   <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
-          </div>
-          <div class="modal-body">
-              <img *ngIf="imagenAmpliada" [src]="imagenAmpliada" alt="Imagen Ampliada" class="w-100" />
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="cerrarModal()"
+        ></button>
       </div>
+      <div class="modal-body">
+        <img
+          *ngIf="imagenAmpliada"
+          [src]="imagenAmpliada"
+          alt="Imagen Ampliada"
+          class="w-100"
+        />
+      </div>
+    </div>
   </div>
 </div>
 <div
@@ -600,7 +618,6 @@
       </div>
       <div class="modal-body">
         <div class="col-md-12 col-lg-12">
-
           <div class="row d-flex justify-content-end mt-0 mb-3">
             <div class="input-icon col-6">
               <input
@@ -617,25 +634,32 @@
           </div>
 
           <div class="card">
-
             <table class="table table-vcenter card-table table-striped">
               <thead>
                 <tr>
-                  <th style="text-transform: none; font-size: inherit">Nombre completo</th>
-                  <th style="text-transform: none; font-size: inherit">Domicilio</th>
-                  <th style="text-transform: none; font-size: inherit">Genero</th>
-                  <th style="text-transform: none; font-size: inherit">Programa social</th>
+                  <th style="text-transform: none; font-size: inherit">
+                    Nombre completo
+                  </th>
+                  <th style="text-transform: none; font-size: inherit">
+                    Domicilio
+                  </th>
+                  <th style="text-transform: none; font-size: inherit">
+                    Genero
+                  </th>
+                  <th style="text-transform: none; font-size: inherit">
+                    Programa social
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let simpatizante of simpatizantes">
                   <td>{{ simpatizante.nombreCompleto }}</td>
                   <td>{{ simpatizante.domicilio }}</td>
-                  <td>{{ objGeneros[simpatizante.sexo]}}</td>
-                  <td>{{ simpatizante.programaSocial?.nombre}}</td>
+                  <td>{{ objGeneros[simpatizante.sexo] }}</td>
+                  <td>{{ simpatizante.programaSocial?.nombre }}</td>
                 </tr>
               </tbody>
-          </table>
+            </table>
           </div>
 
           <div class="card-footer d-flex align-items-center">
@@ -651,10 +675,7 @@
               </pagination-controls>
             </div>
           </div>
-
-          
         </div>
-
       </div>
     </div>
   </div>

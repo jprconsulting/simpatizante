@@ -13,25 +13,28 @@ export class DashboardService {
 
   private dataWordCloudSubject = new BehaviorSubject<WordCloud[]>([]);
   dataWordCloud$ = this.dataWordCloudSubject.asObservable();
-  
-  constructor( private http: HttpClient) { }
+
+  constructor(private http: HttpClient) { }
 
   updateWordCloud(newData: WordCloud[]) {
     this.dataWordCloudSubject.next(newData);
   }
 
- 
 
-  getTotalVisitasPorProgramaSocial() {
-    return this.http.get<Estadistica[]>(`${this.route}/total-visitas-por-programa-social`);
+
+  getTotalSimpatizantesPorProgramaSocial() {
+    return this.http.get<Estadistica[]>(`${this.route}/total-Simpatizantes-por-programa-social`);
   }
 
-  getTotalBeneficiariosPorMunicipio() {
-    return this.http.get<Estadistica[]>(`${this.route}/total-beneficiarios-por-municipio`);
+  getTotalSimpatizantesPorEdad() {
+    return this.http.get<Estadistica[]>(`${this.route}/total-Simpatizantes-por-edad`);
   }
 
   getTotalGeneral() {
     return this.http.get<TotalGeneral>(`${this.route}/total-general`);
+  }
+  getSimpatizantesPorGenero() {
+    return this.http.get<Estadistica[]>(`${this.route}/total-Simpatizantes-por-genero`);
   }
 
   getWordCloud() {

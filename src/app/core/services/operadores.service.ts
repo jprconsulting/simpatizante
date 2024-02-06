@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
-import { Operadores } from 'src/app/models/operadores';
+import { Operador } from 'src/app/models/operador';
 import { Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
@@ -11,7 +11,7 @@ import { catchError, tap } from 'rxjs/operators';
 })
 export class OperadoresService {
   route = `${environment.apiUrl}/Operadores`;
-  private _refreshListOperadores$ = new Subject<Operadores | null>();
+  private _refreshListOperadores$ = new Subject<Operador | null>();
 
   constructor(
     private http: HttpClient,
@@ -23,15 +23,19 @@ export class OperadoresService {
   }
 
   getById(id: number) {
-    return this.http.get<Operadores>(`${this.route}/obtener-por-id/${id}`);
+    return this.http.get<Operador>(`${this.route}/obtener-por-id/${id}`);
   }
 
   getAll() {
-    return this.http.get<Operadores[]>(`${this.route}/obtener-todos`);
+    return this.http.get<Operador[]>(`${this.route}/obtener-todos`);
   }
 
-  post(dto: Operadores) {
-    return this.http.post<Operadores>(`${this.route}/crear`, dto)
+  getOperadoresPorCandidatoId(candidatoId: number) {
+    return this.http.get<Operador[]>(`${this.route}/obtener-operadores-por-candidato-id/${candidatoId}`);
+  }
+
+  post(dto: Operador) {
+    return this.http.post<Operador>(`${this.route}/crear`, dto)
       .pipe(
         tap(() => {
           this._refreshListOperadores$.next(null);
@@ -40,8 +44,8 @@ export class OperadoresService {
       );
   }
 
-  put(id: number, dto: Operadores) {
-    return this.http.put<Operadores>(`${this.route}/actualizar/${id}`, dto)
+  put(id: number, dto: Operador) {
+    return this.http.put<Operador>(`${this.route}/actualizar/${id}`, dto)
       .pipe(
         tap(() => {
           this._refreshListOperadores$.next(null);

@@ -1,5 +1,6 @@
 import { Estado } from "./estados";
 import { Municipio } from "./municipio"
+import { Operador } from "./operador";
 import { ProgramaSocial } from "./programa-social";
 import { Seccion } from "./seccion";
 
@@ -23,6 +24,7 @@ export interface Simpatizante {
     seccion: Seccion;
     estado: Estado;
     idmex: string;
+    operador: Operador
 }
 
 export interface TotalBeneficiariosMunicipio extends Municipio {

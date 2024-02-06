@@ -27,5 +27,11 @@ export const Generos = {
     2: 'Femenino',
 }
 
+export enum RolesBD {
+    administrador = 1,
+    operador = 2,
+    candidato = 3,
+    brigadista = 4
+}
 
 

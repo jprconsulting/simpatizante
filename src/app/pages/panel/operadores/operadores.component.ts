@@ -2,51 +2,49 @@ import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Observable } from 'rxjs';
-import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { OperadoresService } from 'src/app/core/services/operadores.service';
-import { RolsService } from 'src/app/core/services/rols.service';
 import { SeccionService } from 'src/app/core/services/seccion.service';
-import { UsuariosService } from 'src/app/core/services/usuarios.service';
-import { GenericType, LoadingStates } from 'src/app/global/global';
+import { GenericType, LoadingStates, RolesBD } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
-import { Operadores } from 'src/app/models/operadores';
-import { Rol } from 'src/app/models/rol';
+import { Operador } from 'src/app/models/operador';
 import { Seccion } from 'src/app/models/seccion';
-import { Usuario } from 'src/app/models/usuario';
-import { forkJoin } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 import { Simpatizante } from 'src/app/models/votante';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
-import { Candidatos } from 'src/app/models/candidato';
+import { Candidato } from 'src/app/models/candidato';
+import { AppUserAuth } from 'src/app/models/login';
+import { SecurityService } from 'src/app/core/services/security.service';
 
 @Component({
   selector: 'app-operadores',
   templateUrl: './operadores.component.html',
   styleUrls: ['./operadores.component.css']
 })
-export class OperadoresComponent implements OnInit{
+export class OperadoresComponent implements OnInit {
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
 
-  operador!:Operadores;
+  operador!: Operador;
   operadorForm!: FormGroup;
-  operadores: Operadores[] = [];
-  operadorFilter: Operadores[] = [];
+  operadores: Operador[] = [];
+  operadorFilter: Operador[] = [];
   isLoading = LoadingStates.neutro;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   secciones: Seccion[] = [];
   areasAdscripcion: AreaAdscripcion[] = [];
   isModalAdd = true;
   rolId = 0;
-  seccionesFilter: Seccion [] =[];
-  votantes: Simpatizante [] =[];
+  seccionesFilter: Seccion[] = [];
+  votantes: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
-  candidatos: Candidatos[] = [];
-  candidatoSelect!: Candidatos;
+  candidatos: Candidato[] = [];
+  currentUser!: AppUserAuth | null;
+  readonlySelectCandidato = true;
+  candidatoId = 0;
+
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -56,15 +54,23 @@ export class OperadoresComponent implements OnInit{
     private candidatosService: CandidatosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
-    private areasAdscripcionService: AreasAdscripcionService,
     private seccionesService: SeccionService,
     private simpatizantesService: SimpatizantesService,
+    private securityService: SecurityService,
   ) {
     this.operadoresService.refreshListOperadores.subscribe(() => this.getOperadores());
+    this.currentUser = securityService.getDataUser();
+    this.creteForm();
+    this.getCandidatos();
     this.getOperadores();
     this.getSecciones();
-    this.getAreasAdscripcion();
-    this.creteForm();
+
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.candidatoId = this.currentUser?.candidatoId;
+    }
+
+    this.readonlySelectCandidato = this.currentUser?.rolId !== RolesBD.administrador;
+
   }
   ngOnInit(): void {
     this.isModalAdd = false;
@@ -86,14 +92,13 @@ export class OperadoresComponent implements OnInit{
     console.log(this.secciones)
   }
 
-  getAreasAdscripcion() {
-    this.areasAdscripcionService.getAll().subscribe({ next: (dataFromAPI) => this.areasAdscripcion = dataFromAPI });
-  }
+
 
   creteForm() {
     this.operadorForm = this.formBuilder.group({
       id: [null],
-      nombres: ['', [Validators.required,Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      candidatoId: [null, Validators.required],
+      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
@@ -101,6 +106,7 @@ export class OperadoresComponent implements OnInit{
       estatus: [true],
     });
   }
+
 
 
   getOperadores() {
@@ -119,27 +125,7 @@ export class OperadoresComponent implements OnInit{
   }
 
   getCandidatos() {
-    this.candidatosService.getAll().subscribe({
-      next: ( dataFromAPI ) => {
-        this.candidatos = dataFromAPI;
-        console.log('candidatos: ', this.candidatos);
-        
-      },
-      error: () => {
-        console.log("No se cargaron los candidatos");
-        
-      }
-    })
-  }
-
-  onSelectCandidato(id: number) {
-    if (id) {
-      const data = this.candidatos.find(b => b.id === id);
-
-      if ( !data ) return console.error("No se eligio candidato");
-      
-      this.candidatoSelect = data;
-    }
+    this.candidatosService.getAll().subscribe({ next: (dataFromAPI) => this.candidatos = dataFromAPI });
   }
 
   obtenerSeccionesIdsDeOperadores() {
@@ -160,7 +146,7 @@ export class OperadoresComponent implements OnInit{
     this.operadorFilter = this.operadores.filter(operador =>
       operador.nombres.toLowerCase().includes(valueSearch) ||
       operador.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      operador.fechaNacimiento.toString().includes(valueSearch)||
+      operador.fechaNacimiento.toString().includes(valueSearch) ||
       operador.apellidoMaterno.toLowerCase().includes(valueSearch)
 
     );
@@ -175,27 +161,31 @@ export class OperadoresComponent implements OnInit{
     return fechaFormateada;
   }
 
-  setDataModalUpdate(dto: Operadores) {
+  setDataModalUpdate(dto: Operador) {   
+
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
     this.operadorForm.patchValue({
       id: dto.id,
+      candidatoId: dto.candidato.id,
       nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
       fechaNacimiento: fechaFormateada,
       estatus: dto.estatus,
-      seccionesIds: dto.secciones,
+      seccionesIds: dto.secciones.map((s) => s.id),
     });
   }
 
   editarOperador() {
-    this.operador = this.operadorForm.value as Operadores;
+    this.operador = this.operadorForm.value as Operador;
     this.operador.id = this.idUpdate;
-    const seccionid = this.operadorForm.get('seccionesIds')?.value;
+    const seccionesIds = this.operadorForm.get('seccionesIds')?.value;
+    this.operador.seccionesIds = seccionesIds as number[];
+    const candidatoId = this.operadorForm.get('candidatoId')?.value;
+    this.operador.candidato = { id: candidatoId } as Candidato;
 
-    this.operador.seccionesIds = seccionid  as Seccion;
     this.spinnerService.show();
     this.operadoresService.put(this.idUpdate, this.operador).subscribe({
       next: () => {
@@ -227,10 +217,11 @@ export class OperadoresComponent implements OnInit{
   }
 
   agregar() {
-    this.operador = this.operadorForm.value as Operadores;
-    const seccionid = this.operadorForm.get('seccionesIds')?.value;
-
-    this.operador.seccionesIds = seccionid as Seccion;
+    this.operador = this.operadorForm.value as Operador;
+    const seccionesIds = this.operadorForm.get('seccionesIds')?.value;
+    this.operador.seccionesIds = seccionesIds as number[];
+    const candidatoId = this.operadorForm.get('candidatoId')?.value;
+    this.operador.candidato = { id: candidatoId } as Candidato;
     this.spinnerService.show();
     this.operadoresService.post(this.operador).subscribe({
       next: () => {
@@ -244,7 +235,6 @@ export class OperadoresComponent implements OnInit{
         this.mensajeService.mensajeError(error);
       },
     });
-
   }
 
   resetForm() {
@@ -262,9 +252,16 @@ export class OperadoresComponent implements OnInit{
     }
   }
 
+
+
   handleChangeAdd() {
     if (this.operadorForm) {
       this.operadorForm.reset();
+
+      if (this.currentUser?.rolId === RolesBD.candidato) {
+        this.operadorForm.controls['candidatoId'].setValue(this.candidatoId);
+      }
+
       const estatusControl = this.operadorForm.get('estatus');
       if (estatusControl) {
         estatusControl.setValue(true);
@@ -316,18 +313,18 @@ export class OperadoresComponent implements OnInit{
     }
 
     const datosParaExportar = this.operadores.map(operador => {
-        const estatus = operador.estatus ? 'Activo' : 'Inactivo';
-        const fechaNacimiento = operador.fechaNacimiento ?
-          new Date(operador.fechaNacimiento).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) :
-          '';
-        return {
-          'Nombres': operador.nombres,
-          'Apellido paterno': operador.apellidoPaterno,
-          'Apellido materno': operador.apellidoMaterno,
-          'Fecha de nacimiento': fechaNacimiento,
-          'Estatus': estatus,
-        };
-      });
+      const estatus = operador.estatus ? 'Activo' : 'Inactivo';
+      const fechaNacimiento = operador.fechaNacimiento ?
+        new Date(operador.fechaNacimiento).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) :
+        '';
+      return {
+        'Nombres': operador.nombres,
+        'Apellido paterno': operador.apellidoPaterno,
+        'Apellido materno': operador.apellidoMaterno,
+        'Fecha de nacimiento': fechaNacimiento,
+        'Estatus': estatus,
+      };
+    });
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
     const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });

@@ -19,163 +19,219 @@ interface PointOptionsWithTotal extends Highcharts.PointOptionsObject {
 export class DashboardComponent implements AfterViewInit {
 
   Highcharts: typeof Highcharts = Highcharts;
-  totalGeneral: TotalGeneral = { totalBeneficiarios: 0, totalUsuarios: 0, totalProgramasSociales: 0, totalVisitas: 0 };
+  totalGeneral: TotalGeneral = { totalSimpatizantes: 0, totalUsuarios: 0, totalCandidatos: 0, totalOperadores: 0, totalVisitas: 0 };
   optionsBeneficiariosPorProgramaSocial: Highcharts.Options = {};
-  optionsVisitasPorProgramaSocial: Highcharts.Options = {};
-  optionsBeneficiariosPorMunicipio: Highcharts.Options = {};
+  optionsSimpatizantesPorProgramaSocial: Highcharts.Options = {};
+  optionssimpatizantesPoEdad: Highcharts.Options = {};
+  optionssimpatizantesPorGenero: Highcharts.Options = {};
   optionsNubePalabras: Highcharts.Options = {};
 
   constructor(private dashboardService: DashboardService) {
-    
-    this.getTotalVisitasPorProgramaSocial();
-    this.getTotalBeneficiariosPorMunicipio();
+
+    this.getTotalsimpatizantesPorProgramaSocial();
+    this.getTotalSimpatizantesPorEdad();
     this.getTotalGeneral();
     this.getWordCloud();
+    this.getSimpatizantesPorGenero();
+  }
+  getSimpatizantesPorGenero() {
+    const container = document.getElementById('container-simpatizantes-por-genero');
+    if (container) {
+      container.style.display = 'none';
+    }
+
+    this.dashboardService.getSimpatizantesPorGenero().subscribe({
+      next: (dataFromAPI) => {
+        const hasData = dataFromAPI && dataFromAPI.length > 0;
+
+        if (hasData) {
+          this.optionssimpatizantesPorGenero = {
+            chart: {
+              type: 'pie',
+              renderTo: 'container-simpatizantes-por-genero'
+            },
+            title: {
+              text: 'Simpatizante por genero',
+              align: 'left'
+            },
+            credits: {
+              enabled: false
+            },
+            subtitle: {
+              text: ''
+            },
+            plotOptions: {
+              pie: {
+                innerSize: 100,
+                depth: 45
+              }
+            },
+            series: [{
+              type: 'pie',
+              name: 'genero',
+              data: dataFromAPI.map((d) => ({ name: d.genero, y: d.totalSinpatizantes }))
+            }]
+          };
+
+          if (container) {
+            container.style.display = 'block';
+          }
+
+          Highcharts.chart('container-simpatizantes-por-genero', this.optionssimpatizantesPorGenero); console.log('dnji', this.optionssimpatizantesPorGenero)
+        } else {
+          if (container) {
+            container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
+            container.style.display = 'block';
+          }
+        }
+      }
+    });
   }
 
 
+  getTotalsimpatizantesPorProgramaSocial() {
+    const container = document.getElementById('container-simpatizantes-por-programa-social');
+    if (container) {
+      container.style.display = 'none';
+    }
 
-getTotalVisitasPorProgramaSocial() {
-  const container = document.getElementById('container-visitas-por-programa-social');
-  if (container) {
-    container.style.display = 'none';
+    this.dashboardService.getTotalSimpatizantesPorProgramaSocial().subscribe({
+      next: (dataFromAPI) => {
+        const hasData = dataFromAPI && dataFromAPI.length > 0;
+
+        if (hasData) {
+          this.optionsSimpatizantesPorProgramaSocial = {
+            chart: {
+              type: 'pie',
+              renderTo: 'container-simpatizantes-por-programa-social'
+            },
+            title: {
+              text: 'Simpatizantes por programa social',
+              align: 'left'
+            },
+            credits: {
+              enabled: false
+            },
+            subtitle: {
+              text: ''
+            },
+            plotOptions: {
+              pie: {
+                innerSize: 100,
+                depth: 45
+              }
+            },
+            series: [{
+              type: 'pie',
+              name: 'nombre',
+              data: dataFromAPI.map((d) => ({ name: d.nombre, y: d.totalSinpatizantes }))
+            }]
+          };
+
+          if (container) {
+            container.style.display = 'block';
+          }
+
+          Highcharts.chart('container-simpatizantes-por-programa-social', this.optionsSimpatizantesPorProgramaSocial); console.log('dnji', this.optionsSimpatizantesPorProgramaSocial)
+        } else {
+          if (container) {
+            container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
+            container.style.display = 'block';
+          }
+        }
+      }
+    });
   }
 
-  this.dashboardService.getTotalVisitasPorProgramaSocial().subscribe({
-    next: (dataFromAPI) => {
-      const hasData = dataFromAPI && dataFromAPI.length > 0;
+  getTotalSimpatizantesPorEdad() {
+    this.dashboardService.getTotalSimpatizantesPorEdad().subscribe({
+      next: (dataFromAPI) => {
+        const langConfig = {
+          viewFullscreen: "Ver en pantalla completa",
+          printChart: "Imprimir gráfica",
+          downloadPNG: 'Descargar imagen PNG',
+          downloadJPEG: 'Descargar imagen JPEG',
+          downloadPDF: 'Descargar en formato PDF',
+          downloadSVG: 'Descargar imagen vectorial en SVG',
+        };
 
-      if (hasData) {
-        this.optionsVisitasPorProgramaSocial = {
+        this.optionssimpatizantesPoEdad = {
           chart: {
-            type: 'pie',
-            renderTo: 'container-visitas-por-programa-social'
+            type: 'column'
           },
           title: {
-            text: 'Visitas por programa social',
+            text: 'Simpatizantes por edad',
             align: 'left'
-          },
-          credits: {
-            enabled: false
           },
           subtitle: {
             text: ''
           },
-          plotOptions: {
-            pie: {
-              innerSize: 100,
-              depth: 45
+          credits: {
+            enabled: false
+          },
+          lang: langConfig,
+          xAxis: {
+            type: 'category',
+            labels: {
+              autoRotation: [-45, -90],
+              style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+              }
             }
           },
+          yAxis: {
+            min: 0,
+            title: {
+              text: 'Total de Simpatizantes'
+            }
+          },
+          legend: {
+            enabled: false
+          },
+          tooltip: {
+
+          },
           series: [{
-            type: 'pie',
-            name: 'Visitas',
-            data: dataFromAPI.map((d) => ([d.nombre, d.total]))
+            type: 'column',
+            name: 'Simpatizantes',
+            colors: [
+              '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
+              '#6225ed', '#5b30e7', '#533be1', '#4c46db', '#4551d5', '#3e5ccf',
+              '#3667c9', '#2f72c3', '#277dbd', '#1f88b7', '#1693b1', '#0a9eaa',
+              '#03c69b', '#00f194'
+            ],
+            colorByPoint: true,
+            groupPadding: 0,
+            data: dataFromAPI.map((d) => ({
+              name: `${d.rangoEdad} (${d.porcentaje.toFixed(2)}%)`,
+              y: d.totalSinpatizantes
+            })),
+            dataLabels: {
+              enabled: true,
+              rotation: -90,
+              color: '#FFFFFF',
+              align: 'right',
+              y: 10,
+              style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+              }
+            }
           }]
         };
 
-        if (container) {
-          container.style.display = 'block';
-        }
-
-        Highcharts.chart('container-visitas-por-programa-social', this.optionsVisitasPorProgramaSocial);
-      } else {
-        if (container) {
-          container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
-          container.style.display = 'block';
-        }
-      }
-    }
-  });
-}
-
-getTotalBeneficiariosPorMunicipio() {
-  this.dashboardService.getTotalBeneficiariosPorMunicipio().subscribe({
-      next: (dataFromAPI) => {
-          const langConfig = {
-              viewFullscreen: "Ver en pantalla completa",
-              printChart: "Imprimir gráfica",
-              downloadPNG: 'Descargar imagen PNG',
-              downloadJPEG: 'Descargar imagen JPEG',
-              downloadPDF: 'Descargar en formato PDF',
-              downloadSVG: 'Descargar imagen vectorial en SVG',
-          };
-
-          this.optionsBeneficiariosPorMunicipio = {
-              chart: {
-                  type: 'column'
-              },
-              title: {
-                  text: 'Beneficiarios por municipio',
-                  align: 'left'
-              },
-              subtitle: {
-                  text: ''
-              },
-              credits: {
-                  enabled: false
-              },
-              lang: langConfig,
-              xAxis: {
-                  type: 'category',
-                  labels: {
-                      autoRotation: [-45, -90],
-                      style: {
-                          fontSize: '13px',
-                          fontFamily: 'Verdana, sans-serif'
-                      }
-                  }
-              },
-              yAxis: {
-                  min: 0,
-                  title: {
-                      text: 'Total de beneficiarios'
-                  }
-              },
-              legend: {
-                  enabled: false
-              },
-              tooltip: {
-                  pointFormat: 'Beneficiarios: <b>{point.y:.1f}</b>'
-              },
-              series: [{
-                  type: 'column',
-                  name: 'Beneficiarios',
-                  colors: [
-                      '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
-                      '#6225ed', '#5b30e7', '#533be1', '#4c46db', '#4551d5', '#3e5ccf',
-                      '#3667c9', '#2f72c3', '#277dbd', '#1f88b7', '#1693b1', '#0a9eaa',
-                      '#03c69b', '#00f194'
-                  ],
-                  colorByPoint: true,
-                  groupPadding: 0,
-                  data: dataFromAPI.map((d) => ([d.nombre, d.total])),
-                  dataLabels: {
-                      enabled: true,
-                      rotation: -90,
-                      color: '#FFFFFF',
-                      align: 'right',
-                      format: '{point.y:.1f}',
-                      y: 10,
-                      style: {
-                          fontSize: '13px',
-                          fontFamily: 'Verdana, sans-serif'
-                      }
-                  }
-              }]
-          };
-
-          if (!dataFromAPI || dataFromAPI.length === 0) {
-              const container = document.getElementById('container-beneficiarios-por-municipio');
-              if (container) {
-                  container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
-              }
-          } else {
-              Highcharts.chart('container-beneficiarios-por-municipio', this.optionsBeneficiariosPorMunicipio);
+        if (!dataFromAPI || dataFromAPI.length === 0) {
+          const container = document.getElementById('container-simpatizantes-por-edad');
+          if (container) {
+            container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
           }
+        } else {
+          Highcharts.chart('container-simpatizantes-por-edad', this.optionssimpatizantesPoEdad);
+        }
       }
-  });
-}
+    });
+  }
 
   getTotalGeneral() {
     this.dashboardService.getTotalGeneral().subscribe({
@@ -187,50 +243,50 @@ getTotalBeneficiariosPorMunicipio() {
 
   getWordCloud() {
     this.dashboardService.getWordCloud().subscribe({
-        next: (dataFromAPI) => {
-            const langConfig = {
-                viewFullscreen: "Ver en pantalla completa",
-                printChart: "Imprimir gráfica",
-                downloadPNG: 'Descargar imagen PNG',
-                downloadJPEG: 'Descargar imagen JPEG',
-                downloadPDF: 'Descargar en formato PDF',
-                downloadSVG: 'Descargar imagen vectorial en SVG',
-            };
+      next: (dataFromAPI) => {
+        const langConfig = {
+          viewFullscreen: "Ver en pantalla completa",
+          printChart: "Imprimir gráfica",
+          downloadPNG: 'Descargar imagen PNG',
+          downloadJPEG: 'Descargar imagen JPEG',
+          downloadPDF: 'Descargar en formato PDF',
+          downloadSVG: 'Descargar imagen vectorial en SVG',
+        };
 
-            Highcharts.setOptions({
-                lang: langConfig
-            });
+        Highcharts.setOptions({
+          lang: langConfig
+        });
 
-            this.optionsNubePalabras = {
-                series: [{
-                    rotation: {
-                        from: -60,
-                        to: 60,
-                        orientations: 5
-                    },
-                    type: 'wordcloud',
-                    data: dataFromAPI.generalWordCloud,
-                }],
-                title: {
-                    text: 'Nube de palabras',
-                    align: 'left'
-                },
-                lang: {
-                    noData: '<h2 class="page-title">Sin datos</h2>'
-                },
-                tooltip: {
-                  useHTML: true,
-                  padding: 0,
-                  borderRadius: 0,
-                  borderWidth: 0,
-                  shadow: false,
-                  backgroundColor: 'none',
-                  borderColor: 'none',
-                  headerFormat: '',
-                  followPointer: false,
-                  stickOnContact: false,
-                  shared: false,
-                  pointFormat: `
+        this.optionsNubePalabras = {
+          series: [{
+            rotation: {
+              from: -60,
+              to: 60,
+              orientations: 5
+            },
+            type: 'wordcloud',
+            data: dataFromAPI.generalWordCloud,
+          }],
+          title: {
+            text: 'Nube de palabras',
+            align: 'left'
+          },
+          lang: {
+            noData: '<h2 class="page-title">Sin datos</h2>'
+          },
+          tooltip: {
+            useHTML: true,
+            padding: 0,
+            borderRadius: 0,
+            borderWidth: 0,
+            shadow: false,
+            backgroundColor: 'none',
+            borderColor: 'none',
+            headerFormat: '',
+            followPointer: false,
+            stickOnContact: false,
+            shared: false,
+            pointFormat: `
                       <div
                       style="
                           width: 220px;
@@ -269,23 +325,23 @@ getTotalBeneficiariosPorMunicipio() {
                           </div>
                       </div>
                   `
-              },
-                subtitle: {
-                    text: ''
-                },
-                credits: {
-                    enabled: false
-                },
-            };
-            Highcharts.chart('container-nube-palabras', this.optionsNubePalabras);
-        }
+          },
+          subtitle: {
+            text: ''
+          },
+          credits: {
+            enabled: false
+          },
+        };
+        Highcharts.chart('container-nube-palabras', this.optionsNubePalabras);
+      }
     })
-}
+  }
 
   ngAfterViewInit() {
-    Highcharts.chart('container-beneficiarios-por-programa-social', this.optionsBeneficiariosPorProgramaSocial);
-    Highcharts.chart('container-visitas-por-programa-social', this.optionsVisitasPorProgramaSocial);
-    Highcharts.chart('container-beneficiarios-por-municipio', this.optionsBeneficiariosPorMunicipio);
+    Highcharts.chart('container-simpatizantes-por-programa-social', this.optionsBeneficiariosPorProgramaSocial);
+    Highcharts.chart('container-simpatizantes-por-edad', this.optionssimpatizantesPoEdad);
+    Highcharts.chart('container-simpatizantes-por-genero', this.optionssimpatizantesPorGenero);
     Highcharts.chart('container-nube-palabras', this.optionsNubePalabras);
   }
 
