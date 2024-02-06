@@ -5,11 +5,10 @@ import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
-import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import * as XLSX from 'xlsx';
 import { CargoService } from 'src/app/core/services/cargo.service';
 import { Cargo } from 'src/app/models/cargo';
-import { Candidatos } from 'src/app/models/candidato';
+import { Candidato } from 'src/app/models/candidato';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 import { Simpatizante } from 'src/app/models/votante';
@@ -25,14 +24,14 @@ export class CandidatosComponent implements OnInit{
   @ViewChild('searchItem') searchItem!: ElementRef;
 
   areaAdscripcion!: AreaAdscripcion;
-  candidatos!: Candidatos;
+  candidatos!: Candidato;
   candidatoForm!: FormGroup;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   areasAdscripcion: AreaAdscripcion[] = [];
-  candidatoFilter: Candidatos[] = [];
+  candidatoFilter: Candidato[] = [];
   cargos: Cargo[] = [];
-  candidato: Candidatos [] = [];
-  isLoading = LoadingStates.neutro;
+  candidato: Candidato [] = [];
+  isLoading = LoadingStates.neutro
   isModalAdd: boolean = true;
   idUpdate!: number;
   votantes: Simpatizante [] =[];
@@ -49,6 +48,7 @@ export class CandidatosComponent implements OnInit{
     private cargoService: CargoService,
     private candidatosService: CandidatosService,
     private simpatizantesService: SimpatizantesService,
+
   ) {
     this.candidatosService.refreshListCandidatos.subscribe(() => this.getCandidatos());
     this.getCandidatos();
@@ -163,9 +163,6 @@ export class CandidatosComponent implements OnInit{
       reader.onload = () => {
         const base64String = reader.result as string;
         const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
-        console.log('Leyendo archivo...');
-        console.log('Base64 sin prefijo:', base64WithoutPrefix);
-
 
         this.candidatoForm.patchValue({// Contiene solo la representación en base64
           emblemaBase64: base64WithoutPrefix // Contiene solo la representación en base64
@@ -226,8 +223,6 @@ export class CandidatosComponent implements OnInit{
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    console.log('Search Value:', valueSearch);
-
     this.candidatoFilter = this.candidato.filter(Candidato =>
       Candidato.nombres.toLowerCase().includes(valueSearch) ||
       Candidato.apellidoPaterno.toLowerCase().includes(valueSearch) ||
@@ -237,8 +232,6 @@ export class CandidatosComponent implements OnInit{
       Candidato.fechaNacimiento.toLowerCase().includes(valueSearch)||
       this.getGeneroName(Candidato.sexo).toLowerCase().includes(valueSearch)
     );
-
-    console.log('Filtered Votantes:', this.candidatoFilter);
 
     this.configPaginator.currentPage = 1;
   }
@@ -254,18 +247,15 @@ export class CandidatosComponent implements OnInit{
       Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)||
       this.getGeneroName(Simpatizante.sexo).toLowerCase().includes(valueSearch)
     )
-
-    console.log('Simpatizantes filtrados: ', this.simpatizanteFilter);
     
     this.configPaginator.currentPage = 1;
-
   }
 
   formData: any;
 
 
 
-  setDataModalUpdate(dto: Candidatos) {
+  setDataModalUpdate(dto: Candidato) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
@@ -283,14 +273,12 @@ export class CandidatosComponent implements OnInit{
       emblemaBase64: dto.emblemaBase64,
 
     });
-    console.log(dto);
-    console.log(this.candidatoForm.value);
   }
  
 
   
   editarCandidato() {
-    this.candidatos = this.candidatoForm.value as Candidatos;
+    this.candidatos = this.candidatoForm.value as Candidato;
     const candidatoId = this.candidatoForm.get('id')?.value
     const cargoid = this.candidatoForm.get('cargo')?.value;
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
@@ -342,7 +330,7 @@ export class CandidatosComponent implements OnInit{
   }
 
   agregar() {
-    this.candidatos  = this.candidatoForm.value as Candidatos;
+    this.candidatos  = this.candidatoForm.value as Candidato;
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
     const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
     const cargoid = this.candidatoForm.get('cargo')?.value;

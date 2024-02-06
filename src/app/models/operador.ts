@@ -1,6 +1,7 @@
+import { Candidato } from "./candidato";
 import { Seccion } from "./seccion";
 
-export interface Operadores {
+export interface Operador {
     id: number;
     nombreCompleto: string;
     nombres: string;
@@ -8,9 +9,8 @@ export interface Operadores {
     apellidoMaterno: string;
     strFechaNacimiento: string;
     fechaNacimiento: string;
-    strfechanacimineto: string;
-    sexo: number;
     estatus: boolean;
-    seccionesIds: Seccion;
-    secciones: string;
+    candidato : Candidato
+    seccionesIds: number[];
+    secciones: Seccion[];
 }

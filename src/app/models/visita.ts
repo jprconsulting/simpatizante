@@ -1,6 +1,6 @@
 import { Beneficiario } from "./beneficiario"
-import { Candidatos } from "./candidato";
-import { Operadores } from "./operadores";
+import { Candidato } from "./candidato";
+import { Operador } from "./operador";
 import { Usuario } from "./usuario";
 import { Simpatizante } from "./votante";
 

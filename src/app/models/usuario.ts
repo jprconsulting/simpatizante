@@ -1,5 +1,5 @@
-import { Candidatos } from "./candidato";
-import { Operadores } from "./operadores";
+import { Candidato } from "./candidato";
+import { Operador } from "./operador";
 import { Rol } from "./rol"
 
 export interface Usuario {
@@ -12,6 +12,6 @@ export interface Usuario {
     password: string;
     estatus: boolean;
     rol: Rol;
-    candidato: Candidatos;
-    operador: Operadores;
+    candidato: Candidato;
+    operador: Operador;
 }

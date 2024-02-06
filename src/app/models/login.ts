@@ -9,6 +9,8 @@ export interface AppUserAuth {
     email: string;
     rolId: number;
     rol: string;
+    candidatoId: number;
+    operadorId: number;
     isAuthenticated: boolean;
     token: string;
     claims: Array<Claim>;
