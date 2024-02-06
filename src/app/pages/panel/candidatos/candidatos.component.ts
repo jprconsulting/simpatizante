@@ -32,12 +32,14 @@ export class CandidatosComponent implements OnInit{
   cargos: Cargo[] = [];
   candidato: Candidato [] = [];
   isLoading = LoadingStates.neutro
+  isLoading2 = LoadingStates.neutro
   isModalAdd: boolean = true;
   idUpdate!: number;
   votantes: Simpatizante [] =[];
   simpatizantesFilter: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
   simpatizanteFilter: Simpatizante[] = [];
+  errorMessage!: string;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -122,13 +124,12 @@ export class CandidatosComponent implements OnInit{
     this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
   }
 
-   loadSimpatizantes() {
+  loadSimpatizantes() {
     // Assuming you have a candidateId, replace it with the actual value
-    const candidateId = 1; // Replace with the actual candidateId
-    this.simpatizantesService.getSimpatizantesPorCandidatoId(candidateId)
+    const candidatoId = this.candidatos.id; // Replace with the actual candidateId
+    this.simpatizantesService.getSimpatizantesPorCandidatoId(candidatoId)
       .subscribe(data => {
         this.simpatizantes = data;
-        this.simpatizanteFilter = this.simpatizantes;
       });
   }
 
@@ -206,6 +207,8 @@ export class CandidatosComponent implements OnInit{
       }
     );
   }
+
+  
 
 
   formatoFecha(fecha: string): string {
@@ -414,11 +417,14 @@ export class CandidatosComponent implements OnInit{
 
     const datosParaExportar = this.candidato.map(candidato => {
       const estatus = candidato.estatus ? 'Activo' : 'Inactivo';
+      const fechaNacimiento = candidato.fechaNacimiento ?
+        new Date(candidato.fechaNacimiento).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) :
+        '';
       return {
         'Nombres': candidato.nombres,
         'Apellido paterno': candidato.apellidoPaterno,
         'Apellido materno': candidato.apellidoMaterno,
-        'Fecha nacimiento': candidato.fechaNacimiento,
+        'Fecha nacimiento': fechaNacimiento,
         'Estatus': estatus,
 
       };

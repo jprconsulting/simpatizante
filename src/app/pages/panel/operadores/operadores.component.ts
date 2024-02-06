@@ -316,8 +316,8 @@ export class OperadoresComponent implements OnInit {
 
   loadSimpatizantes() {
     // Assuming you have a candidateId, replace it with the actual value
-    const candidateId = 1; // Replace with the actual candidateId
-    this.simpatizantesService.getSimpatizantesPorOperadorId(candidateId)
+    const operadorId = 4; // Replace with the actual candidateId
+    this.simpatizantesService.getSimpatizantesPorOperadorId(operadorId)
       .subscribe(data => {
         this.simpatizantes = data;
       });
