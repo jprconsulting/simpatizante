@@ -380,6 +380,7 @@ export class SimpatizanteComponent {
     this.operadoresService.getOperadoresPorCandidatoId(this.candidatoId).subscribe({ next: (dataFromAPI) => this.operadores = dataFromAPI });
   }
 
+  // ([0-9]{6})([a-zA-Z]{6})([0-9]{2})$
 
   creteForm() {
     this.simpatizanteForm = this.formBuilder.group({
@@ -392,7 +393,7 @@ export class SimpatizanteComponent {
       estado: [null, Validators.required],
       seccion: [null, Validators.required],
       sexo: [null, Validators.required],
-      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
+      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})/)]],
       estatus: [this.estatusBtn],
       programaSocial: [''],
       municipio: [null, Validators.required],

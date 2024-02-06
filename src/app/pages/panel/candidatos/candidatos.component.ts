@@ -56,7 +56,7 @@ export class CandidatosComponent implements OnInit{
     this.getCargos();
   }
   ngOnInit(): void {
-    this.loadSimpatizantes();
+    // this.loadSimpatizantes();
   }
   estatusBtn = true;
   verdadero = "Activo";
@@ -122,13 +122,14 @@ export class CandidatosComponent implements OnInit{
     this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
   }
 
-   loadSimpatizantes() {
-    // Assuming you have a candidateId, replace it with the actual value
-    const candidateId = 1; // Replace with the actual candidateId
-    this.simpatizantesService.getSimpatizantesPorCandidatoId(candidateId)
-      .subscribe(data => {
-        this.simpatizantes = data;
+   loadSimpatizantes( candidatoId : number ) {
+ 
+    this.simpatizantesService.getSimpatizantesPorCandidatoId(candidatoId)
+      .subscribe(dataFromAPI => {
+        this.simpatizantes = dataFromAPI;
         this.simpatizanteFilter = this.simpatizantes;
+        console.log("SimpatizanteFilter", this.simpatizanteFilter);
+        
       });
   }
 
@@ -206,6 +207,7 @@ export class CandidatosComponent implements OnInit{
       }
     );
   }
+
 
 
   formatoFecha(fecha: string): string {
@@ -379,12 +381,15 @@ export class CandidatosComponent implements OnInit{
     this.showModal = false;
   }
 
-  modalSimpatizantes() {
+  modalSimpatizantes( id: number ) {
     const modal = document.getElementById('modal-simpatizantes');
     if (modal) {
       modal.classList.add('show');
       modal.style.display = 'block';
     }
+
+    this.loadSimpatizantes( id );
+
   }
   cerrarModal2() {
     this.imagenAmpliada = null;

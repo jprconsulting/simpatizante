@@ -162,9 +162,8 @@
                       class="btn btn-secondary btn-icon btn-sm"
                       data-bs-toggle="modal"
                       (click)="
-                        modalSimpatizantes()
+                        modalSimpatizantes( candidato.id )
                       "
-                      (click)="modalSimpatizantes()"
                     >
                       <i class="ti ti-list"></i>
                     </button>
@@ -680,7 +679,7 @@
                   <td>{{ objGeneros[simpatizante.sexo] }}</td>
                   <td>{{ simpatizante.programaSocial?.nombre }}</td>
                 </tr>
-                <tr *ngIf="simpatizantes.length === 0">
+                <tr *ngIf="simpatizanteFilter.length === 0">
                   <td colspan="4" class="text-center">No hay simpatizantes asociados a este candidato.</td>
                 </tr>
               </tbody>
@@ -699,7 +698,7 @@
             </p>
             <div class="m-0 ms-auto">
               <pagination-controls
-                (pageChange)="onPageChangeModal($event)"
+                
                 previousLabel=""
                 nextLabel=""
               >
