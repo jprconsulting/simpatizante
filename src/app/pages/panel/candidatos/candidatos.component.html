@@ -636,7 +636,7 @@
               <a
                 class="btn w-30 btn-icon"
                 aria-label="Dribbble"
-                
+
                 title="Descargar datos de simpatizantes"
                 style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
               >
@@ -648,13 +648,7 @@
             </div>
             
           </div>
-          <ng-container [ngSwitch]="isLoading">
-            <div style="height: 300px" *ngSwitchCase="2">
-              <div class="progress">
-                <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-              </div>
-            </div>
-          <div *ngSwitchCase="3"  class="card">
+          <div class="card">
             <table class="table table-vcenter card-table table-striped">
               <thead>
                 <tr>
@@ -686,8 +680,6 @@
             </table>
             
           </div>
-          <app-no-results *ngSwitchCase="4"></app-no-results>
-        </ng-container>
           <br>
 
 

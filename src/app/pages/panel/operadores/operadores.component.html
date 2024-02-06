@@ -501,14 +501,17 @@
               </thead>
               <tbody>
                 <tr *ngFor="let operador of operadores">
-                  <td *ngFor="let seccion of operador.secciones" style="text-align: center;">
-                    <p>{{ seccion.clave }}</p>
-                  </td>
-                  <td *ngFor="let seccion of operador.secciones" style="text-align: center;">
-                    <p>{{ seccion.municipio.nombre }}</p>
-                  </td>
+                  <ng-container *ngFor="let seccion of operador.secciones; let i = index">
+                    <td style="text-align: center;">
+                      <p>{{ operador.secciones[i].clave }}</p>
+                    </td>
+                    <td style="text-align: center;">
+                      <p>{{ operador.secciones[i].municipio.nombre }}</p>
+                    </td>
+                  </ng-container>
                 </tr>
               </tbody>
+              
             </table>
           </div>
         </div>
@@ -595,7 +598,7 @@
                   <td>{{ simpatizante.programaSocial?.nombre }}</td>
                 </tr>
                 <tr *ngIf="simpatizantes.length === 0">
-                  <td colspan="4" class="text-center">No hay simpatizantes asociados a este candidato.</td>
+                  <td colspan="4" class="text-center">No hay simpatizantes asociados a este operador.</td>
                 </tr>
               </tbody>
             </table>

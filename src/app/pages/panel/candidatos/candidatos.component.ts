@@ -32,12 +32,14 @@ export class CandidatosComponent implements OnInit{
   cargos: Cargo[] = [];
   candidato: Candidato [] = [];
   isLoading = LoadingStates.neutro
+  isLoading2 = LoadingStates.neutro
   isModalAdd: boolean = true;
   idUpdate!: number;
   votantes: Simpatizante [] =[];
   simpatizantesFilter: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
   simpatizanteFilter: Simpatizante[] = [];
+  errorMessage!: string;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -207,6 +209,8 @@ export class CandidatosComponent implements OnInit{
       }
     );
   }
+
+  
 
 
 
@@ -419,11 +423,14 @@ export class CandidatosComponent implements OnInit{
 
     const datosParaExportar = this.candidato.map(candidato => {
       const estatus = candidato.estatus ? 'Activo' : 'Inactivo';
+      const fechaNacimiento = candidato.fechaNacimiento ?
+        new Date(candidato.fechaNacimiento).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) :
+        '';
       return {
         'Nombres': candidato.nombres,
         'Apellido paterno': candidato.apellidoPaterno,
         'Apellido materno': candidato.apellidoMaterno,
-        'Fecha nacimiento': candidato.fechaNacimiento,
+        'Fecha nacimiento': fechaNacimiento,
         'Estatus': estatus,
 
       };
