@@ -9,9 +9,8 @@ import { AppUser } from 'src/app/models/login';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
-
 export class LoginComponent implements OnInit {
   formUserLogin!: FormGroup;
   user!: AppUser;
@@ -22,8 +21,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private spinnerService: NgxSpinnerService,
-    private mensajeService: MensajeService,
-  ) { }
+    private mensajeService: MensajeService
+  ) {}
 
   ngOnInit(): void {
     this.createFormUserLogin();
@@ -42,18 +41,20 @@ export class LoginComponent implements OnInit {
       error: (error: string) => {
         this.mensajeService.mensajeError(error);
         this.spinnerService.hide();
-      }
+      },
     });
   }
 
   createFormUserLogin() {
     this.formUserLogin = this.formBuilder.group({
-      email: ['francisco@hotmail.com', Validators.compose([
-        Validators.required, Validators.minLength(3)
-      ])],
-      password: ['123456789', Validators.compose([
-        Validators.required, Validators.minLength(3)
-      ])]
+      email: [
+        'admin@gmail.com',
+        Validators.compose([Validators.required, Validators.minLength(3)]),
+      ],
+      password: [
+        '123',
+        Validators.compose([Validators.required, Validators.minLength(3)]),
+      ],
     });
   }
 }
