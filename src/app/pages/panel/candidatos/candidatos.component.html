@@ -1,10 +1,4 @@
-<ngx-spinner
-  bdColor="rgba(0,0,0,0.41)"
-  size="large"
-  color="#ffffff"
-  type="ball-scale-multiple"
-  [fullScreen]="true"
->
+<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
   <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
@@ -15,38 +9,21 @@
     <div class="card">
       <div class="card-body border-bottom py-3">
         <div class="d-flex align-items-center">
-          <button
-            class="btn btn-primary me-2"
-            data-bs-toggle="modal"
-            data-bs-target="#modal-candidato"
-            (click)="handleChangeAdd()"
-          >
+          <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-candidato"
+            (click)="handleChangeAdd()">
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
           <div class="ms-auto d-flex align-items-center">
             <div class="input-icon">
-              <input
-                #searchItem
-                type="text"
-                class="form-control form-control-rounded"
-                placeholder="Buscar"
-                (input)="handleChangeSearch($event)"
-              />
+              <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar"
+                (input)="handleChangeSearch($event)" />
               <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
               </span>
             </div>
-            <a
-              class="btn w-30 btn-icon"
-              aria-label="Dribbble"
-              (click)="exportarDatosAExcel()"
-              title="Descargar excel de candidatos"
-              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
-            >
-              <i
-                class="ti ti-cloud-down text-muted"
-                style="font-size: 28px"
-              ></i>
+            <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()"
+              title="Descargar excel de candidatos" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
+              <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
             </a>
           </div>
         </div>
@@ -63,10 +40,7 @@
           <table class="table table-vcenter card-table">
             <thead>
               <tr>
-                <th
-                  style="text-transform: none; font-size: inherit"
-                  class="text-center"
-                >
+                <th style="text-transform: none; font-size: inherit" class="text-center">
                   #
                 </th>
                 <th style="text-transform: none; font-size: inherit">
@@ -86,33 +60,25 @@
                 <th style="text-transform: none; font-size: inherit">
                   Emblema
                 </th>
-                <th
-                  style="text-transform: none; font-size: inherit"
-                  class="text-center"
-                >
+                <th style="text-transform: none; font-size: inherit" class="text-center">
                   Estatus
                 </th>
-                <th
-                  style="text-transform: none; font-size: inherit"
-                  class="w-1"
-                >
+                <th style="text-transform: none; font-size: inherit" class="w-1">
                   Acciones
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
+              <tr *ngFor="
                   let candidato of candidatoFilter | paginate : configPaginator;
                   let pointIndex = index
-                "
-              >
+                ">
                 <td class="text-center">
                   {{
-                    configPaginator.itemsPerPage *
-                      (configPaginator.currentPage - 1) +
-                      pointIndex +
-                      1
+                  configPaginator.itemsPerPage *
+                  (configPaginator.currentPage - 1) +
+                  pointIndex +
+                  1
                   }}
                 </td>
                 <td>
@@ -125,25 +91,15 @@
                 <td class="text-muted">{{ candidato.cargo.nombre }}</td>
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
-                    <img
-                      src="{{ candidato.foto }}"
-                      alt="Foto de {{ candidato.foto }}"
-                      width="50"
-                      height="50"
-                      (click)="mostrarImagenAmpliada(candidato.foto)"
-                    />
+                    <img src="{{ candidato.foto }}" alt="Foto de {{ candidato.foto }}" width="50" height="50"
+                      (click)="mostrarImagenAmpliada(candidato.foto)" />
                   </div>
                 </td>
 
                 <td>
                   <div class="flex justify-center items-center">
-                    <img
-                      src="{{ candidato.emblema }}"
-                      alt="Foto de {{ candidato.emblema }}"
-                      width="50"
-                      height="50"
-                      (click)="mostrarImagenAmpliada(candidato.emblema)"
-                    />
+                    <img src="{{ candidato.emblema }}" alt="Foto de {{ candidato.emblema }}" width="50" height="50"
+                      (click)="mostrarImagenAmpliada(candidato.emblema)" />
                   </div>
                 </td>
                 <td class="text-center">
@@ -156,31 +112,18 @@
                 </td>
                 <td>
                   <div class="d-flex justify-content-between">
-                    <button
-                      alt="Ver secciones"
-                      style="margin-right: 10px"
-                      class="btn btn-secondary btn-icon btn-sm"
-                      data-bs-toggle="modal"
-                      (click)="
+                    <button alt="Ver secciones" style="margin-right: 10px" class="btn btn-secondary btn-icon btn-sm"
+                      data-bs-toggle="modal" (click)="
                         modalSimpatizantes( candidato.id )
-                      "
-                    >
+                      ">
                       <i class="ti ti-list"></i>
                     </button>
-                    <button
-                      class="btn btn-warning btn-icon btn-sm"
-                      data-bs-toggle="modal"
-                      style="margin-right: 10px"
-                      data-bs-target="#modal-candidato"
-                      (click)="setDataModalUpdate(candidato)"
-                    >
+                    <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" style="margin-right: 10px"
+                      data-bs-target="#modal-candidato" (click)="setDataModalUpdate(candidato)">
                       <i class="ti ti-edit"></i>
                     </button>
-                    <button
-                      class="btn btn-danger btn-icon btn-sm"
-                      style="margin-right: 10px"
-                      (click)="deleteItem(candidato.id, candidato.nombres)"
-                    >
+                    <button class="btn btn-danger btn-icon btn-sm" style="margin-right: 10px"
+                      (click)="deleteItem(candidato.id, candidato.nombres)">
                       <i class="ti ti-eraser"></i>
                     </button>
                   </div>
@@ -199,11 +142,7 @@
           Total de registros: <b>{{ candidatoFilter.length }}</b>
         </p>
         <div class="m-0 ms-auto">
-          <pagination-controls
-            (pageChange)="onPageChange($event)"
-            previousLabel=""
-            nextLabel=""
-          >
+          <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
           </pagination-controls>
         </div>
       </div>
@@ -211,26 +150,14 @@
   </div>
 </div>
 
-<div
-  class="modal modal-blur fade"
-  id="modal-candidato"
-  tabindex="-1"
-  role="dialog"
-  aria-hidden="true"
->
+<div class="modal modal-blur fade" id="modal-candidato" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
           {{ isModalAdd ? "Agregar" : "Actualizar" }} candidato
         </h5>
-        <button
-          #closebutton
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <form [formGroup]="candidatoForm" (ngSubmit)="submit()">
@@ -239,28 +166,15 @@
             <div class="col-lg-4">
               <div class="mb3">
                 <label class="form-label">Nombre*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="nombres"
-                />
-                <div
-                  *ngIf="candidatoForm.get('nombres')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="candidatoForm.get('nombres')?.hasError('required')"
-                  >
+                <input type="text" class="form-control" formControlName="nombres" />
+                <div *ngIf="candidatoForm.get('nombres')?.touched" class="error-message">
+                  <div *ngIf="candidatoForm.get('nombres')?.hasError('required')">
                     <p style="color: red">El nombre es obligatorio</p>
                   </div>
-                  <div
-                    *ngIf="candidatoForm.get('nombres')?.hasError('minlength')"
-                  >
+                  <div *ngIf="candidatoForm.get('nombres')?.hasError('minlength')">
                     El nombre debe tener al menos 3 caracteres
                   </div>
-                  <div
-                    *ngIf="candidatoForm.get('nombres')?.hasError('pattern')"
-                  >
+                  <div *ngIf="candidatoForm.get('nombres')?.hasError('pattern')">
                     El nombre no puede tener números ni signos
                   </div>
                 </div>
@@ -269,36 +183,23 @@
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Apellido paterno*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="apellidoPaterno"
-                />
-                <div
-                  *ngIf="candidatoForm.get('apellidoPaterno')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
+                <input type="text" class="form-control" formControlName="apellidoPaterno" />
+                <div *ngIf="candidatoForm.get('apellidoPaterno')?.touched" class="error-message">
+                  <div *ngIf="
                       candidatoForm.get('apellidoPaterno')?.hasError('required')
-                    "
-                  >
+                    ">
                     <p style="color: red">El apellido paterno es obligatorio</p>
                   </div>
-                  <div
-                    *ngIf="
+                  <div *ngIf="
                       candidatoForm
                         .get('apellidoPaterno')
                         ?.hasError('minlength')
-                    "
-                  >
+                    ">
                     El apellido paterno debe tener al menos 3 caracteres
                   </div>
-                  <div
-                    *ngIf="
+                  <div *ngIf="
                       candidatoForm.get('apellidoPaterno')?.hasError('pattern')
-                    "
-                  >
+                    ">
                     El apellido paterno no puede tener números ni signos
                   </div>
                 </div>
@@ -307,36 +208,23 @@
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Apellido materno*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="apellidoMaterno"
-                />
-                <div
-                  *ngIf="candidatoForm.get('apellidoMaterno')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
+                <input type="text" class="form-control" formControlName="apellidoMaterno" />
+                <div *ngIf="candidatoForm.get('apellidoMaterno')?.touched" class="error-message">
+                  <div *ngIf="
                       candidatoForm.get('apellidoMaterno')?.hasError('required')
-                    "
-                  >
+                    ">
                     <p style="color: red">El apellido materno es obligatorio</p>
                   </div>
-                  <div
-                    *ngIf="
+                  <div *ngIf="
                       candidatoForm
                         .get('apellidoMaterno')
                         ?.hasError('minlength')
-                    "
-                  >
+                    ">
                     El apellido materno debe tener al menos 3 caracteres
                   </div>
-                  <div
-                    *ngIf="
+                  <div *ngIf="
                       candidatoForm.get('apellidoMaterno')?.hasError('pattern')
-                    "
-                  >
+                    ">
                     El apellido materno no puede tener números ni signos
                   </div>
                 </div>
@@ -346,22 +234,13 @@
               <div class="col-lg-4">
                 <div class="mb-3">
                   <label class="form-label">Fecha nacimiento*:</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    formControlName="fechaNacimiento"
-                  />
-                  <div
-                    *ngIf="candidatoForm.get('fechaNacimiento')?.touched"
-                    class="error-message"
-                  >
-                    <div
-                      *ngIf="
+                  <input type="date" class="form-control" formControlName="fechaNacimiento" />
+                  <div *ngIf="candidatoForm.get('fechaNacimiento')?.touched" class="error-message">
+                    <div *ngIf="
                         candidatoForm
                           .get('fechaNacimiento')
                           ?.hasError('required')
-                      "
-                    >
+                      ">
                       La fecha de nacimiento es obligatoria
                     </div>
                   </div>
@@ -370,26 +249,14 @@
               <div class="col-lg-4">
                 <div class="mb-3">
                   <label class="form-label">Género*:</label>
-                  <ng-select
-                    placeholder="Elegir"
-                    [items]="generos"
-                    bindLabel="name"
-                    bindValue="id"
-                    [searchable]="false"
-                    [clearable]="false"
-                    formControlName="sexo"
-                  >
+                  <ng-select placeholder="Elegir" [items]="generos" bindLabel="name" bindValue="id" [searchable]="false"
+                    [clearable]="false" formControlName="sexo">
                     <ng-template ng-option-tmp let-item="item">
                       {{ item.name }}
                     </ng-template>
                   </ng-select>
-                  <div
-                    *ngIf="candidatoForm.get('sexo')?.touched"
-                    class="error-message"
-                  >
-                    <div
-                      *ngIf="candidatoForm.get('sexo')?.hasError('required')"
-                    >
+                  <div *ngIf="candidatoForm.get('sexo')?.touched" class="error-message">
+                    <div *ngIf="candidatoForm.get('sexo')?.hasError('required')">
                       El género es obligatorio
                     </div>
                   </div>
@@ -398,27 +265,16 @@
               <div class="col-lg-4">
                 <div class="mb-3">
                   <label class="form-label">Sobrenombre*:</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="sobrenombre"
-                  />
-                  <div
-                    *ngIf="candidatoForm.get('sobrenombre')?.touched"
-                    class="error-message"
-                  >
-                    <div
-                      *ngIf="
+                  <input type="text" class="form-control" formControlName="sobrenombre" />
+                  <div *ngIf="candidatoForm.get('sobrenombre')?.touched" class="error-message">
+                    <div *ngIf="
                         candidatoForm.get('sobrenombre')?.hasError('required')
-                      "
-                    >
+                      ">
                       El sobrenombre es obligatorio
                     </div>
-                    <div
-                      *ngIf="
+                    <div *ngIf="
                         candidatoForm.get('sobrenombre')?.hasError('pattern')
-                      "
-                    >
+                      ">
                       El sobrenombre no es valido
                     </div>
                   </div>
@@ -429,24 +285,14 @@
               <div class="mb-3">
                 <div class="">
                   <label class="form-label">Cargo a participar*:</label>
-                  <ng-select
-                    placeholder="Elegir"
-                    bindLabel="nombre"
-                    bindValue="id"
-                    [searchable]="false"
-                    [clearable]="false"
-                    [items]="cargos"
-                    formControlName="cargo"
-                  >
+                  <ng-select placeholder="Elegir" bindLabel="nombre" bindValue="id" [searchable]="false"
+                    [clearable]="false" [items]="cargos" formControlName="cargo">
                     <ng-template ng-option-tmp let-item="item">
                       {{ item.nombre }}
                     </ng-template>
                   </ng-select>
                 </div>
-                <div
-                  *ngIf="candidatoForm.get('cargo')?.touched"
-                  class="error-message"
-                >
+                <div *ngIf="candidatoForm.get('cargo')?.touched" class="error-message">
                   <div *ngIf="candidatoForm.get('cargo')?.hasError('required')">
                     <p style="color: red">El nombre es obligatorio</p>
                   </div>
@@ -457,23 +303,16 @@
               <div class="mb-3 custom-green-switch">
                 <label for="estadoActivo" class="form-label">Estatus</label>
                 <label class="form-check form-switch checkbox-verde">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    formControlName="estatus"
-                  />
-                  <span
-                    class="form-check-label"
-                    [ngClass]="
+                  <input class="form-check-input" type="checkbox" formControlName="estatus" />
+                  <span class="form-check-label" [ngClass]="
                       candidatoForm.get('estatus')?.value
                         ? 'text-success'
                         : 'text-danger'
-                    "
-                  >
+                    ">
                     {{
-                      candidatoForm.get("estatus")?.value
-                        ? "Activo"
-                        : "Inactivo"
+                    candidatoForm.get("estatus")?.value
+                    ? "Activo"
+                    : "Inactivo"
                     }}
                   </span>
                 </label>
@@ -482,21 +321,11 @@
             <div class="col-lg-12">
               <div class="mb-3">
                 <div class="form-label">Selecciona una fotografía*</div>
-                <input
-                  class="input"
-                  type="file"
-                  (change)="onFileChange($event)"
-                  formControlName="imagenBase64"
-                />
-                <div
-                  *ngIf="candidatoForm.get('imagenBase64')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
+                <input class="input" type="file" (change)="onFileChange($event)" formControlName="imagenBase64" />
+                <div *ngIf="candidatoForm.get('imagenBase64')?.touched" class="error-message">
+                  <div *ngIf="
                       candidatoForm.get('imagenBase64')?.hasError('required')
-                    "
-                  >
+                    ">
                     La imagen es obligatoria
                   </div>
                 </div>
@@ -504,52 +333,30 @@
             </div>
             <div class="col-lg-12">
               <div class="mb-3">
-                <img
-                  class="img"
-                  *ngIf="candidatoForm.get('imagenBase64')?.value"
-                  [src]="
+                <img class="img" *ngIf="candidatoForm.get('imagenBase64')?.value" [src]="
                     'data:image/jpg;base64,' +
                     candidatoForm.get('imagenBase64')?.value
-                  "
-                  width="50%"
-                  height="50%"
-                  alt="Vista previa de la imagen"
-                />
+                  " width="50%" height="50%" alt="Vista previa de la imagen" />
               </div>
             </div>
 
             <div class="col-lg-6">
               <div class="mb-3">
                 <div class="form-label">Selecciona un emblema*</div>
-                <input
-                  class="input"
-                  type="file"
-                  (change)="onFileChange2($event)"
-                  formControlName="emblemaBase64"
-                />
+                <input class="input" type="file" (change)="onFileChange2($event)" formControlName="emblemaBase64" />
               </div>
             </div>
             <div class="col-lg-12">
               <div class="mb-3">
-                <img
-                  class="img"
-                  *ngIf="candidatoForm.get('emblemaBase64')?.value"
-                  [src]="
+                <img class="img" *ngIf="candidatoForm.get('emblemaBase64')?.value" [src]="
                     'data:image/jpg;base64,' +
                     candidatoForm.get('emblemaBase64')?.value
-                  "
-                  width="50%"
-                  height="50%"
-                  alt="Vista previa de la imagen"
-                />
+                  " width="50%" height="50%" alt="Vista previa de la imagen" />
               </div>
             </div>
           </div>
         </div>
-        <p
-          class="form-label"
-          style="margin-left: 20px; color: red; font-weight: bold"
-        >
+        <p class="form-label" style="margin-left: 20px; color: red; font-weight: bold">
           Todos los campos marcados con * son requeridos
         </p>
         <div class="modal-footer">
@@ -562,46 +369,21 @@
   </div>
 </div>
 
-<div
-  class="modal modal-highlight"
-  id="modal-imagen-ampliada"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
-  style="background: rgba(0, 0, 0, 0.5)"
->
+<div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5)">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          (click)="cerrarModal()"
-        ></button>
+        <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
       </div>
       <div class="modal-body">
-        <img
-          *ngIf="imagenAmpliada"
-          [src]="imagenAmpliada"
-          alt="Imagen Ampliada"
-          class="w-100"
-        />
+        <img *ngIf="imagenAmpliada" [src]="imagenAmpliada" alt="Imagen Ampliada" class="w-100" />
       </div>
     </div>
   </div>
 </div>
-<div
-  class="modal modal-highlight"
-  id="modal-simpatizantes"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
-  style="background: rgba(0, 0, 0, 0.5)"
->
-  <div class="modal-dialog modal-full-width modal-dialog-centered" role="document">
+<div class="modal modal-highlight" id="modal-simpatizantes" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5)">
 
 
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -610,90 +392,88 @@
         <h5 class="modal-title" id="exampleModalLongTitle">
           Simpatizantes asociados
         </h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          (click)="cerrarModal2()"
-        ></button>
+        <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal2()"></button>
       </div>
       <div class="modal-body">
         <div class="col-md-12 col-lg-12">
           <div class="row d-flex justify-content-end mt-0 mb-3">
             <div class="ms-auto d-flex align-items-end">
               <div class="input-icon">
-                <input
-                  #searchItem
-                  type="text"
-                  class="form-control form-control-rounded"
-                  placeholder="Buscar"
-                  (input)="handleChangeSearchModal($event)"
-                />
+                <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar"
+                  (input)="handleChangeSearchModal($event)" />
                 <span class="input-icon-addon">
                   <i class="ti ti-search"></i>
                 </span>
               </div>
-              <a
-                class="btn w-30 btn-icon"
-                aria-label="Dribbble"
-
-                title="Descargar datos de simpatizantes"
-                style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
-              >
-                <i
-                  class="ti ti-cloud-down text-muted"
-                  style="font-size: 28px"
-                ></i>
+              <a class="btn w-30 btn-icon" aria-label="Dribbble" title="Descargar datos de simpatizantes"
+                style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
+                <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
               </a>
             </div>
-            
+
           </div>
-          <div class="card">
-            <table class="table table-vcenter card-table table-striped">
-              <thead>
-                <tr>
-                  <th style="text-transform: none; font-size: inherit">
-                    Nombre completo
-                  </th>
-                  <th style="text-transform: none; font-size: inherit">
-                    Domicilio
-                  </th>
-                  <th style="text-transform: none; font-size: inherit">
-                    Genero
-                  </th>
-                  <th style="text-transform: none; font-size: inherit">
-                    Programa social
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let simpatizante of simpatizanteFilter">
-                  <td>{{ simpatizante.nombreCompleto }}</td>
-                  <td>{{ simpatizante.domicilio }}</td>
-                  <td>{{ objGeneros[simpatizante.sexo] }}</td>
-                  <td>{{ simpatizante.programaSocial?.nombre }}</td>
-                </tr>
-                <tr *ngIf="simpatizanteFilter.length === 0">
-                  <td colspan="4" class="text-center">No hay simpatizantes asociados a este candidato.</td>
-                </tr>
-              </tbody>
-            </table>
-            
-          </div>
+
+
+          <ng-container [ngSwitch]="isLoadingModalSimpatizantes">
+            <div style="height: 300px" *ngSwitchCase="2">
+              <div class="progress">
+                <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+              </div>
+            </div>
+
+            <div *ngSwitchCase="3" class="card">
+              <table class="table table-responsive table-vcenter card-table table-striped">
+                <thead>
+                  <tr>
+                    <th style="text-transform: none; font-size: inherit">
+                      Nombre completo
+                    </th>
+                    <th style="text-transform: none; font-size: inherit">
+                      Domicilio
+                    </th>
+                    <th style="text-transform: none; font-size: inherit">
+                      Genero
+                    </th>
+                    <th style="text-transform: none; font-size: inherit">
+                      Programa social
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <tr *ngFor="let simpatizante of simpatizanteFilter">
+                    <td>{{ simpatizante.nombreCompleto }}</td>
+                    <td>{{ simpatizante.domicilio }}</td>
+                    <td>{{ objGeneros[simpatizante.sexo] }}</td>
+                    <td>{{ simpatizante.programaSocial?.nombre }}</td>
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+
+
+            <app-no-results *ngSwitchCase="4"></app-no-results>
+
+          </ng-container>
+
+
           <br>
 
 
-
           <div class="card-footer d-flex align-items-center">
-            <p class="m-0 mt-4  text-muted">
-              Total de registros: <b>{{ simpatizanteFilter.length }}</b>
-            </p>
+            <p *ngIf="sinSimpatizantes; else conRegistros" class="m-0 mt-4 text-muted ">Total de registros: <b>0</b></p>
+            <ng-template #conRegistros>
+              <p class="m-0 mt-4  text-muted">
+                Total de registros: <b>{{ simpatizanteFilter.length }}</b>
+              </p>
+            </ng-template>
             <div class="m-0 ms-auto">
-              <pagination-controls
-                
-                previousLabel=""
-                nextLabel=""
-              >
+              <pagination-controls 
+                (pageChange)="onPageChange($event)"
+                previousLabel="" 
+                nextLabel="">
               </pagination-controls>
             </div>
           </div>

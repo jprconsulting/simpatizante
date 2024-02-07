@@ -32,7 +32,7 @@ export class CandidatosComponent implements OnInit{
   cargos: Cargo[] = [];
   candidato: Candidato [] = [];
   isLoading = LoadingStates.neutro
-  isLoading2 = LoadingStates.neutro
+  isLoadingModalSimpatizantes = LoadingStates.neutro
   isModalAdd: boolean = true;
   idUpdate!: number;
   votantes: Simpatizante [] =[];
@@ -40,6 +40,7 @@ export class CandidatosComponent implements OnInit{
   simpatizantes: Simpatizante[] = [];
   simpatizanteFilter: Simpatizante[] = [];
   errorMessage!: string;
+  sinSimpatizantes: boolean = false;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -124,15 +125,27 @@ export class CandidatosComponent implements OnInit{
     this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
   }
 
-   loadSimpatizantes( candidatoId : number ) {
- 
+  loadSimpatizantes( candidatoId : number ) {
+
+    this.isLoadingModalSimpatizantes = LoadingStates.trueLoading;
     this.simpatizantesService.getSimpatizantesPorCandidatoId(candidatoId)
-      .subscribe(dataFromAPI => {
-        this.simpatizantes = dataFromAPI;
-        this.simpatizanteFilter = this.simpatizantes;
-        console.log("SimpatizanteFilter", this.simpatizanteFilter);
+      .subscribe(
+        {
+          next: ( dataFromAPI ) => {
+              this.sinSimpatizantes = false;
+              this.simpatizantes = dataFromAPI;
+              this.simpatizanteFilter = this.simpatizantes;
+              this.isLoadingModalSimpatizantes = LoadingStates.falseLoading;
+
+              console.log("SimpatizanteFilter", this.simpatizanteFilter);
+          },
+          error: () => {
+            this.sinSimpatizantes = true;
+            this.isLoadingModalSimpatizantes = LoadingStates.errorLoading;
+          }
+        },
         
-      });
+      );
   }
 
 
