@@ -1,4 +1,11 @@
-import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenericType, LoadingStates, RolesBD } from 'src/app/global/global';
 import { Beneficiario } from 'src/app/models/beneficiario';
@@ -23,14 +30,12 @@ import { OperadoresService } from 'src/app/core/services/operadores.service';
 import { SecurityService } from 'src/app/core/services/security.service';
 import { AppUserAuth } from 'src/app/models/login';
 
-
 @Component({
   selector: 'app-beneficiarios',
   templateUrl: './simpatizante.component.html',
-  styleUrls: ['./simpatizante.component.css']
+  styleUrls: ['./simpatizante.component.css'],
 })
 export class SimpatizanteComponent {
-
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
   @ViewChild('ngxPlaces') placesRef!: NgxGpAutocompleteDirective;
@@ -45,6 +50,7 @@ export class SimpatizanteComponent {
   simpatizanteForm!: FormGroup;
   busqueda!: FormGroup;
   beneficiarios: Beneficiario[] = [];
+  operadoresOriginales: Simpatizante[] = [];
   votantesFilter: Simpatizante[] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd: boolean = true;
@@ -60,11 +66,14 @@ export class SimpatizanteComponent {
   candidatoId = 0;
   operadorId = 0;
 
-  generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
+  generos: GenericType[] = [
+    { id: 1, name: 'Masculino' },
+    { id: 2, name: 'Femenino' },
+  ];
   estatusBtn = true;
-  verdadero = "Activo";
-  falso = "Inactivo";
-  visibility = false
+  verdadero = 'Activo';
+  falso = 'Inactivo';
+  visibility = false;
   estatusTag = this.verdadero;
   formData: any;
   id!: number;
@@ -73,13 +82,14 @@ export class SimpatizanteComponent {
   longitude: number = -98.23837658175323;
   options = {
     types: [],
-    componentRestrictions: { country: 'MX' }
+    componentRestrictions: { country: 'MX' },
   };
   maps!: google.maps.Map;
   SocialForm: any;
   private map: any;
   private marker: any;
-  constructor(private renderer: Renderer2,
+  constructor(
+    private renderer: Renderer2,
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
     private spinnerService: NgxSpinnerService,
@@ -93,7 +103,9 @@ export class SimpatizanteComponent {
     private simpatizantesService: SimpatizantesService,
     private securityService: SecurityService
   ) {
-    this.simpatizantesService.refreshListSimpatizantes.subscribe(() => this.getVotantes());
+    this.simpatizantesService.refreshListSimpatizantes.subscribe(() =>
+      this.getVotantes()
+    );
     this.currentUser = securityService.getDataUser();
     this.getVotantes();
     this.getMunicipios();
@@ -107,7 +119,10 @@ export class SimpatizanteComponent {
     if (this.currentUser?.rolId === RolesBD.operador) {
       this.operadorId = this.currentUser?.operadorId;
       console.log('asdfads', this.operadorId);
-      this.operadores.push({ id: this.operadorId, nombreCompleto: this.currentUser?.nombreCompleto } as Operador);
+      this.operadores.push({
+        id: this.operadorId,
+        nombreCompleto: this.currentUser?.nombreCompleto,
+      } as Operador);
     }
 
     if (this.currentUser?.rolId === RolesBD.candidato) {
@@ -120,33 +135,43 @@ export class SimpatizanteComponent {
       this.readonlySelectOperador = false;
       this.getTodosOperadores();
     }
-
   }
-
 
   getCurrentLocation() {
     if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
 
-          const geocoder = new google.maps.Geocoder();
-          const latLng = new google.maps.LatLng(this.latitude, this.longitude);
-          this.adress();
-        });
+        const geocoder = new google.maps.Geocoder();
+        const latLng = new google.maps.LatLng(this.latitude, this.longitude);
+        this.adress();
+      });
     }
   }
   onSelectOperador(id: number | null) {
-    if (id) {
-      this.votantesSelect = this.votantes.find(b => b.id === id);
+    this.votantesSelect = this.votantes.find((v) => v.operador.id === id);
+
+    if (this.votantesSelect) {
+      const valueSearch2 =
+        this.votantesSelect.operador.nombreCompleto.toLowerCase();
+
+      console.log('Search Value:', valueSearch2);
+
+      this.votantesFilter = this.votantes.filter((Votante) =>
+        Votante.operador.nombreCompleto.toLowerCase().includes(valueSearch2)
+      );
+
+      console.log('Filtered Votantes:', this.votantesFilter);
+
+      this.configPaginator.currentPage = 1;
     }
   }
 
   resetMap() {
     this.ubicacionInput.nativeElement.value = '';
     this.setCurrentLocation();
-    this.ngAfterViewInit()
+    this.ngAfterViewInit();
   }
   mapa() {
     this.setCurrentLocation();
@@ -162,7 +187,6 @@ export class SimpatizanteComponent {
   }
 
   selectAddress(place: google.maps.places.PlaceResult) {
-
     if (!place.geometry) {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
@@ -170,14 +194,14 @@ export class SimpatizanteComponent {
 
     if (place.formatted_address) {
       this.simpatizanteForm.patchValue({
-        domicilio: place.formatted_address
+        domicilio: place.formatted_address,
       });
     }
     const selectedLat = place.geometry?.location?.lat() || this.latitude;
     const selectedLng = place.geometry?.location?.lng() || this.longitude;
 
-    this.canvas.setAttribute("data-lat", selectedLat.toString());
-    this.canvas.setAttribute("data-lng", selectedLng.toString());
+    this.canvas.setAttribute('data-lat', selectedLat.toString());
+    this.canvas.setAttribute('data-lng', selectedLng.toString());
     const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
     this.maps.setCenter(newLatLng);
     this.maps.setZoom(15);
@@ -192,17 +216,21 @@ export class SimpatizanteComponent {
     });
     this.simpatizanteForm.patchValue({
       longitud: selectedLng,
-      latitud: selectedLat
+      latitud: selectedLat,
     });
   }
   onClear() {
+    if (this.votantes) {
+      this.getVotantes();
+    }
   }
+
   selectAddress2(place: google.maps.places.PlaceResult) {
     const selectedLat = this.simpatizanteForm.value.latitud;
     const selectedLng = this.simpatizanteForm.value.longitud;
 
-    this.canvas.setAttribute("data-lat", selectedLat.toString());
-    this.canvas.setAttribute("data-lng", selectedLng.toString());
+    this.canvas.setAttribute('data-lat', selectedLat.toString());
+    this.canvas.setAttribute('data-lng', selectedLng.toString());
     const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
     this.maps.setCenter(newLatLng);
     this.maps.setZoom(15);
@@ -215,7 +243,6 @@ export class SimpatizanteComponent {
       animation: google.maps.Animation.DROP,
       title: this.simpatizanteForm.value.nombres,
     });
-
   }
 
   setEstatus() {
@@ -226,7 +253,7 @@ export class SimpatizanteComponent {
     this.canvas = this.mapCanvas.nativeElement;
 
     if (!this.canvas) {
-      console.error("El elemento del mapa no fue encontrado");
+      console.error('El elemento del mapa no fue encontrado');
       return;
     }
 
@@ -239,56 +266,61 @@ export class SimpatizanteComponent {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       styles: [
         {
-          featureType: "administrative",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#444444" }],
+          featureType: 'administrative',
+          elementType: 'labels.text.fill',
+          stylers: [{ color: '#444444' }],
         },
         {
-          featureType: "landscape",
-          elementType: "all",
-          stylers: [{ color: "#f2f2f2" }],
+          featureType: 'landscape',
+          elementType: 'all',
+          stylers: [{ color: '#f2f2f2' }],
         },
         {
-          featureType: "poi",
-          elementType: "all",
-          stylers: [{ visibility: "off" }],
+          featureType: 'poi',
+          elementType: 'all',
+          stylers: [{ visibility: 'off' }],
         },
         {
-          featureType: "road",
-          elementType: "all",
+          featureType: 'road',
+          elementType: 'all',
           stylers: [{ saturation: -100 }, { lightness: 45 }],
         },
         {
-          featureType: "road.highway",
-          elementType: "all",
-          stylers: [{ visibility: "simplified" }],
+          featureType: 'road.highway',
+          elementType: 'all',
+          stylers: [{ visibility: 'simplified' }],
         },
         {
-          featureType: "road.arterial",
-          elementType: "labels.icon",
-          stylers: [{ visibility: "off" }],
+          featureType: 'road.arterial',
+          elementType: 'labels.icon',
+          stylers: [{ visibility: 'off' }],
         },
         {
-          featureType: "transit",
-          elementType: "all",
-          stylers: [{ visibility: "off" }],
+          featureType: 'transit',
+          elementType: 'all',
+          stylers: [{ visibility: 'off' }],
         },
         {
-          featureType: "water",
-          elementType: "all",
-          stylers: [{ color: "#0ba4e2" }, { visibility: "on" }],
+          featureType: 'water',
+          elementType: 'all',
+          stylers: [{ color: '#0ba4e2' }, { visibility: 'on' }],
         },
       ],
     };
 
     this.maps = new google.maps.Map(this.canvas, mapOptions);
 
-    google.maps.event.addListener(this.maps, 'click', (event: google.maps.KmlMouseEvent) => {
-      this.handleMapClick(event);
-    });
-
+    google.maps.event.addListener(
+      this.maps,
+      'click',
+      (event: google.maps.KmlMouseEvent) => {
+        this.handleMapClick(event);
+      }
+    );
   }
-  handleMapClick(event: google.maps.KmlMouseEvent | google.maps.IconMouseEvent) {
+  handleMapClick(
+    event: google.maps.KmlMouseEvent | google.maps.IconMouseEvent
+  ) {
     if (event.latLng) {
       this.latitude = event.latLng.lat();
       this.longitude = event.latLng.lng();
@@ -305,13 +337,13 @@ export class SimpatizanteComponent {
   adress() {
     const geocoder = new google.maps.Geocoder();
     const latLng = new google.maps.LatLng(this.latitude, this.longitude);
-    geocoder.geocode({ 'location': latLng }, (results, status) => {
+    geocoder.geocode({ location: latLng }, (results, status) => {
       if (status === 'OK') {
         if (results && results[0]) {
           const place = results[0];
           if (place.formatted_address) {
             this.simpatizanteForm.patchValue({
-              domicilio: place.formatted_address
+              domicilio: place.formatted_address,
             });
           } else {
             console.log('No se pudo obtener la dirección.');
@@ -321,11 +353,13 @@ export class SimpatizanteComponent {
           console.error('No se encontraron resultados de geocodificación.');
         }
       } else {
-        console.error('Error en la solicitud de geocodificación inversa:', status);
+        console.error(
+          'Error en la solicitud de geocodificación inversa:',
+          status
+        );
       }
     });
   }
-
 
   setCurrentLocation() {
     if ('geolocation' in navigator) {
@@ -336,48 +370,46 @@ export class SimpatizanteComponent {
     }
   }
   getMunicipios() {
-    this.municipiosService.getAll().subscribe({ next: (dataFromAPI) => this.municipios = dataFromAPI });
+    this.municipiosService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.municipios = dataFromAPI) });
   }
 
   getSeccion() {
     this.isLoading = LoadingStates.trueLoading;
-    this.seccionService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.seccion = dataFromAPI;
-        },
-      }
-    );
+    this.seccionService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.seccion = dataFromAPI;
+      },
+    });
   }
   getEstado() {
     this.isLoading = LoadingStates.trueLoading;
-    this.estadoService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.estado = dataFromAPI;
-        },
-
-      }
-    );
+    this.estadoService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.estado = dataFromAPI;
+      },
+    });
   }
   getProgramas() {
     this.isLoading = LoadingStates.trueLoading;
-    this.programasSociales.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.programaSocial = dataFromAPI;
-        },
-
-      }
-    );
+    this.programasSociales.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.programaSocial = dataFromAPI;
+      },
+    });
   }
 
   getTodosOperadores() {
-    this.operadoresService.getAll().subscribe({ next: (dataFromAPI) => this.operadores = dataFromAPI });
+    this.operadoresService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
   }
 
   getOperadoresPorCandidatoId() {
-    this.operadoresService.getOperadoresPorCandidatoId(this.candidatoId).subscribe({ next: (dataFromAPI) => this.operadores = dataFromAPI });
+    this.operadoresService
+      .getOperadoresPorCandidatoId(this.candidatoId)
+      .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
   }
 
   // ([0-9]{6})([a-zA-Z]{6})([0-9]{2})$
@@ -386,17 +418,44 @@ export class SimpatizanteComponent {
     this.simpatizanteForm = this.formBuilder.group({
       id: [null],
       operadorId: [null],
-      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      nombres: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      apellidoPaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      apellidoMaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
       fechaNacimiento: ['', Validators.required],
-      estado: [null, Validators.required],
+      estado: ['29'],
       seccion: [null, Validators.required],
       sexo: [null, Validators.required],
       curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})/)]],
       estatus: [this.estatusBtn],
       programaSocial: [''],
-      municipio: [null, Validators.required],
+      municipio: [29],
       domicilio: [''],
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
@@ -410,7 +469,9 @@ export class SimpatizanteComponent {
   }
   ocultar() {
     this.visibility = false;
-    const radioElement = document.getElementById('flexRadioDefault2') as HTMLInputElement;
+    const radioElement = document.getElementById(
+      'flexRadioDefault2'
+    ) as HTMLInputElement;
 
     if (radioElement) {
       radioElement.checked = true;
@@ -420,19 +481,16 @@ export class SimpatizanteComponent {
   }
   getVotantes() {
     this.isLoading = LoadingStates.trueLoading;
-    this.simpatizantesService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.votantes = dataFromAPI;
-          this.votantesFilter = this.votantes;
-          this.isLoading = LoadingStates.falseLoading; console.log('dfsjncjk', this.votantesFilter);
-
-        },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading
-        }
-      }
-    );
+    this.simpatizantesService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.votantes = dataFromAPI;
+        this.votantesFilter = this.votantes;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: () => {
+        this.isLoading = LoadingStates.errorLoading;
+      },
+    });
   }
 
   onPageChange(number: number) {
@@ -445,16 +503,17 @@ export class SimpatizanteComponent {
 
     console.log('Search Value:', valueSearch);
 
-    this.votantesFilter = this.votantes.filter(Votante =>
-      Votante.nombreCompleto.toLowerCase().includes(valueSearch) ||
-      this.getGeneroName(Votante.sexo).toLowerCase().includes(valueSearch) ||
-      Votante.domicilio.toLowerCase().includes(valueSearch) ||
-      Votante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
-      Votante.idmex.toString().includes(valueSearch) ||
-      Votante.curp.toString().includes(valueSearch) ||
-      Votante.programaSocial?.nombre.toLowerCase().includes(valueSearch) ||
-      Votante.municipio.nombre.toLowerCase().includes(valueSearch) ||
-      Votante.id.toString().includes(valueSearch)
+    this.votantesFilter = this.votantes.filter(
+      (Votante) =>
+        Votante.nombreCompleto.toLowerCase().includes(valueSearch) ||
+        this.getGeneroName(Votante.sexo).toLowerCase().includes(valueSearch) ||
+        Votante.domicilio.toLowerCase().includes(valueSearch) ||
+        Votante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
+        Votante.idmex.toString().includes(valueSearch) ||
+        Votante.curp.toString().includes(valueSearch) ||
+        Votante.programaSocial?.nombre.toLowerCase().includes(valueSearch) ||
+        Votante.municipio.nombre.toLowerCase().includes(valueSearch) ||
+        Votante.id.toString().includes(valueSearch)
     );
 
     console.log('Filtered Votantes:', this.votantesFilter);
@@ -463,14 +522,13 @@ export class SimpatizanteComponent {
   }
 
   getGeneroName(id: number): string {
-    const genero = this.generos.find(g => g.id === id);
+    const genero = this.generos.find((g) => g.id === id);
     return genero ? genero.name : '';
   }
 
-
   onSelectmunicipios(id: number) {
     if (id) {
-      this.municipiosSelect = this.municipios.find(b => b.id === id);
+      this.municipiosSelect = this.municipios.find((b) => b.id === id);
     }
   }
 
@@ -511,7 +569,7 @@ export class SimpatizanteComponent {
 
   actualizar() {
     this.votante = this.simpatizanteForm.value as Simpatizante;
-    const votanteId = this.simpatizanteForm.get('id')?.value
+    const votanteId = this.simpatizanteForm.get('id')?.value;
 
     const programaSocialId = this.simpatizanteForm.get('programaSocial')?.value;
     const municipioId = this.simpatizanteForm.get('municipio')?.value;
@@ -519,30 +577,29 @@ export class SimpatizanteComponent {
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
     const operadorId = this.simpatizanteForm.get('operadorId')?.value;
 
-
-    this.votante.municipio = { id: municipioId } as Municipio;
-    this.votante.estado = { id: estadoId } as Estado;
-    this.votante.seccion = { id: seccionId } as Seccion
-    this.votante.operador = { id: operadorId } as Operador
-    this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
-
-
+    this.votante.municipio = { id: 33 } as Municipio;
+    this.votante.estado = { id: 29 } as Estado;
+    this.votante.seccion = { id: seccionId } as Seccion;
+    this.votante.operador = { id: operadorId } as Operador;
+    this.votante.programaSocial = programaSocialId
+      ? ({ id: programaSocialId } as ProgramaSocial)
+      : null;
 
     this.spinnerService.show();
     console.log(this.votante);
     this.simpatizantesService.put(votanteId, this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito("Simpatizante actualizado con éxito");
+        this.mensajeService.mensajeExito('Simpatizante actualizado con éxito');
         this.resetForm();
 
         this.configPaginator.currentPage = 1;
       },
       error: (error) => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeError("Error al actualizar el simpatizante");
+        this.mensajeService.mensajeError('Error al actualizar el simpatizante');
         console.error(error);
-      }
+      },
     });
   }
   formatoFecha(fecha: string): string {
@@ -561,7 +618,9 @@ export class SimpatizanteComponent {
           next: () => {
             console.log('Delete success callback executed');
             this.spinnerService.hide();
-            this.mensajeService.mensajeExito('Simpatizante borrado correctamente');
+            this.mensajeService.mensajeExito(
+              'Simpatizante borrado correctamente'
+            );
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
@@ -569,7 +628,7 @@ export class SimpatizanteComponent {
             this.spinnerService.hide();
             console.log('Delete error callback executed', error);
             this.mensajeService.mensajeError(error);
-          }
+          },
         });
       }
     );
@@ -581,11 +640,9 @@ export class SimpatizanteComponent {
   }
   submit() {
     if (this.isModalAdd === false) {
-
       this.actualizar();
     } else {
       this.agregar();
-
     }
   }
 
@@ -598,11 +655,13 @@ export class SimpatizanteComponent {
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
     const operadorId = this.simpatizanteForm.get('operadorId')?.value;
 
-    this.votante.programaSocial = programaSocialId ? { id: programaSocialId } as ProgramaSocial : null;
-    this.votante.municipio = { id: municipioId } as Municipio;
-    this.votante.estado = { id: estadoId } as Estado;
-    this.votante.seccion = { id: seccionId } as Seccion
-    this.votante.operador = { id: operadorId } as Operador
+    this.votante.programaSocial = programaSocialId
+      ? ({ id: programaSocialId } as ProgramaSocial)
+      : null;
+    this.votante.municipio = { id: 33 } as Municipio;
+    this.votante.estado = { id: 29 } as Estado;
+    this.votante.seccion = { id: seccionId } as Seccion;
+    this.votante.operador = { id: operadorId } as Operador;
 
     console.log(this.votante);
 
@@ -618,9 +677,8 @@ export class SimpatizanteComponent {
         console.error('Error en la solicitud POST:', error);
         this.spinnerService.hide();
         this.mensajeService.mensajeError(error);
-      }
+      },
     });
-
   }
 
   handleChangeAdd() {
@@ -640,35 +698,46 @@ export class SimpatizanteComponent {
   }
   exportarDatosAExcel() {
     if (this.votantes.length === 0) {
-      console.warn('La lista de simpatizantes está vacía, no se puede exportar.');
+      console.warn(
+        'La lista de simpatizantes está vacía, no se puede exportar.'
+      );
       return;
     }
 
-    const datosParaExportar = this.votantes.map(votante => {
+    const datosParaExportar = this.votantes.map((votante) => {
       const estatus = votante.estatus ? 'Activo' : 'Inactivo';
 
       return {
-        'Nombre': votante.nombres,
+        Nombre: votante.nombres,
         'Apellido paterno': votante.apellidoPaterno,
         'Apellido materno': votante.apellidoMaterno,
         'Fecha de nacimiento': votante.fechaNacimiento,
-        'CURP': votante.curp,
-        'Sexo': votante.sexo === 1 ? 'Masculino' : 'Femenino',
-        'Domicilio': votante.domicilio,
-        'IDMEX': votante.idmex,
-        'Estatus': estatus,
+        CURP: votante.curp,
+        Sexo: votante.sexo === 1 ? 'Masculino' : 'Femenino',
+        Domicilio: votante.domicilio,
+        IDMEX: votante.idmex,
+        Estatus: estatus,
       };
     });
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
 
     this.guardarArchivoExcel(excelBuffer, 'Simpatizantes.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const url: string = window.URL.createObjectURL(data);
     const a: HTMLAnchorElement = document.createElement('a');
     a.href = url;
@@ -689,21 +758,22 @@ export class SimpatizanteComponent {
   beneficiarioFiltrado: any[] = [];
 
   filtrarBeneficiario(): any {
-    return this.beneficiarios.filter(beneficioario =>
-      beneficioario.nombres.toLowerCase().includes(this.buscar.toLowerCase(),) ||
-      beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
-      beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
-      beneficioario.curp.toLowerCase().includes(this.buscar.toLowerCase(),)
+    return this.beneficiarios.filter(
+      (beneficioario) =>
+        beneficioario.nombres
+          .toLowerCase()
+          .includes(this.buscar.toLowerCase()) ||
+        beneficioario.apellidoMaterno
+          .toLowerCase()
+          .includes(this.buscar.toLowerCase()) ||
+        beneficioario.apellidoMaterno
+          .toLowerCase()
+          .includes(this.buscar.toLowerCase()) ||
+        beneficioario.curp.toLowerCase().includes(this.buscar.toLowerCase())
     );
-
   }
   actualizarFiltro(event: any): void {
     this.buscar = event.target.value;
     this.beneficiarioFiltrado = this.filtrarBeneficiario();
   }
-
 }
-
-
-
-

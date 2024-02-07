@@ -1,2 +1,6 @@
-
-
+.ng-select.disabled {
+  background-color: #f2f2f2;
+  color: #999;
+  pointer-events: none;
+  cursor: not-allowed;
+}
