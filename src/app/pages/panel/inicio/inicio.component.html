@@ -1,90 +1,48 @@
-<div class="row justify-content-center">
-  <div class="col-lg-4">
-    <div class="card shadow-lg rounded">
-      <div class="card-body">
-        <div class="row">
-          <div
-            class="col-lg-5 d-flex align-items-center justify-content-center"
-          >
-            <i
-              class="ti ti-user-circle text-muted"
-              style="font-size: 100px"
-            ></i>
-          </div>
-          <div class="col-lg-7">
-            <div class="ps-2">
-              <h1>BIENVENID@</h1>
-              <ul style="list-style: none; padding-left: 0">
-                <li style="display: flex; align-items: center">
-                  <span
-                    class="nav-link-icon d-md-none d-lg-inline-block"
-                    style="
-                      display: flex;
-                      flex-direction: column;
-                      align-items: center;
-                      margin-right: 10px;
-                    "
-                  >
-                    <i class="ti ti-user-pentagon"></i>
-                  </span>
-                  <h3 class="nav-link-title" style="margin-bottom: 0">
-                    {{ dataObject?.nombreCompleto }}
-                  </h3>
-                </li>
-                <hr
-                  style="
-                    margin-top: 0;
-                    margin-bottom: 5px;
-                    border: 0;
-                    border-top: 1px solid #000;
-                  "
-                />
-                <li
-                  style="display: flex; align-items: center; margin-bottom: 5px"
-                >
-                  <span
-                    class="nav-link-icon d-md-none d-lg-inline-block"
-                    style="
-                      display: flex;
-                      flex-direction: column;
-                      align-items: center;
-                      margin-right: 10px;
-                    "
-                  >
-                    <i class="ti ti-mail"></i>
-                  </span>
-                  <h4 class="nav-link-title" style="margin-bottom: 0">
-                    {{ dataObject?.email }}
-                  </h4>
-                </li>
-                <li style="display: flex; align-items: center">
-                  <span
-                    class="nav-link-icon d-md-none d-lg-inline-block"
-                    style="
-                      display: flex;
-                      flex-direction: column;
-                      align-items: center;
-                      margin-right: 10px;
-                    "
-                  >
-                    <i class="ti ti-id-badge-2"></i>
-                  </span>
-                  <h4 class="nav-link-title" style="margin-bottom: 0">
-                    {{ dataObject?.rol }}
-                  </h4>
-                </li>
-              </ul>
+<div class="row justify-content-center mb-5 ">
+  <div class="col-sm-8">
+
+    <div class="card d-flex flex-column shadow-lg animate__animated animate__fadeInDown ">
+
+      <div class="row">
+
+        <div class="col-md-4">
+          <img 
+          class="w-100 h-100 object-cover " 
+          src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
+          [alt]="dataObject?.nombreCompleto" />
+        </div>
+  
+        <div class="col-md-8">
+          <div class="card-body d-flex flex-column">
+            <h3 class="card-title fw-bolder ">Bienvenid@</h3>
+            <h1 class="text-primary-emphasis ">
+              <i class="ti ti-user"></i> 
+              {{ dataObject?.nombreCompleto }}
+            </h1>
+            <div class="text-secondary">
+              <i class="ti ti-mail"></i> 
+              {{ dataObject?.email }}
+            </div>
+            <div class="text-secondary fw-bold ">
+              <i class="ti ti-user-star"></i> 
+              {{ dataObject?.rol }}
             </div>
           </div>
         </div>
+  
       </div>
+
     </div>
+    
+    
+
   </div>
 </div>
-<br />
+
 <hr />
 
-<div class="row">
+<div class="row row-deck row-gap-3 animate__animated animate__fadeInUp ">
+
   <!-- Primer Beneficio -->
   <div class="col-md-6 col-lg-3">
     <div class="card">
@@ -121,6 +79,8 @@
       </div>
     </div>
   </div>
+
+
   <div class="col-md-6 col-lg-3">
     <div class="card">
       <div class="card-stamp">
@@ -158,6 +118,8 @@
       </div>
     </div>
   </div>
+
+
   <div class="col-md-6 col-lg-3">
     <div class="card">
       <div class="card-stamp">
@@ -196,6 +158,8 @@
       </div>
     </div>
   </div>
+
+
   <div class="col-md-6 col-lg-3">
     <div class="card">
       <div class="card-stamp">
@@ -235,4 +199,5 @@
       </div>
     </div>
   </div>
+
 </div>

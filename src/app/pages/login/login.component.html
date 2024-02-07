@@ -5,30 +5,41 @@
 </ngx-spinner>
 
 <div class="page page-center">
-    <div class="container container-tight py-4">
-        <div class="card card-md text-center"> <!-- Añadido 'text-center' para centrar la tarjeta -->
-            <div class="card-body">
-                <h2 class="h2 text-center mb-4">Inicia sesión con tus datos</h2>
-                <hr>
-                <form [formGroup]="formUserLogin" autocomplete="off" novalidate (ngSubmit)="login()">
-                    <div class="mb-3">
-                        <label class="form-label">Correo</label>
-                        <input type="email" class="form-control" autocomplete="off" formControlName="email" />
+    <div class="container container-normal py-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg">
+                <div class="container-tight">
+                    <div class="text-center mb-4">
+                        <a href="." class="navbar-brand navbar-brand-autodark"><img src="./static/logo.svg" height="36" alt=""></a>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label"> Contraseña </label>
-                        <div class="input-group input-group-flat">
-                            <input type="password" class="form-control" autocomplete="off" formControlName="password" />
+                    <div class="card card-md">
+                        <div class="card-body">
+                            <h2 class="h2 text-center mb-4">Inicia sesión con tus datos</h2>
+                            <hr>
+                            <form [formGroup]="formUserLogin" autocomplete="off" novalidate (ngSubmit)="login()">
+                                <div class="mb-3">
+                                    <label class="form-label">Correo</label>
+                                    <input type="email" class="form-control" autocomplete="off" formControlName="email" />
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label"> Contraseña </label>
+                                    <div class="input-group input-group-flat">
+                                        <input type="password" class="form-control" autocomplete="off" formControlName="password" />
+                                    </div>
+                                </div>
+                                <div class="form-footer">
+                                    <button type="submit" class="btn btn-secondary w-100" [disabled]="!formUserLogin.valid">
+                    Ingresar
+                  </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button type="submit" class="btn btn-secondary w-100" [disabled]="!formUserLogin.valid">
-                            Ingresar
-                        </button>
-                    </div>
-                </form>
+                </div>
+            </div>
+            <div class="col-lg d-none d-lg-block">
+                <img src="assets/images/candidato-login-removebg-preview.png" height="300" class="d-block mx-auto" alt="">
             </div>
         </div>
     </div>
 </div>
-
