@@ -57,7 +57,6 @@ export class SeguimientoVotoComponent implements OnInit {
       id: [null],
       estatusVoto: [true],
       imagenBase64: [''],
-      simpatizante: ['']
     });
   }
 
