@@ -1,4 +1,5 @@
 import { Estado } from "./estados";
+import { Genero } from "./genero";
 import { Municipio } from "./municipio"
 import { Operador } from "./operador";
 import { ProgramaSocial } from "./programa-social";
@@ -13,7 +14,7 @@ export interface Simpatizante {
     fechaNacimiento: string;
     strFechaNacimiento: string;
     domicilio: string;
-    sexo: number;
+    genero: Genero;
     curp: string;
     latitud: number;
     longitud: number;

@@ -29,6 +29,8 @@ import { Operador } from 'src/app/models/operador';
 import { OperadoresService } from 'src/app/core/services/operadores.service';
 import { SecurityService } from 'src/app/core/services/security.service';
 import { AppUserAuth } from 'src/app/models/login';
+import { GeneroService } from 'src/app/core/services/genero.service';
+import { Genero } from 'src/app/models/genero';
 
 @Component({
   selector: 'app-beneficiarios',
@@ -59,17 +61,13 @@ export class SimpatizanteComponent {
   seccion: Seccion[] = [];
   programaSocial: ProgramaSocial[] = [];
   estado: Estado[] = [];
+  generos: Genero[] = [];
   operadores: Operador[] = [];
   rolId = 0;
   readonlySelectOperador = true;
   currentUser!: AppUserAuth | null;
   candidatoId = 0;
   operadorId = 0;
-
-  generos: GenericType[] = [
-    { id: 1, name: 'Masculino' },
-    { id: 2, name: 'Femenino' },
-  ];
   estatusBtn = true;
   verdadero = 'Activo';
   falso = 'Inactivo';
@@ -98,6 +96,7 @@ export class SimpatizanteComponent {
     private municipiosService: MunicipiosService,
     private seccionService: SeccionService,
     private estadoService: EstadoService,
+    private serviceGenero: GeneroService,
     private programasSociales: ProgramaSocialService,
     private operadoresService: OperadoresService,
     private simpatizantesService: SimpatizantesService,
@@ -115,6 +114,7 @@ export class SimpatizanteComponent {
     this.getMunicipios();
     this.getProgramas();
     this.getSeccion();
+    this.getGenero();
 
     if (this.currentUser?.rolId === RolesBD.operador) {
       this.operadorId = this.currentUser?.operadorId;
@@ -391,6 +391,14 @@ export class SimpatizanteComponent {
       },
     });
   }
+  getGenero() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.serviceGenero.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.generos = dataFromAPI;
+      },
+    });
+  }
   getProgramas() {
     this.isLoading = LoadingStates.trueLoading;
     this.programasSociales.getAll().subscribe({
@@ -506,7 +514,7 @@ export class SimpatizanteComponent {
     this.votantesFilter = this.votantes.filter(
       (Votante) =>
         Votante.nombreCompleto.toLowerCase().includes(valueSearch) ||
-        this.getGeneroName(Votante.sexo).toLowerCase().includes(valueSearch) ||
+        Votante.genero.nombre.toLowerCase().includes(valueSearch) ||
         Votante.municipio.nombre.toLowerCase().includes(valueSearch) ||
         Votante.seccion.clave.toString().includes(valueSearch) ||
         Votante.edad.toString().includes(valueSearch)
@@ -519,7 +527,7 @@ export class SimpatizanteComponent {
 
   getGeneroName(id: number): string {
     const genero = this.generos.find((g) => g.id === id);
-    return genero ? genero.name : '';
+    return genero ? genero.nombre : '';
   }
 
   onSelectmunicipios(id: number) {
@@ -553,7 +561,7 @@ export class SimpatizanteComponent {
       municipio: dto.municipio.id,
       estado: dto.estado.id,
       curp: dto.curp,
-      sexo: dto.sexo,
+      sexo: dto.genero.id,
       idmex: dto.idmex,
       seccion: dto.seccion.id,
       programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
@@ -572,11 +580,13 @@ export class SimpatizanteComponent {
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
     const operadorId = this.simpatizanteForm.get('operadorId')?.value;
+    const generoId = this.simpatizanteForm.get('sexo')?.value;
 
     this.votante.municipio = { id: 33 } as Municipio;
     this.votante.estado = { id: 29 } as Estado;
     this.votante.seccion = { id: seccionId } as Seccion;
     this.votante.operador = { id: operadorId } as Operador;
+    this.votante.genero = { id: generoId } as Genero;
     this.votante.programaSocial = programaSocialId
       ? ({ id: programaSocialId } as ProgramaSocial)
       : null;
@@ -650,6 +660,7 @@ export class SimpatizanteComponent {
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
     const operadorId = this.simpatizanteForm.get('operadorId')?.value;
+    const generoId = this.simpatizanteForm.get('sexo')?.value;
 
     this.votante.programaSocial = programaSocialId
       ? ({ id: programaSocialId } as ProgramaSocial)
@@ -658,6 +669,7 @@ export class SimpatizanteComponent {
     this.votante.estado = { id: 29 } as Estado;
     this.votante.seccion = { id: seccionId } as Seccion;
     this.votante.operador = { id: operadorId } as Operador;
+    this.votante.genero = { id: generoId } as Genero;
 
     console.log(this.votante);
 
@@ -702,17 +714,23 @@ export class SimpatizanteComponent {
 
     const datosParaExportar = this.votantes.map((votante) => {
       const estatus = votante.estatus ? 'Activo' : 'Inactivo';
-
+      const fechaFormateada = new Date(votante.fechaNacimiento).toISOString().split('T')[0];
       return {
         Nombre: votante.nombres,
         'Apellido paterno': votante.apellidoPaterno,
         'Apellido materno': votante.apellidoMaterno,
-        'Fecha de nacimiento': votante.fechaNacimiento,
+        'Fecha de nacimiento':fechaFormateada,
+        Edad: votante.edad,
         CURP: votante.curp,
-        Sexo: votante.sexo === 1 ? 'Masculino' : 'Femenino',
+        Genero: votante.genero.nombre,
         Domicilio: votante.domicilio,
         IDMEX: votante.idmex,
+        Municipio: votante.municipio.nombre,
+        Estado: votante.estado.nombre,
+        Seccion: votante.seccion.clave,
+        'Programa Social': votante.programaSocial?.nombre,
         Estatus: estatus,
+        Operador: votante.operador.nombreCompleto
       };
     });
 
