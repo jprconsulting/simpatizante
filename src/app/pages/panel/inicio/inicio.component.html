@@ -1,40 +1,33 @@
 <div class="row justify-content-center mb-5 ">
-  <div class="col-sm-8">
+  <div class="col-sm-4">
 
     <div class="card d-flex flex-column shadow-lg animate__animated animate__fadeInDown ">
 
       <div class="row">
 
-        <div class="col-md-4">
-          <img 
-          class="w-100 h-100 object-cover " 
-          src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
-          [alt]="dataObject?.nombreCompleto" />
+        <div class="col-md-4 d-flex align-items-center justify-content-center">
+          <i class="ti ti-user-circle text-muted" style="font-size: 100px"></i>
         </div>
-  
-        <div class="col-md-8">
+        <div class="col-md-8 text-center">
           <div class="card-body d-flex flex-column">
-            <h3 class="card-title fw-bolder ">Bienvenid@</h3>
-            <h1 class="text-primary-emphasis ">
-              <i class="ti ti-user"></i> 
-              {{ dataObject?.nombreCompleto }}
-            </h1>
-            <div class="text-secondary">
-              <i class="ti ti-mail"></i> 
-              {{ dataObject?.email }}
+            <h1 class="card-title fw-bolder fs-2">Bienvenid@</h1>
+            <h2 class="text-primary-emphasis fs-4">
+              <i class="ti ti-user"></i> {{ dataObject?.nombreCompleto }}
+            </h2>
+            <div class="text-secondary fs-5">
+              <i class="ti ti-mail"></i> {{ dataObject?.email }}
             </div>
-            <div class="text-secondary fw-bold ">
-              <i class="ti ti-user-star"></i> 
-              {{ dataObject?.rol }}
+            <div class="text-secondary fw-bold fs-5">
+              <i class="ti ti-user-star"></i> {{ dataObject?.rol }}
             </div>
           </div>
         </div>
-  
+
       </div>
 
     </div>
-    
-    
+
+
 
   </div>
 </div>
@@ -49,22 +42,10 @@
       <div class="card-stamp">
         <div class="card-stamp-icon bg-yellow">
           <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="icon"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
-            />
+            <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
             <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
           </svg>
         </div>
@@ -72,9 +53,8 @@
       <div class="card-body">
         <h3 class="card-title">Simpatizantes:</h3>
         <p class="text-muted">
-          Este sistema es un conteo de votos y de seguimiento de líderes los
-          cuales son encargados de tener bajo su responsabilidad a un grupo de
-          seguidores electorales.
+          Este sistema es un conteo de votos y de seguimiento de líderes los cuales son encargados de tener bajo su
+          responsabilidad a un grupo de seguidores electorales.
         </p>
       </div>
     </div>
@@ -86,22 +66,10 @@
       <div class="card-stamp">
         <div class="card-stamp-icon bg-yellow">
           <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="icon"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
-            />
+            <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
             <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
           </svg>
         </div>
@@ -109,11 +77,10 @@
       <div class="card-body">
         <h3 class="card-title">Importancia:</h3>
         <p class="text-muted">
-          El proyecto simpatizantes es de suma impotancia con el fin de
-          garantizar la integridad y transparencia de los procesos electorales,
-          y busca mejorar la eficiencia y precisión en el conteo de votos además
-          de la relación de los votantes con los líderes de los partidos
-          políticos.
+          El proyecto simpatizantes es de suma impotancia con el fin de garantizar la integridad y transparencia de los
+          procesos electorales, y busca mejorar la eficiencia y precisión en el conteo de votos además de la relación de
+          los votantes con los líderes de
+          los partidos políticos.
         </p>
       </div>
     </div>
@@ -125,22 +92,10 @@
       <div class="card-stamp">
         <div class="card-stamp-icon bg-yellow">
           <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="icon"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
-            />
+            <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
             <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
           </svg>
         </div>
@@ -148,12 +103,11 @@
       <div class="card-body">
         <h3 class="card-title">Objetivo:</h3>
         <p class="text-muted">
-          Tiene como objetivo tener un control de las personas que ya emitieron
-          su voto, ademas de generar reportes con base a quienes son
-          beneficiarios con algún programa con su respectiva evidencia y
-          procedimiento correspondiente, la generación de informes y la
-          seguridad de datos. Además se considera la integración con otros
-          sistemas electorales y la capacitación del personal involucrado.
+          Tiene como objetivo tener un control de las personas que ya emitieron su voto, ademas de generar reportes con
+          base a quienes son beneficiarios con algún programa con su respectiva evidencia y procedimiento
+          correspondiente, la generación de informes y
+          la seguridad de datos. Además se considera la integración con otros sistemas electorales y la capacitación del
+          personal involucrado.
         </p>
       </div>
     </div>
@@ -165,22 +119,10 @@
       <div class="card-stamp">
         <div class="card-stamp-icon bg-yellow">
           <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="icon"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
-            />
+            <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
             <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
           </svg>
         </div>
@@ -189,8 +131,7 @@
         <h3 class="card-title">Objetivos del sistema:</h3>
         <p class="text-muted">- Tener un mejor control de votos</p>
         <p class="text-muted">
-          - Tener acceso a las incidencias que se generen en la jornada
-          electoral
+          - Tener acceso a las incidencias que se generen en la jornada electoral
         </p>
         <p class="text-muted">
           - Tener control de los operadores y la gente que manejan

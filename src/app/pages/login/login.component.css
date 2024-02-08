@@ -1,6 +1,12 @@
 .page-center {
-    background-color: #4D53A3;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-color: #f7db9e;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.col-lg img {
+  border: 13px solid #c8a2c8;
+  border-radius: 20px;
+  box-sizing: border-box;
 }

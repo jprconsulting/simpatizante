@@ -94,27 +94,21 @@
                   Nombre completo
                 </th>
                 <th style="text-transform: none; font-size: inherit">
-                  Fecha nacimiento
+                  Edad
                 </th>
-                <th style="text-transform: none; font-size: inherit">
-                  Domicilio
-                </th>
-                <th style="text-transform: none; font-size: inherit">Sexo</th>
-                <th style="text-transform: none; font-size: inherit">CURP</th>
-                <th style="text-transform: none; font-size: inherit">IDMEX</th>
-                <th style="text-transform: none; font-size: inherit">
-                  Programa social
-                </th>
-                <th style="text-transform: none; font-size: inherit">rol</th>
+                <th style="text-transform: none; font-size: inherit">Género</th>
                 <th style="text-transform: none; font-size: inherit">
                   Municipio
                 </th>
-                <th
-                  class="text-center"
-                  style="text-transform: none; font-size: inherit"
-                >
-                  Estatus
+                <th style="text-transform: none; font-size: inherit">
+                  Sección
                 </th>
+                <th
+                class="text-center"
+                style="text-transform: none; font-size: inherit"
+              >
+                Estatus
+              </th>
                 <th
                   class="w-1"
                   style="text-transform: none; font-size: inherit"
@@ -142,18 +136,12 @@
                 <td>
                   {{ simpatizante.nombreCompleto }}
                 </td>
-                <td class="text-muted">
-                  {{ simpatizante.fechaNacimiento | date : "dd-MM-yyy" }}
+                <td >
+                  {{ simpatizante.edad }}
                 </td>
-                <td class="text-muted">{{ simpatizante.domicilio }}</td>
-                <td class="text-muted">{{ objGeneros[simpatizante.sexo] }}</td>
-                <td class="text-muted">{{ simpatizante.curp }}</td>
-                <td class="text-muted">{{ simpatizante.idmex }}</td>
-                <td class="text-muted">
-                  {{ simpatizante.programaSocial?.nombre }}
-                </td>
-                <td class="text-muted"></td>
+                <td class="text-muted">{{ simpatizante.genero.nombre }}</td>
                 <td class="text-muted">{{ simpatizante.municipio.nombre }}</td>
+                <td class="text-muted">{{ simpatizante.seccion.clave }}</td>
                 <td class="text-center">
                   <ng-container *ngIf="simpatizante.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
@@ -389,14 +377,14 @@
                 <ng-select
                   placeholder="Elegir"
                   [items]="generos"
-                  bindLabel="name"
+                  bindLabel="nombre"
                   bindValue="id"
                   [searchable]="false"
                   [clearable]="false"
                   formControlName="sexo"
                 >
                   <ng-template ng-option-tmp let-item="item">
-                    {{ item.name }}
+                    {{ item.nombre }}
                   </ng-template>
                 </ng-select>
                 <div
@@ -507,7 +495,7 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Municipio*:</label>
+                <label class="form-label ">Municipio*:</label>
                 <ng-select
                   formControlName="municipio"
                   #selectMunicipio
@@ -520,10 +508,11 @@
                   value="33"
                   [clearable]="false"
                   [class.disabled]="true"
+                  class="color"
                 >
                   <ng-template ng-header-tmp>
                     <input
-                      class="form-control"
+                      class="form-control color"
                       type="text"
                       value="33"
                       (input)="

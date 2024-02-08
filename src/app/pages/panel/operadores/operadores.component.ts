@@ -165,7 +165,7 @@ export class OperadoresComponent implements OnInit {
       Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
       Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
       Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)||
-      this.getGeneroName(Simpatizante.sexo).toLowerCase().includes(valueSearch)
+     Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
     )
     
     this.configPaginator.currentPage = 1;

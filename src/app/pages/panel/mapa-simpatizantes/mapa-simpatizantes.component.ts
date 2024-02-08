@@ -81,7 +81,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     <div style="width: 450px; height: auto;" class=" text-center">
       <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
         src="${
-          simpatizante.sexo === 1
+          simpatizante.genero.id === 1
             ? '../../../../assets/images/hombre.png'
             : '../../../../assets/images/mujer.png'
         }"
