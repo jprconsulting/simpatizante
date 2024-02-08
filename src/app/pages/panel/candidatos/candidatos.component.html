@@ -321,13 +321,25 @@
             <div class="col-lg-12">
               <div class="mb-3">
                 <div class="form-label">Selecciona una fotografía*</div>
-                <input class="input" type="file" (change)="onFileChange($event)" formControlName="imagenBase64" />
-                <div *ngIf="candidatoForm.get('imagenBase64')?.touched" class="error-message">
-                  <div *ngIf="
-                      candidatoForm.get('imagenBase64')?.hasError('required')
-                    ">
-                    La imagen es obligatoria
+
+                <div class="row flex-column ">
+
+                  <input class="input" type="file" (change)="onFileChange($event)" formControlName="imagenBase64" />
+                  <div *ngIf="isUpdatingImg" class="img-preview my-1 ">
+                    <img 
+                    [src]="imgPreview"
+                    alt="Image preview"
+                    class="img-fluid"
+                    >
                   </div>
+                  <div *ngIf="candidatoForm.get('imagenBase64')?.touched" class="error-message">
+                    <div *ngIf="
+                        candidatoForm.get('imagenBase64')?.hasError('required')
+                      ">
+                      La imagen es obligatoria
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -343,7 +355,19 @@
             <div class="col-lg-6">
               <div class="mb-3">
                 <div class="form-label">Selecciona un emblema*</div>
-                <input class="input" type="file" (change)="onFileChange2($event)" formControlName="emblemaBase64" />
+
+                <!-- src="https://images.pexels.com/photos/567458/pexels-photo-567458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"  -->
+                <div class="row flex-column ">
+                  <input class="input" type="file" (change)="onFileChange2($event)" formControlName="emblemaBase64" />
+                  <div *ngIf="isUpdatingEmblema" class="img-preview my-1 ">
+                    <img 
+                    [src]="emblemaPreview"
+                    alt=""
+                    class="img-fluid"
+                    >
+                  </div>
+                </div>
+
               </div>
             </div>
             <div class="col-lg-12">

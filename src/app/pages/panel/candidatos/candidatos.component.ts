@@ -42,6 +42,11 @@ export class CandidatosComponent implements OnInit{
   errorMessage!: string;
   sinSimpatizantes: boolean = false;
 
+  public imgPreview: string = '';
+  public emblemaPreview: string = '';
+  public isUpdatingImg: boolean = false;
+  public isUpdatingEmblema: boolean = false;
+
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
@@ -151,6 +156,7 @@ export class CandidatosComponent implements OnInit{
 
   onFileChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;
+    this.isUpdatingImg = false;
 
     if (inputElement.files && inputElement.files.length > 0) {
       const file = inputElement.files[0];
@@ -171,7 +177,7 @@ export class CandidatosComponent implements OnInit{
 
   onFileChange2(event: Event) {
     const inputElement = event.target as HTMLInputElement;
-
+    this.isUpdatingEmblema = false;
     if (inputElement.files && inputElement.files.length > 0) {
       const file = inputElement.files[0];
       const reader = new FileReader();
@@ -278,6 +284,13 @@ export class CandidatosComponent implements OnInit{
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
+    const candidato = this.candidatoFilter.find( candidato => candidato.id === dto.id );
+
+    this.imgPreview = candidato!.foto;
+    this.emblemaPreview = candidato!.emblema;
+    this.isUpdatingImg = true;
+    this.isUpdatingEmblema = true;
+  
     this.candidatoForm.patchValue({
       id: dto.id,
       nombres: dto.nombres,
@@ -302,9 +315,30 @@ export class CandidatosComponent implements OnInit{
     const cargoid = this.candidatoForm.get('cargo')?.value;
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
     const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
+    this.imgPreview = '';
+    this.emblemaPreview = '';
 
     this.candidatos.cargo = {id: cargoid } as Cargo;
-    if (imagenBase64 && emblemaBase64) {
+    if (!imagenBase64 && !emblemaBase64) {
+
+      const formData = { ...this.candidatos }
+
+      this.spinnerService.show();
+
+      this.candidatosService.put(candidatoId, formData).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Candidato actualizado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        }
+      });
+      
+    } else if( imagenBase64 && emblemaBase64 ) {
       const formData = { ...this.candidatos, imagenBase64, emblemaBase64 };
       this.spinnerService.show();
 
@@ -418,6 +452,8 @@ export class CandidatosComponent implements OnInit{
   }
 
   handleChangeAdd() {
+    this.isUpdatingImg = false;
+    this.isUpdatingEmblema = false;
     if (this.candidatoForm) {
       this.candidatoForm.reset();
       const estatusControl = this.candidatoForm.get('estatus');

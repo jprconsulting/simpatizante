@@ -500,7 +500,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let operador of operadores">
+                <!-- <tr *ngFor="let operador of operadores">
                   <ng-container *ngFor="let seccion of operador.secciones; let i = index">
                     <td style="text-align: center;">
                       <p>{{ operador.secciones[i].clave }}</p>
@@ -509,7 +509,17 @@
                       <p>{{ operador.secciones[i].municipio.nombre }}</p>
                     </td>
                   </ng-container>
+                </tr> -->
+
+                <tr *ngFor="let operador of operadores; let i = index">
+                    <td style="text-align: center;">
+                      <p>{{ operador.secciones[i].clave }}</p>
+                    </td>
+                    <td style="text-align: center;">
+                      <p>{{ operador.secciones[i].municipio.nombre }}</p>
+                    </td>
                 </tr>
+
               </tbody>
               
             </table>
