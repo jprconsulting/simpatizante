@@ -25,6 +25,7 @@ export interface Simpatizante {
     estado: Estado;
     idmex: string;
     operador: Operador
+    edad: number;
 }
 
 export interface TotalBeneficiariosMunicipio extends Municipio {

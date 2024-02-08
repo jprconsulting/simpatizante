@@ -507,13 +507,9 @@ export class SimpatizanteComponent {
       (Votante) =>
         Votante.nombreCompleto.toLowerCase().includes(valueSearch) ||
         this.getGeneroName(Votante.sexo).toLowerCase().includes(valueSearch) ||
-        Votante.domicilio.toLowerCase().includes(valueSearch) ||
-        Votante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
-        Votante.idmex.toString().includes(valueSearch) ||
-        Votante.curp.toString().includes(valueSearch) ||
-        Votante.programaSocial?.nombre.toLowerCase().includes(valueSearch) ||
         Votante.municipio.nombre.toLowerCase().includes(valueSearch) ||
-        Votante.id.toString().includes(valueSearch)
+        Votante.seccion.clave.toString().includes(valueSearch) ||
+        Votante.edad.toString().includes(valueSearch)
     );
 
     console.log('Filtered Votantes:', this.votantesFilter);
