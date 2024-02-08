@@ -202,18 +202,27 @@
           <div class="row">
             <div class="col-lg-6">
               <label class="form-label">Tipo de incidencia*</label>
-              <select
-                class="form-select"
-                aria-label="Default select example"
-                formControlName="tipoIncidencia"
-              >
-                <option
-                  *ngFor="let indicador of indicadores"
-                  [value]="indicador.id"
-                >
-                  {{ indicador.tipo }}
-                </option>
-              </select>
+              <ng-select
+              formControlName="tipoIncidencia"
+              #selectipo
+              [searchable]="false"
+              [items]="indicadores"
+              bindLabel="tipo"
+              bindValue="id"
+              placeholder="Elegir"
+              [clearable]="false"
+            >
+              <ng-template ng-header-tmp>
+                <input
+                  class="form-control"
+                  type="text"
+                  (input)="selectipo.filter($any($event.target).value)"
+                />
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                {{ item.tipo }}
+              </ng-template>
+            </ng-select>
               <div
                 *ngIf="incidenciasForm.get('tipoIncidencia')?.touched"
                 class="error-message"
