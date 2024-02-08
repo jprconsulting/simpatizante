@@ -1,0 +1,3 @@
+.navbar-nav .nav-item.dropdown > .nav-link.dropdown-toggle:after {
+  margin-left: 0.5rem;
+}

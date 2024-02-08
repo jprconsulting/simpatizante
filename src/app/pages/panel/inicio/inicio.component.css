@@ -1,7 +1,19 @@
 .card {
-    transition: transform 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 .card:hover {
-    transform: translateY(-5px);
+  transform: translateY(-5px);
+}
+
+.fs-2 {
+  font-size: 50rem;
+}
+
+.fs-4 {
+  font-size: 4rem;
+}
+
+.fs-5 {
+  font-size: 3rem;
 }
