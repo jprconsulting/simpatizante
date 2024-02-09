@@ -18,4 +18,8 @@ export class SidebarComponent {
   setDataUser() {
     this.dataObject = this.securityService.getDataUser();
   }
+  stopPropagation(event: Event): void {
+    event.stopPropagation();
+  }
+  
 }

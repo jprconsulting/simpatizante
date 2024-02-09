@@ -264,7 +264,8 @@ export class CandidatosComponent {
       Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
       Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
       Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)
+      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
+      Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
     )
 
     this.configPaginator.currentPage = 1;

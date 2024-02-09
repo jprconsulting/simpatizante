@@ -6,3 +6,6 @@
 .navbar-vertical.navbar-expand-lg .navbar-collapse .dropdown-menu .dropdown-item:active {
   background: rgb(70 85 101 / 43%) !important;
 }
+.space{
+margin-left: 10px;
+}
