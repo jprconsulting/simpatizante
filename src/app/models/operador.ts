@@ -13,4 +13,5 @@ export interface Operador {
     candidato : Candidato
     seccionesIds: number[];
     secciones: Seccion[];
+    edad: number;
 }
