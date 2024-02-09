@@ -55,7 +55,12 @@
         </a>
         <ul class="dropdown-menu show">
           <li class="nav-item" *appHasClaim="'CanAccessDishboard'">
-            <a class="nav-link space" [routerLink]="['deshboard']" (click)="stopPropagation($event)" routerLinkActive="active">
+            <a
+              class="nav-link space"
+              [routerLink]="['deshboard']"
+              (click)="stopPropagation($event)"
+              routerLinkActive="active"
+            >
               <span class="nav-link-icon d-md-none d-lg-inline-block">
                 <i class="ti ti-chart-infographic"></i>
               </span>
