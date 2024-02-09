@@ -163,12 +163,12 @@ export class VisitasComponent {
       descripcion: dto.descripcion,
       servicio: dto.servicio,
       simpatizante: dto.simpatizante.id,
-      imagenBase64: dto.imagenBase64
+      imagenBase64: ''
     });
 
     // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
-    console.log(this.visitaForm.value);
-    console.log(dto);
+    console.log('setDataUpdateVistaForm ',this.visitaForm.value);
+    console.log('setDataUpdateDTO',dto);
   }
 
 
@@ -241,7 +241,6 @@ export class VisitasComponent {
     this.visita = this.visitaForm.value as Visita;
 
     const visitaId = this.visitaForm.get('id')?.value
-
     const votanteId = this.visitaForm.get('simpatizante')?.value;
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
     
@@ -252,7 +251,6 @@ export class VisitasComponent {
     if ( !imagenBase64 ) {
       
       const formData = { ...this.visita };
-      console.log('visita:', this.visita);
 
       this.spinnerService.show();
 
