@@ -28,6 +28,7 @@ export class OperadoresComponent implements OnInit {
   @ViewChild('searchItem') searchItem!: ElementRef;
 
   operador!: Operador;
+  seccionesOperador: Seccion[] = [];
   operadorForm!: FormGroup;
   operadores: Operador[] = [];
   operadorFilter: Operador[] = [];
@@ -76,6 +77,15 @@ export class OperadoresComponent implements OnInit {
   ngOnInit(): void {
     this.isModalAdd = false;
     this.loadSimpatizantes();
+  }
+
+  verSeccionesOperador(secciones: Seccion[]) {
+    this.seccionesOperador = secciones;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
   }
 
   getGeneroName(id: number): string {
@@ -156,18 +166,18 @@ export class OperadoresComponent implements OnInit {
     this.configPaginator.currentPage = 1;
   }
 
-  handleChangeSearchModal( event: any ){
+  handleChangeSearchModal(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.simpatizanteFilter = this.simpatizantes.filter( Simpatizante => 
+    this.simpatizanteFilter = this.simpatizantes.filter(Simpatizante =>
       Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
       Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
       Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)||
-     Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
+      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
+      Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
     )
-    
+
     this.configPaginator.currentPage = 1;
   }
 
@@ -179,7 +189,7 @@ export class OperadoresComponent implements OnInit {
     return fechaFormateada;
   }
 
-  setDataModalUpdate(dto: Operador) {   
+  setDataModalUpdate(dto: Operador) {
 
     this.isModalAdd = false;
     this.idUpdate = dto.id;

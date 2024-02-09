@@ -1,15 +1,36 @@
 <div class="container-fluid">
-  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
-    aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#sidebar-menu"
+    aria-controls="sidebar-menu"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
     <span class="navbar-toggler-icon"></span>
   </button>
-  <h1 class="navbar-brand navbar-brand-autodark d-flex justify-content-center align-items-center">
-    <img src="../../../../assets/images/pac-logo.png" style="width: 110px; height: auto;" alt="PAC" />
+  <h1
+    class="navbar-brand navbar-brand-autodark d-flex justify-content-center align-items-center"
+  >
+    <img
+      src="../../../../assets/images/pac-logo.png"
+      style="width: 110px; height: auto"
+      alt="PAC"
+    />
   </h1>
-  <div class="collapse navbar-collapse" id="sidebar-menu" *ngIf="dataObject && dataObject.isAuthenticated">
+  <div
+    class="collapse navbar-collapse"
+    id="sidebar-menu"
+    *ngIf="dataObject && dataObject.isAuthenticated"
+  >
     <ul class="navbar-nav pt-lg-3">
-      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-        *appHasClaim="'CanAccessInicio'">
+      <li
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessInicio'"
+      >
         <a class="nav-link" [routerLink]="['inicio']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
             <i class="ti ti-home"></i>
@@ -18,65 +39,154 @@
         </a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a
+          class="nav-link dropdown-toggle"
+          href="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
           Administración
         </a>
         <ul class="dropdown-menu">
           <li class="nav-item" *appHasClaim="'CanAccessUsuarios'">
-            <a class="nav-link" [routerLink]="['usuarios']" routerLinkActive="active">Usuarios</a>
+            <a
+              class="nav-link"
+              [routerLink]="['usuarios']"
+              routerLinkActive="active"
+              >Usuarios</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessProgramasSociales'">
-            <a class="nav-link" [routerLink]="['programas-sociales']" routerLinkActive="active">Programas Sociales</a>
+            <a
+              class="nav-link"
+              [routerLink]="['programas-sociales']"
+              routerLinkActive="active"
+              >Programas Sociales</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessIncidencias'">
-            <a class="nav-link" [routerLink]="['incidencias']" routerLinkActive="active">Tipo Incidencias</a>
+            <a
+              class="nav-link"
+              [routerLink]="['incidencias']"
+              routerLinkActive="active"
+              >Tipo Incidencias</a
+            >
           </li>
         </ul>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a
+          class="nav-link dropdown-toggle"
+          href="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
           Jornada Electoral
         </a>
         <ul class="dropdown-menu show">
           <!-- Agregar la clase 'show' para mantener el menú desplegado -->
           <li class="nav-item" *appHasClaim="'CanAccessVisitas'">
-            <a class="nav-link" [routerLink]="['visitas']" routerLinkActive="active">Visitas</a>
+            <a
+              class="nav-link"
+              [routerLink]="['visitas']"
+              routerLinkActive="active"
+              >Visitas</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessIncidencias'">
-            <a class="nav-link" [routerLink]="['incidencias']" routerLinkActive="active">Incidencias en la jornada
-              electoral</a>
+            <a
+              class="nav-link"
+              [routerLink]="['incidencias']"
+              routerLinkActive="active"
+              >Incidencias en la jornada electoral</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessMapaIncidencias'">
-            <a class="nav-link" [routerLink]="['mapa-incidencias']" routerLinkActive="active">Mapa de Incidencias</a>
+            <a
+              class="nav-link"
+              [routerLink]="['mapa-incidencias']"
+              routerLinkActive="active"
+              >Mapa de Incidencias</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessSeguimientoVoto'">
-            <a class="nav-link" [routerLink]="['seguimiento-voto']" routerLinkActive="active">Seguimiento del voto</a>
+            <a
+              class="nav-link"
+              [routerLink]="['seguimiento-voto']"
+              routerLinkActive="active"
+              >Seguimiento del voto</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessResultados'">
-            <a class="nav-link" [routerLink]="['resultados']" routerLinkActive="active">Resultados</a>
+            <a
+              class="nav-link"
+              [routerLink]="['resultados']"
+              routerLinkActive="active"
+              >Resultados</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessReportes'">
-            <a class="nav-link" [routerLink]="['reportes']" routerLinkActive="active">Reportes</a>
+            <a
+              class="nav-link"
+              [routerLink]="['reportes']"
+              routerLinkActive="active"
+              >Reportes</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessNubePalabras'">
-            <a class="nav-link" [routerLink]="['nube-palabras']" routerLinkActive="active">Nube de palabras</a>
+            <a
+              class="nav-link"
+              [routerLink]="['nube-palabras']"
+              routerLinkActive="active"
+              >Nube de palabras</a
+            >
           </li>
         </ul>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a
+          class="nav-link dropdown-toggle"
+          href="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
           Operación
         </a>
         <ul class="dropdown-menu">
           <li class="nav-item" *appHasClaim="'CanAccessCandidatos'">
-            <a class="nav-link" [routerLink]="['candidatos']" routerLinkActive="active">Candidatos</a>
+            <a
+              class="nav-link"
+              [routerLink]="['candidatos']"
+              routerLinkActive="active"
+              >Candidatos</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessMapaSimpatizantes'">
-            <a class="nav-link" [routerLink]="['mapa-simpatizantes']" routerLinkActive="active">Mapa de
-              Simpatizantes</a>
+            <a
+              class="nav-link"
+              [routerLink]="['mapa-promovidos']"
+              routerLinkActive="active"
+              >Mapa de Promovidos</a
+            >
           </li>
           <li class="nav-item" *appHasClaim="'CanAccessOperadores'">
-            <a class="nav-link" [routerLink]="['operadores']" routerLinkActive="active">Operadores</a>
+            <a
+              class="nav-link"
+              [routerLink]="['operadores']"
+              routerLinkActive="active"
+              >Operadores</a
+            >
+          </li>
+          <li class="nav-item" *appHasClaim="'CanAccessSimpatizantes'">
+            <a
+              class="nav-link"
+              [routerLink]="['promovidos']"
+              routerLinkActive="active"
+              >Promovidos</a
+            >
           </li>
         </ul>
       </li>

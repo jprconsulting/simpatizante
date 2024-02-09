@@ -8,44 +8,55 @@
   <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
-<app-page-header headerTitle="Simpatizantes"></app-page-header>
+<app-page-header headerTitle="Promovidos"></app-page-header>
 
 <div class="row">
   <div class="col-12">
     <div class="card">
-
       <div class="card-body border-bottom py-3">
-
         <div class="row">
-          <div class="col-md-6 mb-2 ">
-
-            <button 
-              class="btn btn-primary mb-2" 
-              data-bs-toggle="modal" 
+          <div class="col-md-6 mb-2">
+            <button
+              class="btn btn-primary mb-2"
+              data-bs-toggle="modal"
               data-bs-target="#modal-votante"
-              (click)="handleChangeAdd();ocultar()">
+              (click)="handleChangeAdd(); ocultar()"
+            >
               <i class="ti ti-plus me-1"></i>Agregar
             </button>
-
           </div>
 
           <div class="col-md-6 mb-2">
-              <div class="d-flex align-items-center justify-content-between justify-content-md-end ">
-                <div class="input-icon col-sm-8 ">
-                  <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar"
-                    (input)="handleChangeSearch($event)" />
-                  <span class="input-icon-addon">
-                    <i class="ti ti-search"></i>
-                  </span>
-                </div>
-                <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()"
-                  title="Descargar excel de votantes" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
-                  <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
-                </a>
+            <div
+              class="d-flex align-items-center justify-content-between justify-content-md-end"
+            >
+              <div class="input-icon col-sm-8">
+                <input
+                  #searchItem
+                  type="text"
+                  class="form-control form-control-rounded"
+                  placeholder="Buscar"
+                  (input)="handleChangeSearch($event)"
+                />
+                <span class="input-icon-addon">
+                  <i class="ti ti-search"></i>
+                </span>
               </div>
+              <a
+                class="btn w-30 btn-icon"
+                aria-label="Dribbble"
+                (click)="exportarDatosAExcel()"
+                title="Descargar excel de votantes"
+                style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+              >
+                <i
+                  class="ti ti-cloud-down text-muted"
+                  style="font-size: 28px"
+                ></i>
+              </a>
+            </div>
           </div>
         </div>
-
 
         <div class="col-lg-4">
           <div>
@@ -93,9 +104,7 @@
                 <th style="text-transform: none; font-size: inherit">
                   Nombre completo
                 </th>
-                <th style="text-transform: none; font-size: inherit">
-                  Edad
-                </th>
+                <th style="text-transform: none; font-size: inherit">Edad</th>
                 <th style="text-transform: none; font-size: inherit">Género</th>
                 <th style="text-transform: none; font-size: inherit">
                   Municipio
@@ -104,11 +113,11 @@
                   Sección
                 </th>
                 <th
-                class="text-center"
-                style="text-transform: none; font-size: inherit"
-              >
-                Estatus
-              </th>
+                  class="text-center"
+                  style="text-transform: none; font-size: inherit"
+                >
+                  Estatus
+                </th>
                 <th
                   class="w-1"
                   style="text-transform: none; font-size: inherit"
@@ -136,7 +145,7 @@
                 <td>
                   {{ simpatizante.nombreCompleto }}
                 </td>
-                <td >
+                <td>
                   {{ simpatizante.edad }}
                 </td>
                 <td class="text-muted">{{ simpatizante.genero.nombre }}</td>
@@ -207,7 +216,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          {{ isModalAdd ? "Agregar" : "Actualizar" }} simpatizante
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} promovido
         </h5>
         <button
           #closebutton
@@ -381,18 +390,20 @@
                   bindValue="id"
                   [searchable]="false"
                   [clearable]="false"
-                  formControlName="sexo"
+                  formControlName="generoId"
                 >
                   <ng-template ng-option-tmp let-item="item">
                     {{ item.nombre }}
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="simpatizanteForm.get('sexo')?.touched"
+                  *ngIf="simpatizanteForm.get('generoId')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="simpatizanteForm.get('sexo')?.hasError('required')"
+                    *ngIf="
+                      simpatizanteForm.get('generoId')?.hasError('required')
+                    "
                   >
                     El genero es obligatorio
                   </div>
@@ -464,8 +475,8 @@
                   bindValue="id"
                   placeholder="Tlaxcala"
                   [clearable]="false"
+                  [readonly]="true"
                   value="29"
-                  [class.disabled]="true"
                 >
                   <ng-template ng-header-tmp>
                     <input
@@ -495,7 +506,7 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label ">Municipio*:</label>
+                <label class="form-label">Municipio*:</label>
                 <ng-select
                   formControlName="municipio"
                   #selectMunicipio
@@ -507,7 +518,7 @@
                   [clearable]="false"
                   value="33"
                   [clearable]="false"
-                  [class.disabled]="true"
+                  [readonly]="true"
                   class="color"
                 >
                   <ng-template ng-header-tmp>
@@ -702,9 +713,7 @@
 
           <div class="col">
             <div class="row">
-
               <div class="col-lg-10 mt-1 mb-3">
-  
                 <label class="form-label">Domicilio</label>
                 <input
                   #ubicacionInput
@@ -715,22 +724,22 @@
                   formControlName="domicilio"
                   (onAddressChange)="selectAddress($event)"
                 />
-
               </div>
-  
-              <div class="col-lg-2 d-flex align-items-end   justify-content-end mt-1 mb-3">
-                  <button
-                    type="button"
-                    title="Obtener ubicación"
-                    class="btn btn-info float-end"
-                    (click)="getCurrentLocation()"
-                  >
-                    <i class="ti ti-map-pin"></i>
-                  </button>
+
+              <div
+                class="col-lg-2 d-flex align-items-end justify-content-end mt-1 mb-3"
+              >
+                <button
+                  type="button"
+                  title="Obtener ubicación"
+                  class="btn btn-info float-end"
+                  (click)="getCurrentLocation()"
+                >
+                  <i class="ti ti-map-pin"></i>
+                </button>
               </div>
             </div>
           </div>
-
 
           <div class="col-lg-12">
             <div class="mb-3">

@@ -12,30 +12,31 @@ import { Candidato } from 'src/app/models/candidato';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 import { Simpatizante } from 'src/app/models/votante';
+import { GeneroService } from 'src/app/core/services/genero.service';
+import { Genero } from 'src/app/models/genero';
 
 @Component({
   selector: 'app-candidatos',
   templateUrl: './candidatos.component.html',
   styleUrls: ['./candidatos.component.css']
 })
-export class CandidatosComponent implements OnInit{
+export class CandidatosComponent {
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
 
-  areaAdscripcion!: AreaAdscripcion;
   candidatos!: Candidato;
   candidatoForm!: FormGroup;
-  generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
+  generos: Genero[] = [];
   areasAdscripcion: AreaAdscripcion[] = [];
   candidatoFilter: Candidato[] = [];
   cargos: Cargo[] = [];
-  candidato: Candidato [] = [];
+  candidato: Candidato[] = [];
   isLoading = LoadingStates.neutro
   isLoadingModalSimpatizantes = LoadingStates.neutro
   isModalAdd: boolean = true;
   idUpdate!: number;
-  votantes: Simpatizante [] =[];
+  votantes: Simpatizante[] = [];
   simpatizantesFilter: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
   simpatizanteFilter: Simpatizante[] = [];
@@ -56,31 +57,25 @@ export class CandidatosComponent implements OnInit{
     private cargoService: CargoService,
     private candidatosService: CandidatosService,
     private simpatizantesService: SimpatizantesService,
+    private generoService: GeneroService,
 
   ) {
     this.candidatosService.refreshListCandidatos.subscribe(() => this.getCandidatos());
     this.getCandidatos();
     this.createForm();
     this.getCargos();
+    this.getGeneros();
   }
-  ngOnInit(): void {
-    // this.loadSimpatizantes();
-  }
+
   estatusBtn = true;
   verdadero = "Activo";
   falso = "Inactivo";
   estatusTag = this.verdadero;
+
   setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
 
-  obtenerRutaImagen(nombreArchivo: string): string {
-    const rutaBaseAPI = 'https://localhost:7224/';
-    if (nombreArchivo) {
-      return `${rutaBaseAPI}images/${nombreArchivo}`;
-    }
-    return ''; // O una URL predeterminada si no hay nombre de archivo
-  }
 
   imagenAmpliada: string | null = null;
 
@@ -122,34 +117,34 @@ export class CandidatosComponent implements OnInit{
     });
   }
 
-  getGeneroName(id: number): string {
-    const genero = this.generos.find(g => g.id === id);
-    return genero ? genero.name : '';
-  }
   getCargos() {
     this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
   }
 
-  loadSimpatizantes( candidatoId : number ) {
+  getGeneros() {
+    this.generoService.getAll().subscribe({ next: (dataFromAPI) => this.generos = dataFromAPI });
+  }
+
+  loadSimpatizantes(candidatoId: number) {
 
     this.isLoadingModalSimpatizantes = LoadingStates.trueLoading;
     this.simpatizantesService.getSimpatizantesPorCandidatoId(candidatoId)
       .subscribe(
         {
-          next: ( dataFromAPI ) => {
-              this.sinSimpatizantes = false;
-              this.simpatizantes = dataFromAPI;
-              this.simpatizanteFilter = this.simpatizantes;
-              this.isLoadingModalSimpatizantes = LoadingStates.falseLoading;
+          next: (dataFromAPI) => {
+            this.sinSimpatizantes = false;
+            this.simpatizantes = dataFromAPI;
+            this.simpatizanteFilter = this.simpatizantes;
+            this.isLoadingModalSimpatizantes = LoadingStates.falseLoading;
 
-              console.log("SimpatizanteFilter", this.simpatizanteFilter);
+            console.log("SimpatizanteFilter", this.simpatizanteFilter);
           },
           error: () => {
             this.sinSimpatizantes = true;
             this.isLoadingModalSimpatizantes = LoadingStates.errorLoading;
           }
         },
-        
+
       );
   }
 
@@ -204,9 +199,9 @@ export class CandidatosComponent implements OnInit{
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
-      sexo: [null, Validators.required],
-      sobrenombre: ['',[Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      cargo: ['',[Validators.required]],
+      generoId: [null, Validators.required],
+      sobrenombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      cargo: [null, Validators.required],
       estatus: [true],
       imagenBase64: [''],
       emblemaBase64: [''],
@@ -229,7 +224,7 @@ export class CandidatosComponent implements OnInit{
     );
   }
 
-  
+
 
 
 
@@ -254,25 +249,24 @@ export class CandidatosComponent implements OnInit{
       Candidato.apellidoMaterno.toLowerCase().includes(valueSearch) ||
       Candidato.cargo.nombre.toLowerCase().includes(valueSearch) ||
       Candidato.sobrenombre.toLowerCase().includes(valueSearch) ||
-      Candidato.fechaNacimiento.toLowerCase().includes(valueSearch)||
-      this.getGeneroName(Candidato.sexo).toLowerCase().includes(valueSearch)
+      Candidato.fechaNacimiento.toLowerCase().includes(valueSearch) ||
+      Candidato.genero.nombre.toLowerCase().includes(valueSearch)
     );
 
     this.configPaginator.currentPage = 1;
   }
 
-  handleChangeSearchModal( event: any ){
+  handleChangeSearchModal(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.simpatizanteFilter = this.simpatizantes.filter( Simpatizante => 
+    this.simpatizanteFilter = this.simpatizantes.filter(Simpatizante =>
       Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
       Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
       Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)||
-      this.getGeneroName(Simpatizante.sexo).toLowerCase().includes(valueSearch)
+      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch)
     )
-    
+
     this.configPaginator.currentPage = 1;
   }
 
@@ -284,41 +278,51 @@ export class CandidatosComponent implements OnInit{
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
-    const candidato = this.candidatoFilter.find( candidato => candidato.id === dto.id );
+    const candidato = this.candidatoFilter.find(candidato => candidato.id === dto.id);
 
     this.imgPreview = candidato!.foto;
     this.emblemaPreview = candidato!.emblema;
     this.isUpdatingImg = true;
     this.isUpdatingEmblema = true;
-  
+
+    console.log('fasfdsfd', dto.imagenBase64);
+    console.log('fasfdsfd', dto.emblemaBase64);
+
     this.candidatoForm.patchValue({
       id: dto.id,
       nombres: dto.nombres,
       estatus: dto.estatus,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
-      sexo: dto.sexo,
+      generoId: dto.genero.id,
       fechaNacimiento: fechaFormateada,
       sobrenombre: dto.sobrenombre,
       cargo: dto.cargo.id,
-      imagenBase64: dto.imagenBase64,
-      emblemaBase64: dto.emblemaBase64,
-
+      imagenBase64: '',
+      emblemaBase64: ''
     });
   }
- 
 
-  
+
+
   editarCandidato() {
     this.candidatos = this.candidatoForm.value as Candidato;
     const candidatoId = this.candidatoForm.get('id')?.value
     const cargoid = this.candidatoForm.get('cargo')?.value;
+    const generoId = this.candidatoForm.get('generoId')?.value;
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
     const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
+
+    console.log(imagenBase64);
+    console.log(emblemaBase64);
+
+
     this.imgPreview = '';
     this.emblemaPreview = '';
 
-    this.candidatos.cargo = {id: cargoid } as Cargo;
+    this.candidatos.cargo = { id: cargoid } as Cargo;
+    this.candidatos.genero = { id: generoId } as Genero;
+
     if (!imagenBase64 && !emblemaBase64) {
 
       const formData = { ...this.candidatos }
@@ -337,8 +341,8 @@ export class CandidatosComponent implements OnInit{
           this.mensajeService.mensajeError(error);
         }
       });
-      
-    } else if( imagenBase64 && emblemaBase64 ) {
+
+    } else if (imagenBase64 && emblemaBase64) {
       const formData = { ...this.candidatos, imagenBase64, emblemaBase64 };
       this.spinnerService.show();
 
@@ -383,14 +387,17 @@ export class CandidatosComponent implements OnInit{
   }
 
   agregar() {
-    this.candidatos  = this.candidatoForm.value as Candidato;
+    this.candidatos = this.candidatoForm.value as Candidato;
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
     const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
     const cargoid = this.candidatoForm.get('cargo')?.value;
+    const generoId = this.candidatoForm.get('generoId')?.value;
+
     this.candidatos.cargo = { id: cargoid } as Cargo;
+    this.candidatos.genero = { id: generoId } as Genero;
 
     if (imagenBase64 && emblemaBase64) {
-      const formData = { ...this.candidatos, imagenBase64, emblemaBase64};
+      const formData = { ...this.candidatos, imagenBase64, emblemaBase64 };
       this.spinnerService.show();
       this.candidatosService.post(formData).subscribe({
         next: () => {
@@ -432,14 +439,14 @@ export class CandidatosComponent implements OnInit{
     this.showModal = false;
   }
 
-  modalSimpatizantes( id: number ) {
+  modalSimpatizantes(id: number) {
     const modal = document.getElementById('modal-simpatizantes');
     if (modal) {
       modal.classList.add('show');
       modal.style.display = 'block';
     }
 
-    this.loadSimpatizantes( id );
+    this.loadSimpatizantes(id);
 
   }
   cerrarModal2() {
@@ -501,6 +508,6 @@ export class CandidatosComponent implements OnInit{
     a.click();
     window.URL.revokeObjectURL(url);
   }
-  
+
 
 }

@@ -127,11 +127,7 @@
                       style="margin-right: 10px"
                       class="btn btn-primary btn-icon btn-sm"
                       data-bs-toggle="modal"
-                      (click)="
-                        mostrarImagenAmpliada(
-                          obtenerRutaImagen(operador.nombres)
-                        )
-                      "
+                      (click)="verSeccionesOperador(operador.secciones)"
                     >
                       <i class="ti ti-eye"></i>
                     </button>
@@ -396,7 +392,6 @@
               </div>
             </div>
 
-
             <div class="col-lg-12">
               <div class="mb-3">
                 <label class="form-label"
@@ -491,37 +486,36 @@
             <table class="table table-vcenter card-table table-striped">
               <thead>
                 <tr>
-                  <th style="text-transform: none; font-size: inherit; text-align: center;">
+                  <th
+                    style="
+                      text-transform: none;
+                      font-size: inherit;
+                      text-align: center;
+                    "
+                  >
                     Sección
                   </th>
-                  <th style="text-transform: none; font-size: inherit; text-align: center;">
+                  <th
+                    style="
+                      text-transform: none;
+                      font-size: inherit;
+                      text-align: center;
+                    "
+                  >
                     Municipio
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <!-- <tr *ngFor="let operador of operadores">
-                  <ng-container *ngFor="let seccion of operador.secciones; let i = index">
-                    <td style="text-align: center;">
-                      <p>{{ operador.secciones[i].clave }}</p>
-                    </td>
-                    <td style="text-align: center;">
-                      <p>{{ operador.secciones[i].municipio.nombre }}</p>
-                    </td>
-                  </ng-container>
-                </tr> -->
-
-                <tr *ngFor="let operador of operadores; let i = index">
-                    <td style="text-align: center;">
-                      <p>{{ operador.secciones[i].clave }}</p>
-                    </td>
-                    <td style="text-align: center;">
-                      <p>{{ operador.secciones[i].municipio.nombre }}</p>
-                    </td>
+                <tr *ngFor="let seccion of seccionesOperador; let i = index">
+                  <td style="text-align: center">
+                    <p>{{ seccion.clave }}</p>
+                  </td>
+                  <td style="text-align: center">
+                    <p>{{ seccion.municipio.nombre }}</p>
+                  </td>
                 </tr>
-
               </tbody>
-              
             </table>
           </div>
         </div>
@@ -538,7 +532,10 @@
   aria-hidden="true"
   style="background: rgba(0, 0, 0, 0.5)"
 >
-  <div class="modal-dialog modal-full-width modal-dialog-centered" role="document">
+  <div
+    class="modal-dialog modal-full-width modal-dialog-centered"
+    role="document"
+  >
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">
@@ -570,7 +567,6 @@
               <a
                 class="btn w-30 btn-icon"
                 aria-label="Dribbble"
-                
                 title="Descargar datos de simpatizantes"
                 style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
               >
@@ -580,7 +576,6 @@
                 ></i>
               </a>
             </div>
-            
           </div>
           <div class="card">
             <table class="table table-vcenter card-table table-striped">
@@ -608,12 +603,14 @@
                   <td>{{ simpatizante.programaSocial?.nombre }}</td>
                 </tr>
                 <tr *ngIf="simpatizantes.length === 0">
-                  <td colspan="4" class="text-center">No hay simpatizantes asociados a este operador.</td>
+                  <td colspan="4" class="text-center">
+                    No hay simpatizantes asociados a este operador.
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <br>
+          <br />
           <div class="card-footer d-flex align-items-center">
             <p class="m-0 text-muted">
               Total de registros: <b>{{ simpatizantes.length }}</b>

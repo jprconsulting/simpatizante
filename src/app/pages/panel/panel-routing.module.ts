@@ -61,7 +61,7 @@ const routes: Routes = [
           .then(i => i.VisitasModule)
       },
       {
-        path: 'simpatizantes',
+        path: 'promovidos',
         loadChildren: () => import('./simpatizante/simpatizante.module')
           .then(i => i.SimpatizanteModule)
       },
@@ -81,7 +81,7 @@ const routes: Routes = [
           .then(i => i.NubePalabrasModule)
       },
       {
-        path: 'mapa-simpatizantes',
+        path: 'mapa-promovidos',
         loadChildren: () => import('./mapa-simpatizantes/mapa-simpatizantes.module')
           .then(i => i.MapaSimpatizantesModule)
       },

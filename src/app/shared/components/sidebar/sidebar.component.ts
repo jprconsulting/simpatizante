@@ -10,6 +10,7 @@ import { AppUserAuth } from 'src/app/models/login';
 export class SidebarComponent {
   dataObject!: AppUserAuth | null;
 
+
   constructor(private securityService: SecurityService) {
     localStorage.getItem('dataObject') && this.setDataUser();
   }

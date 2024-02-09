@@ -459,7 +459,7 @@ export class SimpatizanteComponent {
       fechaNacimiento: ['', Validators.required],
       estado: ['29'],
       seccion: [null, Validators.required],
-      sexo: [null, Validators.required],
+      generoId: [null, Validators.required],
       curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})/)]],
       estatus: [this.estatusBtn],
       programaSocial: [''],
@@ -561,7 +561,7 @@ export class SimpatizanteComponent {
       municipio: dto.municipio.id,
       estado: dto.estado.id,
       curp: dto.curp,
-      sexo: dto.genero.id,
+      generoId: dto.genero.id,
       idmex: dto.idmex,
       seccion: dto.seccion.id,
       programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
@@ -580,7 +580,7 @@ export class SimpatizanteComponent {
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
     const operadorId = this.simpatizanteForm.get('operadorId')?.value;
-    const generoId = this.simpatizanteForm.get('sexo')?.value;
+    const generoId = this.simpatizanteForm.get('generoId')?.value;
 
     this.votante.municipio = { id: 33 } as Municipio;
     this.votante.estado = { id: 29 } as Estado;
@@ -596,14 +596,14 @@ export class SimpatizanteComponent {
     this.simpatizantesService.put(votanteId, this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Simpatizante actualizado con éxito');
+        this.mensajeService.mensajeExito('Promovido actualizado con éxito');
         this.resetForm();
 
         this.configPaginator.currentPage = 1;
       },
       error: (error) => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeError('Error al actualizar el simpatizante');
+        this.mensajeService.mensajeError('Error al actualizar el promovido');
         console.error(error);
       },
     });
@@ -616,7 +616,7 @@ export class SimpatizanteComponent {
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
-      `¿Estás seguro de eliminar el simpatizante: ${nameItem}?`,
+      `¿Estás seguro de eliminar el promovido: ${nameItem}?`,
       () => {
         console.log('Confirmation callback executed');
         this.spinnerService.show();
@@ -625,7 +625,7 @@ export class SimpatizanteComponent {
             console.log('Delete success callback executed');
             this.spinnerService.hide();
             this.mensajeService.mensajeExito(
-              'Simpatizante borrado correctamente'
+              'Promovido borrado correctamente'
             );
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
@@ -660,7 +660,7 @@ export class SimpatizanteComponent {
     const estadoId = this.simpatizanteForm.get('estado')?.value;
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
     const operadorId = this.simpatizanteForm.get('operadorId')?.value;
-    const generoId = this.simpatizanteForm.get('sexo')?.value;
+    const generoId = this.simpatizanteForm.get('generoId')?.value;
 
     this.votante.programaSocial = programaSocialId
       ? ({ id: programaSocialId } as ProgramaSocial)
@@ -677,7 +677,7 @@ export class SimpatizanteComponent {
     this.simpatizantesService.post(this.votante).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Simpatizante guardado correctamente');
+        this.mensajeService.mensajeExito('Promovido guardado correctamente');
         this.resetForm();
         this.configPaginator.currentPage = 1;
       },
@@ -745,7 +745,7 @@ export class SimpatizanteComponent {
       type: 'array',
     });
 
-    this.guardarArchivoExcel(excelBuffer, 'Simpatizantes.xlsx');
+    this.guardarArchivoExcel(excelBuffer, 'Promovidos.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {

@@ -1,4 +1,5 @@
 import { Cargo } from "./cargo";
+import { Genero } from "./genero";
 
 export interface Candidato {
     id: number;
@@ -8,7 +9,7 @@ export interface Candidato {
     apellidoMaterno: string;
     fechaNacimiento: string;
     strFechaNacimiento: string;
-    sexo: number;
+    genero: Genero;
     sobrenombre: string;
     cargo: Cargo;
     estatus: boolean;

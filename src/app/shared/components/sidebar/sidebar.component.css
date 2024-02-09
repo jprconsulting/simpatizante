@@ -1,3 +1,8 @@
-.navbar-nav .nav-item.dropdown > .nav-link.dropdown-toggle:after {
+.navbar-nav .nav-item.dropdown>.nav-link.dropdown-toggle:after {
   margin-left: 0.5rem;
+}
+
+
+.navbar-vertical.navbar-expand-lg .navbar-collapse .dropdown-menu .dropdown-item:active {
+  background: rgb(70 85 101 / 43%) !important;
 }
