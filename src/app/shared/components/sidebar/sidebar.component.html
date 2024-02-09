@@ -54,6 +54,14 @@
           Administración
         </a>
         <ul class="dropdown-menu show">
+          <li class="nav-item" *appHasClaim="'CanAccessDishboard'">
+            <a class="nav-link space" [routerLink]="['deshboard']">
+              <span class="nav-link-icon d-md-none d-lg-inline-block">
+                <i class="ti ti-chart-infographic"></i>
+              </span>
+              <span class="nav-link-title">Tablero</span>
+            </a>
+          </li>
           <li class="nav-item" *appHasClaim="'CanAccessUsuarios'">
             <a
               class="nav-link space"
@@ -180,7 +188,7 @@
               <span class="nav-link-title">Reportes</span>
             </a>
           </li>
-          <li class="nav-item" *appHasClaim="'CanAccessNubePalabras'">
+          <li class="nav-item" *appHasClaim="'CanAccessNuvePalabras'">
             <a
               class="nav-link space"
               [routerLink]="['nube-palabras']"

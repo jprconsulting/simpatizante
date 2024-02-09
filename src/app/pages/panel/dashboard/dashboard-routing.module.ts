@@ -7,11 +7,13 @@ const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
-  }
+    canActivate: [AuthGuard],
+    data: { claimType: 'CanAccessDishboard' },
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class DashboardRoutingModule { }
+export class DashboardRoutingModule {}
