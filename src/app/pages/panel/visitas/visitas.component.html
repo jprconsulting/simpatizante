@@ -42,7 +42,7 @@
                             <tr>
                                 <th class="text-center">#</th>
                                 <th style="text-transform: none; font-size: inherit">
-                                    Simpatizante
+                                    Promovido
                                 </th>
                                 <th style="text-transform: none; font-size: inherit">
                                     Descripción
@@ -90,10 +90,13 @@
                                 </td>
                                 <td class="text-muted">
                                     <div class="flex justify-center items-center">
-                                        <img src="{{visita.foto}}" alt="Foto de {{ visita.foto }}" width="50"
-                                            height="50" (click)="
-                        mostrarImagenAmpliada(visita.foto)
-                      " />
+                                        <img 
+                                            src="{{visita.foto}}" 
+                                            alt="Foto de {{ visita.foto }}" 
+                                            width="50"
+                                            height="50" 
+                                            (click)="mostrarImagenAmpliada(visita.foto)"
+                                            />
                                     </div>
                                 </td>
 
@@ -105,7 +108,7 @@
                                             <i class="ti ti-edit"></i>
                                         </button>
                                         <button class="btn btn-danger btn-icon btn-sm" (click)="
-                        deleteItem(visita.id)
+                        deleteItem(visita.id, visita.simpatizante.nombreCompleto)
                       ">
                                             <i class="ti ti-eraser"></i>
                                         </button>
@@ -149,7 +152,7 @@
                     <div class="row">
 
                         <div class="mb-3">
-                            <label class="form-label">Nombre del simpatizante:</label>
+                            <label class="form-label">Nombre del promovido:</label>
                             <ng-select formControlName="simpatizante" #selectBeneficiario [searchable]="false"
                                 [items]="votantes" bindLabel="nombreCompleto" bindValue="id" placeholder="Elegir"
                                 [clearable]="false" (change)="onSelectCandidato($event.id)">
@@ -164,7 +167,7 @@
                             </ng-select>
                             <div *ngIf="visitaForm.get('simpatizante')?.touched" class="error-message">
                                 <div *ngIf="visitaForm.get('simpatizante')?.hasError('required')">
-                                    El simpatizante es obligatorio
+                                    El promovido es obligatorio
                                 </div>
                             </div>
                         </div>
@@ -271,8 +274,14 @@
     </div>
 </div>
 
-<div class="modal" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<div 
+    class="modal modal-blur fade" 
+    id="modal-imagen-ampliada" 
+    tabindex="-1" 
+    role="dialog" 
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    >
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">

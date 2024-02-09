@@ -173,9 +173,9 @@ export class VisitasComponent {
 
 
 
-  deleteItem(id: number) {
+  deleteItem(id: number, nameItem: string ) {
     this.mensajeService.mensajeAdvertencia(
-      `¿Estás seguro de eliminar la visita:?`,
+      `¿Estás seguro de eliminar la visita: ${nameItem}?`,
       () => {
         this.visitasService.delete(id).subscribe({
           next: () => {
@@ -257,7 +257,7 @@ export class VisitasComponent {
       this.visitasService.put(visitaId, formData).subscribe({
          next: () => {
             this.spinnerService.hide();
-            this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
+            this.mensajeService.mensajeExito('Visita actualizada correctamente');
             this.resetForm();
             this.configPaginator.currentPage = 1;
          },
@@ -275,7 +275,7 @@ export class VisitasComponent {
       this.visitasService.put(visitaId, formData).subscribe({
          next: () => {
             this.spinnerService.hide();
-            this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
+            this.mensajeService.mensajeExito('Visita actualizada correctamente');
             this.resetForm();
             this.configPaginator.currentPage = 1;
          },
