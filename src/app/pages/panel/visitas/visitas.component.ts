@@ -44,6 +44,9 @@ export class VisitasComponent {
   selectedProgramaSocial: number = 0;
   candidatosSelect: any;
 
+  public imgPreview: string = '';
+  public isUpdatingImg: boolean = false;
+
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -147,6 +150,14 @@ export class VisitasComponent {
   setDataModalUpdate(dto: Visita) {
     this.isModalAdd = false;
     this.id = dto.id;
+
+    const visita = this.visitasFilter.find( candidato => candidato.id === dto.id );
+
+    console.log('setModalUpdateDTO: ', dto );
+    
+    this.imgPreview = visita!.foto;
+    this.isUpdatingImg = true;
+
     this.visitaForm.patchValue({
       id: dto.id,
       descripcion: dto.descripcion,
@@ -232,13 +243,34 @@ export class VisitasComponent {
     const visitaId = this.visitaForm.get('id')?.value
 
     const votanteId = this.visitaForm.get('simpatizante')?.value;
-    this.visita.simpatizante = { id: votanteId } as Simpatizante;
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
+    
+    this.imgPreview = '';
+    
+    this.visita.simpatizante = { id: votanteId } as Simpatizante;
 
-    console.log(this.visita);
+    if ( !imagenBase64 ) {
+      
+      const formData = { ...this.visita };
+      console.log('visita:', this.visita);
 
-    this.spinnerService.show();
-    if (imagenBase64) {
+      this.spinnerService.show();
+
+      this.visitasService.put(visitaId, formData).subscribe({
+         next: () => {
+            this.spinnerService.hide();
+            this.mensajeService.mensajeExito('Incidencia actualizada correctamente');
+            this.resetForm();
+            this.configPaginator.currentPage = 1;
+         },
+         error: (error) => {
+            this.spinnerService.hide();
+            this.mensajeService.mensajeError(error);
+         }
+      });
+
+    } else if ( imagenBase64 ) {
+
       const formData = { ...this.visita, imagenBase64 };
       this.spinnerService.show();
 
@@ -253,10 +285,15 @@ export class VisitasComponent {
             this.spinnerService.hide();
             this.mensajeService.mensajeError(error);
          }
-      });}
+      });
+
+    } else {
+      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+    }
   }
 
   handleChangeAdd() {
+    this.isUpdatingImg = false;
     this.visitaForm.reset();
     this.isModalAdd = true;
     this.candidatosSelect = undefined;
@@ -270,6 +307,7 @@ export class VisitasComponent {
 
   onFileChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;
+    this.isUpdatingImg = false;
 
     if (inputElement.files && inputElement.files.length > 0) {
       const file = inputElement.files[0];

@@ -217,13 +217,35 @@
                         <div class="col-lg-12">
                             <div class="mb-3">
                                 <div class="form-label">Selecciona una imagen*</div>
-                                <input class="input" type="file" (change)="onFileChange($event)"
-                                    formControlName="imagenBase64" />
-                                <div *ngIf="visitaForm.get('imagenBase64')?.touched" class="error-message">
-                                    <div *ngIf="visitaForm.get('imagenBase64')?.hasError('required')">
-                                        La imagen es obligatoria
+
+                                <div class="row flex-column">
+                                    <input
+                                      class="input"
+                                      type="file"
+                                      (change)="onFileChange($event)"
+                                      formControlName="imagenBase64"
+                                    />
+                                    
+                                    <div *ngIf="isUpdatingImg" class="img-preview my-1">
+                                      <img
+                                        [src]="imgPreview"
+                                        alt="Image preview"
+                                        class="img-fluid"
+                                      />
                                     </div>
-                                </div>
+                                    <div
+                                      *ngIf="visitaForm.get('imagenBase64')?.touched"
+                                      class="error-message"
+                                    >
+                                      <div
+                                        *ngIf="
+                                          visitaForm.get('imagenBase64')?.hasError('required')
+                                        "
+                                      >
+                                        La imagen es obligatoria
+                                      </div>
+                                    </div>
+                                  </div>
                             </div>
                         </div>
                         <div class="col-lg-12">
@@ -240,7 +262,7 @@
                     Todos los campos marcados con * son requeridos
                 </p>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" [disabled]="!visitaForm.valid">
+                    <button type="submit" class="btn btn-success" >
                         {{ isModalAdd ? "Agregar" : "Actualizar" }}
                     </button>
                 </div>
