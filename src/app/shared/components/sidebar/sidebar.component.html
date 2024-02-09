@@ -42,7 +42,7 @@
           <span class="nav-link-title">Inicio</span>
         </a>
       </li>
-      <li class="nav-item dropdown">
+      <li class="nav-item dropdown" *appHasClaim="'CanAccessDishboard'">
         <a
           class="nav-link dropdown-toggle"
           href="#"
@@ -55,7 +55,7 @@
         </a>
         <ul class="dropdown-menu show">
           <li class="nav-item" *appHasClaim="'CanAccessDishboard'">
-            <a class="nav-link space" [routerLink]="['deshboard']">
+            <a class="nav-link space" [routerLink]="['deshboard']" (click)="stopPropagation($event)" routerLinkActive="active">
               <span class="nav-link-icon d-md-none d-lg-inline-block">
                 <i class="ti ti-chart-infographic"></i>
               </span>
@@ -86,7 +86,7 @@
               <span class="nav-link-title">Programas Sociales</span></a
             >
           </li>
-          <li class="nav-item" *appHasClaim="'CanAccessIncidencias'">
+          <li class="nav-item" *appHasClaim="'CanAccessTipoIncidencias'">
             <a
               class="nav-link space"
               [routerLink]="['tipoincidencias']"
