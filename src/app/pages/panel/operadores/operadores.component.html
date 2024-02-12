@@ -108,10 +108,7 @@
                   {{ operador.nombres }} {{ operador.apellidoPaterno }}
                   {{ operador.apellidoMaterno }}
                 </td>
-                <td class="text-muted">
-                  {{ operador.edad }}
-                </td>
-
+                <td class="text-muted">{{ operador.edad }} años</td>
                 <td class="text-center">
                   <ng-container *ngIf="operador.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo

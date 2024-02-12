@@ -115,6 +115,12 @@
                   class="text-center"
                   style="text-transform: none; font-size: inherit"
                 >
+                  Edad
+                </th>
+                <th
+                  class="text-center"
+                  style="text-transform: none; font-size: inherit"
+                >
                   Estatus
                 </th>
                 <th
@@ -147,6 +153,7 @@
                 <td class="text-muted">{{ simpatizante.genero.nombre }}</td>
                 <td class="text-muted">{{ simpatizante.municipio.nombre }}</td>
                 <td class="text-muted">{{ simpatizante.seccion.clave }}</td>
+                <td class="text-muted text-center">{{ simpatizante.edad }} años</td>
                 <td class="text-center">
                   <ng-container *ngIf="simpatizante.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo

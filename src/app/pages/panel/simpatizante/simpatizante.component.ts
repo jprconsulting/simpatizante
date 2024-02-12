@@ -505,7 +505,7 @@ export class SimpatizanteComponent {
       estado: ['29'],
       seccion: [null, Validators.required],
       generoId: [null, Validators.required],
-      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
+      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9a-z]{2})$/)]],
       estatus: [this.estatusBtn],
       programaSocial: [''],
       municipio: [29],
