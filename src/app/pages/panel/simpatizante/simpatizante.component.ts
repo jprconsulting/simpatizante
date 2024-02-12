@@ -448,15 +448,15 @@ export class SimpatizanteComponent {
       .validarSimpatizantePorClaveElector(claveElector)
       .subscribe({
         next: () => {
+         this.habilitarTodosLosControles();
           this.existeClaveElector = true;
-          this.deshabilitarTodosLosControles();
-          this.mensajeExisteClaveElector =
-            'La clave de lector ya esta registrada';
+          this.mensajeExisteClaveElector = '';
         },
         error: () => {
-          this.habilitarTodosLosControles();
-          this.existeClaveElector = false;
-          this.mensajeExisteClaveElector = '';
+          this.existeClaveElector = false
+          this.deshabilitarTodosLosControles();
+         this.mensajeExisteClaveElector = 'La clave de lector ya esta registrada';
+        
         },
       });
   }
@@ -598,6 +598,7 @@ export class SimpatizanteComponent {
     } else {
       this.mostrar();
     }
+    this.habilitarTodosLosControles();
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     this.simpatizanteForm.patchValue({
@@ -760,6 +761,7 @@ export class SimpatizanteComponent {
       }
       this.isModalAdd = true;
     }
+    this.deshabilitarTodosLosControles();
   }
   exportarDatosAExcel() {
     if (this.votantes.length === 0) {
@@ -787,7 +789,7 @@ export class SimpatizanteComponent {
         Municipio: votante.municipio.nombre,
         Estado: votante.estado.nombre,
         Seccion: votante.seccion.clave,
-        'Numero de telefono': votante.numerotel,
+        'Numero de teléfono': votante.numerotel,
         'Programa Social': votante.programaSocial?.nombre,
         Estatus: estatus,
         Operador: votante.operador.nombreCompleto,

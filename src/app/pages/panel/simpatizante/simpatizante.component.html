@@ -243,8 +243,8 @@
                   type="text"
                   class="form-control is-valid"
                   [ngClass]="{
-                    'is-invalid': existeClaveElector,
-                    'is-valid': existeClaveElector === false
+                    'is-invalid': existeClaveElector === false,
+                    'is-valid': existeClaveElector === true
                   }"
                   formControlName="claveElector"
                 />
@@ -482,7 +482,7 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Numero de télefono:</label>
+                <label class="form-label">Numero de teléfono:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -497,7 +497,7 @@
                       simpatizanteForm.get('numerotel')?.hasError('pattern')
                     "
                   >
-                    El numero de télefono no valido
+                    El numero de teléfono no valido
                   </div>
                 </div>
               </div>
@@ -775,7 +775,7 @@
           Todos los campos marcados con * son requeridos
         </p>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">
+          <button type="submit" class="btn btn-success" [disabled]="!simpatizanteForm.valid">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
