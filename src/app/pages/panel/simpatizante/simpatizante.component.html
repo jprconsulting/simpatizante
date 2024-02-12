@@ -149,11 +149,13 @@
                 </td>
                 <td>
                   {{ simpatizante.nombreCompleto }}
-                </td>               
+                </td>
                 <td class="text-muted">{{ simpatizante.genero.nombre }}</td>
                 <td class="text-muted">{{ simpatizante.municipio.nombre }}</td>
                 <td class="text-muted">{{ simpatizante.seccion.clave }}</td>
-                <td class="text-muted text-center">{{ simpatizante.edad }} años</td>
+                <td class="text-muted text-center">
+                  {{ simpatizante.edad }} años
+                </td>
                 <td class="text-center">
                   <ng-container *ngIf="simpatizante.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
@@ -246,9 +248,16 @@
                   }"
                   formControlName="claveElector"
                 />
-                
-                <div *ngIf="simpatizanteForm.get('claveElector')?.touched" class="error-message">
-                  <div *ngIf="simpatizanteForm.get('claveElector')?.hasError('required')">
+
+                <div
+                  *ngIf="simpatizanteForm.get('claveElector')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      simpatizanteForm.get('claveElector')?.hasError('required')
+                    "
+                  >
                     La clave de elector es obligatoria
                   </div>
                   <div *ngIf="mensajeExisteClaveElector !== null">
@@ -484,7 +493,9 @@
                   class="error-message"
                 >
                   <div
-                    *ngIf="simpatizanteForm.get('numerotel')?.hasError('pattern')"
+                    *ngIf="
+                      simpatizanteForm.get('numerotel')?.hasError('pattern')
+                    "
                   >
                     El numero de telefono no valido
                   </div>
