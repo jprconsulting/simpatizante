@@ -696,6 +696,7 @@ export class SimpatizanteComponent {
   }
 
   agregar() {
+    this.validarClaveElector()
     if(this.existeClaveElector===false){
       this.votante = this.simpatizanteForm.value as Simpatizante;
 
