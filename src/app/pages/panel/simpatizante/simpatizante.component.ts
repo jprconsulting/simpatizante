@@ -448,14 +448,14 @@ export class SimpatizanteComponent {
       .validarSimpatizantePorClaveElector(claveElector)
       .subscribe({
         next: () => {
-         this.habilitarTodosLosControles();
+         this.deshabilitarTodosLosControles();
           this.existeClaveElector = true;
-          this.mensajeExisteClaveElector = '';
+          this.mensajeExisteClaveElector = 'La clave de lector ya esta registrada';
         },
         error: () => {
           this.existeClaveElector = false
-          this.deshabilitarTodosLosControles();
-         this.mensajeExisteClaveElector = 'La clave de lector ya esta registrada';
+          this.habilitarTodosLosControles();
+         this.mensajeExisteClaveElector = '';
         
         },
       });
