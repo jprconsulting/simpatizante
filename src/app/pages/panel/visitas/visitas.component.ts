@@ -107,7 +107,7 @@ export class VisitasComponent {
       id:[null],
       servicio:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       descripcion:  ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      imagenBase64: ['', Validators.required],
+      imagenBase64: [''],
       simpatizante:[null, Validators.required]
     });
   }
@@ -216,7 +216,7 @@ export class VisitasComponent {
     console.log('data:', this.visita);
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 
-    if (imagenBase64) {
+    
       const formData = { ...this.visita, imagenBase64 };
 
       this.spinnerService.show();
@@ -232,9 +232,7 @@ export class VisitasComponent {
           this.mensajeService.mensajeError(error);
         }
       });
-    } else {
-      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
-    }
+    
   }
 
   actualizarVisita() {
