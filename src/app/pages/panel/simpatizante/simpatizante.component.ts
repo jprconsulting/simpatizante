@@ -176,6 +176,7 @@ export class SimpatizanteComponent {
     this.ubicacionInput.nativeElement.value = '';
     this.setCurrentLocation();
     this.ngAfterViewInit();
+    this.resetForm();
   }
   mapa() {
     this.setCurrentLocation();
@@ -693,6 +694,7 @@ export class SimpatizanteComponent {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.simpatizanteForm.reset();
+    this.existeClaveElector = null;
   }
   submit() {
     if (this.isModalAdd === false) {
