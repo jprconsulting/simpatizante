@@ -75,6 +75,7 @@ export class SimpatizanteComponent {
   estatusTag = this.verdadero;
   formData: any;
   id!: number;
+  mensajeExisteClaveElector: string | null = null;
   // MAPS
   latitude: number = 19.316818295403003;
   longitude: number = -98.23837658175323;
@@ -447,16 +448,16 @@ export class SimpatizanteComponent {
         next: () => {
           this.existeClaveElector = true;
           this.deshabilitarTodosLosControles();
+          this.mensajeExisteClaveElector = 'La clave de lector ya esta registrada';
         },
         error: () => {
           this.habilitarTodosLosControles();
           this.existeClaveElector = false;
+          this.mensajeExisteClaveElector = '';
         }
       }
     );
   }
-
-  // ([0-9]{6})([a-zA-Z]{6})([0-9]{2})$
 
   creteForm() {
     this.simpatizanteForm = this.formBuilder.group({
@@ -504,13 +505,14 @@ export class SimpatizanteComponent {
       estado: ['29'],
       seccion: [null, Validators.required],
       generoId: [null, Validators.required],
-      curp: ['', [Validators.pattern(/^([a-zA-Z]{4})/)]],
+      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
       programaSocial: [''],
       municipio: [29],
       domicilio: [''],
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
+      numerotel: ['', Validators.pattern(/^[0-9]{10}$/)]
     });
   }
 
@@ -694,40 +696,45 @@ export class SimpatizanteComponent {
   }
 
   agregar() {
-    this.votante = this.simpatizanteForm.value as Simpatizante;
+    if(this.existeClaveElector===false){
+      this.votante = this.simpatizanteForm.value as Simpatizante;
 
-    const programaSocialId = this.simpatizanteForm.get('programaSocial')?.value;
-    const municipioId = this.simpatizanteForm.get('municipio')?.value;
-    const estadoId = this.simpatizanteForm.get('estado')?.value;
-    const seccionId = this.simpatizanteForm.get('seccion')?.value;
-    const operadorId = this.simpatizanteForm.get('operadorId')?.value;
-    const generoId = this.simpatizanteForm.get('generoId')?.value;
-
-    this.votante.programaSocial = programaSocialId
-      ? ({ id: programaSocialId } as ProgramaSocial)
-      : null;
-    this.votante.municipio = { id: 33 } as Municipio;
-    this.votante.estado = { id: 29 } as Estado;
-    this.votante.seccion = { id: seccionId } as Seccion;
-    this.votante.operador = { id: operadorId } as Operador;
-    this.votante.genero = { id: generoId } as Genero;
-
-    console.log(this.votante);
-
-    this.spinnerService.show();
-    this.simpatizantesService.post(this.votante).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Promovido guardado correctamente');
-        this.resetForm();
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        console.error('Error en la solicitud POST:', error);
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      },
-    });
+      const programaSocialId = this.simpatizanteForm.get('programaSocial')?.value;
+      const municipioId = this.simpatizanteForm.get('municipio')?.value;
+      const estadoId = this.simpatizanteForm.get('estado')?.value;
+      const seccionId = this.simpatizanteForm.get('seccion')?.value;
+      const operadorId = this.simpatizanteForm.get('operadorId')?.value;
+      const generoId = this.simpatizanteForm.get('generoId')?.value;
+  
+      this.votante.programaSocial = programaSocialId
+        ? ({ id: programaSocialId } as ProgramaSocial)
+        : null;
+      this.votante.municipio = { id: 33 } as Municipio;
+      this.votante.estado = { id: 29 } as Estado;
+      this.votante.seccion = { id: seccionId } as Seccion;
+      this.votante.operador = { id: operadorId } as Operador;
+      this.votante.genero = { id: generoId } as Genero;
+  
+      console.log(this.votante);
+  
+      this.spinnerService.show();
+      this.simpatizantesService.post(this.votante).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Promovido guardado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          console.error('Error en la solicitud POST:', error);
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        },
+      });
+    }else{
+      this.mensajeService.mensajeError('Clave de lector ya registrada');
+    }
+   
   }
 
   handleChangeAdd() {

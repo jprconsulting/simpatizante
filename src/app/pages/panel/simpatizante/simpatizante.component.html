@@ -239,16 +239,13 @@
                   }"
                   formControlName="claveElector"
                 />
-                <div
-                  *ngIf="simpatizanteForm.get('claveElector')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
-                      simpatizanteForm.get('claveElector')?.hasError('required')
-                    "
-                  >
-                    La clave de elector es obligatorio
+                
+                <div *ngIf="simpatizanteForm.get('claveElector')?.touched" class="error-message">
+                  <div *ngIf="simpatizanteForm.get('claveElector')?.hasError('required')">
+                    La clave de elector es obligatoria
+                  </div>
+                  <div *ngIf="mensajeExisteClaveElector !== null">
+                    {{ mensajeExisteClaveElector }}
                   </div>
                 </div>
               </div>
@@ -463,6 +460,26 @@
                     *ngIf="simpatizanteForm.get('curp')?.hasError('pattern')"
                   >
                     El CURP no es valido
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Numuero de telefono:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="numerotel"
+                />
+                <div
+                  *ngIf="simpatizanteForm.get('numerotel')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="simpatizanteForm.get('numerotel')?.hasError('pattern')"
+                  >
+                    El numero de telefono no valido
                   </div>
                 </div>
               </div>
