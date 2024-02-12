@@ -15,7 +15,7 @@
   >
     <img
       src="../../../../assets/images/pac-logo.png"
-      style="width: 110px; height: auto"
+      style="width: 110px; height: 110px"
       alt="PAC"
     />
   </h1>
@@ -31,242 +31,287 @@
         [routerLinkActiveOptions]="{ exact: true }"
         *appHasClaim="'CanAccessInicio'"
       >
-        <a
-          class="nav-link"
-          [routerLink]="['inicio']"
-          (click)="stopPropagation($event)"
-        >
+        <a class="nav-link" [routerLink]="['inicio']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
             <i class="ti ti-home"></i>
           </span>
           <span class="nav-link-title">Inicio</span>
         </a>
       </li>
-      <li class="nav-item dropdown" *appHasClaim="'CanAccessDishboard'">
+      <li
+        class="nav-item dropdown"
+        *appHasClaim="'canAccessAdministracion'"
+        [ngClass]="{
+          active:
+            (rlDashboard && rlDashboard.isActive) ||
+            (rlUsuarios && rlUsuarios.isActive) ||
+            (rlProgramasSociales && rlProgramasSociales.isActive) ||
+            (rlTipoIncidencias && rlTipoIncidencias.isActive)
+        }"
+      >
         <a
           class="nav-link dropdown-toggle"
-          href="#"
-          role="button"
+          [routerLink]=""
           data-bs-toggle="dropdown"
-          aria-expanded="false"
-          (click)="stopPropagation($event)"
+          data-bs-auto-close="false"
+          role="button"
+          aria-expanded="true"
         >
-          Administración
+          <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <i class="ti ti-shield"></i>
+          </span>
+          <span class="nav-link-title"> Administración </span>
         </a>
         <ul class="dropdown-menu show">
-          <li class="nav-item" *appHasClaim="'CanAccessDishboard'">
-            <a
-              class="nav-link space"
-              [routerLink]="['deshboard']"
-              (click)="stopPropagation($event)"
-              routerLinkActive="active"
-            >
-              <span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-chart-infographic"></i>
-              </span>
-              <span class="nav-link-title">Tablero</span>
-            </a>
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessUsuarios'">
-            <a
-              class="nav-link space"
-              [routerLink]="['usuarios']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-users"></i>
-              </span>
-              <span class="nav-link-title">Usuarios</span></a
-            >
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessProgramasSociales'">
-            <a
-              class="nav-link space"
-              [routerLink]="['programas-sociales']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-social"></i>
-              </span>
-              <span class="nav-link-title">Programas Sociales</span></a
-            >
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessTipoIncidencias'">
-            <a
-              class="nav-link space"
-              [routerLink]="['tipoincidencias']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-calendar-clock"></i>
-              </span>
-              <span class="nav-link-title">Tipo Incidencias</span></a
-            >
-          </li>
+          <div class="dropdown-menu-columns">
+            <div class="dropdown-menu-column">
+              <a
+                *appHasClaim="'CanAccessDashboard'"
+                class="dropdown-item"
+                [routerLink]="['dashboard']"
+                routerLinkActive="active"
+                #rlDashboard="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-chart-infographic"></i>
+                </span>
+                <span class="nav-link-title">Tablero</span>
+              </a>
+              <a
+                *appHasClaim="'CanAccessUsuarios'"
+                class="dropdown-item"
+                [routerLink]="['usuarios']"
+                routerLinkActive="active"
+                #rlUsuarios="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-users"></i>
+                </span>
+                <span class="nav-link-title">Usuarios</span>
+              </a>
+              <a
+                *appHasClaim="'CanAccessProgramasSociales'"
+                class="dropdown-item"
+                [routerLink]="['programas-sociales']"
+                routerLinkActive="active"
+                #rlProgramasSociales="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-social"></i>
+                </span>
+                <span class="nav-link-title">Programas Sociales</span>
+              </a>
+              <a
+                *appHasClaim="'CanAccessTiposIncidencias'"
+                class="dropdown-item"
+                [routerLink]="['tipos-incidencias']"
+                routerLinkActive="active"
+                #rlTipoIncidencias="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-calendar-clock"></i>
+                </span>
+                <span class="nav-link-title">Tipos Incidencias</span>
+              </a>
+            </div>
+          </div>
         </ul>
       </li>
-      <li class="nav-item dropdown">
+      <li
+        class="nav-item dropdown"
+        *appHasClaim="'canAccessOperacion'"
+        [ngClass]="{
+          active:
+            (rlCandidatos && rlCandidatos.isActive) ||
+            (rlMapaPromovidos && rlMapaPromovidos.isActive) ||
+            (rlOperadores && rlOperadores.isActive) ||
+            (rlPromovidos && rlPromovidos.isActive)
+        }"
+      >
         <a
           class="nav-link dropdown-toggle"
-          href="#"
-          role="button"
+          [routerLink]=""
           data-bs-toggle="dropdown"
-          aria-expanded="false"
-          (click)="stopPropagation($event)"
+          data-bs-auto-close="false"
+          role="button"
+          aria-expanded="true"
         >
-          Jornada Electoral
+          <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <i class="ti ti-settings-pin"></i>
+          </span>
+          <span class="nav-link-title">Operacion</span>
         </a>
         <ul class="dropdown-menu show">
-          <!-- Agregar la clase 'show' para mantener el menú desplegado -->
-          <li class="nav-item" *appHasClaim="'CanAccessVisitas'">
-            <a
-              class="nav-link space"
-              [routerLink]="['visitas']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-            >
-              <span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-user-square"></i>
-              </span>
-              <span class="nav-link-title">Visitas</span></a
-            >
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessIncidencias'">
-            <a
-              class="nav-link space"
-              [routerLink]="['incidencias']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-calendar-clock"></i>
-              </span>
-              <span class="nav-link-title"
-                >Incidencias en la jornada electoral</span
-              ></a
-            >
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessMapaIncidencias'">
-            <a
-              class="nav-link space"
-              [routerLink]="['mapa-incidencias']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-map-exclamation"></i>
-              </span>
-              <span class="nav-link-title">Mapa de Incidencias</span></a
-            >
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessSeguimientoVoto'">
-            <a
-              class="nav-link space"
-              [routerLink]="['seguimiento-voto']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-file-like"></i>
-              </span>
-              <span class="nav-link-title">Seguimiento del voto</span></a
-            >
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessResultados'">
-            <a
-              class="nav-link space"
-              [routerLink]="['resultados']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-report-analytics"></i>
-              </span>
-              <span class="nav-link-title">Resultados</span>
-            </a>
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessReportes'">
-            <a
-              class="nav-link space"
-              [routerLink]="['reportes']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-report"></i>
-              </span>
-              <span class="nav-link-title">Reportes</span>
-            </a>
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessNuvePalabras'">
-            <a
-              class="nav-link space"
-              [routerLink]="['nube-palabras']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-cloud-snow"></i>
-              </span>
-              <span class="nav-link-title"> Nube de palabras</span>
-            </a>
-          </li>
+          <div class="dropdown-menu-columns">
+            <div class="dropdown-menu-column">
+              <a
+                *appHasClaim="'canAccessCandidatos'"
+                class="dropdown-item"
+                [routerLink]="['candidatos']"
+                routerLinkActive="active"
+                #rlCandidatos="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-user-check"></i>
+                </span>
+                <span class="nav-link-title">Candidatos</span>
+              </a>
+              <a
+                *appHasClaim="'canAccessOperadores'"
+                class="dropdown-item"
+                [routerLink]="['operadores']"
+                routerLinkActive="active"
+                #rlOperadores="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-user-cog"></i>
+                </span>
+                <span class="nav-link-title">Operadores</span>
+              </a>
+              <a
+                *appHasClaim="'canAccessSimpatizantes'"
+                class="dropdown-item"
+                [routerLink]="['promovidos']"
+                routerLinkActive="active"
+                #rlPromovidos="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-user-exclamation"></i>
+                </span>
+                <span class="nav-link-title">Promovidos</span>
+              </a>
+              <a
+                *appHasClaim="'canAccessMapaSimpatizantes'"
+                class="dropdown-item"
+                [routerLink]="['mapa-promovidos']"
+                routerLinkActive="active"
+                #rlMapaPromovidos="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-map-search"></i>
+                </span>
+                <span class="nav-link-title">Mapa de Promovidos</span>
+              </a>
+            </div>
+          </div>
         </ul>
       </li>
-      <li class="nav-item dropdown">
+      <li
+        class="nav-item dropdown"
+        *appHasClaim="'canAccessJornadaElectoral'"
+        [ngClass]="{
+          active:
+            (rlVisitas && rlVisitas.isActive) ||
+            (rlIncidencias && rlIncidencias.isActive) ||
+            (rlMapaIncidencias && rlMapaIncidencias.isActive) ||
+            (rlSeguimientoVoto && rlSeguimientoVoto.isActive) ||
+            (rlResultados && rlResultados.isActive) ||
+            (rlReportes && rlReportes.isActive) ||
+            (rlNubePalabras && rlNubePalabras.isActive)
+        }"
+      >
         <a
           class="nav-link dropdown-toggle"
-          href="#"
-          role="button"
+          [routerLink]=""
           data-bs-toggle="dropdown"
-          aria-expanded="false"
-          (click)="stopPropagation($event)"
+          data-bs-auto-close="false"
+          role="button"
+          aria-expanded="true"
         >
-          Operación
+          <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <i class="ti ti-box-seam"></i>
+          </span>
+          <span class="nav-link-title">Jornada Electoral</span>
         </a>
         <ul class="dropdown-menu show">
-          <li class="nav-item" *appHasClaim="'CanAccessCandidatos'">
-            <a
-              class="nav-link space"
-              [routerLink]="['candidatos']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-user-check"></i>
-              </span>
-              <span class="nav-link-title"> Candidatos</span></a
-            >
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessMapaSimpatizantes'">
-            <a
-              class="nav-link space"
-              [routerLink]="['mapa-promovidos']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-map-search"></i>
-              </span>
-              <span class="nav-link-title"> Mapa de Promovidos</span></a
-            >
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessOperadores'">
-            <a
-              class="nav-link space"
-              [routerLink]="['operadores']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-user-cog"></i>
-              </span>
-              <span class="nav-link-title"> Operadores</span></a
-            >
-          </li>
-          <li class="nav-item" *appHasClaim="'CanAccessSimpatizantes'">
-            <a
-              class="nav-link space"
-              [routerLink]="['promovidos']"
-              routerLinkActive="active"
-              (click)="stopPropagation($event)"
-              ><span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="ti ti-user-exclamation"></i>
-              </span>
-              <span class="nav-link-title"> Promovidos</span></a
-            >
-          </li>
+          <div class="dropdown-menu-columns">
+            <div class="dropdown-menu-column">
+              <a
+                *appHasClaim="'canAccessVisitas'"
+                class="dropdown-item"
+                [routerLink]="['visitas']"
+                routerLinkActive="active"
+                #rlVisitas="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-user-square"></i>
+                </span>
+                <span class="nav-link-title">Visitas</span>
+              </a>
+              <a
+                *appHasClaim="'canAccessIncidencias'"
+                class="dropdown-item"
+                [routerLink]="['incidencias']"
+                routerLinkActive="active"
+                #rlIncidencias="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-calendar-clock"></i>
+                </span>
+                <span class="nav-link-title">Incidencias</span>
+              </a>
+              <a
+                *appHasClaim="'canAccessMapaIncidencias'"
+                class="dropdown-item"
+                [routerLink]="['mapa-incidencias']"
+                routerLinkActive="active"
+                #rlMapaIncidencias="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-map-exclamation"></i>
+                </span>
+                <span class="nav-link-title">Mapa de Incidencias</span>
+              </a>
+              <a
+                *appHasClaim="'canAccessSeguimientoVoto'"
+                class="dropdown-item"
+                [routerLink]="['seguimiento-voto']"
+                routerLinkActive="active"
+                #rlSeguimientoVoto="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-file-like"></i>
+                </span>
+                <span class="nav-link-title">Voto</span>
+              </a>
+              <a
+                *appHasClaim="'canAccessResultados'"
+                class="dropdown-item"
+                [routerLink]="['resultados']"
+                routerLinkActive="active"
+                #rlResultados="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-report-analytics"></i>
+                </span>
+                <span class="nav-link-title">Resultados</span>
+              </a>
+              <a
+                *appHasClaim="'canAccessReportes'"
+                class="dropdown-item"
+                [routerLink]="['reportes']"
+                routerLinkActive="active"
+                #rlReportes="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-report"></i>
+                </span>
+                <span class="nav-link-title">Reportes</span>
+              </a>
+              <a
+                *appHasClaim="'canAccessNubePalabras'"
+                class="dropdown-item"
+                [routerLink]="['nube-palabras']"
+                routerLinkActive="active"
+                #rlNubePalabras="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-cloud-snow"></i>
+                </span>
+                <span class="nav-link-title">Nube de palabras</span>
+              </a>
+            </div>
+          </div>
         </ul>
       </li>
     </ul>

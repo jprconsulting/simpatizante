@@ -2,12 +2,12 @@
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
 .btn-add-dif {
-    background-color: #422b7d !important;
-    color: white !important;
+  background-color: #422b7d !important;
+  color: white !important;
 }
 
 .pac-container {
-    z-index: 9999 !important;
+  z-index: 9999 !important;
 }
 
 .custom-green-switch input:checked {

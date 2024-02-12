@@ -24,7 +24,7 @@ export interface Simpatizante {
     votante: Simpatizante;
     seccion: Seccion;
     estado: Estado;
-    idmex: string;
+    claveElector: string;
     operador: Operador
     edad: number;
 }

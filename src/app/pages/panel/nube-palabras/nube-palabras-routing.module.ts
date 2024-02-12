@@ -7,7 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: NubePalabrasComponent,
-    canActivate: [AuthGuard], data: { claimType: 'CanAccessNuvePalabras'}
+    canActivate: [AuthGuard], data: { claimType: 'CanAccessNubePalabras'}
   }
 ];
 

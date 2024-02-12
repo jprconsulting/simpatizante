@@ -22,6 +22,10 @@ export class SimpatizantesService {
     return this._refreshListSimpatizante$;
   }
 
+  validarSimpatizantePorClaveElector(claveElector: string) {
+    return this.http.get<Simpatizante>(`${this.route}/validar-simpatizante-por-clave-elector/${claveElector}`);
+  }
+
   getById(id: number) {
     return this.http.get<Simpatizante>(`${this.route}/obtener-por-id/${id}`);
   }

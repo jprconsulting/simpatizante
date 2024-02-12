@@ -8,7 +8,7 @@ const routes: Routes = [
     path: '',
     component: DashboardComponent,
     canActivate: [AuthGuard],
-    data: { claimType: 'CanAccessDishboard' },
+    data: { claimType: 'CanAccessDashboard' },
   },
 ];
 

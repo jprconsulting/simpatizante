@@ -66,8 +66,8 @@ const routes: Routes = [
           .then(i => i.SimpatizanteModule)
       },
       {
-        path: 'tipoincidencias',
-        loadChildren: () => import('./tipo-incidencia/tipoincidencia.module')
+        path: 'tipos-incidencias',
+        loadChildren: () => import('./tipo-incidencia/tipo-incidencia.module')
           .then(i => i.tipoIncidenciasModule)
       },
       {
@@ -91,7 +91,7 @@ const routes: Routes = [
           .then(i => i.MapaIncidenciasModule)
       },
       {
-        path: 'deshboard',
+        path: 'dashboard',
         loadChildren: () => import('./dashboard/dashboard.module')
           .then(i => i.DashboardModule)
       },

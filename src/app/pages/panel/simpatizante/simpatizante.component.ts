@@ -79,13 +79,17 @@ export class SimpatizanteComponent {
   latitude: number = 19.316818295403003;
   longitude: number = -98.23837658175323;
   options = {
-    types: [],
+    types: ['address'],
     componentRestrictions: { country: 'MX' },
   };
   maps!: google.maps.Map;
   SocialForm: any;
   private map: any;
   private marker: any;
+
+  existeClaveElector: boolean | null = null;
+
+
   constructor(
     private renderer: Renderer2,
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -318,6 +322,7 @@ export class SimpatizanteComponent {
       }
     );
   }
+
   handleMapClick(
     event: google.maps.KmlMouseEvent | google.maps.IconMouseEvent
   ) {
@@ -420,11 +425,51 @@ export class SimpatizanteComponent {
       .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
   }
 
+  deshabilitarTodosLosControles() {
+    Object.keys(this.simpatizanteForm.controls).forEach(controlName => {
+      if (controlName !== 'claveElector') {
+        this.simpatizanteForm.get(controlName)?.disable();
+      }
+    });
+  }
+
+  habilitarTodosLosControles() {
+    Object.keys(this.simpatizanteForm.controls).forEach(controlName => {
+      this.simpatizanteForm.get(controlName)?.enable();
+    });
+  }
+
+  validarClaveElector() {
+    const claveElector = this.simpatizanteForm.get('claveElector')?.value as string;
+
+    this.simpatizantesService.validarSimpatizantePorClaveElector(claveElector).subscribe(
+      {
+        next: () => {
+          this.existeClaveElector = true;
+          this.deshabilitarTodosLosControles();
+        },
+        error: () => {
+          this.habilitarTodosLosControles();
+          this.existeClaveElector = false;
+        }
+      }
+    );
+  }
+
   // ([0-9]{6})([a-zA-Z]{6})([0-9]{2})$
 
   creteForm() {
     this.simpatizanteForm = this.formBuilder.group({
       id: [null],
+      claveElector: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            /[A-Z]{6}[0-9]{8}[A-Z]{1}[0-9]{3}/g
+          ),
+        ]
+      ],
       operadorId: [null],
       nombres: [
         '',
@@ -456,18 +501,16 @@ export class SimpatizanteComponent {
           ),
         ],
       ],
-      fechaNacimiento: ['', Validators.required],
       estado: ['29'],
       seccion: [null, Validators.required],
       generoId: [null, Validators.required],
-      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})/)]],
+      curp: ['', [Validators.pattern(/^([a-zA-Z]{4})/)]],
       estatus: [this.estatusBtn],
       programaSocial: [''],
       municipio: [29],
       domicilio: [''],
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
-      idmex: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
     });
   }
 
@@ -546,14 +589,12 @@ export class SimpatizanteComponent {
     }
     this.isModalAdd = false;
     this.idUpdate = dto.id;
-    const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
     this.simpatizanteForm.patchValue({
       id: dto.id,
       operadorId: dto.operador.id,
       nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
-      fechaNacimiento: fechaFormateada,
       domicilio: dto.domicilio,
       estatus: dto.estatus,
       latitud: dto.latitud,
@@ -562,7 +603,7 @@ export class SimpatizanteComponent {
       estado: dto.estado.id,
       curp: dto.curp,
       generoId: dto.genero.id,
-      idmex: dto.idmex,
+      claveElector: dto.claveElector,
       seccion: dto.seccion.id,
       programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
     });
@@ -719,12 +760,12 @@ export class SimpatizanteComponent {
         Nombre: votante.nombres,
         'Apellido paterno': votante.apellidoPaterno,
         'Apellido materno': votante.apellidoMaterno,
-        'Fecha de nacimiento':fechaFormateada,
+        'Fecha de nacimiento': fechaFormateada,
         Edad: votante.edad,
         CURP: votante.curp,
         Genero: votante.genero.nombre,
         Domicilio: votante.domicilio,
-        IDMEX: votante.idmex,
+        'Clave de Elector': votante.claveElector,
         Municipio: votante.municipio.nombre,
         Estado: votante.estado.nombre,
         Seccion: votante.seccion.clave,
