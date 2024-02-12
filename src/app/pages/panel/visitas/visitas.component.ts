@@ -21,10 +21,9 @@ import { SimpatizantesService } from 'src/app/core/services/simpatizantes.servic
 @Component({
   selector: 'app-visitas',
   templateUrl: './visitas.component.html',
-  styleUrls: ['./visitas.component.css']
+  styleUrls: ['./visitas.component.css'],
 })
 export class VisitasComponent {
-
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
 
@@ -34,7 +33,7 @@ export class VisitasComponent {
   visitasFilter: Visita[] = [];
   isLoading = LoadingStates.neutro;
   programasSociales: ProgramaSocial[] = [];
-  votantes: Simpatizante[] =[];
+  votantes: Simpatizante[] = [];
   candidatoSelect!: Candidato | undefined;
   candidato: Candidato[] = [];
   operador: Operador[] = [];
@@ -47,7 +46,6 @@ export class VisitasComponent {
   public imgPreview: string = '';
   public isUpdatingImg: boolean = false;
 
-
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private spinnerService: NgxSpinnerService,
@@ -56,8 +54,7 @@ export class VisitasComponent {
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private operadoresService: OperadoresService,
-    private simpatizantesService: SimpatizantesService,
-
+    private simpatizantesService: SimpatizantesService
   ) {
     this.visitasService.refreshListVisitas.subscribe(() => this.getVisitas());
     this.getVisitas();
@@ -67,68 +64,79 @@ export class VisitasComponent {
     this.getSimpatizante();
   }
   getSimpatizante() {
-    this.simpatizantesService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.votantes = dataFromAPI; console.log('simpatizante',this.votantes)
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      }
-    );
+    this.simpatizantesService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.votantes = dataFromAPI;
+        console.log('simpatizante', this.votantes);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
   getOperadores() {
-    this.operadoresService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.operador = dataFromAPI; console.log('operadores',this.operador)
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      }
-    );
+    this.operadoresService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.operador = dataFromAPI;
+        console.log('operadores', this.operador);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
   getCandidatos() {
-    this.candidatosService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.candidato = dataFromAPI; console.log('candidatos',this.candidato)
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      }
-    );
+    this.candidatosService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.candidato = dataFromAPI;
+        console.log('candidatos', this.candidato);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
   creteForm() {
     this.visitaForm = this.formBuilder.group({
-      id:[null],
-      servicio:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      descripcion:  ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      id: [null],
+      servicio: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      descripcion: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
       imagenBase64: [''],
-      simpatizante:[null, Validators.required]
+      simpatizante: [null, Validators.required],
     });
   }
 
-
   getVisitas() {
     this.isLoading = LoadingStates.trueLoading;
-    this.visitasService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.visitas = dataFromAPI;
-          this.visitasFilter = this.visitas;
-          this.isLoading = LoadingStates.falseLoading;
-        },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading;
-        }
-      }
-    );
+    this.visitasService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.visitas = dataFromAPI;
+        this.visitasFilter = this.visitas;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: () => {
+        this.isLoading = LoadingStates.errorLoading;
+      },
+    });
   }
-
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
@@ -136,9 +144,12 @@ export class VisitasComponent {
 
   handleChangeSearch(event: any) {
     const inputValue = event.target.value.toLowerCase();
-    this.visitasFilter = this.visitas.filter(visita =>
-      visita.simpatizante.nombreCompleto.toLocaleLowerCase().includes(inputValue.toLowerCase())||
-      visita.servicio.toLocaleLowerCase().includes(inputValue.toLowerCase())
+    this.visitasFilter = this.visitas.filter(
+      (visita) =>
+        visita.simpatizante.nombreCompleto
+          .toLocaleLowerCase()
+          .includes(inputValue.toLowerCase()) ||
+        visita.servicio.toLocaleLowerCase().includes(inputValue.toLowerCase())
     );
 
     this.configPaginator.currentPage = 1;
@@ -151,10 +162,12 @@ export class VisitasComponent {
     this.isModalAdd = false;
     this.id = dto.id;
 
-    const visita = this.visitasFilter.find( candidato => candidato.id === dto.id );
+    const visita = this.visitasFilter.find(
+      (candidato) => candidato.id === dto.id
+    );
 
-    console.log('setModalUpdateDTO: ', dto );
-    
+    console.log('setModalUpdateDTO: ', dto);
+
     this.imgPreview = visita!.foto;
     this.isUpdatingImg = true;
 
@@ -163,17 +176,15 @@ export class VisitasComponent {
       descripcion: dto.descripcion,
       servicio: dto.servicio,
       simpatizante: dto.simpatizante.id,
-      imagenBase64: ''
+      imagenBase64: '',
     });
 
     // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
-    console.log('setDataUpdateVistaForm ',this.visitaForm.value);
-    console.log('setDataUpdateDTO',dto);
+    console.log('setDataUpdateVistaForm ', this.visitaForm.value);
+    console.log('setDataUpdateDTO', dto);
   }
 
-
-
-  deleteItem(id: number, nameItem: string ) {
+  deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar la visita: ${nameItem}?`,
       () => {
@@ -183,7 +194,7 @@ export class VisitasComponent {
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
-          error: (error) => this.mensajeService.mensajeError(error)
+          error: (error) => this.mensajeService.mensajeError(error),
         });
       }
     );
@@ -197,94 +208,86 @@ export class VisitasComponent {
 
   submit() {
     if (this.isModalAdd === false) {
-
       this.actualizarVisita();
     } else {
       this.agregar();
-
     }
-
   }
 
   agregar() {
     this.visita = this.visitaForm.value as Visita;
     const simpatizanteId = this.visitaForm.get('simpatizante')?.value;
 
-
-    this.visita.simpatizante = { id: simpatizanteId } as Simpatizante
+    this.visita.simpatizante = { id: simpatizanteId } as Simpatizante;
     this.spinnerService.show();
     console.log('data:', this.visita);
     const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
 
-    
-      const formData = { ...this.visita, imagenBase64 };
+    const formData = { ...this.visita, imagenBase64 };
+
+    this.spinnerService.show();
+    this.visitasService.post(formData).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito('Visita guardada correctamente');
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      },
+    });
+  }
+
+  actualizarVisita() {
+    this.visita = this.visitaForm.value as Visita;
+
+    const visitaId = this.visitaForm.get('id')?.value;
+    const votanteId = this.visitaForm.get('simpatizante')?.value;
+    const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
+
+    this.imgPreview = '';
+
+    this.visita.simpatizante = { id: votanteId } as Simpatizante;
+
+    if (!imagenBase64) {
+      const formData = { ...this.visita };
 
       this.spinnerService.show();
-      this.visitasService.post(formData).subscribe({
+
+      this.visitasService.put(visitaId, formData).subscribe({
         next: () => {
           this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Visita guardada correctamente');
+          this.mensajeService.mensajeExito('Visita actualizada correctamente');
           this.resetForm();
           this.configPaginator.currentPage = 1;
         },
         error: (error) => {
           this.spinnerService.hide();
           this.mensajeService.mensajeError(error);
-        }
+        },
       });
-    
-  }
-
-  actualizarVisita() {
-    this.visita = this.visitaForm.value as Visita;
-
-    const visitaId = this.visitaForm.get('id')?.value
-    const votanteId = this.visitaForm.get('simpatizante')?.value;
-    const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
-    
-    this.imgPreview = '';
-    
-    this.visita.simpatizante = { id: votanteId } as Simpatizante;
-
-    if ( !imagenBase64 ) {
-      
-      const formData = { ...this.visita };
-
-      this.spinnerService.show();
-
-      this.visitasService.put(visitaId, formData).subscribe({
-         next: () => {
-            this.spinnerService.hide();
-            this.mensajeService.mensajeExito('Visita actualizada correctamente');
-            this.resetForm();
-            this.configPaginator.currentPage = 1;
-         },
-         error: (error) => {
-            this.spinnerService.hide();
-            this.mensajeService.mensajeError(error);
-         }
-      });
-
-    } else if ( imagenBase64 ) {
-
+    } else if (imagenBase64) {
       const formData = { ...this.visita, imagenBase64 };
       this.spinnerService.show();
 
       this.visitasService.put(visitaId, formData).subscribe({
-         next: () => {
-            this.spinnerService.hide();
-            this.mensajeService.mensajeExito('Visita actualizada correctamente');
-            this.resetForm();
-            this.configPaginator.currentPage = 1;
-         },
-         error: (error) => {
-            this.spinnerService.hide();
-            this.mensajeService.mensajeError(error);
-         }
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Visita actualizada correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        },
       });
-
     } else {
-      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+      console.error(
+        'Error: No se encontró una representación válida en base64 de la imagen.'
+      );
     }
   }
 
@@ -297,7 +300,7 @@ export class VisitasComponent {
 
   onSelectCandidato(id: number) {
     if (id) {
-      this.candidatosSelect = this.candidato.find(b => b.id === id);
+      this.candidatosSelect = this.candidato.find((b) => b.id === id);
     }
   }
 
@@ -314,14 +317,13 @@ export class VisitasComponent {
         const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
 
         this.visitaForm.patchValue({
-          imagenBase64: base64WithoutPrefix // Contiene solo la representación en base64
+          imagenBase64: base64WithoutPrefix, // Contiene solo la representación en base64
         });
       };
 
       reader.readAsDataURL(file);
     }
   }
-
 
   readFileAsDataURL(filePath: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -375,23 +377,32 @@ export class VisitasComponent {
       return;
     }
 
-    const datosParaExportar = this.visitas.map(visita => {
+    const datosParaExportar = this.visitas.map((visita) => {
       return {
         'Nombre completo': visita.simpatizante.nombreCompleto,
-        'Servicio': visita.servicio,
-        'Descripcion': visita.descripcion,
+        Servicio: visita.servicio,
+        Descripcion: visita.descripcion,
       };
     });
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
 
     this.guardarArchivoExcel(excelBuffer, 'visitas.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const url: string = window.URL.createObjectURL(data);
     const a: HTMLAnchorElement = document.createElement('a');
     a.href = url;
@@ -399,6 +410,4 @@ export class VisitasComponent {
     a.click();
     window.URL.revokeObjectURL(url);
   }
-
 }
-

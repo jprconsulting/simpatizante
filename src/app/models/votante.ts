@@ -27,7 +27,7 @@ export interface Simpatizante {
   claveElector: string;
   operador: Operador;
   edad: number;
-  numtel: string;
+  numerotel: string;
 }
 
 export interface TotalBeneficiariosMunicipio extends Municipio {

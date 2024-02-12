@@ -617,6 +617,7 @@ export class SimpatizanteComponent {
       generoId: dto.genero.id,
       claveElector: dto.claveElector,
       seccion: dto.seccion.id,
+      numerotel: dto.numerotel,
       programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
     });
 
@@ -705,7 +706,6 @@ export class SimpatizanteComponent {
   }
 
   agregar() {
-    this.validarClaveElector();
     if (this.existeClaveElector === false) {
       this.votante = this.simpatizanteForm.value as Simpatizante;
 
@@ -788,6 +788,7 @@ export class SimpatizanteComponent {
         Municipio: votante.municipio.nombre,
         Estado: votante.estado.nombre,
         Seccion: votante.seccion.clave,
+        'Numero de telefono': votante.numerotel,
         'Programa Social': votante.programaSocial?.nombre,
         Estatus: estatus,
         Operador: votante.operador.nombreCompleto,

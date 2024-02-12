@@ -229,7 +229,7 @@
           class="btn-close"
           data-bs-dismiss="modal"
           aria-label="Close"
-          (click)="resetMap(); ocultar();"
+          (click)="resetMap(); ocultar()"
         ></button>
       </div>
 
@@ -482,7 +482,7 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Numuero de telefono:</label>
+                <label class="form-label">Numero de télefono:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -497,7 +497,7 @@
                       simpatizanteForm.get('numerotel')?.hasError('pattern')
                     "
                   >
-                    El numero de telefono no valido
+                    El numero de télefono no valido
                   </div>
                 </div>
               </div>
