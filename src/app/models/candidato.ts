@@ -17,5 +17,6 @@ export interface Candidato {
     emblemaBase64: string;
     foto: string;
     emblema: string;
+    edad: string;
 }
 
