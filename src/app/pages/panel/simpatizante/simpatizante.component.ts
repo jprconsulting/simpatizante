@@ -90,7 +90,6 @@ export class SimpatizanteComponent {
 
   existeClaveElector: boolean | null = null;
 
-
   constructor(
     private renderer: Renderer2,
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -177,6 +176,7 @@ export class SimpatizanteComponent {
     this.ubicacionInput.nativeElement.value = '';
     this.setCurrentLocation();
     this.ngAfterViewInit();
+    this.resetForm();
   }
   mapa() {
     this.setCurrentLocation();
@@ -427,7 +427,7 @@ export class SimpatizanteComponent {
   }
 
   deshabilitarTodosLosControles() {
-    Object.keys(this.simpatizanteForm.controls).forEach(controlName => {
+    Object.keys(this.simpatizanteForm.controls).forEach((controlName) => {
       if (controlName !== 'claveElector') {
         this.simpatizanteForm.get(controlName)?.disable();
       }
@@ -435,28 +435,30 @@ export class SimpatizanteComponent {
   }
 
   habilitarTodosLosControles() {
-    Object.keys(this.simpatizanteForm.controls).forEach(controlName => {
+    Object.keys(this.simpatizanteForm.controls).forEach((controlName) => {
       this.simpatizanteForm.get(controlName)?.enable();
     });
   }
 
   validarClaveElector() {
-    const claveElector = this.simpatizanteForm.get('claveElector')?.value as string;
+    const claveElector = this.simpatizanteForm.get('claveElector')
+      ?.value as string;
 
-    this.simpatizantesService.validarSimpatizantePorClaveElector(claveElector).subscribe(
-      {
+    this.simpatizantesService
+      .validarSimpatizantePorClaveElector(claveElector)
+      .subscribe({
         next: () => {
           this.existeClaveElector = true;
           this.deshabilitarTodosLosControles();
-          this.mensajeExisteClaveElector = 'La clave de lector ya esta registrada';
+          this.mensajeExisteClaveElector =
+            'La clave de lector ya esta registrada';
         },
         error: () => {
           this.habilitarTodosLosControles();
           this.existeClaveElector = false;
           this.mensajeExisteClaveElector = '';
-        }
-      }
-    );
+        },
+      });
   }
 
   creteForm() {
@@ -466,10 +468,8 @@ export class SimpatizanteComponent {
         '',
         [
           Validators.required,
-          Validators.pattern(
-            /[A-Z]{6}[0-9]{8}[A-Z]{1}[0-9]{3}/g
-          ),
-        ]
+          Validators.pattern(/[A-Z]{6}[0-9]{8}[A-Z]{1}[0-9]{3}/g),
+        ],
       ],
       operadorId: [null],
       nombres: [
@@ -505,14 +505,22 @@ export class SimpatizanteComponent {
       estado: ['29'],
       seccion: [null, Validators.required],
       generoId: [null, Validators.required],
-      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9a-z]{2})$/)]],
+      curp: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            /^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9a-z]{2})$/
+          ),
+        ],
+      ],
       estatus: [this.estatusBtn],
       programaSocial: [''],
       municipio: [29],
       domicilio: [''],
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
-      numerotel: ['', Validators.pattern(/^[0-9]{10}$/)]
+      numerotel: ['', Validators.pattern(/^[0-9]{10}$/)],
     });
   }
 
@@ -530,7 +538,9 @@ export class SimpatizanteComponent {
       radioElement.checked = true;
       radioElement.click();
     }
-    this.programasocial = null;
+    this.simpatizanteForm.patchValue({
+      programaSocial: '',
+    });
   }
   getVotantes() {
     this.isLoading = LoadingStates.trueLoading;
@@ -667,9 +677,7 @@ export class SimpatizanteComponent {
           next: () => {
             console.log('Delete success callback executed');
             this.spinnerService.hide();
-            this.mensajeService.mensajeExito(
-              'Promovido borrado correctamente'
-            );
+            this.mensajeService.mensajeExito('Promovido borrado correctamente');
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
@@ -686,6 +694,7 @@ export class SimpatizanteComponent {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.simpatizanteForm.reset();
+    this.existeClaveElector = null;
   }
   submit() {
     if (this.isModalAdd === false) {
@@ -696,17 +705,18 @@ export class SimpatizanteComponent {
   }
 
   agregar() {
-    this.validarClaveElector()
-    if(this.existeClaveElector===false){
+    this.validarClaveElector();
+    if (this.existeClaveElector === false) {
       this.votante = this.simpatizanteForm.value as Simpatizante;
 
-      const programaSocialId = this.simpatizanteForm.get('programaSocial')?.value;
+      const programaSocialId =
+        this.simpatizanteForm.get('programaSocial')?.value;
       const municipioId = this.simpatizanteForm.get('municipio')?.value;
       const estadoId = this.simpatizanteForm.get('estado')?.value;
       const seccionId = this.simpatizanteForm.get('seccion')?.value;
       const operadorId = this.simpatizanteForm.get('operadorId')?.value;
       const generoId = this.simpatizanteForm.get('generoId')?.value;
-  
+
       this.votante.programaSocial = programaSocialId
         ? ({ id: programaSocialId } as ProgramaSocial)
         : null;
@@ -715,9 +725,9 @@ export class SimpatizanteComponent {
       this.votante.seccion = { id: seccionId } as Seccion;
       this.votante.operador = { id: operadorId } as Operador;
       this.votante.genero = { id: generoId } as Genero;
-  
+
       console.log(this.votante);
-  
+
       this.spinnerService.show();
       this.simpatizantesService.post(this.votante).subscribe({
         next: () => {
@@ -732,10 +742,9 @@ export class SimpatizanteComponent {
           this.mensajeService.mensajeError(error);
         },
       });
-    }else{
+    } else {
       this.mensajeService.mensajeError('Clave de lector ya registrada');
     }
-   
   }
 
   handleChangeAdd() {
@@ -763,7 +772,9 @@ export class SimpatizanteComponent {
 
     const datosParaExportar = this.votantes.map((votante) => {
       const estatus = votante.estatus ? 'Activo' : 'Inactivo';
-      const fechaFormateada = new Date(votante.fechaNacimiento).toISOString().split('T')[0];
+      const fechaFormateada = new Date(votante.fechaNacimiento)
+        .toISOString()
+        .split('T')[0];
       return {
         Nombre: votante.nombres,
         'Apellido paterno': votante.apellidoPaterno,
@@ -779,7 +790,7 @@ export class SimpatizanteComponent {
         Seccion: votante.seccion.clave,
         'Programa Social': votante.programaSocial?.nombre,
         Estatus: estatus,
-        Operador: votante.operador.nombreCompleto
+        Operador: votante.operador.nombreCompleto,
       };
     });
 
