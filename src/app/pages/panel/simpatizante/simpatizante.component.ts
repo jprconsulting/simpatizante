@@ -364,29 +364,36 @@ export class SimpatizanteComponent {
   adress() {
     const geocoder = new google.maps.Geocoder();
     const latLng = new google.maps.LatLng(this.latitude, this.longitude);
+  
     geocoder.geocode({ location: latLng }, (results, status) => {
       if (status === 'OK') {
         if (results && results[0]) {
           const place = results[0];
-          if (place.formatted_address) {
-            this.simpatizanteForm.patchValue({
-              domicilio: place.formatted_address,
-            });
+          const formattedAddress = place.formatted_address || '';
+  
+          if (formattedAddress.toLowerCase().includes('tlax')) {
+            if (place.formatted_address) {
+              this.simpatizanteForm.patchValue({
+                domicilio: place.formatted_address,
+              });
+            } else {
+              console.log('No se pudo obtener la dirección.');
+            }
+            this.selectAddress(place);
           } else {
-            console.log('No se pudo obtener la dirección.');
+            window.alert('Por favor, selecciona una dirección en Tlaxcala.');
           }
-          this.selectAddress(place);
         } else {
           console.error('No se encontraron resultados de geocodificación.');
         }
       } else {
-        console.error(
-          'Error en la solicitud de geocodificación inversa:',
-          status
-        );
+        console.error('Error en la solicitud de geocodificación inversa:', status);
       }
     });
   }
+  
+  
+  
 
   setCurrentLocation() {
     if ('geolocation' in navigator) {
