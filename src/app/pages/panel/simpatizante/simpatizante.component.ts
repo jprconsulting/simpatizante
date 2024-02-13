@@ -104,7 +104,7 @@ export class SimpatizanteComponent {
     private programasSociales: ProgramaSocialService,
     private operadoresService: OperadoresService,
     private simpatizantesService: SimpatizantesService,
-    private securityService: SecurityService
+    private securityService: SecurityService,
   ) {
     this.simpatizantesService.refreshListSimpatizantes.subscribe(() =>
       this.getVotantes()
@@ -176,7 +176,6 @@ export class SimpatizanteComponent {
     this.ubicacionInput.nativeElement.value = '';
     this.setCurrentLocation();
     this.ngAfterViewInit();
-    this.resetForm();
   }
   mapa() {
     this.setCurrentLocation();
@@ -196,34 +195,46 @@ export class SimpatizanteComponent {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-
+    const formattedAddress = place.formatted_address || '';
     if (place.formatted_address) {
       this.simpatizanteForm.patchValue({
         domicilio: place.formatted_address,
       });
     }
-    const selectedLat = place.geometry?.location?.lat() || this.latitude;
-    const selectedLng = place.geometry?.location?.lng() || this.longitude;
+   
+    
+    if (formattedAddress.toLowerCase().includes('tlax')) {
+          const selectedLat = place.geometry?.location?.lat()|| this.latitude;
+          const selectedLng = place.geometry?.location?.lng()|| this.longitude;
 
-    this.canvas.setAttribute('data-lat', selectedLat.toString());
-    this.canvas.setAttribute('data-lng', selectedLng.toString());
-    const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
-    this.maps.setCenter(newLatLng);
-    this.maps.setZoom(15);
-    if (this.marker) {
-      this.marker.setMap(null);
-    }
-    this.marker = new google.maps.Marker({
-      position: newLatLng,
-      map: this.maps,
-      animation: google.maps.Animation.DROP,
-      title: place.name,
-    });
-    this.simpatizanteForm.patchValue({
-      longitud: selectedLng,
-      latitud: selectedLat,
-    });
+      
+          this.canvas.setAttribute('data-lat', selectedLat.toString());
+          this.canvas.setAttribute('data-lng', selectedLng.toString());
+          const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
+          this.maps.setCenter(newLatLng);
+          this.maps.setZoom(15);
+          if (this.marker) {
+            this.marker.setMap(null);
+          }
+          this.marker = new google.maps.Marker({
+            position: newLatLng,
+            map: this.maps,
+            animation: google.maps.Animation.DROP,
+            title: place.name,
+          });
+          this.simpatizanteForm.patchValue({
+            longitud: selectedLng,
+            latitud: selectedLat,
+          });}
+          else {
+    window.alert('Por favor, selecciona una dirección en Tlaxcala.');
+
   }
+        
+      
+    }
+    
+  
   onClear() {
     if (this.votantes) {
       this.getVotantes();
@@ -261,7 +272,17 @@ export class SimpatizanteComponent {
       console.error('El elemento del mapa no fue encontrado');
       return;
     }
+    const input = this.ubicacionInput.nativeElement;
 
+  const autocomplete = new google.maps.places.Autocomplete(input, {
+    fields: ['formatted_address', 'geometry', 'name'],
+    types: ['geocode'],
+  });
+
+  autocomplete.addListener('place_changed', () => {
+    const place = autocomplete.getPlace();
+    this.selectAddress(place);
+  });
     const myLatlng = new google.maps.LatLng(this.latitude, this.longitude);
 
     const mapOptions = {
@@ -448,15 +469,14 @@ export class SimpatizanteComponent {
       .validarSimpatizantePorClaveElector(claveElector)
       .subscribe({
         next: () => {
-         this.deshabilitarTodosLosControles();
-          this.existeClaveElector = true;
+          this.deshabilitarTodosLosControles();
+          this.existeClaveElector = false;
           this.mensajeExisteClaveElector = 'La clave de lector ya esta registrada';
         },
         error: () => {
-          this.existeClaveElector = false
+          this.existeClaveElector = true
           this.habilitarTodosLosControles();
          this.mensajeExisteClaveElector = '';
-        
         },
       });
   }
@@ -468,7 +488,10 @@ export class SimpatizanteComponent {
         '',
         [
           Validators.required,
-          Validators.pattern(/[A-Z]{6}[0-9]{8}[A-Z]{1}[0-9]{3}/g),
+          Validators.pattern(
+            /^([A-Z]{6})([0-9]{8})([A-Z]{1})([0-9]{3})$/
+          )
+          
         ],
       ],
       operadorId: [null],
@@ -598,6 +621,7 @@ export class SimpatizanteComponent {
     } else {
       this.mostrar();
     }
+    this.existeClaveElector = true
     this.habilitarTodosLosControles();
     this.isModalAdd = false;
     this.idUpdate = dto.id;
@@ -706,7 +730,7 @@ export class SimpatizanteComponent {
   }
 
   agregar() {
-    if (this.existeClaveElector === false) {
+    if (this.existeClaveElector === true) {
       this.votante = this.simpatizanteForm.value as Simpatizante;
 
       const programaSocialId =

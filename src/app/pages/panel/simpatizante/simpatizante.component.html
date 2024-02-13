@@ -229,7 +229,7 @@
           class="btn-close"
           data-bs-dismiss="modal"
           aria-label="Close"
-          (click)="resetMap(); ocultar()"
+          (click)="resetMap(); ocultar();resetForm()"
         ></button>
       </div>
 
@@ -243,8 +243,8 @@
                   type="text"
                   class="form-control is-valid"
                   [ngClass]="{
-                    'is-invalid': existeClaveElector === true,
-                    'is-valid': existeClaveElector === false
+                    'is-invalid': existeClaveElector === false,
+                    'is-valid': existeClaveElector === true
                   }"
                   formControlName="claveElector"
                 />
@@ -775,7 +775,7 @@
           Todos los campos marcados con * son requeridos
         </p>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success" [disabled]="!simpatizanteForm.valid">
+          <button type="submit" class="btn btn-success" [disabled]="!simpatizanteForm.valid || !existeClaveElector">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
