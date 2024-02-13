@@ -191,11 +191,13 @@ export class SimpatizanteComponent {
   }
 
   selectAddress(place: google.maps.places.PlaceResult) {
+    const formattedAddress = place.formatted_address || '';
+     if (formattedAddress.toLowerCase().includes('tlax')) {
     if (!place.geometry) {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-    const formattedAddress = place.formatted_address || '';
+    
     if (place.formatted_address) {
       this.simpatizanteForm.patchValue({
         domicilio: place.formatted_address,
@@ -203,7 +205,7 @@ export class SimpatizanteComponent {
     }
    
     
-    if (formattedAddress.toLowerCase().includes('tlax')) {
+   
           const selectedLat = place.geometry?.location?.lat()|| this.latitude;
           const selectedLng = place.geometry?.location?.lng()|| this.longitude;
 
