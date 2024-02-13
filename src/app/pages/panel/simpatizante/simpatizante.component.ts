@@ -532,7 +532,7 @@ export class SimpatizanteComponent {
         '',
         [
           Validators.pattern(
-            /^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9a-z]{2})$/
+            /^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9a-zA-Z]{2})$/
           ),
         ],
       ],
