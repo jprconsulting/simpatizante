@@ -260,6 +260,11 @@
                   >
                     La clave de elector es obligatoria
                   </div>
+                  <div
+                    *ngIf="simpatizanteForm.get('claveElector')?.hasError('pattern')"
+                  >
+                   La clave de elector no es valida
+                  </div>
                   <div *ngIf="mensajeExisteClaveElector !== null">
                     {{ mensajeExisteClaveElector }}
                   </div>
