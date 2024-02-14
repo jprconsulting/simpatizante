@@ -154,18 +154,11 @@
                         <div class="col-lg-10">
                             <div class="mb-3">
                                 <label class="form-label">Enlace:</label>
-                                <ng-select placeholder="Elegir" [items]="generos" bindLabel="nombre" bindValue="id" [searchable]="false" [clearable]="false" formControlName="enlace">
+                                <ng-select placeholder="Elegir" [items]="enlaces" bindLabel="nombreCompleto" bindValue="id" [searchable]="false" [clearable]="false" formControlName="enlace">
                                     <ng-template ng-option-tmp let-item="item">
-                                        {{ item.nombre }}
+                                        {{ item.nombreCompleto }}
                                     </ng-template>
                                 </ng-select>
-                                <div *ngIf="simpatizanteForm.get('generoId')?.touched" class="error-message">
-                                    <div *ngIf="
-                      simpatizanteForm.get('generoId')?.hasError('required')
-                    ">
-                                        El genero es obligatorio
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="col-lg-10">
