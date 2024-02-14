@@ -924,4 +924,24 @@ export class SimpatizanteComponent {
     this.buscar = event.target.value;
     this.beneficiarioFiltrado = this.filtrarBeneficiario();
   }
+  convertirAMayusculasClave(event: any): void {
+    const inputElement = event.target as HTMLInputElement;
+    const nuevoValor = inputElement.value.toUpperCase();
+
+    const claveElectorControl = this.simpatizanteForm.get('claveElector');
+
+    if (claveElectorControl) {
+      claveElectorControl.setValue(nuevoValor);
+    }
+  }
+  convertirAMayusculasCurp(event: any): void {
+    const inputElement = event.target as HTMLInputElement;
+    const nuevoValor = inputElement.value.toUpperCase();
+
+    const CURP = this.simpatizanteForm.get('curp');
+
+    if (CURP) {
+      CURP.setValue(nuevoValor);
+    }
+  }
 }
