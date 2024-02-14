@@ -125,6 +125,7 @@
             (rlCandidatos && rlCandidatos.isActive) ||
             (rlMapaPromovidos && rlMapaPromovidos.isActive) ||
             (rlOperadores && rlOperadores.isActive) ||
+            (rlEnlaces && rlEnlaces.isActive) ||
             (rlPromovidos && rlPromovidos.isActive)
         }"
       >
@@ -167,6 +168,18 @@
                   <i class="ti ti-user-cog"></i>
                 </span>
                 <span class="nav-link-title">Operadores</span>
+              </a>
+              <a
+              *appHasClaim="'canAccessEnlaces'"
+                class="dropdown-item"
+                [routerLink]="['enlaces']"
+                routerLinkActive="active"
+                #rlEnlaces="routerLinkActive"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-user-cog"></i>
+                </span>
+                <span class="nav-link-title">Enlaces</span>
               </a>
               <a
                 *appHasClaim="'canAccessSimpatizantes'"
