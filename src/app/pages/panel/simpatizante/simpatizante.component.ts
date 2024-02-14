@@ -568,6 +568,7 @@ export class SimpatizanteComponent {
 
   getVotantes() {
     this.dataObject = this.securityService.getDataUser();
+    console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
     const isAdmin = this.dataObject && this.dataObject.rol === 'Administrador';
 
@@ -587,34 +588,42 @@ export class SimpatizanteComponent {
     const isAdmin2 = this.dataObject && this.dataObject.rol === 'Operador';
 
     if (isAdmin2) {
-      const nombreCompletoOperador =
-        this.dataObject && this.dataObject.nombreCompleto;
-      this.simpatizantesService.getAll().subscribe({
-        next: (dataFromAPI) => {
-          this.votantes = dataFromAPI;
-
-          if (nombreCompletoOperador) {
-            const valueSearch2 = nombreCompletoOperador.toLowerCase();
-
-            console.log('Search Value:', valueSearch2);
-            this.votantesFilter = this.votantes.filter((votante) =>
-              votante.operador.nombreCompleto
-                .toLowerCase()
-                .includes(valueSearch2)
-            );
-
-            console.log('Filtered Votantes:', this.votantesFilter);
-
-            this.configPaginator.currentPage = 1;
-          } else {
+      const id = this.dataObject && this.dataObject.operadorId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.simpatizantesService.getSimpatizantesPorOperadorId(id).subscribe({
+          next: (dataFromAPI) => {
+            this.votantes = dataFromAPI;
             this.votantesFilter = this.votantes;
-          }
-          this.isLoading = LoadingStates.falseLoading;
-        },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading;
-        },
-      });
+            console.log(this.votantes);
+            this.isLoading = LoadingStates.falseLoading;
+          },
+          error: () => {
+            this.isLoading = LoadingStates.errorLoading;
+          },
+        });
+      }
+    }
+    const isCandidato = this.dataObject && this.dataObject.rol === 'Candidato';
+
+    if (isCandidato) {
+      const id = this.dataObject && this.dataObject.candidatoId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.simpatizantesService.getSimpatizantesPorCandidatoId(id).subscribe({
+          next: (dataFromAPI) => {
+            this.votantes = dataFromAPI;
+            this.votantesFilter = this.votantes;
+            console.log(this.votantes);
+            this.isLoading = LoadingStates.falseLoading;
+          },
+          error: () => {
+            this.isLoading = LoadingStates.errorLoading;
+          },
+        });
+      }
     }
   }
   onPageChange(number: number) {
@@ -914,5 +923,25 @@ export class SimpatizanteComponent {
   actualizarFiltro(event: any): void {
     this.buscar = event.target.value;
     this.beneficiarioFiltrado = this.filtrarBeneficiario();
+  }
+  convertirAMayusculasClave(event: any): void {
+    const inputElement = event.target as HTMLInputElement;
+    const nuevoValor = inputElement.value.toUpperCase();
+
+    const claveElectorControl = this.simpatizanteForm.get('claveElector');
+
+    if (claveElectorControl) {
+      claveElectorControl.setValue(nuevoValor);
+    }
+  }
+  convertirAMayusculasCurp(event: any): void {
+    const inputElement = event.target as HTMLInputElement;
+    const nuevoValor = inputElement.value.toUpperCase();
+
+    const CURP = this.simpatizanteForm.get('curp');
+
+    if (CURP) {
+      CURP.setValue(nuevoValor);
+    }
   }
 }
