@@ -382,7 +382,7 @@
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label">Sección*:</label>
-                                <ng-select formControlName="seccion" #selectseccion [searchable]="false" [items]="seccion" bindLabel="clave" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                <ng-select formControlName="seccion" #selectseccion [searchable]="false" [items]="seccion" bindLabel="claveYNombre" bindValue="id" placeholder="Elegir" [clearable]="false">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="selectseccion.filter($any($event.target).value)" />
                                     </ng-template>
