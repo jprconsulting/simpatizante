@@ -229,7 +229,7 @@
           class="btn-close"
           data-bs-dismiss="modal"
           aria-label="Close"
-          (click)="resetMap(); ocultar();resetForm()"
+          (click)="resetMap(); ocultar(); resetForm()"
         ></button>
       </div>
 
@@ -259,11 +259,6 @@
                     "
                   >
                     La clave de elector es obligatoria
-                  </div>
-                  <div
-                    *ngIf="simpatizanteForm.get('claveElector')?.hasError('pattern')"
-                  >
-                   La clave de elector no es valida
                   </div>
                   <div *ngIf="mensajeExisteClaveElector !== null">
                     {{ mensajeExisteClaveElector }}
@@ -780,7 +775,11 @@
           Todos los campos marcados con * son requeridos
         </p>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success" [disabled]="!simpatizanteForm.valid || !existeClaveElector">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!simpatizanteForm.valid || !existeClaveElector"
+          >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
