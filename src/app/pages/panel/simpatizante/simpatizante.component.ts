@@ -122,7 +122,6 @@ export class SimpatizanteComponent {
     this.getEstado();
     this.getMunicipios();
     this.getProgramas();
-    this.getSeccion();
     this.getGenero();
     this.getenlaces();
 
@@ -410,14 +409,6 @@ export class SimpatizanteComponent {
       .subscribe({ next: (dataFromAPI) => (this.municipios = dataFromAPI) });
   }
 
-  getSeccion() {
-    this.isLoading = LoadingStates.trueLoading;
-    this.seccionService.getAll().subscribe({
-      next: (dataFromAPI) => {
-        this.seccion = dataFromAPI;
-      },
-    });
-  }
   getEstado() {
     this.isLoading = LoadingStates.trueLoading;
     this.estadoService.getAll().subscribe({
@@ -563,6 +554,14 @@ export class SimpatizanteComponent {
     }
     this.simpatizanteForm.patchValue({
       programaSocial: '',
+    });
+  }
+  getSeccion() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.seccionService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.seccion = dataFromAPI;
+      },
     });
   }
   getenlaces() {
@@ -902,7 +901,7 @@ export class SimpatizanteComponent {
         Municipio: votante.municipio.nombre,
         Estado: votante.estado.nombre,
         Seccion: votante.seccion.clave,
-        Enlase: votante.enlace.nombreCompleto,
+        Enlace: votante.enlace.nombreCompleto,
         'Numero de teléfono': votante.numerotel,
         'Programa Social': votante.programaSocial?.nombre,
         Estatus: estatus,

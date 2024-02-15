@@ -1,4 +1,10 @@
-import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  ViewChild,
+  ElementRef,
+  OnInit,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -20,10 +26,9 @@ import { SecurityService } from 'src/app/core/services/security.service';
 @Component({
   selector: 'app-operadores',
   templateUrl: './operadores.component.html',
-  styleUrls: ['./operadores.component.css']
+  styleUrls: ['./operadores.component.css'],
 })
 export class OperadoresComponent implements OnInit {
-
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
 
@@ -33,7 +38,10 @@ export class OperadoresComponent implements OnInit {
   operadores: Operador[] = [];
   operadorFilter: Operador[] = [];
   isLoading = LoadingStates.neutro;
-  generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
+  generos: GenericType[] = [
+    { id: 1, name: 'Masculino' },
+    { id: 2, name: 'Femenino' },
+  ];
   secciones: Seccion[] = [];
   areasAdscripcion: AreaAdscripcion[] = [];
   isModalAdd = true;
@@ -47,7 +55,6 @@ export class OperadoresComponent implements OnInit {
   readonlySelectCandidato = true;
   candidatoId = 0;
 
-
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
@@ -58,9 +65,11 @@ export class OperadoresComponent implements OnInit {
     private formBuilder: FormBuilder,
     private seccionesService: SeccionService,
     private simpatizantesService: SimpatizantesService,
-    private securityService: SecurityService,
+    private securityService: SecurityService
   ) {
-    this.operadoresService.refreshListOperadores.subscribe(() => this.getOperadores());
+    this.operadoresService.refreshListOperadores.subscribe(() =>
+      this.getOperadores()
+    );
     this.currentUser = securityService.getDataUser();
     this.creteForm();
     this.getCandidatos();
@@ -71,8 +80,8 @@ export class OperadoresComponent implements OnInit {
       this.candidatoId = this.currentUser?.candidatoId;
     }
 
-    this.readonlySelectCandidato = this.currentUser?.rolId !== RolesBD.administrador;
-
+    this.readonlySelectCandidato =
+      this.currentUser?.rolId !== RolesBD.administrador;
   }
   ngOnInit(): void {
     this.isModalAdd = false;
@@ -89,36 +98,58 @@ export class OperadoresComponent implements OnInit {
   }
 
   getGeneroName(id: number): string {
-    const genero = this.generos.find(g => g.id === id);
+    const genero = this.generos.find((g) => g.id === id);
     return genero ? genero.name : '';
   }
 
   getSecciones() {
-    this.seccionesService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.secciones = dataFromAPI
-        }
-      });
-    console.log(this.secciones)
+    this.seccionesService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.secciones = dataFromAPI;
+      },
+    });
+    console.log(this.secciones);
   }
-
-
 
   creteForm() {
     this.operadorForm = this.formBuilder.group({
       id: [null],
       candidatoId: [null, Validators.required],
-      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      nombres: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      apellidoPaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      apellidoMaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
       fechaNacimiento: ['', Validators.required],
       seccionesIds: [[], Validators.required],
       estatus: [true],
     });
   }
-
-
 
   getOperadores() {
     this.isLoading = LoadingStates.trueLoading;
@@ -128,17 +159,19 @@ export class OperadoresComponent implements OnInit {
         this.operadorFilter = this.operadores;
         this.isLoading = LoadingStates.falseLoading;
         this.obtenerSeccionesIdsDeOperadores();
-        const secciones = this.operadores.map(operador => operador.secciones);
+        const secciones = this.operadores.map((operador) => operador.secciones);
         console.log(secciones);
       },
       error: () => {
         this.isLoading = LoadingStates.errorLoading;
-      }
+      },
     });
   }
 
   getCandidatos() {
-    this.candidatosService.getAll().subscribe({ next: (dataFromAPI) => this.candidatos = dataFromAPI });
+    this.candidatosService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.candidatos = dataFromAPI) });
   }
 
   obtenerSeccionesIdsDeOperadores() {
@@ -156,12 +189,12 @@ export class OperadoresComponent implements OnInit {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
-    this.operadorFilter = this.operadores.filter(operador =>
-      operador.nombres.toLowerCase().includes(valueSearch) ||
-      operador.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      operador.fechaNacimiento.toString().includes(valueSearch) ||
-      operador.apellidoMaterno.toLowerCase().includes(valueSearch)
-
+    this.operadorFilter = this.operadores.filter(
+      (operador) =>
+        operador.nombres.toLowerCase().includes(valueSearch) ||
+        operador.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+        operador.fechaNacimiento.toString().includes(valueSearch) ||
+        operador.apellidoMaterno.toLowerCase().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
@@ -170,13 +203,14 @@ export class OperadoresComponent implements OnInit {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.simpatizanteFilter = this.simpatizantes.filter(Simpatizante =>
-      Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
-      Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
-      Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
-    )
+    this.simpatizanteFilter = this.simpatizantes.filter(
+      (Simpatizante) =>
+        Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
+        Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+        Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+        Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
+        Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
+    );
 
     this.configPaginator.currentPage = 1;
   }
@@ -190,7 +224,6 @@ export class OperadoresComponent implements OnInit {
   }
 
   setDataModalUpdate(dto: Operador) {
-
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
@@ -238,7 +271,7 @@ export class OperadoresComponent implements OnInit {
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
-          error: (error) => this.mensajeService.mensajeError(error)
+          error: (error) => this.mensajeService.mensajeError(error),
         });
       }
     );
@@ -270,17 +303,13 @@ export class OperadoresComponent implements OnInit {
     this.operadorForm.reset();
   }
 
-
   submit() {
     if (this.isModalAdd === false) {
       this.editarOperador();
     } else {
       this.agregar();
-
     }
   }
-
-
 
   handleChangeAdd() {
     if (this.operadorForm) {
@@ -327,12 +356,12 @@ export class OperadoresComponent implements OnInit {
   loadSimpatizantes() {
     // Assuming you have a candidateId, replace it with the actual value
     const operadorId = 4; // Replace with the actual candidateId
-    this.simpatizantesService.getSimpatizantesPorOperadorId(operadorId)
-      .subscribe(data => {
+    this.simpatizantesService
+      .getSimpatizantesPorOperadorId(operadorId)
+      .subscribe((data) => {
         this.simpatizantes = data;
       });
   }
-
 
   exportarDatosAExcel() {
     if (this.operadores.length === 0) {
@@ -340,28 +369,41 @@ export class OperadoresComponent implements OnInit {
       return;
     }
 
-    const datosParaExportar = this.operadores.map(operador => {
+    const datosParaExportar = this.operadores.map((operador) => {
       const estatus = operador.estatus ? 'Activo' : 'Inactivo';
-      const fechaNacimiento = operador.fechaNacimiento ?
-        new Date(operador.fechaNacimiento).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) :
-        '';
+      const fechaNacimiento = operador.fechaNacimiento
+        ? new Date(operador.fechaNacimiento).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })
+        : '';
       return {
-        'Nombres': operador.nombres,
+        Nombres: operador.nombres,
         'Apellido paterno': operador.apellidoPaterno,
         'Apellido materno': operador.apellidoMaterno,
         'Fecha de nacimiento': fechaNacimiento,
-        'Estatus': estatus,
+        Estatus: estatus,
       };
     });
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
 
     this.guardarArchivoExcel(excelBuffer, 'Operadores.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const url: string = window.URL.createObjectURL(data);
     const a: HTMLAnchorElement = document.createElement('a');
     a.href = url;
@@ -402,15 +444,14 @@ export class OperadoresComponent implements OnInit {
     }
   }
   seleccionarTodo() {
-    const todasLasOpciones = this.secciones.map(item => item.id); 
-  
+    const todasLasOpciones = this.secciones.map((item) => item.id);
+
     if (this.operadorForm !== null && this.operadorForm !== undefined) {
       const seccionesIdsControl = this.operadorForm.get('seccionesIds');
-      
+
       if (seccionesIdsControl !== null && seccionesIdsControl !== undefined) {
         seccionesIdsControl.setValue(todasLasOpciones);
       }
     }
   }
-  
 }

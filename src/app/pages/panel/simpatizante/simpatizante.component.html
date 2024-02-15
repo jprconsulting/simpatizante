@@ -242,6 +242,7 @@
               <div class="mb-3">
                 <label class="form-label">Enlace:</label>
                 <ng-select
+                  #selectEnlase
                   placeholder="Elegir"
                   [items]="enlaces"
                   bindLabel="nombreCompleto"
@@ -250,6 +251,13 @@
                   [clearable]="false"
                   formControlName="enlace"
                 >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="selectEnlase.filter($any($event.target).value)"
+                    />
+                  </ng-template>
                   <ng-template ng-option-tmp let-item="item">
                     {{ item.nombreCompleto }}
                   </ng-template>
@@ -306,23 +314,24 @@
                 <label class="form-label">Operador:</label>
                 <ng-select
                   formControlName="operadorId"
-                  [readonly]="readonlySelectOperador"
-                  #selectOperador
-                  [searchable]="false"
+                  #selectoperadores
+                  [searchable]="true"
                   [items]="operadores"
                   bindLabel="nombreCompleto"
                   bindValue="id"
                   placeholder="Elegir"
-                  [clearable]="false"
+                  [clearable]="true"
                 >
                   <ng-template ng-header-tmp>
                     <input
                       class="form-control"
                       type="text"
-                      (input)="selectOperador.filter($any($event.target).value)"
+                      (input)="
+                        selectoperadores.filter($any($event.target).value)
+                      "
                     />
                   </ng-template>
-                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                  <ng-template ng-option-tmp let-item="item">
                     {{ item.nombreCompleto }}
                   </ng-template>
                 </ng-select>
