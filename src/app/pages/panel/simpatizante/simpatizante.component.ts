@@ -31,6 +31,8 @@ import { SecurityService } from 'src/app/core/services/security.service';
 import { AppUserAuth } from 'src/app/models/login';
 import { GeneroService } from 'src/app/core/services/genero.service';
 import { Genero } from 'src/app/models/genero';
+import { EnlacesService } from 'src/app/core/services/enlaces.service';
+import { Enlace } from 'src/app/models/enlace';
 
 @Component({
   selector: 'app-beneficiarios',
@@ -58,6 +60,7 @@ export class SimpatizanteComponent {
   isModalAdd: boolean = true;
   votantes: Simpatizante[] = [];
   municipios: Municipio[] = [];
+  enlaces: Enlace [] = [];
   seccion: Seccion[] = [];
   programaSocial: ProgramaSocial[] = [];
   estado: Estado[] = [];
@@ -100,6 +103,7 @@ export class SimpatizanteComponent {
     private formBuilder: FormBuilder,
     private municipiosService: MunicipiosService,
     private seccionService: SeccionService,
+    private enlacesService:EnlacesService,
     private estadoService: EstadoService,
     private serviceGenero: GeneroService,
     private programasSociales: ProgramaSocialService,
@@ -120,6 +124,7 @@ export class SimpatizanteComponent {
     this.getProgramas();
     this.getSeccion();
     this.getGenero();
+    this.getenlaces();
 
     if (this.currentUser?.rolId === RolesBD.operador) {
       this.operadorId = this.currentUser?.operadorId;
@@ -405,6 +410,7 @@ export class SimpatizanteComponent {
       .subscribe({ next: (dataFromAPI) => (this.municipios = dataFromAPI) });
   }
 
+
   getSeccion() {
     this.isLoading = LoadingStates.trueLoading;
     this.seccionService.getAll().subscribe({
@@ -491,8 +497,7 @@ export class SimpatizanteComponent {
       claveElector: [
         '',
         [
-          Validators.required,
-          Validators.pattern(/^([A-Z]{6})([0-9]{8})([A-Z]{1})([0-9]{3})$/),
+          Validators.required
         ],
       ],
       operadorId: [null],
@@ -544,6 +549,7 @@ export class SimpatizanteComponent {
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
       numerotel: ['', Validators.pattern(/^[0-9]{10}$/)],
+      enlace:[''],
     });
   }
 
@@ -565,7 +571,46 @@ export class SimpatizanteComponent {
       programaSocial: '',
     });
   }
+  getenlaces() {
+    this.dataObject = this.securityService.getDataUser();
+    console.log(this.dataObject);
+    this.isLoading = LoadingStates.trueLoading;
+    const isAdmin = this.dataObject && this.dataObject.rol === 'Administrador';
+    if (isAdmin) {
+      this.isLoading = LoadingStates.trueLoading;
+      this.enlacesService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
+    }
+    const Operador = this.dataObject && this.dataObject.rol === 'Operador';
 
+    if (Operador) {
+      const id = this.dataObject && this.dataObject.operadorId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.enlacesService
+        .getPorOperador(id)
+        .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
+
+       
+      }
+    }
+    const isCandidato = this.dataObject && this.dataObject.rol === 'Candidato';
+
+    if (isCandidato) {
+      const id = this.dataObject && this.dataObject.candidatoId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.enlacesService
+        .getPorCandidato(id)
+        .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
+      }
+    }
+
+    
+  }
   getVotantes() {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
@@ -690,7 +735,9 @@ export class SimpatizanteComponent {
       claveElector: dto.claveElector,
       seccion: dto.seccion.id,
       numerotel: dto.numerotel,
+      enlace: dto.enlace.id,
       programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
+      
     });
 
     console.log(dto);
@@ -707,6 +754,7 @@ export class SimpatizanteComponent {
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
     const operadorId = this.simpatizanteForm.get('operadorId')?.value;
     const generoId = this.simpatizanteForm.get('generoId')?.value;
+    const enlace = this.simpatizanteForm.get('enlace')?.value;
 
     this.votante.municipio = { id: 33 } as Municipio;
     this.votante.estado = { id: 29 } as Estado;
@@ -716,6 +764,8 @@ export class SimpatizanteComponent {
     this.votante.programaSocial = programaSocialId
       ? ({ id: programaSocialId } as ProgramaSocial)
       : null;
+      this.votante.enlace = { id: enlace } as Enlace;
+
 
     this.spinnerService.show();
     console.log(this.votante);
@@ -780,10 +830,10 @@ export class SimpatizanteComponent {
   agregar() {
     if (this.existeClaveElector === true) {
       this.votante = this.simpatizanteForm.value as Simpatizante;
-
       const programaSocialId =
         this.simpatizanteForm.get('programaSocial')?.value;
       const municipioId = this.simpatizanteForm.get('municipio')?.value;
+      const enlace = this.simpatizanteForm.get('enlace')?.value;
       const estadoId = this.simpatizanteForm.get('estado')?.value;
       const seccionId = this.simpatizanteForm.get('seccion')?.value;
       const operadorId = this.simpatizanteForm.get('operadorId')?.value;
@@ -797,6 +847,8 @@ export class SimpatizanteComponent {
       this.votante.seccion = { id: seccionId } as Seccion;
       this.votante.operador = { id: operadorId } as Operador;
       this.votante.genero = { id: generoId } as Genero;
+      this.votante.enlace = { id: enlace } as Enlace;
+
 
       console.log(this.votante);
 

@@ -3,4 +3,5 @@ export interface Enlace {
     nombres: string,
     apellidoPaterno: string,
     apellidoMaterno: string
+    nombreCompleto: string
 }

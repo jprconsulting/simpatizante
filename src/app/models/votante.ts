@@ -1,3 +1,4 @@
+import { Enlace } from './enlace';
 import { Estado } from './estados';
 import { Genero } from './genero';
 import { Municipio } from './municipio';
@@ -28,6 +29,7 @@ export interface Simpatizante {
   operador: Operador;
   edad: number;
   numerotel: string;
+  enlace: Enlace;
 }
 
 export interface TotalBeneficiariosMunicipio extends Municipio {
