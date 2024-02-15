@@ -386,74 +386,52 @@
                 </label>
               </div>
             </div>
-
             <div class="col-lg-12">
-              <div class="col">
-                <div class="row">
-                  <div class="col-lg-10 mt-1 mb-3">
-                    <label class="form-label"
-                      >Secciones electorales a operar*:</label
-                    >
-                    <ng-select
-                      #selectSecciones
-                      [items]="secciones"
-                      [searchable]="false"
-                      [multiple]="true"
-                      [closeOnSelect]="false"
-                      [hideSelected]="true"
-                      bindValue="id"
-                      bindLabel="claveYNombre"
-                      placeholder="Seleccionar"
-                      formControlName="seccionesIds"
-                    >
-                      <ng-template ng-header-tmp>
-                        <input
-                          class="form-control"
-                          type="text"
-                          (input)="
-                            selectSecciones.filter($any($event.target).value)
-                          "
-                        />
-                      </ng-template>
-                      <ng-template
-                        ng-option-tmp
-                        let-item="item"
-                        let-index="index"
-                      >
-                        {{ item.claveYNombre }}
-                      </ng-template>
-                    </ng-select>
-                  </div>
-
-                  <div
-                    class="col-lg-2 d-flex align-items-end justify-content-end mb-2"
-                  >
-                    <button
-                      type="button"
-                      class="btn btn-info"
-                      (click)="seleccionarTodo()"
-                    >
-                      Todos
-                    </button>
-                  </div>
-                </div>
-                <div
-                  *ngIf="operadorForm.get('seccionesIds')?.touched"
-                  class="error-message"
+              <div class="mb-3">
+                <label class="form-label"
+                  >Secciones electorales a operar*:</label
                 >
-                  <div
-                    *ngIf="
-                      operadorForm.get('seccionesIds')?.hasError('required')
-                    "
-                  >
-                    La secciones son obligatorias
-                  </div>
-                </div>
+                <ng-select
+                  #selectSecciones
+                  [items]="secciones"
+                  [searchable]="false"
+                  [multiple]="true"
+                  [closeOnSelect]="false"
+                  [hideSelected]="true"
+                  bindValue="id"
+                  bindLabel="claveYNombre"
+                  placeholder="Seleccionar"
+                  formControlName="seccionesIds"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectSecciones.filter($any($event.target).value)
+                      "
+                    />
+                    <div (click)="seleccionarTodo()">Seleccionar todo</div>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.claveYNombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+            <div
+              *ngIf="operadorForm.get('seccionesIds')?.touched"
+              class="error-message"
+            >
+              <div
+                *ngIf="operadorForm.get('seccionesIds')?.hasError('required')"
+              >
+                La secciones son obligatorias
               </div>
             </div>
           </div>
-          <div class="row"></div>
         </div>
+
         <p
           class="form-label"
           style="margin-left: 20px; color: red; font-weight: bold"
