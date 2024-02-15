@@ -54,6 +54,7 @@ export class EnlaceComponent implements OnInit {
     this.currentUser = securityService.getDataUser();
     this.creteForm();
     this.getEnlaces();
+    this.getOperadores();
 
   }
 
@@ -69,6 +70,7 @@ export class EnlaceComponent implements OnInit {
       nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      operadorId: [null, Validators.required]
     });
   }
 
@@ -191,6 +193,8 @@ export class EnlaceComponent implements OnInit {
 
   agregar() {
     this.enlace = this.enlaceForm.value as Enlace;
+    const operadorId = this.enlaceForm.get('operadorId')?.value;
+    this.enlace.operador = { id: operadorId } as Operador;
     this.spinnerService.show();
     console.log(this.enlace);
 
