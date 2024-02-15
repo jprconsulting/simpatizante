@@ -501,8 +501,7 @@ export class SimpatizanteComponent {
       claveElector: [
         '',
         [
-          Validators.required,
-          Validators.pattern(/^([A-Z]{6})([0-9]{8})([A-Z]{1})([0-9]{3})$/),
+          Validators.required
         ],
       ],
       operadorId: [null],
