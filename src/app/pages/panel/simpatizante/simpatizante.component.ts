@@ -725,7 +725,7 @@ export class SimpatizanteComponent {
       claveElector: dto.claveElector,
       seccion: dto.seccion.id,
       numerotel: dto.numerotel,
-      enlace: dto.enlace.id,
+      enlace: dto.enlace ? dto.enlace.id : null,
       programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
     });
 
@@ -835,7 +835,7 @@ export class SimpatizanteComponent {
       this.votante.seccion = { id: seccionId } as Seccion;
       this.votante.operador = { id: operadorId } as Operador;
       this.votante.genero = { id: generoId } as Genero;
-      if (enlace ==! null) {
+      if (enlace == !null) {
         this.votante.enlace = { id: enlace } as Enlace;
       }
 
