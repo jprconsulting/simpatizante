@@ -409,11 +409,7 @@ export class SimpatizanteComponent {
       .getAll()
       .subscribe({ next: (dataFromAPI) => (this.municipios = dataFromAPI) });
   }
-  getenlaces() {
-    this.enlacesService
-      .getAll()
-      .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
-  }
+
 
   getSeccion() {
     this.isLoading = LoadingStates.trueLoading;
@@ -575,7 +571,46 @@ export class SimpatizanteComponent {
       programaSocial: '',
     });
   }
+  getenlaces() {
+    this.dataObject = this.securityService.getDataUser();
+    console.log(this.dataObject);
+    this.isLoading = LoadingStates.trueLoading;
+    const isAdmin = this.dataObject && this.dataObject.rol === 'Administrador';
+    if (isAdmin) {
+      this.isLoading = LoadingStates.trueLoading;
+      this.enlacesService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
+    }
+    const Operador = this.dataObject && this.dataObject.rol === 'Operador';
 
+    if (Operador) {
+      const id = this.dataObject && this.dataObject.operadorId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.enlacesService
+        .getPorOperador(id)
+        .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
+
+       
+      }
+    }
+    const isCandidato = this.dataObject && this.dataObject.rol === 'Candidato';
+
+    if (isCandidato) {
+      const id = this.dataObject && this.dataObject.candidatoId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.enlacesService
+        .getPorCandidato(id)
+        .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
+      }
+    }
+
+    
+  }
   getVotantes() {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
@@ -698,9 +733,9 @@ export class SimpatizanteComponent {
       curp: dto.curp,
       generoId: dto.genero.id,
       claveElector: dto.claveElector,
-      seccion: dto.seccion,
+      seccion: dto.seccion.id,
       numerotel: dto.numerotel,
-      enlace: dto.enlace,
+      enlace: dto.enlace.id,
       programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
       
     });

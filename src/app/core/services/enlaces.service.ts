@@ -24,6 +24,13 @@ export class EnlacesService {
   getAll() {
     return this.http.get<Enlace[]>(`${this.route}/obtener-todos`);
   }
+  getPorCandidato(id: number) {
+    return this.http.get<Enlace[]>(`${this.route}/por-candidato/${id}`);
+  }
+  getPorOperador(id: number) {
+    return this.http.get<Enlace[]>(`${this.route}/por-operador/${id}`);
+  }
+
 
   post(dto: Enlace) {
     return this.http.post<Enlace>(`${this.route}/crear`, dto)
