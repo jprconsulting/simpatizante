@@ -401,5 +401,16 @@ export class OperadoresComponent implements OnInit {
       modal.style.display = 'none';
     }
   }
-
+  seleccionarTodo() {
+    const todasLasOpciones = this.secciones.map(item => item.id); 
+  
+    if (this.operadorForm !== null && this.operadorForm !== undefined) {
+      const seccionesIdsControl = this.operadorForm.get('seccionesIds');
+      
+      if (seccionesIdsControl !== null && seccionesIdsControl !== undefined) {
+        seccionesIdsControl.setValue(todasLasOpciones);
+      }
+    }
+  }
+  
 }
