@@ -16,7 +16,7 @@ import { EnlacesService } from 'src/app/core/services/enlaces.service';
 @Component({
   selector: 'app-enlace',
   templateUrl: './enlace.component.html',
-  styleUrls: ['./enlace.component.css']
+  styleUrls: ['./enlace.component.css'],
 })
 export class EnlaceComponent {
   @ViewChild('closebutton') closebutton!: ElementRef;
@@ -36,7 +36,6 @@ export class EnlaceComponent {
   operadorId = 0;
   candidatoId = 0;
 
-
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
@@ -45,7 +44,7 @@ export class EnlaceComponent {
     private enlacesService: EnlacesService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
-    private securityService: SecurityService,
+    private securityService: SecurityService
   ) {
     this.enlacesService.refreshListEnlaces.subscribe(() => this.getEnlaces());
     this.currentUser = securityService.getDataUser();
@@ -74,22 +73,50 @@ export class EnlaceComponent {
       this.readonlySelectOperador = false;
       this.getTodosOperadores();
     }
-
   }
 
   creteForm() {
     this.enlaceForm = this.formBuilder.group({
       id: [null],
-      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      nombres: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      apellidoPaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      apellidoMaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
       operadorId: [null, Validators.required],
       telefono: [''],
     });
   }
 
   getTodosOperadores() {
-    this.operadoresService.getAll().subscribe({ next: (dataFromAPI) => this.operadores = dataFromAPI });
+    this.operadoresService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
   }
 
   getOperadoresPorCandidatoId() {
@@ -112,8 +139,8 @@ export class EnlaceComponent {
         },
         error: () => {
           this.isLoading = LoadingStates.errorLoading;
-        }
-      })
+        },
+      });
     }
     const Operador = this.dataObject && this.dataObject.rol === 'Operador';
 
@@ -122,18 +149,16 @@ export class EnlaceComponent {
       console.log(id);
       if (id) {
         this.isLoading = LoadingStates.trueLoading;
-        this.enlacesService
-          .getPorOperador(id)
-          .subscribe({
-            next: (dataFromAPI) => {
-              this.enlaces = dataFromAPI;
-              this.enlaceFilter = this.enlaces;
-              this.isLoading = LoadingStates.falseLoading;
-            },
-            error: () => {
-              this.isLoading = LoadingStates.errorLoading;
-            }
-          })
+        this.enlacesService.getPorOperador(id).subscribe({
+          next: (dataFromAPI) => {
+            this.enlaces = dataFromAPI;
+            this.enlaceFilter = this.enlaces;
+            this.isLoading = LoadingStates.falseLoading;
+          },
+          error: () => {
+            this.isLoading = LoadingStates.errorLoading;
+          },
+        });
       }
     }
     const isCandidato = this.dataObject && this.dataObject.rol === 'Candidato';
@@ -143,22 +168,19 @@ export class EnlaceComponent {
       console.log(id);
       if (id) {
         this.isLoading = LoadingStates.trueLoading;
-        this.enlacesService
-          .getPorCandidato(id)
-          .subscribe({
-            next: (dataFromAPI) => {
-              this.enlaces = dataFromAPI;
-              this.enlaceFilter = this.enlaces;
-              this.isLoading = LoadingStates.falseLoading;
-            },
-            error: () => {
-              this.isLoading = LoadingStates.errorLoading;
-            }
-          })
+        this.enlacesService.getPorCandidato(id).subscribe({
+          next: (dataFromAPI) => {
+            this.enlaces = dataFromAPI;
+            this.enlaceFilter = this.enlaces;
+            this.isLoading = LoadingStates.falseLoading;
+          },
+          error: () => {
+            this.isLoading = LoadingStates.errorLoading;
+          },
+        });
       }
     }
   }
-
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
@@ -167,11 +189,12 @@ export class EnlaceComponent {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
-    this.enlaceFilter = this.enlaces.filter(enlace =>
-      enlace.nombres.toLowerCase().includes(valueSearch) ||
-      enlace.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      enlace.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-      enlace.telefono.toString().includes(valueSearch)
+    this.enlaceFilter = this.enlaces.filter(
+      (enlace) =>
+        enlace.nombres.toLowerCase().includes(valueSearch) ||
+        enlace.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+        enlace.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+        enlace.telefono.toString().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
@@ -193,9 +216,8 @@ export class EnlaceComponent {
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
       operadorId: dto.operador.id,
-      telefono: dto.telefono
+      telefono: dto.telefono,
     });
-
   }
 
   editarOperador() {
@@ -227,7 +249,7 @@ export class EnlaceComponent {
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
-          error: (error) => this.mensajeService.mensajeError(error)
+          error: (error) => this.mensajeService.mensajeError(error),
         });
       }
     );
@@ -259,17 +281,13 @@ export class EnlaceComponent {
     this.enlaceForm.reset();
   }
 
-
   submit() {
     if (this.isModalAdd === false) {
       this.editarOperador();
     } else {
       this.agregar();
-
     }
   }
-
-
 
   handleChangeAdd() {
     if (this.enlaceForm) {
@@ -281,35 +299,39 @@ export class EnlaceComponent {
     }
   }
 
-
   exportarDatosAExcel() {
-    if (this.operadores.length === 0) {
+    if (this.enlaces.length === 0) {
       console.warn('La lista de usuarios está vacía. No se puede exportar.');
       return;
     }
 
-    const datosParaExportar = this.operadores.map(operador => {
-      const estatus = operador.estatus ? 'Activo' : 'Inactivo';
-      const fechaNacimiento = operador.fechaNacimiento ?
-        new Date(operador.fechaNacimiento).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) :
-        '';
+    const datosParaExportar = this.enlaces.map((enlace) => {
       return {
-        'Nombres': operador.nombres,
-        'Apellido paterno': operador.apellidoPaterno,
-        'Apellido materno': operador.apellidoMaterno,
-        'Fecha de nacimiento': fechaNacimiento,
-        'Estatus': estatus,
+        'Nombre': enlace.nombres,
+        'Apellido paterno': enlace.apellidoPaterno,
+        'Apellido materno': enlace.apellidoMaterno,
+        'Teléfono': enlace.telefono,
+        'Operador': enlace.operador.nombreCompleto,
       };
     });
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
 
-    this.guardarArchivoExcel(excelBuffer, 'Operadores.xlsx');
+    this.guardarArchivoExcel(excelBuffer, 'Enlaces.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const url: string = window.URL.createObjectURL(data);
     const a: HTMLAnchorElement = document.createElement('a');
     a.href = url;
@@ -317,5 +339,4 @@ export class EnlaceComponent {
     a.click();
     window.URL.revokeObjectURL(url);
   }
-
 }
