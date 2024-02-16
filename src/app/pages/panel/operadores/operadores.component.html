@@ -275,6 +275,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5)">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -307,7 +308,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let seccion of seccionesOperador; let i = index">
+                                <tr *ngFor="let seccion of seccionesOperador | paginate : configPaginator;
+                  let pointIndex = index
+                ">
                                     <td style="text-align: center">
                                         <p>{{ seccion.claveYNombre }}</p>
                                     </td>
@@ -318,11 +321,20 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="card-footer d-flex align-items-center">
+                        <p class="m-0 text-muted">
+                            Total de registros: <b>{{ seccionesOperador.length }}</b>
+                        </p>
+                        <div class="m-0 ms-auto">
+                            <pagination-controls #seccionesOperadorPaginator (pageChange)="onPageChangeSeccionesOperador($event)" previousLabel="" nextLabel=""></pagination-controls>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <div class="modal modal-highlight" id="modal-simpatizantes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5)">
     <div class="modal-dialog modal-full-width modal-dialog-centered" role="document">
         <div class="modal-content">

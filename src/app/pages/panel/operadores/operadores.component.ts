@@ -186,6 +186,12 @@ export class OperadoresComponent implements OnInit {
     this.configPaginator.currentPage = number;
   }
 
+onPageChangeSeccionesOperador(number: number) {
+    if (this.configPaginator.id === 'seccionesOperadorPaginator') {
+        this.configPaginator.currentPage = number;
+    }
+}
+
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
@@ -454,5 +460,5 @@ export class OperadoresComponent implements OnInit {
       }
     }
   }
-  
+
 }
