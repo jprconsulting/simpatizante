@@ -21,7 +21,7 @@ import { EnlacesService } from 'src/app/core/services/enlaces.service';
 export class EnlaceComponent {
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
-
+  dataObject!: AppUserAuth | null;
   enlace!: Enlace;
   enlaceForm!: FormGroup;
   enlaces: Enlace[] = [];
@@ -97,19 +97,66 @@ export class EnlaceComponent {
       .getOperadoresPorCandidatoId(this.candidatoId)
       .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
   }
-
   getEnlaces() {
+    this.dataObject = this.securityService.getDataUser();
+    console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
-    this.enlacesService.getAll().subscribe({
-      next: (dataFromAPI) => {
-        this.enlaces = dataFromAPI;
-        this.enlaceFilter = this.enlaces;
-        this.isLoading = LoadingStates.falseLoading;
-      },
-      error: () => {
-        this.isLoading = LoadingStates.errorLoading;
+    const isAdmin = this.dataObject && this.dataObject.rol === 'Administrador';
+    if (isAdmin) {
+      this.isLoading = LoadingStates.trueLoading;
+      this.enlacesService.getAll().subscribe({
+        next: (dataFromAPI) => {
+          this.enlaces = dataFromAPI;
+          this.enlaceFilter = this.enlaces;
+          this.isLoading = LoadingStates.falseLoading;
+        },
+        error: () => {
+          this.isLoading = LoadingStates.errorLoading;
+        }
+      })
+    }
+    const Operador = this.dataObject && this.dataObject.rol === 'Operador';
+
+    if (Operador) {
+      const id = this.dataObject && this.dataObject.operadorId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.enlacesService
+          .getPorOperador(id)
+          .subscribe({
+            next: (dataFromAPI) => {
+              this.enlaces = dataFromAPI;
+              this.enlaceFilter = this.enlaces;
+              this.isLoading = LoadingStates.falseLoading;
+            },
+            error: () => {
+              this.isLoading = LoadingStates.errorLoading;
+            }
+          })
       }
-    })
+    }
+    const isCandidato = this.dataObject && this.dataObject.rol === 'Candidato';
+
+    if (isCandidato) {
+      const id = this.dataObject && this.dataObject.candidatoId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.enlacesService
+          .getPorCandidato(id)
+          .subscribe({
+            next: (dataFromAPI) => {
+              this.enlaces = dataFromAPI;
+              this.enlaceFilter = this.enlaces;
+              this.isLoading = LoadingStates.falseLoading;
+            },
+            error: () => {
+              this.isLoading = LoadingStates.errorLoading;
+            }
+          })
+      }
+    }
   }
 
 
