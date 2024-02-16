@@ -6,5 +6,6 @@ export interface Enlace {
     apellidoPaterno: string,
     apellidoMaterno: string
     nombreCompleto: string
+    telefono: string;
     operador: Operador
 }

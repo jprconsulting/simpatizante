@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -8,7 +8,6 @@ import { LoadingStates, RolesBD } from 'src/app/global/global';
 import { Operador } from 'src/app/models/operador';
 import * as XLSX from 'xlsx';
 
-import { Candidato } from 'src/app/models/candidato';
 import { AppUserAuth } from 'src/app/models/login';
 import { SecurityService } from 'src/app/core/services/security.service';
 import { Enlace } from 'src/app/models/enlace';
@@ -19,25 +18,23 @@ import { EnlacesService } from 'src/app/core/services/enlaces.service';
   templateUrl: './enlace.component.html',
   styleUrls: ['./enlace.component.css']
 })
-export class EnlaceComponent implements OnInit {
+export class EnlaceComponent {
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
 
-  operador!: Operador;
   enlace!: Enlace;
-  operadorForm!: FormGroup;
   enlaceForm!: FormGroup;
-  operadores: Operador[] = [];
   enlaces: Enlace[] = [];
-  operadorFilter: Operador[] = [];
   enlaceFilter: Enlace[] = [];
   isLoading = LoadingStates.neutro;
+
+  operadores: Operador[] = [];
   isModalAdd = true;
-  rolId = 0;
 
   currentUser!: AppUserAuth | null;
   readonlySelectOperador = true;
   operadorId = 0;
+  candidatoId = 0;
 
 
   constructor(
@@ -50,19 +47,35 @@ export class EnlaceComponent implements OnInit {
     private formBuilder: FormBuilder,
     private securityService: SecurityService,
   ) {
-    this.operadoresService.refreshListOperadores.subscribe(() => this.getEnlaces());
+    this.enlacesService.refreshListEnlaces.subscribe(() => this.getEnlaces());
     this.currentUser = securityService.getDataUser();
     this.creteForm();
     this.getEnlaces();
-    this.getOperadores();
 
-  }
-
-  ngOnInit(): void {
     this.isModalAdd = false;
+
+    if (this.currentUser?.rolId === RolesBD.operador) {
+      this.operadorId = this.currentUser?.operadorId;
+      console.log(this.operadorId);
+      this.operadores.push({
+        id: this.operadorId,
+        nombreCompleto: this.currentUser?.nombreCompleto,
+      } as Operador);
+      console.log(this.operadores);
+    }
+
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.readonlySelectOperador = false;
+      this.candidatoId = this.currentUser?.candidatoId;
+      this.getOperadoresPorCandidatoId();
+    }
+
+    if (this.currentUser?.rolId === RolesBD.administrador) {
+      this.readonlySelectOperador = false;
+      this.getTodosOperadores();
+    }
+
   }
-
-
 
   creteForm() {
     this.enlaceForm = this.formBuilder.group({
@@ -70,31 +83,30 @@ export class EnlaceComponent implements OnInit {
       nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      operadorId: [null, Validators.required]
+      operadorId: [null, Validators.required],
+      telefono: [''],
     });
   }
 
+  getTodosOperadores() {
+    this.operadoresService.getAll().subscribe({ next: (dataFromAPI) => this.operadores = dataFromAPI });
+  }
 
-
-  getOperadores() {
-    this.operadoresService.getAll().subscribe({
-      next: (dataFromAPI) => {
-        this.operadores = dataFromAPI;
-        this.operadorFilter = this.operadores;
-      }
-    });
+  getOperadoresPorCandidatoId() {
+    this.operadoresService
+      .getOperadoresPorCandidatoId(this.candidatoId)
+      .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
   }
 
   getEnlaces() {
     this.isLoading = LoadingStates.trueLoading;
     this.enlacesService.getAll().subscribe({
-      next: ( dataFromAPI ) => {
+      next: (dataFromAPI) => {
         this.enlaces = dataFromAPI;
         this.enlaceFilter = this.enlaces;
         this.isLoading = LoadingStates.falseLoading;
-
       },
-      error: () =>{
+      error: () => {
         this.isLoading = LoadingStates.errorLoading;
       }
     })
@@ -108,26 +120,12 @@ export class EnlaceComponent implements OnInit {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
-    this.operadorFilter = this.operadores.filter(operador =>
-      operador.nombres.toLowerCase().includes(valueSearch) ||
-      operador.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      operador.fechaNacimiento.toString().includes(valueSearch) ||
-      operador.apellidoMaterno.toLowerCase().includes(valueSearch)
-
+    this.enlaceFilter = this.enlaces.filter(enlace =>
+      enlace.nombres.toLowerCase().includes(valueSearch) ||
+      enlace.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      enlace.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+      enlace.telefono.toString().includes(valueSearch)
     );
-    this.configPaginator.currentPage = 1;
-  }
-
-  handleChangeSearchModal(event: any) {
-    const inputValue = event.target.value;
-    const valueSearch = inputValue.toLowerCase();
-
-    this.enlaceFilter = this.enlaces.filter(Enlace =>
-      Enlace.nombres.toLowerCase().includes(valueSearch) ||
-      Enlace.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      Enlace.apellidoMaterno.toLowerCase().includes(valueSearch)
-    )
-
     this.configPaginator.currentPage = 1;
   }
 
@@ -140,32 +138,29 @@ export class EnlaceComponent implements OnInit {
   }
 
   setDataModalUpdate(dto: Enlace) {
-
     this.isModalAdd = false;
     this.idUpdate = dto.id;
-
-    this.operadorForm.patchValue({
+    this.enlaceForm.patchValue({
       id: dto.id,
       nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
+      operadorId: dto.operador.id,
+      telefono: dto.telefono
     });
 
   }
 
   editarOperador() {
-    this.operador = this.operadorForm.value as Operador;
-    this.operador.id = this.idUpdate;
-    const seccionesIds = this.operadorForm.get('seccionesIds')?.value;
-    this.operador.seccionesIds = seccionesIds as number[];
-    const candidatoId = this.operadorForm.get('candidatoId')?.value;
-    this.operador.candidato = { id: candidatoId } as Candidato;
+    this.enlace = this.enlaceForm.value as Enlace;
+    const operadorId = this.enlaceForm.get('operadorId')?.value;
+    this.enlace.operador = { id: operadorId } as Operador;
 
     this.spinnerService.show();
-    this.operadoresService.put(this.idUpdate, this.operador).subscribe({
+    this.enlacesService.put(this.idUpdate, this.enlace).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Operador actualizado correctamente');
+        this.mensajeService.mensajeExito('Enlace actualizado correctamente');
         this.resetForm();
       },
       error: (error) => {
@@ -177,11 +172,11 @@ export class EnlaceComponent implements OnInit {
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
-      `¿Estás seguro de eliminar el operador: ${nameItem}?`,
+      `¿Estás seguro de eliminar el enlace: ${nameItem}?`,
       () => {
-        this.operadoresService.delete(id).subscribe({
+        this.enlacesService.delete(id).subscribe({
           next: () => {
-            this.mensajeService.mensajeExito('Operador borrado correctamente');
+            this.mensajeService.mensajeExito('Enlace borrado correctamente');
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
@@ -214,7 +209,7 @@ export class EnlaceComponent implements OnInit {
 
   resetForm() {
     this.closebutton.nativeElement.click();
-    this.operadorForm.reset();
+    this.enlaceForm.reset();
   }
 
 
@@ -232,37 +227,12 @@ export class EnlaceComponent implements OnInit {
   handleChangeAdd() {
     if (this.enlaceForm) {
       this.enlaceForm.reset();
-
+      if (this.currentUser?.rolId === RolesBD.operador) {
+        this.enlaceForm.controls['operadorId'].setValue(this.operadorId);
+      }
       this.isModalAdd = true;
     }
   }
-
-  showModal = false;
-
-  openModal() {
-    this.showModal = true;
-  }
-
-  closeModal() {
-    this.showModal = false;
-  }
-  mostrarImagenAmpliada2(seccion: string) {
-    this.imagenAmpliada = seccion;
-    const modal = document.getElementById('modal-simpatizantes');
-    if (modal) {
-      modal.classList.add('show');
-      modal.style.display = 'block';
-    }
-  }
-  cerrarModal2() {
-    this.imagenAmpliada = null;
-    const modal = document.getElementById('modal-simpatizantes');
-    if (modal) {
-      modal.classList.remove('show');
-      modal.style.display = 'none';
-    }
-  }
-
 
 
   exportarDatosAExcel() {
@@ -299,20 +269,6 @@ export class EnlaceComponent implements OnInit {
     a.download = nombreArchivo;
     a.click();
     window.URL.revokeObjectURL(url);
-  }
-
-
-  imagenAmpliada: string | null = null;
-
-
-
-  cerrarModal() {
-    this.imagenAmpliada = null;
-    const modal = document.getElementById('modal-imagen-ampliada');
-    if (modal) {
-      modal.classList.remove('show');
-      modal.style.display = 'none';
-    }
   }
 
 }

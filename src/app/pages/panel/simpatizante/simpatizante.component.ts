@@ -834,9 +834,7 @@ export class SimpatizanteComponent {
       this.votante.seccion = { id: seccionId } as Seccion;
       this.votante.operador = { id: operadorId } as Operador;
       this.votante.genero = { id: generoId } as Genero;
-      if (enlace == !null) {
-        this.votante.enlace = { id: enlace } as Enlace;
-      }
+      this.votante.enlace = { id: enlace } as Enlace;
 
       console.log(this.votante);
 
@@ -872,6 +870,7 @@ export class SimpatizanteComponent {
         estatusControl.setValue(true);
       }
       this.isModalAdd = true;
+      this.existeClaveElector = null;
     }
     this.deshabilitarTodosLosControles();
   }

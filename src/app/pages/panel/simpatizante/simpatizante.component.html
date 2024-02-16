@@ -240,32 +240,6 @@
           <div class="row d-flex align-items-center align-items-end">
             <div class="col-lg-10">
               <div class="mb-3">
-                <label class="form-label">Enlace:</label>
-                <ng-select
-                  #selectEnlase
-                  placeholder="Elegir"
-                  [items]="enlaces"
-                  bindLabel="nombreCompleto"
-                  bindValue="id"
-                  [searchable]="false"
-                  [clearable]="false"
-                  formControlName="enlace"
-                >
-                  <ng-template ng-header-tmp>
-                    <input
-                      class="form-control"
-                      type="text"
-                      (input)="selectEnlase.filter($any($event.target).value)"
-                    />
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item">
-                    {{ item.nombreCompleto }}
-                  </ng-template>
-                </ng-select>
-              </div>
-            </div>
-            <div class="col-lg-10">
-              <div class="mb-3">
                 <label class="form-label">Clave de Elector*:</label>
                 <input
                   type="text"
@@ -309,7 +283,34 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Enlace:</label>
+                <ng-select
+                  #selectEnlase
+                  placeholder="Elegir"
+                  [items]="enlaces"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  [searchable]="false"
+                  [clearable]="false"
+                  formControlName="enlace"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="selectEnlase.filter($any($event.target).value)"
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label">Operador:</label>
                 <ng-select
@@ -321,6 +322,7 @@
                   bindValue="id"
                   placeholder="Elegir"
                   [clearable]="true"
+                  [readonly]="readonlySelectOperador"
                 >
                   <ng-template ng-header-tmp>
                     <input
