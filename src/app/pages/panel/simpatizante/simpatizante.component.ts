@@ -481,6 +481,7 @@ export class SimpatizanteComponent {
           this.mensajeExisteClaveElector = '';
         },
       });
+      this.getenlacesSelect();
   }
 
   creteForm() {
