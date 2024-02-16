@@ -570,14 +570,14 @@ export class SimpatizanteComponent {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rol === 'Administrador';
+    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
     if (isAdmin) {
       this.isLoading = LoadingStates.trueLoading;
       this.enlacesService
         .getAll()
         .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
     }
-    const Operador = this.dataObject && this.dataObject.rol === 'Operador';
+    const Operador = this.dataObject && this.dataObject.rolId === 2;
 
     if (Operador) {
       const id = this.dataObject && this.dataObject.operadorId;
@@ -587,9 +587,10 @@ export class SimpatizanteComponent {
         this.enlacesService
           .getPorOperador(id)
           .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
+        this.getenlacesSelect();
       }
     }
-    const isCandidato = this.dataObject && this.dataObject.rol === 'Candidato';
+    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
 
     if (isCandidato) {
       const id = this.dataObject && this.dataObject.candidatoId;
@@ -599,6 +600,7 @@ export class SimpatizanteComponent {
         this.enlacesService
           .getPorCandidato(id)
           .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
+        this.getenlacesSelect();
       }
     }
   }
@@ -618,12 +620,19 @@ export class SimpatizanteComponent {
         },
         error: (error) => {
           console.error('Error al obtener enlaces por operador:', error);
-          this.isLoading = LoadingStates.errorLoading;
+          this.enlaceselect = [];
+          this.getVotantes();
         },
         complete: () => {
           this.isLoading = LoadingStates.falseLoading;
         },
       });
+    } else {
+      console.warn(
+        'operadorIdSeleccionado is falsy. Handle this case if needed.'
+      );
+      this.enlaceselect = [];
+      this.getVotantes();
     }
   }
 
@@ -757,6 +766,7 @@ export class SimpatizanteComponent {
 
     console.log(dto);
     console.log(this.simpatizanteForm.value);
+    this.getenlacesSelect();
   }
 
   actualizar() {

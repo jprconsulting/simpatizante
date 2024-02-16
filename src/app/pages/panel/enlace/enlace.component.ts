@@ -128,7 +128,7 @@ export class EnlaceComponent {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rol === 'Administrador';
+    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
     if (isAdmin) {
       this.isLoading = LoadingStates.trueLoading;
       this.enlacesService.getAll().subscribe({
@@ -142,7 +142,7 @@ export class EnlaceComponent {
         },
       });
     }
-    const Operador = this.dataObject && this.dataObject.rol === 'Operador';
+    const Operador = this.dataObject && this.dataObject.rolId === 2;
 
     if (Operador) {
       const id = this.dataObject && this.dataObject.operadorId;
@@ -161,7 +161,7 @@ export class EnlaceComponent {
         });
       }
     }
-    const isCandidato = this.dataObject && this.dataObject.rol === 'Candidato';
+    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
 
     if (isCandidato) {
       const id = this.dataObject && this.dataObject.candidatoId;
