@@ -296,6 +296,7 @@
                   placeholder="Elegir"
                   [clearable]="true"
                   [readonly]="readonlySelectOperador"
+                  (change)="getenlacesSelect()"
                 >
                   <ng-template ng-header-tmp>
                     <input
@@ -318,7 +319,7 @@
                 <ng-select
                   #selectEnlase
                   placeholder="Elegir"
-                  [items]="enlaces"
+                  [items]="enlaceselect"
                   bindLabel="nombreCompleto"
                   bindValue="id"
                   [searchable]="true"

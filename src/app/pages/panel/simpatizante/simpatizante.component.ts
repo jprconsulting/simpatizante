@@ -61,6 +61,7 @@ export class SimpatizanteComponent {
   votantes: Simpatizante[] = [];
   municipios: Municipio[] = [];
   enlaces: Enlace[] = [];
+  enlaceselect: Enlace[] = [];
   seccion: Seccion[] = [];
   programaSocial: ProgramaSocial[] = [];
   estado: Estado[] = [];
@@ -124,6 +125,7 @@ export class SimpatizanteComponent {
     this.getProgramas();
     this.getGenero();
     this.getenlaces();
+    this.getenlacesSelect();
 
     if (this.currentUser?.rolId === RolesBD.operador) {
       this.operadorId = this.currentUser?.operadorId;
@@ -600,6 +602,31 @@ export class SimpatizanteComponent {
       }
     }
   }
+  getenlacesSelect() {
+    const operadorIdSeleccionado =
+      this.simpatizanteForm.get('operadorId')?.value;
+
+    console.log('ID seleccionado:', operadorIdSeleccionado);
+
+    if (operadorIdSeleccionado) {
+      this.isLoading = LoadingStates.trueLoading;
+
+      this.enlacesService.getPorOperador(operadorIdSeleccionado).subscribe({
+        next: (dataFromAPI) => {
+          this.enlaceselect = dataFromAPI;
+          console.log('Datos de enlaces:', this.enlaceselect);
+        },
+        error: (error) => {
+          console.error('Error al obtener enlaces por operador:', error);
+          this.isLoading = LoadingStates.errorLoading;
+        },
+        complete: () => {
+          this.isLoading = LoadingStates.falseLoading;
+        },
+      });
+    }
+  }
+
   getVotantes() {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
