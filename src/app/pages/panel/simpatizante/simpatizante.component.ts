@@ -472,7 +472,7 @@ export class SimpatizanteComponent {
           this.deshabilitarTodosLosControles();
           this.existeCURP = false;
           this.mensajeExisteCURP =
-            'La clave de lector ya esta registrada';
+            'El CURP ya esta registrado';
         },
         error: () => {
           this.existeCURP = true;
@@ -859,7 +859,47 @@ export class SimpatizanteComponent {
   }
 
   agregar() {
-    if (this.existeCURP === true) {
+
+    if ( this.simpatizanteForm.get('curp')?.value === null ) {
+      this.votante = this.simpatizanteForm.value as Simpatizante;
+      const programaSocialId =
+        this.simpatizanteForm.get('programaSocial')?.value;
+      const municipioId = this.simpatizanteForm.get('municipio')?.value;
+      const promotor = this.simpatizanteForm.get('promotor')?.value;
+      const estadoId = this.simpatizanteForm.get('estado')?.value;
+      const seccionId = this.simpatizanteForm.get('seccion')?.value;
+      const operadorId = this.simpatizanteForm.get('operadorId')?.value;
+      const generoId = this.simpatizanteForm.get('generoId')?.value;
+
+      this.votante.programaSocial = programaSocialId
+        ? ({ id: programaSocialId } as ProgramaSocial)
+        : null;
+      this.votante.municipio = { id: 33 } as Municipio;
+      this.votante.estado = { id: 29 } as Estado;
+      this.votante.seccion = { id: seccionId } as Seccion;
+      this.votante.operador = { id: operadorId } as Operador;
+      this.votante.genero = { id: generoId } as Genero;
+      this.votante.promotor = { id: promotor } as Promotor;
+
+      console.log(this.votante);
+
+      this.spinnerService.show();
+      this.simpatizantesService.post(this.votante).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Promovido guardado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          console.error('Error en la solicitud POST:', error);
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        },
+      });
+    }
+
+  else if (this.existeCURP === true) {
       this.votante = this.simpatizanteForm.value as Simpatizante;
       const programaSocialId =
         this.simpatizanteForm.get('programaSocial')?.value;
@@ -897,7 +937,7 @@ export class SimpatizanteComponent {
         },
       });
     } else {
-      this.mensajeService.mensajeError('Clave de lector ya registrada');
+      this.mensajeService.mensajeError('CURP ya registrada');
     }
   }
 
@@ -916,7 +956,7 @@ export class SimpatizanteComponent {
       this.isModalAdd = true;
       this.existeCURP = null;
     }
-    this.deshabilitarTodosLosControles();
+    this.habilitarTodosLosControles();
   }
   exportarDatosAExcel() {
     if (this.votantes.length === 0) {

@@ -287,6 +287,21 @@
             </div>
             <div class="modal-body">
                 <div class="col-md-6 col-lg-12">
+
+                    <div class="row d-flex justify-content-end mt-0 mb-3">
+                        <div class="col-12 col-md-6 input-icon">
+                            <input
+                              #searchItem
+                              type="text"
+                              class="form-control form-control-rounded"
+                              placeholder="Buscar"
+                              (input)="handleChangeSearchModalSimpatizantesAsociados($event)" />
+                            <span class="input-icon-addon me-2  ">
+                              <i class="ti ti-search"></i>
+                            </span>
+                        </div>
+                    </div>
+
                     <div class="card">
                         <table class="table table-vcenter card-table table-striped">
                             <thead>
@@ -308,7 +323,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let seccion of seccionesOperador | paginate : configPaginator;
+                                <tr *ngFor="let seccion of seccionesOperadorFilter | paginate : configPaginator;
                   let pointIndex = index
                 ">
                                     <td style="text-align: center">
@@ -323,10 +338,10 @@
                     </div>
                     <div class="card-footer d-flex align-items-center">
                         <p class="m-0 text-muted">
-                            Total de registros: <b>{{ seccionesOperador.length }}</b>
+                            Total de registros: <b>{{ seccionesOperadorFilter.length }}</b>
                         </p>
                         <div class="m-0 ms-auto">
-                            <pagination-controls #seccionesOperadorPaginator (pageChange)="onPageChangeSeccionesOperador($event)" previousLabel="" nextLabel=""></pagination-controls>
+                            <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel=""></pagination-controls>
                         </div>
                     </div>
                 </div>

@@ -256,11 +256,11 @@
                   *ngIf="simpatizanteForm.get('curp')?.touched"
                   class="error-message"
                 >
-                  <div
+                  <!-- <div
                     *ngIf="simpatizanteForm.get('curp')?.hasError('required')"
                   >
                     La clave de elector es obligatoria
-                  </div>
+                  </div> -->
                   <div *ngIf="mensajeExisteCURP !== null">
                     {{ mensajeExisteCURP }}
                   </div>
@@ -827,7 +827,7 @@
           <button
             type="submit"
             class="btn btn-success"
-            [disabled]="!simpatizanteForm.valid || !existeCURP"
+            [disabled]="!simpatizanteForm.valid"
           >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>

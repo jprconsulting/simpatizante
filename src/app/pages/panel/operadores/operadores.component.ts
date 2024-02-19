@@ -34,6 +34,7 @@ export class OperadoresComponent implements OnInit {
 
   operador!: Operador;
   seccionesOperador: Seccion[] = [];
+  seccionesOperadorFilter: Seccion[] = [];
   operadorForm!: FormGroup;
   operadores: Operador[] = [];
   operadorFilter: Operador[] = [];
@@ -90,6 +91,7 @@ export class OperadoresComponent implements OnInit {
 
   verSeccionesOperador(secciones: Seccion[]) {
     this.seccionesOperador = secciones;
+    this.seccionesOperadorFilter = this.seccionesOperador;
     const modal = document.getElementById('modal-imagen-ampliada');
     if (modal) {
       modal.classList.add('show');
@@ -186,11 +188,6 @@ export class OperadoresComponent implements OnInit {
     this.configPaginator.currentPage = number;
   }
 
-onPageChangeSeccionesOperador(number: number) {
-    if (this.configPaginator.id === 'seccionesOperadorPaginator') {
-        this.configPaginator.currentPage = number;
-    }
-}
 
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
@@ -216,6 +213,19 @@ onPageChangeSeccionesOperador(number: number) {
         Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
         Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
         Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
+    );
+
+    this.configPaginator.currentPage = 1;
+  }
+
+  handleChangeSearchModalSimpatizantesAsociados( event: any ) {
+    const inputValue = event.target.value;
+    const valueSearch = inputValue.toLowerCase();
+
+    this.seccionesOperadorFilter = this.seccionesOperador.filter(
+      (Seccion) =>
+        Seccion.claveYNombre.toLocaleLowerCase().includes(valueSearch) ||
+        Seccion.municipio.nombre.toLocaleLowerCase().includes(valueSearch)
     );
 
     this.configPaginator.currentPage = 1;
