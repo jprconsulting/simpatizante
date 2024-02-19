@@ -26,9 +26,9 @@ const routes: Routes = [
           .then(i => i.OperadoresModule)
       },
       {
-        path:'enlaces',
-        loadChildren: () => import('./enlace/enlace.module')
-          .then(i => i.EnlaceModule)
+        path:'promotores',
+        loadChildren: () => import('./promotor/promotor.module')
+          .then(i => i.PromotorModule)
       },
       {
         path: 'jornada-electoral',

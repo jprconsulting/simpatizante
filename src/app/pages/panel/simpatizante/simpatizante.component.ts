@@ -14,8 +14,6 @@ import { ProgramaSocial } from 'src/app/models/programa-social';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
-import { BeneficiariosService } from 'src/app/core/services/beneficiarios.service';
-import { ProgramaSocialService } from 'src/app/core/services/programas.services';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
 import * as XLSX from 'xlsx';
@@ -31,8 +29,9 @@ import { SecurityService } from 'src/app/core/services/security.service';
 import { AppUserAuth } from 'src/app/models/login';
 import { GeneroService } from 'src/app/core/services/genero.service';
 import { Genero } from 'src/app/models/genero';
-import { EnlacesService } from 'src/app/core/services/enlaces.service';
-import { Enlace } from 'src/app/models/enlace';
+import { PromotoresService } from 'src/app/core/services/promotores.service';
+import { Promotor } from 'src/app/models/promotor';
+import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
 
 @Component({
   selector: 'app-beneficiarios',
@@ -60,8 +59,8 @@ export class SimpatizanteComponent {
   isModalAdd: boolean = true;
   votantes: Simpatizante[] = [];
   municipios: Municipio[] = [];
-  enlaces: Enlace[] = [];
-  enlaceselect: Enlace[] = [];
+  promotores: Promotor[] = [];
+  promotoresselect: Promotor[] = [];
   seccion: Seccion[] = [];
   programaSocial: ProgramaSocial[] = [];
   estado: Estado[] = [];
@@ -80,7 +79,7 @@ export class SimpatizanteComponent {
   formData: any;
   dataObject!: AppUserAuth | null;
   id!: number;
-  mensajeExisteClaveElector: string | null = null;
+  mensajeExisteCURP: string | null = null;
   // MAPS
   latitude: number = 19.316818295403003;
   longitude: number = -98.23837658175323;
@@ -93,7 +92,7 @@ export class SimpatizanteComponent {
   private map: any;
   private marker: any;
 
-  existeClaveElector: boolean | null = null;
+  existeCURP: boolean | null = null;
 
   constructor(
     private renderer: Renderer2,
@@ -104,10 +103,10 @@ export class SimpatizanteComponent {
     private formBuilder: FormBuilder,
     private municipiosService: MunicipiosService,
     private seccionService: SeccionService,
-    private enlacesService: EnlacesService,
+    private promotoresService: PromotoresService,
     private estadoService: EstadoService,
     private serviceGenero: GeneroService,
-    private programasSociales: ProgramaSocialService,
+    private programasSociales: ProgramasSocialesService,
     private operadoresService: OperadoresService,
     private simpatizantesService: SimpatizantesService,
     private securityService: SecurityService
@@ -124,8 +123,8 @@ export class SimpatizanteComponent {
     this.getMunicipios();
     this.getProgramas();
     this.getGenero();
-    this.getenlaces();
-    this.getenlacesSelect();
+    this.getPromotores();
+    this.getPromotoresSelect();
 
     if (this.currentUser?.rolId === RolesBD.operador) {
       this.operadorId = this.currentUser?.operadorId;
@@ -450,7 +449,7 @@ export class SimpatizanteComponent {
 
   deshabilitarTodosLosControles() {
     Object.keys(this.simpatizanteForm.controls).forEach((controlName) => {
-      if (controlName !== 'claveElector') {
+      if (controlName !== 'curp') {
         this.simpatizanteForm.get(controlName)?.disable();
       }
     });
@@ -462,32 +461,39 @@ export class SimpatizanteComponent {
     });
   }
 
-  validarClaveElector() {
-    const claveElector = this.simpatizanteForm.get('claveElector')
+  validarCURP() {
+    const curp = this.simpatizanteForm.get('curp')
       ?.value as string;
 
     this.simpatizantesService
-      .validarSimpatizantePorClaveElector(claveElector)
+      .validarSimpatizantePorCURP(curp)
       .subscribe({
         next: () => {
           this.deshabilitarTodosLosControles();
-          this.existeClaveElector = false;
-          this.mensajeExisteClaveElector =
+          this.existeCURP = false;
+          this.mensajeExisteCURP =
             'La clave de lector ya esta registrada';
         },
         error: () => {
-          this.existeClaveElector = true;
+          this.existeCURP = true;
           this.habilitarTodosLosControles();
-          this.mensajeExisteClaveElector = '';
+          this.mensajeExisteCURP = '';
         },
       });
-      this.getenlacesSelect();
+    this.getPromotoresSelect();
   }
 
   creteForm() {
     this.simpatizanteForm = this.formBuilder.group({
       id: [null],
-      claveElector: ['', [Validators.required]],
+      curp: [
+        '',
+        [
+          Validators.pattern(
+            /^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9a-zA-Z]{2})$/
+          ),
+        ],
+      ],
       operadorId: [null],
       nombres: [
         '',
@@ -519,17 +525,10 @@ export class SimpatizanteComponent {
           ),
         ],
       ],
+      fechaNacimiento: ['', Validators.required],
       estado: ['29'],
       seccion: [null, Validators.required],
       generoId: [null, Validators.required],
-      curp: [
-        '',
-        [
-          Validators.pattern(
-            /^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9a-zA-Z]{2})$/
-          ),
-        ],
-      ],
       estatus: [this.estatusBtn],
       programaSocial: [''],
       municipio: [29],
@@ -537,7 +536,8 @@ export class SimpatizanteComponent {
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
       numerotel: ['', Validators.pattern(/^[0-9]{10}$/)],
-      enlace: [''],
+      promotor: [''],
+      tercerNivelContacto: [''],
     });
   }
 
@@ -567,16 +567,16 @@ export class SimpatizanteComponent {
       },
     });
   }
-  getenlaces() {
+  getPromotores() {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
     const isAdmin = this.dataObject && this.dataObject.rolId === 1;
     if (isAdmin) {
       this.isLoading = LoadingStates.trueLoading;
-      this.enlacesService
+      this.promotoresService
         .getAll()
-        .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
+        .subscribe({ next: (dataFromAPI) => (this.promotores = dataFromAPI) });
     }
     const Operador = this.dataObject && this.dataObject.rolId === 2;
 
@@ -585,10 +585,10 @@ export class SimpatizanteComponent {
       console.log(id);
       if (id) {
         this.isLoading = LoadingStates.trueLoading;
-        this.enlacesService
+        this.promotoresService
           .getPorOperador(id)
-          .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
-        this.getenlacesSelect();
+          .subscribe({ next: (dataFromAPI) => (this.promotores = dataFromAPI) });
+        this.getPromotoresSelect();
       }
     }
     const isCandidato = this.dataObject && this.dataObject.rolId === 3;
@@ -598,14 +598,14 @@ export class SimpatizanteComponent {
       console.log(id);
       if (id) {
         this.isLoading = LoadingStates.trueLoading;
-        this.enlacesService
+        this.promotoresService
           .getPorCandidato(id)
-          .subscribe({ next: (dataFromAPI) => (this.enlaces = dataFromAPI) });
-        this.getenlacesSelect();
+          .subscribe({ next: (dataFromAPI) => (this.promotores = dataFromAPI) });
+        this.getPromotoresSelect();
       }
     }
   }
-  getenlacesSelect() {
+  getPromotoresSelect() {
     const operadorIdSeleccionado =
       this.simpatizanteForm.get('operadorId')?.value;
 
@@ -614,14 +614,13 @@ export class SimpatizanteComponent {
     if (operadorIdSeleccionado) {
       this.isLoading = LoadingStates.trueLoading;
 
-      this.enlacesService.getPorOperador(operadorIdSeleccionado).subscribe({
+      this.promotoresService.getPorOperador(operadorIdSeleccionado).subscribe({
         next: (dataFromAPI) => {
-          this.enlaceselect = dataFromAPI;
-          console.log('Datos de enlaces:', this.enlaceselect);
+          this.promotoresselect = dataFromAPI;
         },
         error: (error) => {
-          console.error('Error al obtener enlaces por operador:', error);
-          this.enlaceselect = [];
+          console.error('Error al obtener promotores por operador:', error);
+          this.promotoresselect = [];
           this.getVotantes();
         },
         complete: () => {
@@ -632,7 +631,7 @@ export class SimpatizanteComponent {
       console.warn(
         'operadorIdSeleccionado is falsy. Handle this case if needed.'
       );
-      this.enlaceselect = [];
+      this.promotoresselect = [];
       this.getVotantes();
     }
   }
@@ -648,6 +647,8 @@ export class SimpatizanteComponent {
       this.simpatizantesService.getAll().subscribe({
         next: (dataFromAPI) => {
           this.votantes = dataFromAPI;
+
+          console.log('dddddd', dataFromAPI);
           this.votantesFilter = this.votantes;
           this.isLoading = LoadingStates.falseLoading;
         },
@@ -735,15 +736,19 @@ export class SimpatizanteComponent {
   idUpdate!: number;
 
   setDataModalUpdate(dto: Simpatizante) {
+    console.log('object', dto);
     if (dto.programaSocial === null) {
       this.ocultar();
     } else {
       this.mostrar();
     }
-    this.existeClaveElector = true;
+    this.existeCURP = true;
     this.habilitarTodosLosControles();
     this.isModalAdd = false;
     this.idUpdate = dto.id;
+
+    const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
+
     this.simpatizanteForm.patchValue({
       id: dto.id,
       operadorId: dto.operador.id,
@@ -757,17 +762,18 @@ export class SimpatizanteComponent {
       municipio: dto.municipio.id,
       estado: dto.estado.id,
       curp: dto.curp,
+      fechaNacimiento: fechaFormateada,
       generoId: dto.genero.id,
-      claveElector: dto.claveElector,
       seccion: dto.seccion.id,
       numerotel: dto.numerotel,
-      enlace: dto.enlace ? dto.enlace.id : null,
+      promotor: dto.promotor ? dto.promotor.id : null,
+      tercerNivelContacto: dto.tercerNivelContacto,
       programaSocial: dto.programaSocial ? dto.programaSocial.id : null,
     });
 
     console.log(dto);
     console.log(this.simpatizanteForm.value);
-    this.getenlacesSelect();
+    this.getPromotoresSelect();
   }
 
   actualizar() {
@@ -780,7 +786,7 @@ export class SimpatizanteComponent {
     const seccionId = this.simpatizanteForm.get('seccion')?.value;
     const operadorId = this.simpatizanteForm.get('operadorId')?.value;
     const generoId = this.simpatizanteForm.get('generoId')?.value;
-    const enlace = this.simpatizanteForm.get('enlace')?.value;
+    const promotor = this.simpatizanteForm.get('promotor')?.value;
 
     this.votante.municipio = { id: 33 } as Municipio;
     this.votante.estado = { id: 29 } as Estado;
@@ -790,7 +796,7 @@ export class SimpatizanteComponent {
     this.votante.programaSocial = programaSocialId
       ? ({ id: programaSocialId } as ProgramaSocial)
       : null;
-    this.votante.enlace = { id: enlace } as Enlace;
+    this.votante.promotor = { id: promotor } as Promotor;
 
     this.spinnerService.show();
     console.log(this.votante);
@@ -842,7 +848,7 @@ export class SimpatizanteComponent {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.simpatizanteForm.reset();
-    this.existeClaveElector = null;
+    this.existeCURP = null;
   }
   submit() {
     if (this.isModalAdd === false) {
@@ -853,12 +859,12 @@ export class SimpatizanteComponent {
   }
 
   agregar() {
-    if (this.existeClaveElector === true) {
+    if (this.existeCURP === true) {
       this.votante = this.simpatizanteForm.value as Simpatizante;
       const programaSocialId =
         this.simpatizanteForm.get('programaSocial')?.value;
       const municipioId = this.simpatizanteForm.get('municipio')?.value;
-      const enlace = this.simpatizanteForm.get('enlace')?.value;
+      const promotor = this.simpatizanteForm.get('promotor')?.value;
       const estadoId = this.simpatizanteForm.get('estado')?.value;
       const seccionId = this.simpatizanteForm.get('seccion')?.value;
       const operadorId = this.simpatizanteForm.get('operadorId')?.value;
@@ -872,7 +878,7 @@ export class SimpatizanteComponent {
       this.votante.seccion = { id: seccionId } as Seccion;
       this.votante.operador = { id: operadorId } as Operador;
       this.votante.genero = { id: generoId } as Genero;
-      this.votante.enlace = { id: enlace } as Enlace;
+      this.votante.promotor = { id: promotor } as Promotor;
 
       console.log(this.votante);
 
@@ -908,7 +914,7 @@ export class SimpatizanteComponent {
         estatusControl.setValue(true);
       }
       this.isModalAdd = true;
-      this.existeClaveElector = null;
+      this.existeCURP = null;
     }
     this.deshabilitarTodosLosControles();
   }
@@ -934,11 +940,10 @@ export class SimpatizanteComponent {
         CURP: votante.curp,
         Genero: votante.genero.nombre,
         Domicilio: votante.domicilio,
-        'Clave de Elector': votante.claveElector,
         Municipio: votante.municipio.nombre,
         Estado: votante.estado.nombre,
         Seccion: votante.seccion.clave,
-        Enlace: votante.enlace.nombreCompleto,
+        Promotor: votante.promotor.nombreCompleto,
         'Numero de teléfono': votante.numerotel,
         'Programa Social': votante.programaSocial?.nombre,
         Estatus: estatus,
@@ -1002,14 +1007,14 @@ export class SimpatizanteComponent {
     this.buscar = event.target.value;
     this.beneficiarioFiltrado = this.filtrarBeneficiario();
   }
-  convertirAMayusculasClave(event: any): void {
+  convertirAMayusculas(event: any): void {
     const inputElement = event.target as HTMLInputElement;
     const nuevoValor = inputElement.value.toUpperCase();
 
-    const claveElectorControl = this.simpatizanteForm.get('claveElector');
+    const cuurpControl = this.simpatizanteForm.get('curp');
 
-    if (claveElectorControl) {
-      claveElectorControl.setValue(nuevoValor);
+    if (cuurpControl) {
+      cuurpControl.setValue(nuevoValor);
     }
   }
   convertirAMayusculasCurp(event: any): void {

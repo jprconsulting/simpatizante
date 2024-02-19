@@ -22,6 +22,10 @@ export class SimpatizantesService {
     return this._refreshListSimpatizante$;
   }
 
+  validarSimpatizantePorCURP(curp: string) {
+    return this.http.get<Simpatizante>(`${this.route}/validar-simpatizante-por-curp/${curp}`);
+  }
+
   validarSimpatizantePorClaveElector(claveElector: string) {
     return this.http.get<Simpatizante>(`${this.route}/validar-simpatizante-por-clave-elector/${claveElector}`);
   }

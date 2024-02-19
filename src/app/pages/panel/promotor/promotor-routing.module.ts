@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EnlaceComponent } from './enlace.component';
+import { PromotorComponent } from './promotor.component';
 import { AuthGuard } from 'src/app/core/services/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: EnlaceComponent,
-    canActivate: [AuthGuard], data: { claimType: 'CanAccessEnlaces'}
+    component: PromotorComponent,
+    canActivate: [AuthGuard], data: { claimType: 'CanAccessPromotores'}
   }
 ];
 
@@ -15,4 +15,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class EnlaceRoutingModule { }
+export class PromotorRoutingModule { }

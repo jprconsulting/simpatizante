@@ -1,4 +1,10 @@
-<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
   <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
@@ -10,24 +16,43 @@
       <div class="card-body border-bottom py-3">
         <div class="row">
           <div class="col-md-6 mb-2">
-            <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#modal-votante"
-              (click)="handleChangeAdd(); ocultar()">
+            <button
+              class="btn btn-primary mb-2"
+              data-bs-toggle="modal"
+              data-bs-target="#modal-votante"
+              (click)="handleChangeAdd(); ocultar()"
+            >
               <i class="ti ti-plus me-1"></i>Agregar
             </button>
           </div>
 
           <div class="col-md-6 mb-2">
-            <div class="d-flex align-items-center justify-content-between justify-content-md-end">
+            <div
+              class="d-flex align-items-center justify-content-between justify-content-md-end"
+            >
               <div class="input-icon col-sm-8">
-                <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar"
-                  (input)="handleChangeSearch($event)" />
+                <input
+                  #searchItem
+                  type="text"
+                  class="form-control form-control-rounded"
+                  placeholder="Buscar"
+                  (input)="handleChangeSearch($event)"
+                />
                 <span class="input-icon-addon">
                   <i class="ti ti-search"></i>
                 </span>
               </div>
-              <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()"
-                title="Descargar excel de promovidos" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
-                <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
+              <a
+                class="btn w-30 btn-icon"
+                aria-label="Dribbble"
+                (click)="exportarDatosAExcel()"
+                title="Descargar excel de promovidos"
+                style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+              >
+                <i
+                  class="ti ti-cloud-down text-muted"
+                  style="font-size: 28px"
+                ></i>
               </a>
             </div>
           </div>
@@ -35,13 +60,27 @@
 
         <div class="col-lg-4">
           <div>
-            <label style="margin-top: 5px" class="form-label">Seleccionar operador:</label>
+            <label style="margin-top: 5px" class="form-label"
+              >Seleccionar operador:</label
+            >
           </div>
-          <ng-select #selectOperador [searchable]="false" [items]="operadores" bindLabel="nombreCompleto" bindValue="id"
-            placeholder="Todos los operadores" [clearable]="true" (change)="onSelectOperador($event?.id)"
-            (clear)="onClear()">
+          <ng-select
+            #selectOperador
+            [searchable]="false"
+            [items]="operadores"
+            bindLabel="nombreCompleto"
+            bindValue="id"
+            placeholder="Todos los operadores"
+            [clearable]="true"
+            (change)="onSelectOperador($event?.id)"
+            (clear)="onClear()"
+          >
             <ng-template ng-header-tmp>
-              <input class="form-control" type="text" (input)="selectOperador.filter($any($event.target).value)" />
+              <input
+                class="form-control"
+                type="text"
+                (input)="selectOperador.filter($any($event.target).value)"
+              />
             </ng-template>
             <ng-template ng-option-tmp let-item="item" let-index="index">
               {{ item.nombreCompleto }}
@@ -72,25 +111,41 @@
                 <th style="text-transform: none; font-size: inherit">
                   Sección
                 </th>
-                <th class="text-center" style="text-transform: none; font-size: inherit">
+                <th
+                  class="text-center"
+                  style="text-transform: none; font-size: inherit"
+                >
                   Edad
                 </th>
-                <th class="text-center" style="text-transform: none; font-size: inherit">
+                <th
+                  class="text-center"
+                  style="text-transform: none; font-size: inherit"
+                >
                   Estatus
                 </th>
-                <th class="w-1" style="text-transform: none; font-size: inherit">
+                <th
+                  class="w-1"
+                  style="text-transform: none; font-size: inherit"
+                >
                   Acciones
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="
+              <tr
+                *ngFor="
                   let simpatizante of votantesFilter
                     | paginate : configPaginator;
                   let pointIndex = index
-                ">
+                "
+              >
                 <td class="text-center">
-                  {{ configPaginator.itemsPerPage * (configPaginator.currentPage - 1) + pointIndex + 1 }}
+                  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}
                 </td>
                 <td>
                   {{ simpatizante.nombreCompleto }}
@@ -113,13 +168,20 @@
                 </td>
                 <td>
                   <div class="d-flex justify-content-between">
-                    <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal"
-                      data-bs-target="#modal-votante" (click)="setDataModalUpdate(simpatizante); mapa()">
+                    <button
+                      class="btn btn-warning btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal-votante"
+                      (click)="setDataModalUpdate(simpatizante); mapa()"
+                    >
                       <i class="ti ti-edit"></i>
                     </button>
-                    <button class="btn btn-danger btn-icon btn-sm" (click)="
+                    <button
+                      class="btn btn-danger btn-icon btn-sm"
+                      (click)="
                         deleteItem(simpatizante.id, simpatizante.nombres)
-                      ">
+                      "
+                    >
                       <i class="ti ti-eraser"></i>
                     </button>
                   </div>
@@ -138,7 +200,11 @@
           Total de registros: <b>{{ votantesFilter.length }}</b>
         </p>
         <div class="m-0 ms-auto">
-          <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
+          <pagination-controls
+            (pageChange)="onPageChange($event)"
+            previousLabel=""
+            nextLabel=""
+          >
           </pagination-controls>
         </div>
       </div>
@@ -146,15 +212,27 @@
   </div>
 </div>
 
-<div class="modal" id="modal-votante" tabindex="-1" role="dialog" aria-hidden="true">
+<div
+  class="modal"
+  id="modal-votante"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
           {{ isModalAdd ? "Agregar" : "Actualizar" }} promovido
         </h5>
-        <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-          (click)="resetMap(); ocultar(); resetForm()"></button>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="resetMap(); ocultar(); resetForm()"
+        ></button>
       </div>
 
       <form [formGroup]="simpatizanteForm" (ngSubmit)="submit()">
@@ -162,28 +240,41 @@
           <div class="row d-flex align-items-center align-items-end">
             <div class="col-lg-10">
               <div class="mb-3">
-                <label class="form-label">Clave de Elector*:</label>
-                <input type="text" class="form-control is-valid" [ngClass]="{
-                    'is-invalid': existeClaveElector === false,
-                    'is-valid': existeClaveElector === true
-                  }" formControlName="claveElector" (input)="convertirAMayusculasClave($event)" />
+                <label class="form-label">CURP:</label>
+                <input
+                  type="text"
+                  class="form-control is-valid"
+                  [ngClass]="{
+                    'is-invalid': existeCURP === false,
+                    'is-valid': existeCURP === true
+                  }"
+                  formControlName="curp"
+                  (input)="convertirAMayusculas($event)"
+                />
 
-                <div *ngIf="simpatizanteForm.get('claveElector')?.touched" class="error-message">
-                  <div *ngIf="
-                      simpatizanteForm.get('claveElector')?.hasError('required')
-                    ">
+                <div
+                  *ngIf="simpatizanteForm.get('curp')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="simpatizanteForm.get('curp')?.hasError('required')"
+                  >
                     La clave de elector es obligatoria
                   </div>
-                  <div *ngIf="mensajeExisteClaveElector !== null">
-                    {{ mensajeExisteClaveElector }}
+                  <div *ngIf="mensajeExisteCURP !== null">
+                    {{ mensajeExisteCURP }}
                   </div>
                 </div>
               </div>
             </div>
             <div class="col-lg-2">
               <div class="d-flex justify-content-end mt-2">
-                <button type="button" [disabled]="simpatizanteForm.get('claveElector')?.invalid"
-                  (click)="validarClaveElector()" class="btn btn-secondary">
+                <button
+                  type="button"
+                  [disabled]="simpatizanteForm.get('curp')?.invalid"
+                  (click)="validarCURP()"
+                  class="btn btn-secondary"
+                >
                   Verificar
                 </button>
               </div>
@@ -193,13 +284,26 @@
             <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label">Operador:</label>
-                <ng-select formControlName="operadorId" #selectoperadores [searchable]="true" [items]="operadores"
-                  bindLabel="nombreCompleto" bindValue="id" placeholder="Elegir" [clearable]="true"
-                  [readonly]="readonlySelectOperador" (change)="getenlacesSelect()">
+                <ng-select
+                  formControlName="operadorId"
+                  #selectoperadores
+                  [searchable]="true"
+                  [items]="operadores"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="true"
+                  [readonly]="readonlySelectOperador"
+                  (change)="getPromotoresSelect()"
+                >
                   <ng-template ng-header-tmp>
-                    <input class="form-control" type="text" (input)="
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
                         selectoperadores.filter($any($event.target).value)
-                      " />
+                      "
+                    />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item">
                     {{ item.nombreCompleto }}
@@ -209,11 +313,23 @@
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">Enlace:</label>
-                <ng-select #selectEnlase placeholder="Elegir" [items]="enlaceselect" bindLabel="nombreCompleto"
-                  bindValue="id" [searchable]="true" [clearable]="true" formControlName="enlace">
+                <label class="form-label">Promotor:</label>
+                <ng-select
+                  #selectEnlase
+                  placeholder="Elegir"
+                  [items]="promotoresselect"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  [searchable]="true"
+                  [clearable]="true"
+                  formControlName="promotor"
+                >
                   <ng-template ng-header-tmp>
-                    <input class="form-control" type="text" (input)="selectEnlase.filter($any($event.target).value)" />
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="selectEnlase.filter($any($event.target).value)"
+                    />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item">
                     {{ item.nombreCompleto }}
@@ -226,19 +342,32 @@
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Nombre*:</label>
-                <input type="text" class="form-control" formControlName="nombres" />
-                <div *ngIf="simpatizanteForm.get('nombres')?.touched" class="error-message">
-                  <div *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nombres"
+                />
+                <div
+                  *ngIf="simpatizanteForm.get('nombres')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
                       simpatizanteForm.get('nombres')?.hasError('required')
-                    ">
+                    "
+                  >
                     El nombre es obligatorio
                   </div>
-                  <div *ngIf="
+                  <div
+                    *ngIf="
                       simpatizanteForm.get('nombres')?.hasError('minlength')
-                    ">
+                    "
+                  >
                     El nombre debe tener al menos 3 caracteres
                   </div>
-                  <div *ngIf="simpatizanteForm.get('nombres')?.hasError('pattern')">
+                  <div
+                    *ngIf="simpatizanteForm.get('nombres')?.hasError('pattern')"
+                  >
                     El nombre no puede tener números ni signos
                   </div>
                 </div>
@@ -247,27 +376,40 @@
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Apellido paterno*:</label>
-                <input type="text" class="form-control" formControlName="apellidoPaterno" />
-                <div *ngIf="simpatizanteForm.get('apellidoPaterno')?.touched" class="error-message">
-                  <div *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apellidoPaterno"
+                />
+                <div
+                  *ngIf="simpatizanteForm.get('apellidoPaterno')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
                       simpatizanteForm
                         .get('apellidoPaterno')
                         ?.hasError('required')
-                    ">
+                    "
+                  >
                     El apellido paterno es obligatorio
                   </div>
-                  <div *ngIf="
+                  <div
+                    *ngIf="
                       simpatizanteForm
                         .get('apellidoPaterno')
                         ?.hasError('minlength')
-                    ">
+                    "
+                  >
                     El apellido paterno debe tener al menos 3 caracteres
                   </div>
-                  <div *ngIf="
+                  <div
+                    *ngIf="
                       simpatizanteForm
                         .get('apellidoPaterno')
                         ?.hasError('pattern')
-                    ">
+                    "
+                  >
                     El apellido paterno no puede tener números ni signos
                   </div>
                 </div>
@@ -276,47 +418,98 @@
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Apellido materno*:</label>
-                <input type="text" class="form-control" formControlName="apellidoMaterno" />
-                <div *ngIf="simpatizanteForm.get('apellidoMaterno')?.touched" class="error-message">
-                  <div *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apellidoMaterno"
+                />
+                <div
+                  *ngIf="simpatizanteForm.get('apellidoMaterno')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
                       simpatizanteForm
                         .get('apellidoMaterno')
                         ?.hasError('required')
-                    ">
+                    "
+                  >
                     El apellido materno es obligatorio
                   </div>
-                  <div *ngIf="
+                  <div
+                    *ngIf="
                       simpatizanteForm
                         .get('apellidoMaterno')
                         ?.hasError('minlength')
-                    ">
+                    "
+                  >
                     El apellido materno debe tener al menos 3 caracteres
                   </div>
-                  <div *ngIf="
+                  <div
+                    *ngIf="
                       simpatizanteForm
                         .get('apellidoMaterno')
                         ?.hasError('pattern')
-                    ">
+                    "
+                  >
                     El apellido materno no puede tener números ni signos
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
+                <label class="form-label">Fecha nacimiento*:</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  formControlName="fechaNacimiento"
+                />
+                <div
+                  *ngIf="simpatizanteForm.get('fechaNacimiento')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      simpatizanteForm
+                        .get('fechaNacimiento')
+                        ?.hasError('required')
+                    "
+                  >
+                    La fecha de nacimiento es obligatoria
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="mb-3">
                 <label class="form-label">Género*:</label>
-                <ng-select placeholder="Elegir" [items]="generos" bindLabel="nombre" bindValue="id" [searchable]="false"
-                  [clearable]="false" formControlName="generoId">
+                <ng-select
+                  placeholder="Elegir"
+                  [items]="generos"
+                  bindLabel="nombre"
+                  bindValue="id"
+                  [searchable]="false"
+                  [clearable]="false"
+                  formControlName="generoId"
+                >
                   <ng-template ng-option-tmp let-item="item">
                     {{ item.nombre }}
                   </ng-template>
                 </ng-select>
-                <div *ngIf="simpatizanteForm.get('generoId')?.touched" class="error-message">
-                  <div *ngIf="
+                <div
+                  *ngIf="simpatizanteForm.get('generoId')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
                       simpatizanteForm.get('generoId')?.hasError('required')
-                    ">
+                    "
+                  >
                     El genero es obligatorio
                   </div>
                 </div>
@@ -325,24 +518,21 @@
 
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">CURP:</label>
-                <input type="text" class="form-control" formControlName="curp"
-                  (input)="convertirAMayusculasCurp($event)" />
-                <div *ngIf="simpatizanteForm.get('curp')?.touched" class="error-message">
-                  <div *ngIf="simpatizanteForm.get('curp')?.hasError('pattern')">
-                    El CURP no es valido
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="mb-3">
                 <label class="form-label">Numero de teléfono:</label>
-                <input type="text" class="form-control" formControlName="numerotel" />
-                <div *ngIf="simpatizanteForm.get('numerotel')?.touched" class="error-message">
-                  <div *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="numerotel"
+                />
+                <div
+                  *ngIf="simpatizanteForm.get('numerotel')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
                       simpatizanteForm.get('numerotel')?.hasError('pattern')
-                    ">
+                    "
+                  >
                     El numero de teléfono no valido
                   </div>
                 </div>
@@ -353,21 +543,39 @@
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Estado*:</label>
-                <ng-select formControlName="estado" #selectEstado [searchable]="false" [items]="estado"
-                  bindLabel="nombre" bindValue="id" placeholder="Tlaxcala" [clearable]="false" [readonly]="true"
-                  value="29">
+                <ng-select
+                  formControlName="estado"
+                  #selectEstado
+                  [searchable]="false"
+                  [items]="estado"
+                  bindLabel="nombre"
+                  bindValue="id"
+                  placeholder="Tlaxcala"
+                  [clearable]="false"
+                  [readonly]="true"
+                  value="29"
+                >
                   <ng-template ng-header-tmp>
-                    <input class="form-control" type="text" value="29"
-                      (input)="selectEstado.filter($any($event.target).value)" />
+                    <input
+                      class="form-control"
+                      type="text"
+                      value="29"
+                      (input)="selectEstado.filter($any($event.target).value)"
+                    />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
                     {{ item.nombre }}
                   </ng-template>
                 </ng-select>
-                <div *ngIf="simpatizanteForm.get('estadoId')?.touched" class="error-message">
-                  <div *ngIf="
+                <div
+                  *ngIf="simpatizanteForm.get('estadoId')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
                       simpatizanteForm.get('estadoId')?.hasError('required')
-                    ">
+                    "
+                  >
                     El estado es obligatorio
                   </div>
                 </div>
@@ -376,22 +584,43 @@
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Municipio*:</label>
-                <ng-select formControlName="municipio" #selectMunicipio [searchable]="false" [items]="municipios"
-                  bindLabel="nombre" bindValue="id" placeholder="Tlaxcala" [clearable]="false" value="33"
-                  [clearable]="false" [readonly]="true" class="color">
+                <ng-select
+                  formControlName="municipio"
+                  #selectMunicipio
+                  [searchable]="false"
+                  [items]="municipios"
+                  bindLabel="nombre"
+                  bindValue="id"
+                  placeholder="Tlaxcala"
+                  [clearable]="false"
+                  value="33"
+                  [clearable]="false"
+                  [readonly]="true"
+                  class="color"
+                >
                   <ng-template ng-header-tmp>
-                    <input class="form-control color" type="text" value="33" (input)="
+                    <input
+                      class="form-control color"
+                      type="text"
+                      value="33"
+                      (input)="
                         selectMunicipio.filter($any($event.target).value)
-                      " />
+                      "
+                    />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
                     {{ item.nombre }}
                   </ng-template>
                 </ng-select>
-                <div *ngIf="simpatizanteForm.get('municipio')?.touched" class="error-message">
-                  <div *ngIf="
+                <div
+                  *ngIf="simpatizanteForm.get('municipio')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
                       simpatizanteForm.get('municipio')?.hasError('required')
-                    ">
+                    "
+                  >
                     El municipio es obligatorio
                   </div>
                 </div>
@@ -400,19 +629,36 @@
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Sección*:</label>
-                <ng-select formControlName="seccion" #selectseccion [searchable]="false" [items]="seccion"
-                  bindLabel="claveYNombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                <ng-select
+                  formControlName="seccion"
+                  #selectseccion
+                  [searchable]="false"
+                  [items]="seccion"
+                  bindLabel="claveYNombre"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                >
                   <ng-template ng-header-tmp>
-                    <input class="form-control" type="text" (input)="selectseccion.filter($any($event.target).value)" />
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="selectseccion.filter($any($event.target).value)"
+                    />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
                     {{ item.claveYNombre }}
                   </ng-template>
                 </ng-select>
-                <div *ngIf="simpatizanteForm.get('seccion')?.touched" class="error-message">
-                  <div *ngIf="
+                <div
+                  *ngIf="simpatizanteForm.get('seccion')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
                       simpatizanteForm.get('seccion')?.hasError('required')
-                    ">
+                    "
+                  >
                     El sección es obligatoria
                   </div>
                 </div>
@@ -421,15 +667,31 @@
 
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">¿Usted cuenta con algún programa social?*:</label>
+                <label class="form-label"
+                  >¿Usted cuenta con algún programa social?*:</label
+                >
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
-                    (click)="mostrar()" [checked]="programasocial !== null" />
-                  <label class="form-check-label" for="flexRadioDefault1">Si</label>
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault1"
+                    (click)="mostrar()"
+                    [checked]="programasocial !== null"
+                  />
+                  <label class="form-check-label" for="flexRadioDefault1"
+                    >Si</label
+                  >
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
-                    (click)="ocultar()" [checked]="programasocial === null" />
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault2"
+                    (click)="ocultar()"
+                    [checked]="programasocial === null"
+                  />
                   <label class="form-check-label" for="flexRadioDefault2">
                     No
                   </label>
@@ -440,12 +702,24 @@
             <div class="col-lg-4" *ngIf="visibility">
               <div class="mb-3">
                 <label class="form-label">Selecciona el programa social:</label>
-                <ng-select formControlName="programaSocial" #selectProgramaSocial [searchable]="false"
-                  [items]="programaSocial" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                <ng-select
+                  formControlName="programaSocial"
+                  #selectProgramaSocial
+                  [searchable]="false"
+                  [items]="programaSocial"
+                  bindLabel="nombre"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                >
                   <ng-template ng-header-tmp>
-                    <input class="form-control" type="text" (input)="
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
                         selectProgramaSocial.filter($any($event.target).value)
-                      " />
+                      "
+                    />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
                     {{ item.nombre }}
@@ -456,20 +730,32 @@
             <div class="col">
               <label>Estatus: </label><br />
               <div class="form-group">
-                <div class="form-check form-switch mt-1 ml-2 custom-green-switch">
-                  <input class="form-check-input" type="checkbox" (change)="setEstatus()" [(ngModel)]="estatusBtn"
-                    name="estatusBtn" formControlName="estatus" [ngStyle]="{
+                <div
+                  class="form-check form-switch mt-1 ml-2 custom-green-switch"
+                >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    (change)="setEstatus()"
+                    [(ngModel)]="estatusBtn"
+                    name="estatusBtn"
+                    formControlName="estatus"
+                    [ngStyle]="{
                       'background-color': estatusBtn ? '#1db83f' : '#b2c0b5'
-                    }" />
-                  <span class="form-check-label" [ngClass]="
+                    }"
+                  />
+                  <span
+                    class="form-check-label"
+                    [ngClass]="
                       simpatizanteForm.get('estatus')?.value
                         ? 'text-success'
                         : 'text-danger'
-                    ">
+                    "
+                  >
                     {{
-                    simpatizanteForm.get("estatus")?.value
-                    ? "Activo"
-                    : "Inactivo"
+                      simpatizanteForm.get("estatus")?.value
+                        ? "Activo"
+                        : "Inactivo"
                     }}
                   </span>
                 </div>
@@ -477,35 +763,72 @@
             </div>
           </div>
 
-          <div class="col">
-            <div class="row">
-              <div class="col-lg-10 mt-1 mb-3">
-                <label class="form-label">Domicilio</label>
-                <input #ubicacionInput [options]="options" class="form-control" type="text" ngx-gp-autocomplete
-                  formControlName="domicilio" (onAddressChange)="selectAddress($event)" />
-              </div>
-
-              <div class="col-lg-2 d-flex align-items-end justify-content-end mt-1 mb-3">
-                <button type="button" title="Obtener ubicación" class="btn btn-info float-end"
-                  (click)="getCurrentLocation()">
-                  <i class="ti ti-map-pin"></i>
-                </button>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label class="form-label">Tercer nivel de contacto:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="tercerNivelContacto"
+                />
               </div>
             </div>
           </div>
 
-          <div class="col-lg-12">
-            <div class="mb-3">
-              <div class="card w-100 altura-mapa" style="width: 100%; height: 50vh" #mapCanvas></div>
+          <div class="row">
+            <div class="col-lg-10 mt-1 mb-3">
+              <label class="form-label">Domicilio</label>
+              <input
+                #ubicacionInput
+                [options]="options"
+                class="form-control"
+                type="text"
+                ngx-gp-autocomplete
+                formControlName="domicilio"
+                (onAddressChange)="selectAddress($event)"
+              />
+            </div>
+
+            <div
+              class="col-lg-2 d-flex align-items-end justify-content-end mt-1 mb-3"
+            >
+              <button
+                type="button"
+                title="Obtener ubicación"
+                class="btn btn-info float-end"
+                (click)="getCurrentLocation()"
+              >
+                <i class="ti ti-map-pin"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <div
+                  class="card w-100 altura-mapa"
+                  style="width: 100%; height: 50vh"
+                  #mapCanvas
+                ></div>
+              </div>
             </div>
           </div>
         </div>
 
-        <p class="form-label" style="margin-left: 20px; color: red; font-weight: bold">
+        <p
+          class="form-label"
+          style="margin-left: 20px; color: red; font-weight: bold"
+        >
           Todos los campos marcados con * son requeridos
         </p>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success" [disabled]="!simpatizanteForm.valid || !existeClaveElector">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!simpatizanteForm.valid || !existeCURP"
+          >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>

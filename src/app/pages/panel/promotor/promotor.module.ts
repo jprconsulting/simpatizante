@@ -2,21 +2,21 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SharedModule } from 'src/app/shared/shared.module';
-import { EnlaceRoutingModule } from './enlace-routing.module';
+import { PromotorRoutingModule } from './promotor-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { EnlaceComponent } from './enlace.component';
+import { PromotorComponent } from './promotor.component';
 
 
 @NgModule({
   declarations: [
-    EnlaceComponent
+    PromotorComponent
   ],
   imports: [
     CommonModule,
-    EnlaceRoutingModule,
+    PromotorRoutingModule,
     ReactiveFormsModule,
     NgxSpinnerModule,
     NgxPaginationModule,
@@ -24,4 +24,4 @@ import { EnlaceComponent } from './enlace.component';
     SharedModule
   ]
 })
-export class EnlaceModule { }
+export class PromotorModule { }

@@ -7,7 +7,6 @@ import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
-import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -43,17 +42,12 @@ export class ProgramasSocialesComponent {
     private programasSocialesService: ProgramasSocialesService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
-    private areasAdscripcionService: AreasAdscripcionService,
   ) {
     this.programasSocialesService.refreshListProgramasSociales.subscribe(() => this.getProgramasSociales());
     this.getProgramasSociales();
-    this.getAreasAdscripcion();
     this.creteForm();
   }
 
-  getAreasAdscripcion() {
-    this.areasAdscripcionService.getAll().subscribe({ next: (dataFromAPI) => this.areasAdscripcion = dataFromAPI });
-  }
 
   creteForm() {
     this.programaSocialForm = this.formBuilder.group({
@@ -114,17 +108,17 @@ export class ProgramasSocialesComponent {
   }
 
 
-    setDataModalUpdate(dto: ProgramaSocial) {
-      this.isModalAdd = false;
-      this.id = dto.id;
-      this.programaSocialForm.patchValue({
-        id: dto.id,
-        nombre: dto.nombre,
-      });
-      this.formData = this.programaSocialForm.value;
-      console.log(dto)
+  setDataModalUpdate(dto: ProgramaSocial) {
+    this.isModalAdd = false;
+    this.id = dto.id;
+    this.programaSocialForm.patchValue({
+      id: dto.id,
+      nombre: dto.nombre,
+    });
+    this.formData = this.programaSocialForm.value;
+    console.log(dto)
 
-    }
+  }
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar el programa social: ${nameItem}?`,
@@ -188,7 +182,7 @@ export class ProgramasSocialesComponent {
   }
 
 
- setEstatus() {
+  setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
   exportarDatosAExcel() {

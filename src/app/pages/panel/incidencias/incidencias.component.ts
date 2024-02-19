@@ -11,7 +11,6 @@ import { IncidenciaService } from 'src/app/core/services/incidencias.service';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
-import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
 import * as XLSX from 'xlsx';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
 

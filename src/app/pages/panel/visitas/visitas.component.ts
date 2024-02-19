@@ -5,8 +5,6 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { LoadingStates } from 'src/app/global/global';
 import { Visita } from 'src/app/models/visita';
-import { Beneficiario } from 'src/app/models/beneficiario';
-import { BeneficiariosService } from 'src/app/core/services/beneficiarios.service';
 import { VisitasService } from 'src/app/core/services/visitas.service';
 
 import { ProgramaSocial } from 'src/app/models/programa-social';

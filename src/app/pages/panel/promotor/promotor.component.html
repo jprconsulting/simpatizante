@@ -1,0 +1,345 @@
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p style="color: white">Guardando...</p>
+</ngx-spinner>
+
+<app-page-header headerTitle="Promotores"></app-page-header>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="d-flex align-items-center">
+          <button
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-promotor"
+            (click)="handleChangeAdd()"
+          >
+            <i class="ti ti-plus me-1"></i>Agregar
+          </button>
+
+          <div class="ms-auto d-flex align-items-center">
+            <div class="input-icon">
+              <input
+                #searchItem
+                type="text"
+                class="form-control form-control-rounded"
+                placeholder="Buscar"
+                (input)="handleChangeSearch($event)"
+              />
+
+              <span class="input-icon-addon">
+                <i class="ti ti-search"></i>
+              </span>
+            </div>
+            <a
+              class="btn w-30 btn-icon"
+              aria-label="Dribbble"
+              (click)="exportarDatosAExcel()"
+              title="Descargar excel de promotores"
+              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+            >
+              <i
+                class="ti ti-cloud-down text-muted"
+                style="font-size: 28px"
+              ></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="3" class="table-responsive">
+          <table class="table table-vcenter card-table table-striped">
+            <thead>
+              <tr>
+                <th
+                  style="text-transform: none; font-size: inherit"
+                  class="text-center"
+                >
+                  #
+                </th>
+                <th style="text-transform: none; font-size: inherit">Nombre</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Apellido Paterno
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Apellido Materno
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Telefono
+                </th>
+                <th
+                  style="text-transform: none; font-size: inherit"
+                  class="w-1"
+                >
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let promotor of promotoresFilter | paginate : configPaginator;
+                  let pointIndex = index
+                "
+              >
+                <td class="text-center">
+                  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}
+                </td>
+                <td>{{ promotor.nombres }}</td>
+                <td class="text-muted">{{ promotor.apellidoPaterno }}</td>
+                <td class="text-muted">{{ promotor.apellidoMaterno }}</td>
+                <td class="text-muted">{{ promotor.telefono }}</td>
+                <td>
+                  <button
+                    style="margin-right: 10px"
+                    class="btn btn-warning btn-icon btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-promotor"
+                    (click)="setDataModalUpdate(promotor)"
+                  >
+                    <i class="ti ti-edit"></i>
+                  </button>
+
+                  <button
+                    class="btn btn-danger btn-icon btn-sm"
+                    (click)="deleteItem(promotor.id, promotor.nombres)"
+                  >
+                    <i class="ti ti-eraser"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <app-no-results *ngSwitchCase="4"></app-no-results>
+      </ng-container>
+      <!-- Fin *ngSwitchCase-->
+
+      <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">
+          Total de registros: <b>{{ promotoresFilter.length }}</b>
+        </p>
+        <div class="m-0 ms-auto">
+          <pagination-controls
+            (pageChange)="onPageChange($event)"
+            previousLabel=""
+            nextLabel=""
+          >
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal modal-blur fade"
+  id="modal-promotor"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} promotor
+        </h5>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form [formGroup]="promotorForm" (ngSubmit)="submit()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label class="form-label">Operador*:</label>
+                <ng-select
+                  #selectOperadores
+                  [items]="operadores"
+                  [searchable]="false"
+                  [multiple]="true"
+                  [closeOnSelect]="false"
+                  [hideSelected]="true"
+                  bindValue="id"
+                  bindLabel="nombreCompleto"
+                  placeholder="Seleccionar"
+                  formControlName="operadoresIds"
+                  [readonly]="readonlySelectOperador"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectOperadores.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Nombres*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nombres"
+                />
+                <div
+                  *ngIf="promotorForm.get('nombres')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="promotorForm.get('nombres')?.hasError('required')"
+                  >
+                    <p style="color: red">El nombre es obligatorio</p>
+                  </div>
+                  <div
+                    *ngIf="promotorForm.get('nombres')?.hasError('minlength')"
+                  >
+                    El nombre debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="promotorForm.get('nombres')?.hasError('pattern')">
+                    El nombre no puede tener números ni signos
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Apellido paterno*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apellidoPaterno"
+                />
+                <div
+                  *ngIf="promotorForm.get('apellidoPaterno')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      promotorForm.get('apellidoPaterno')?.hasError('required')
+                    "
+                  >
+                    <p style="color: red">El apellido paterno es obligatorio</p>
+                  </div>
+                  <div
+                    *ngIf="
+                      promotorForm.get('apellidoPaterno')?.hasError('minlength')
+                    "
+                  >
+                    El apellido paterno debe tener al menos 3 caracteres
+                  </div>
+                  <div
+                    *ngIf="
+                      promotorForm.get('apellidoPaterno')?.hasError('pattern')
+                    "
+                  >
+                    El apellido paterno no puede tener números ni signos
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Apellido materno*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apellidoMaterno"
+                />
+                <div
+                  *ngIf="promotorForm.get('apellidoMaterno')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      promotorForm.get('apellidoMaterno')?.hasError('required')
+                    "
+                  >
+                    <p style="color: red">El apellido materno es obligatorio</p>
+                  </div>
+                  <div
+                    *ngIf="
+                      promotorForm.get('apellidoMaterno')?.hasError('minlength')
+                    "
+                  >
+                    El apellido materno debe tener al menos 3 caracteres
+                  </div>
+                  <div
+                    *ngIf="
+                      promotorForm.get('apellidoMaterno')?.hasError('pattern')
+                    "
+                  >
+                    El apellido materno no puede tener números ni signos
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Teléfono:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="telefono"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <p
+          class="form-label"
+          style="margin-left: 20px; color: red; font-weight: bold"
+        >
+          Todos los campos marcados con * son requeridos
+        </p>
+        <div class="modal-footer">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!promotorForm.valid"
+          >
+            {{ isModalAdd ? "Agregar" : "Actualizar" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -23,7 +23,7 @@ export class SidebarComponent implements AfterViewInit {
   @ViewChild('rlCandidatos') rlCandidatos: RouterLinkActive | undefined;
   @ViewChild('rlMapaPromovidos') rlMapaPromovidos: RouterLinkActive | undefined;
   @ViewChild('rlOperadores') rlOperadores: RouterLinkActive | undefined;
-  @ViewChild('rlEnlaces') rlEnlaces: RouterLinkActive | undefined;
+  @ViewChild('rlPromotores') rlPromotores: RouterLinkActive | undefined;
   @ViewChild('rlPromovidos') rlPromovidos: RouterLinkActive | undefined;
 
   dataObject!: AppUserAuth | null;

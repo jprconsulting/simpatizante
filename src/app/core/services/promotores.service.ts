@@ -3,50 +3,50 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
-import { Enlace } from 'src/app/models/enlace';
+import { Promotor } from 'src/app/models/promotor';
 import { Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
-export class EnlacesService {
-  route = `${environment.apiUrl}/enlaces`;
-  private _refreshListEnlace$ = new Subject<Enlace | null>();
+export class PromotoresService {
+  route = `${environment.apiUrl}/promotores`;
+  private _refreshListPromotores$ = new Subject<Promotor | null>();
 
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
   ) { }
 
-  get refreshListEnlaces() {
-    return this._refreshListEnlace$;
+  get refreshListPromotores() {
+    return this._refreshListPromotores$;
   }
 
   getAll() {
-    return this.http.get<Enlace[]>(`${this.route}/obtener-todos`);
+    return this.http.get<Promotor[]>(`${this.route}/obtener-todos`);
   }
   getPorCandidato(id: number) {
-    return this.http.get<Enlace[]>(`${this.route}/por-candidato/${id}`);
+    return this.http.get<Promotor[]>(`${this.route}/por-candidato/${id}`);
   }
   getPorOperador(id: number) {
-    return this.http.get<Enlace[]>(`${this.route}/por-operador/${id}`);
+    return this.http.get<Promotor[]>(`${this.route}/por-operador/${id}`);
   }
 
 
-  post(dto: Enlace) {
-    return this.http.post<Enlace>(`${this.route}/crear`, dto)
+  post(dto: Promotor) {
+    return this.http.post<Promotor>(`${this.route}/crear`, dto)
       .pipe(
         tap(() => {
-          this._refreshListEnlace$.next(null);
+          this._refreshListPromotores$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );
   }
 
-  put(id: number, dto: Enlace) {
-    return this.http.put<Enlace>(`${this.route}/actualizar/${id}`, dto)
+  put(id: number, dto: Promotor) {
+    return this.http.put<Promotor>(`${this.route}/actualizar/${id}`, dto)
       .pipe(
         tap(() => {
-          this._refreshListEnlace$.next(null);
+          this._refreshListPromotores$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );
@@ -56,7 +56,7 @@ export class EnlacesService {
     return this.http.delete(`${this.route}/eliminar/${id}`)
       .pipe(
         tap(() => {
-          this._refreshListEnlace$.next(null);
+          this._refreshListPromotores$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );

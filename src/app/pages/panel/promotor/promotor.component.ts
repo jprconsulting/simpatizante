@@ -10,22 +10,22 @@ import * as XLSX from 'xlsx';
 
 import { AppUserAuth } from 'src/app/models/login';
 import { SecurityService } from 'src/app/core/services/security.service';
-import { Enlace } from 'src/app/models/enlace';
-import { EnlacesService } from 'src/app/core/services/enlaces.service';
+import { Promotor } from 'src/app/models/promotor';
+import { PromotoresService } from 'src/app/core/services/promotores.service';
 
 @Component({
-  selector: 'app-enlace',
-  templateUrl: './enlace.component.html',
-  styleUrls: ['./enlace.component.css'],
+  selector: 'app-promotor',
+  templateUrl: './promotor.component.html',
+  styleUrls: ['./promotor.component.css'],
 })
-export class EnlaceComponent {
+export class PromotorComponent {
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
   dataObject!: AppUserAuth | null;
-  enlace!: Enlace;
-  enlaceForm!: FormGroup;
-  enlaces: Enlace[] = [];
-  enlaceFilter: Enlace[] = [];
+  promotor!: Promotor;
+  promotorForm!: FormGroup;
+  promotores: Promotor[] = [];
+  promotoresFilter: Promotor[] = [];
   isLoading = LoadingStates.neutro;
 
   operadores: Operador[] = [];
@@ -41,15 +41,15 @@ export class EnlaceComponent {
     @Inject('GENEROS') public objGeneros: any,
     private spinnerService: NgxSpinnerService,
     private operadoresService: OperadoresService,
-    private enlacesService: EnlacesService,
+    private pomotoresService: PromotoresService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private securityService: SecurityService
   ) {
-    this.enlacesService.refreshListEnlaces.subscribe(() => this.getEnlaces());
+    this.pomotoresService.refreshListPromotores.subscribe(() => this.getPromotores());
     this.currentUser = securityService.getDataUser();
     this.creteForm();
-    this.getEnlaces();
+    this.getPromotores();
 
     this.isModalAdd = false;
 
@@ -76,7 +76,7 @@ export class EnlaceComponent {
   }
 
   creteForm() {
-    this.enlaceForm = this.formBuilder.group({
+    this.promotorForm = this.formBuilder.group({
       id: [null],
       nombres: [
         '',
@@ -108,7 +108,7 @@ export class EnlaceComponent {
           ),
         ],
       ],
-      operadorId: [null, Validators.required],
+      operadoresIds: [[], Validators.required],
       telefono: [''],
     });
   }
@@ -124,17 +124,17 @@ export class EnlaceComponent {
       .getOperadoresPorCandidatoId(this.candidatoId)
       .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
   }
-  getEnlaces() {
+  getPromotores() {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
     const isAdmin = this.dataObject && this.dataObject.rolId === 1;
     if (isAdmin) {
       this.isLoading = LoadingStates.trueLoading;
-      this.enlacesService.getAll().subscribe({
+      this.pomotoresService.getAll().subscribe({
         next: (dataFromAPI) => {
-          this.enlaces = dataFromAPI;
-          this.enlaceFilter = this.enlaces;
+          this.promotores = dataFromAPI;
+          this.promotoresFilter = this.promotores;
           this.isLoading = LoadingStates.falseLoading;
         },
         error: () => {
@@ -149,10 +149,10 @@ export class EnlaceComponent {
       console.log(id);
       if (id) {
         this.isLoading = LoadingStates.trueLoading;
-        this.enlacesService.getPorOperador(id).subscribe({
+        this.pomotoresService.getPorOperador(id).subscribe({
           next: (dataFromAPI) => {
-            this.enlaces = dataFromAPI;
-            this.enlaceFilter = this.enlaces;
+            this.promotores = dataFromAPI;
+            this.promotoresFilter = this.promotores;
             this.isLoading = LoadingStates.falseLoading;
           },
           error: () => {
@@ -168,10 +168,10 @@ export class EnlaceComponent {
       console.log(id);
       if (id) {
         this.isLoading = LoadingStates.trueLoading;
-        this.enlacesService.getPorCandidato(id).subscribe({
+        this.pomotoresService.getPorCandidato(id).subscribe({
           next: (dataFromAPI) => {
-            this.enlaces = dataFromAPI;
-            this.enlaceFilter = this.enlaces;
+            this.promotores = dataFromAPI;
+            this.promotoresFilter = this.promotores;
             this.isLoading = LoadingStates.falseLoading;
           },
           error: () => {
@@ -189,12 +189,12 @@ export class EnlaceComponent {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
-    this.enlaceFilter = this.enlaces.filter(
-      (enlace) =>
-        enlace.nombres.toLowerCase().includes(valueSearch) ||
-        enlace.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-        enlace.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-        enlace.telefono.toString().includes(valueSearch)
+    this.promotoresFilter = this.promotores.filter(
+      (promotor) =>
+      promotor.nombres.toLowerCase().includes(valueSearch) ||
+      promotor.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      promotor.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+      promotor.telefono.toString().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
@@ -207,29 +207,33 @@ export class EnlaceComponent {
     return fechaFormateada;
   }
 
-  setDataModalUpdate(dto: Enlace) {
+  setDataModalUpdate(dto: Promotor) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
-    this.enlaceForm.patchValue({
+
+    console.log(dto.operadores.map((o) => o.id));
+
+    this.promotorForm.patchValue({
       id: dto.id,
       nombres: dto.nombres,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
-      operadorId: dto.operador.id,
       telefono: dto.telefono,
+      operadoresIds: dto.operadores.map((o) => o.id),
     });
   }
 
   editarOperador() {
-    this.enlace = this.enlaceForm.value as Enlace;
-    const operadorId = this.enlaceForm.get('operadorId')?.value;
-    this.enlace.operador = { id: operadorId } as Operador;
+    this.promotor = this.promotorForm.value as Promotor;
+
+    const operadoresIds = this.promotorForm.get('operadoresIds')?.value;
+    this.promotor.operadoresIds = operadoresIds as number[];
 
     this.spinnerService.show();
-    this.enlacesService.put(this.idUpdate, this.enlace).subscribe({
+    this.pomotoresService.put(this.idUpdate, this.promotor).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Enlace actualizado correctamente');
+        this.mensajeService.mensajeExito('Promotor actualizado correctamente');
         this.resetForm();
       },
       error: (error) => {
@@ -241,11 +245,11 @@ export class EnlaceComponent {
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
-      `¿Estás seguro de eliminar el enlace: ${nameItem}?`,
+      `¿Estás seguro de eliminar el promotor: ${nameItem}?`,
       () => {
-        this.enlacesService.delete(id).subscribe({
+        this.pomotoresService.delete(id).subscribe({
           next: () => {
-            this.mensajeService.mensajeExito('Enlace borrado correctamente');
+            this.mensajeService.mensajeExito('Promotor borrado correctamente');
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
@@ -256,16 +260,19 @@ export class EnlaceComponent {
   }
 
   agregar() {
-    this.enlace = this.enlaceForm.value as Enlace;
-    const operadorId = this.enlaceForm.get('operadorId')?.value;
-    this.enlace.operador = { id: operadorId } as Operador;
-    this.spinnerService.show();
-    console.log(this.enlace);
+    this.promotor = this.promotorForm.value as Promotor;
 
-    this.enlacesService.post(this.enlace).subscribe({
+    const operadoresIds = this.promotorForm.get('operadoresIds')?.value;
+    this.promotor.operadoresIds = operadoresIds as number[];
+
+
+    this.spinnerService.show();
+    console.log(this.promotor);
+
+    this.pomotoresService.post(this.promotor).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Enlace guardado correctamente');
+        this.mensajeService.mensajeExito('Pomotor guardado correctamente');
         this.resetForm();
         this.configPaginator.currentPage = 1;
       },
@@ -278,7 +285,7 @@ export class EnlaceComponent {
 
   resetForm() {
     this.closebutton.nativeElement.click();
-    this.enlaceForm.reset();
+    this.promotorForm.reset();
   }
 
   submit() {
@@ -290,28 +297,27 @@ export class EnlaceComponent {
   }
 
   handleChangeAdd() {
-    if (this.enlaceForm) {
-      this.enlaceForm.reset();
+    if (this.promotorForm) {
+      this.promotorForm.reset();
       if (this.currentUser?.rolId === RolesBD.operador) {
-        this.enlaceForm.controls['operadorId'].setValue(this.operadorId);
+        this.promotorForm.controls['operadorId'].setValue(this.operadorId);
       }
       this.isModalAdd = true;
     }
   }
 
   exportarDatosAExcel() {
-    if (this.enlaces.length === 0) {
+    if (this.promotores.length === 0) {
       console.warn('La lista de usuarios está vacía. No se puede exportar.');
       return;
     }
 
-    const datosParaExportar = this.enlaces.map((enlace) => {
+    const datosParaExportar = this.promotores.map((promotor) => {
       return {
-        'Nombre': enlace.nombres,
-        'Apellido paterno': enlace.apellidoPaterno,
-        'Apellido materno': enlace.apellidoMaterno,
-        'Teléfono': enlace.telefono,
-        'Operador': enlace.operador.nombreCompleto,
+        'Nombre': promotor.nombres,
+        'Apellido paterno': promotor.apellidoPaterno,
+        'Apellido materno': promotor.apellidoMaterno,
+        'Teléfono': promotor.telefono,
       };
     });
     const worksheet: XLSX.WorkSheet =
@@ -325,7 +331,7 @@ export class EnlaceComponent {
       type: 'array',
     });
 
-    this.guardarArchivoExcel(excelBuffer, 'Enlaces.xlsx');
+    this.guardarArchivoExcel(excelBuffer, 'Promotores.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {

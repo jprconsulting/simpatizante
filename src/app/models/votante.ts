@@ -1,4 +1,4 @@
-import { Enlace } from './enlace';
+import { Promotor } from './promotor';
 import { Estado } from './estados';
 import { Genero } from './genero';
 import { Municipio } from './municipio';
@@ -20,16 +20,16 @@ export interface Simpatizante {
   latitud: number;
   longitud: number;
   estatus: boolean;
+  tercerNivelContacto: string;
   programaSocial: ProgramaSocial | null;
   municipio: Municipio;
   votante: Simpatizante;
   seccion: Seccion;
   estado: Estado;
-  claveElector: string;
   operador: Operador;
   edad: number;
   numerotel: string;
-  enlace: Enlace;
+  promotor: Promotor;
 }
 
 export interface TotalBeneficiariosMunicipio extends Municipio {
