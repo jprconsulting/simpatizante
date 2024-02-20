@@ -582,11 +582,9 @@ export class SimpatizanteComponent {
       console.log(id);
       if (id) {
         this.isLoading = LoadingStates.trueLoading;
-        this.promotoresService
-          .getPorOperador(id)
-          .subscribe({
-            next: (dataFromAPI) => (this.promotores = dataFromAPI),
-          });
+        this.promotoresService.getPorOperador(id).subscribe({
+          next: (dataFromAPI) => (this.promotores = dataFromAPI),
+        });
         this.getPromotoresSelect();
       }
     }
@@ -597,11 +595,9 @@ export class SimpatizanteComponent {
       console.log(id);
       if (id) {
         this.isLoading = LoadingStates.trueLoading;
-        this.promotoresService
-          .getPorCandidato(id)
-          .subscribe({
-            next: (dataFromAPI) => (this.promotores = dataFromAPI),
-          });
+        this.promotoresService.getPorCandidato(id).subscribe({
+          next: (dataFromAPI) => (this.promotores = dataFromAPI),
+        });
         this.getPromotoresSelect();
       }
     }
@@ -621,7 +617,6 @@ export class SimpatizanteComponent {
           this.promotoresselect = [];
           this.getVotantes();
         },
-       
       });
     }
     console.log('ID seleccionado:', operadorIdSeleccionado);
@@ -638,14 +633,13 @@ export class SimpatizanteComponent {
           this.promotoresselect = [];
           this.getVotantes();
         },
-       
       });
     } else {
       console.warn(
         'operadorIdSeleccionado is falsy. Handle this case if needed.'
       );
       this.promotoresselect = [];
-      
+      this.getVotantes();
     }
   }
 
@@ -970,62 +964,64 @@ export class SimpatizanteComponent {
     }
     this.habilitarTodosLosControles();
   }
- exportarDatosAExcel() {
+  exportarDatosAExcel() {
     if (this.votantes.length === 0) {
-        console.warn(
-            'La lista de simpatizantes está vacía, no se puede exportar.'
-        );
-        return;
+      console.warn(
+        'La lista de simpatizantes está vacía, no se puede exportar.'
+      );
+      return;
     }
 
     const datosParaExportar = this.votantes.map((votante) => {
-        const estatus = votante.estatus ? 'Activo' : 'Inactivo';
-        const fechaFormateada = new Date(votante.fechaNacimiento)
-            .toISOString()
-            .split('T')[0];
+      const estatus = votante.estatus ? 'Activo' : 'Inactivo';
+      const fechaFormateada = new Date(votante.fechaNacimiento)
+        .toISOString()
+        .split('T')[0];
 
-        // Manejo del promotor
-        const promotorNombreCompleto = votante.promotor?.nombreCompleto || 'Sin promotor';
-        const programaSocial = votante.programaSocial?.nombre || 'Sin programa social';
+      // Manejo del promotor
+      const promotorNombreCompleto =
+        votante.promotor?.nombreCompleto || 'Sin promotor';
+      const programaSocial =
+        votante.programaSocial?.nombre || 'Sin programa social';
 
-        return {
-            Nombre: votante.nombres,
-            'Apellido paterno': votante.apellidoPaterno,
-            'Apellido materno': votante.apellidoMaterno,
-            'Fecha de nacimiento': fechaFormateada,
-            'Edad': votante.edad,
-            'CURP': votante.curp,
-            'Genero': votante.genero.nombre,
-            'Domicilio': votante.domicilio,
-            'Municipio': votante.municipio.nombre,
-            'Estado': votante.estado.nombre,
-            'Seccion': votante.seccion.clave,
-            'Promotor': promotorNombreCompleto,
-            'Operador': votante.operador.nombreCompleto,
-            'Numero de teléfono': votante.numerotel,
-            'Programa Social': programaSocial,
-            'Tercer nivel de referencia': votante.tercerNivelContacto,
-            Estatus: estatus,
-        };
+      return {
+        Nombre: votante.nombres,
+        'Apellido paterno': votante.apellidoPaterno,
+        'Apellido materno': votante.apellidoMaterno,
+        'Fecha de nacimiento': fechaFormateada,
+        Edad: votante.edad,
+        CURP: votante.curp,
+        Genero: votante.genero.nombre,
+        Domicilio: votante.domicilio,
+        Municipio: votante.municipio.nombre,
+        Estado: votante.estado.nombre,
+        Seccion: votante.seccion.clave,
+        Promotor: promotorNombreCompleto,
+        Operador: votante.operador.nombreCompleto,
+        'Numero de teléfono': votante.numerotel,
+        'Programa Social': programaSocial,
+        'Tercer nivel de referencia': votante.tercerNivelContacto,
+        Estatus: estatus,
+      };
     });
 
     const worksheet: XLSX.WorkSheet =
-        XLSX.utils.json_to_sheet(datosParaExportar);
+      XLSX.utils.json_to_sheet(datosParaExportar);
     const workbook: XLSX.WorkBook = {
-        Sheets: { data: worksheet },
-        SheetNames: ['data'],
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
     };
     const excelBuffer: any = XLSX.write(workbook, {
-        bookType: 'xlsx',
-        type: 'array',
+      bookType: 'xlsx',
+      type: 'array',
     });
 
     this.guardarArchivoExcel(excelBuffer, 'Promovidos.xlsx');
-}
+  }
 
-guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
     const data: Blob = new Blob([buffer], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
     const url: string = window.URL.createObjectURL(data);
     const a: HTMLAnchorElement = document.createElement('a');
@@ -1033,7 +1029,7 @@ guardarArchivoExcel(buffer: any, nombreArchivo: string) {
     a.download = nombreArchivo;
     a.click();
     window.URL.revokeObjectURL(url);
-}
+  }
 
   toggleEstatus() {
     const estatusControl = this.SocialForm.get('Estatus');
