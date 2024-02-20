@@ -176,6 +176,7 @@ export class VisitasComponent {
       servicio: dto.servicio,
       simpatizante: dto.simpatizante.id,
       imagenBase64: '',
+      simpatiza: dto.simpatiza,
     });
 
     // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
