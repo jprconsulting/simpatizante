@@ -16,6 +16,7 @@ declare const google: any;
 })
 export class MapaSimpatizantesComponent implements AfterViewInit {
   simpatizantes: Simpatiza[] = [];
+  simpatizantes2: Simpatizante[] = [];
   infowindow = new google.maps.InfoWindow();
   markers: google.maps.Marker[] = [];
   map: any = {};
@@ -28,6 +29,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
   ) {
     this.getsimpatizantes();
     this.getSecciones();
+    this.getsimpatizantes2();
   }
   setAllMarkers() {
     this.clearMarkers();
@@ -38,15 +40,46 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       );
     });
   }
-
+  setAllMarkers2() {
+    this.simpatizantes2.forEach((simpatizantes) => {
+      this.setInfoWindow(
+        this.getMarker2(simpatizantes),
+        this.getContentString(simpatizantes)
+      );
+    });
+  }
   clearMarkers() {
     this.markers.forEach((marker) => {
       marker.setMap(null);
     });
     this.markers = [];
   }
+  getMarker2(simpatizante: Simpatizante) {
+    const fillColor = 'orange';
+
+    const marker = new google.maps.Marker({
+      position: new google.maps.LatLng(
+        simpatizante.latitud,
+        simpatizante.longitud
+      ),
+      map: this.map,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 7,
+        fillColor: 'orange',
+        fillOpacity: 1,
+        strokeWeight: 0,
+      },
+      title: `${simpatizante.seccion.clave}`,
+    });
+
+    this.markers.push(marker);
+    return marker;
+  }
 
   getMarker(simpatizante: Simpatiza) {
+    const fillColor = simpatizante.color || 'orange'; // Usar naranja si no hay color asignado
+
     const marker = new google.maps.Marker({
       position: new google.maps.LatLng(
         simpatizante.simpatizante.latitud,
@@ -56,12 +89,13 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
         scale: 7,
-        fillColor: simpatizante.color,
+        fillColor: fillColor,
         fillOpacity: 1,
         strokeWeight: 0,
       },
       title: `${simpatizante.simpatizante.seccion.clave}`,
     });
+
     this.markers.push(marker);
     return marker;
   }
@@ -184,6 +218,15 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
         this.simpatizantes = dataFromAPI;
         this.simpatizantesFiltrados = this.simpatizantes;
         this.setAllMarkers();
+      },
+    });
+  }
+  getsimpatizantes2() {
+    this.simpatizantesService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.simpatizantes2 = dataFromAPI;
+        this.simpatizantesFiltrados = this.simpatizantes;
+        this.setAllMarkers2();
       },
     });
   }
