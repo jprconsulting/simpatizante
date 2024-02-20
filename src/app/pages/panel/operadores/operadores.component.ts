@@ -436,6 +436,54 @@ export class OperadoresComponent implements OnInit {
     this.guardarArchivoExcel(excelBuffer, 'Operadores.xlsx');
   }
 
+
+  exportarDatosAExcelSimpatizantesAsociados() {
+
+    if ( this.sinSimpatizantes ) {
+      console.warn('La lista de promovidos asociados está vacía. No se puede exportar.');
+      return;
+    }
+
+    const datosParaExportar = this.simpatizantesOperador.map(( simpatizante ) => {
+
+      const estatus = simpatizante.estatus ? 'Activo' : 'Inactivo';
+      const fechaNacimiento = simpatizante.fechaNacimiento
+        ? new Date(simpatizante.fechaNacimiento).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })
+        : '';
+
+      return {
+          'Nombre Completo': simpatizante.nombreCompleto,
+          'Fecha de nacimiento': fechaNacimiento,
+          'Domicilio': simpatizante.domicilio,
+          'Genero': simpatizante.genero.nombre,
+          'Programa Social': simpatizante.programaSocial?.nombre,
+          Estatus: estatus,
+        };
+
+
+      });
+
+      const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+
+      const workbook: XLSX.WorkBook = {
+        Sheets: { data: worksheet },
+        SheetNames: ['data'],
+      };
+
+      const excelBuffer: any = XLSX.write(workbook, {
+        bookType: 'xlsx',
+        type: 'array',
+      });
+
+      this.guardarArchivoExcel(excelBuffer, 'PromovidosAOperadores.xlsx');
+
+    }
+
+
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
     const data: Blob = new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
