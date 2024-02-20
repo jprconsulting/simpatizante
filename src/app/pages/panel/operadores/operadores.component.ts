@@ -49,6 +49,8 @@ export class OperadoresComponent implements OnInit {
   rolId = 0;
   seccionesFilter: Seccion[] = [];
   votantes: Simpatizante[] = [];
+  isLoadingModalPromovidosOperador = LoadingStates.neutro;
+  simpatizantesOperador: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
   simpatizanteFilter: Simpatizante[] = [];
   candidatos: Candidato[] = [];
@@ -86,13 +88,25 @@ export class OperadoresComponent implements OnInit {
   }
   ngOnInit(): void {
     this.isModalAdd = false;
-    this.loadSimpatizantes();
+
   }
 
   verSeccionesOperador(secciones: Seccion[]) {
     this.seccionesOperador = secciones;
     this.seccionesOperadorFilter = this.seccionesOperador;
     const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+
+  mostrarSimpatizantesAsociadosModal( operadorId: number  ) {
+
+    this.getSimpatizantesOperadorId( operadorId );
+    this.simpatizanteFilter = this.simpatizantes;
+
+    const modal = document.getElementById('modal-simpatizantes');
     if (modal) {
       modal.classList.add('show');
       modal.style.display = 'block';
@@ -111,6 +125,24 @@ export class OperadoresComponent implements OnInit {
       },
     });
     console.log(this.secciones);
+  }
+
+
+  getSimpatizantesOperadorId( operadorId: number ) {
+
+    this.isLoadingModalPromovidosOperador = LoadingStates.trueLoading;
+
+    this.simpatizantesService
+      .getSimpatizantesPorOperadorId( operadorId )
+      .subscribe({
+        next: ( dataFromAPI ) => {
+          this.simpatizantesOperador = dataFromAPI;
+          this.isLoadingModalPromovidosOperador = LoadingStates.falseLoading;
+        },
+        error: () => {
+          this.isLoadingModalPromovidosOperador = LoadingStates.errorLoading;
+        }
+      })
   }
 
   creteForm() {
@@ -352,14 +384,8 @@ export class OperadoresComponent implements OnInit {
   closeModal() {
     this.showModal = false;
   }
-  mostrarImagenAmpliada2(seccion: string) {
-    this.imagenAmpliada = seccion;
-    const modal = document.getElementById('modal-simpatizantes');
-    if (modal) {
-      modal.classList.add('show');
-      modal.style.display = 'block';
-    }
-  }
+
+
   cerrarModal2() {
     this.imagenAmpliada = null;
     const modal = document.getElementById('modal-simpatizantes');
@@ -369,15 +395,7 @@ export class OperadoresComponent implements OnInit {
     }
   }
 
-  loadSimpatizantes() {
-    // Assuming you have a candidateId, replace it with the actual value
-    const operadorId = 4; // Replace with the actual candidateId
-    this.simpatizantesService
-      .getSimpatizantesPorOperadorId(operadorId)
-      .subscribe((data) => {
-        this.simpatizantes = data;
-      });
-  }
+
 
   exportarDatosAExcel() {
     if (this.operadores.length === 0) {
