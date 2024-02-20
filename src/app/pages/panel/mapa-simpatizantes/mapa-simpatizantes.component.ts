@@ -3,6 +3,7 @@ import { color } from 'highcharts';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { SeccionService } from 'src/app/core/services/seccion.service';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
+import { Simpatiza } from 'src/app/models/mapa';
 import { Municipio } from 'src/app/models/municipio';
 import { Seccion } from 'src/app/models/seccion';
 import { Simpatizante } from 'src/app/models/votante';
@@ -14,11 +15,11 @@ declare const google: any;
   styleUrls: ['./mapa-simpatizantes.component.css'],
 })
 export class MapaSimpatizantesComponent implements AfterViewInit {
-  simpatizantes: Simpatizante[] = [];
+  simpatizantes: Simpatiza[] = [];
   infowindow = new google.maps.InfoWindow();
   markers: google.maps.Marker[] = [];
   map: any = {};
-  simpatizantesFiltrados: Simpatizante[] = [];
+  simpatizantesFiltrados: Simpatiza[] = [];
   secciones: Seccion[] = [];
 
   constructor(
@@ -33,7 +34,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     this.simpatizantes.forEach((simpatizantes) => {
       this.setInfoWindow(
         this.getMarker(simpatizantes),
-        this.getContentString(simpatizantes)
+        this.getContentString(simpatizantes.simpatizante)
       );
     });
   }
@@ -45,15 +46,21 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     this.markers = [];
   }
 
-  getMarker(simpatizante: Simpatizante) {
+  getMarker(simpatizante: Simpatiza) {
     const marker = new google.maps.Marker({
       position: new google.maps.LatLng(
-        simpatizante.latitud,
-        simpatizante.longitud
+        simpatizante.simpatizante.latitud,
+        simpatizante.simpatizante.longitud
       ),
       map: this.map,
-      animation: google.maps.Animation.DROP,
-      title: `${simpatizante.seccion.clave}`,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 7,
+        fillColor: simpatizante.color,
+        fillOpacity: 1,
+        strokeWeight: 0,
+      },
+      title: `${simpatizante.simpatizante.seccion.clave}`,
     });
     this.markers.push(marker);
     return marker;
@@ -97,7 +104,11 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
         <p style="font-weight:  bolder;" class="">
           Programa inscrito:
           <p class=" text-muted">
-          ${simpatizante.programaSocial ? simpatizante.programaSocial.nombre : 'No hay programa social'}
+          ${
+            simpatizante.programaSocial
+              ? simpatizante.programaSocial.nombre
+              : 'No hay programa social'
+          }
           </p>
         </p>
         <p style="font-weight:  bolder;" class="" >
@@ -168,7 +179,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     this.map = new google.maps.Map(mapElement, mapOptions);
   }
   getsimpatizantes() {
-    this.simpatizantesService.getAll().subscribe({
+    this.simpatizantesService.getAll2().subscribe({
       next: (dataFromAPI) => {
         this.simpatizantes = dataFromAPI;
         this.simpatizantesFiltrados = this.simpatizantes;
@@ -182,13 +193,13 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
 
       // Filtrar los simpatizantes por municipio y asignar el resultado a simpatizantesFiltrados
       this.simpatizantesFiltrados = this.simpatizantes.filter(
-        (v) => v.seccion.id === id
+        (v) => v.simpatizante.seccion.id === id
       );
 
       this.simpatizantesFiltrados.forEach((simpatizante) => {
         this.setInfoWindow(
           this.getMarker(simpatizante),
-          this.getContentString(simpatizante)
+          this.getContentString(simpatizante.simpatizante)
         );
       });
     }
