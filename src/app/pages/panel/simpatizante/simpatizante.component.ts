@@ -621,9 +621,7 @@ export class SimpatizanteComponent {
           this.promotoresselect = [];
           this.getVotantes();
         },
-        complete: () => {
-          this.isLoading = LoadingStates.falseLoading;
-        },
+       
       });
     }
     console.log('ID seleccionado:', operadorIdSeleccionado);
@@ -640,16 +638,14 @@ export class SimpatizanteComponent {
           this.promotoresselect = [];
           this.getVotantes();
         },
-        complete: () => {
-          this.isLoading = LoadingStates.falseLoading;
-        },
+       
       });
     } else {
       console.warn(
         'operadorIdSeleccionado is falsy. Handle this case if needed.'
       );
       this.promotoresselect = [];
-      this.getVotantes();
+      
     }
   }
 
