@@ -133,6 +133,7 @@ export class SimpatizanteComponent {
         id: this.operadorId,
         nombreCompleto: this.currentUser?.nombreCompleto,
       } as Operador);
+      this.getPromotoresSelect();
     }
 
     if (this.currentUser?.rolId === RolesBD.candidato) {
@@ -462,24 +463,20 @@ export class SimpatizanteComponent {
   }
 
   validarCURP() {
-    const curp = this.simpatizanteForm.get('curp')
-      ?.value as string;
+    const curp = this.simpatizanteForm.get('curp')?.value as string;
 
-    this.simpatizantesService
-      .validarSimpatizantePorCURP(curp)
-      .subscribe({
-        next: () => {
-          this.deshabilitarTodosLosControles();
-          this.existeCURP = false;
-          this.mensajeExisteCURP =
-            'El CURP ya esta registrado';
-        },
-        error: () => {
-          this.existeCURP = true;
-          this.habilitarTodosLosControles();
-          this.mensajeExisteCURP = '';
-        },
-      });
+    this.simpatizantesService.validarSimpatizantePorCURP(curp).subscribe({
+      next: () => {
+        this.deshabilitarTodosLosControles();
+        this.existeCURP = false;
+        this.mensajeExisteCURP = 'El CURP ya esta registrado';
+      },
+      error: () => {
+        this.existeCURP = true;
+        this.habilitarTodosLosControles();
+        this.mensajeExisteCURP = '';
+      },
+    });
     this.getPromotoresSelect();
   }
 
@@ -587,7 +584,9 @@ export class SimpatizanteComponent {
         this.isLoading = LoadingStates.trueLoading;
         this.promotoresService
           .getPorOperador(id)
-          .subscribe({ next: (dataFromAPI) => (this.promotores = dataFromAPI) });
+          .subscribe({
+            next: (dataFromAPI) => (this.promotores = dataFromAPI),
+          });
         this.getPromotoresSelect();
       }
     }
@@ -600,7 +599,9 @@ export class SimpatizanteComponent {
         this.isLoading = LoadingStates.trueLoading;
         this.promotoresService
           .getPorCandidato(id)
-          .subscribe({ next: (dataFromAPI) => (this.promotores = dataFromAPI) });
+          .subscribe({
+            next: (dataFromAPI) => (this.promotores = dataFromAPI),
+          });
         this.getPromotoresSelect();
       }
     }
@@ -608,7 +609,23 @@ export class SimpatizanteComponent {
   getPromotoresSelect() {
     const operadorIdSeleccionado =
       this.simpatizanteForm.get('operadorId')?.value;
-
+    if (this.operadorId) {
+      const operadorIdSeleccionado = this.operadorId;
+      console.log('ID seleccionado:', operadorIdSeleccionado);
+      this.promotoresService.getPorOperador(operadorIdSeleccionado).subscribe({
+        next: (dataFromAPI) => {
+          this.promotoresselect = dataFromAPI;
+        },
+        error: (error) => {
+          console.error('Error al obtener promotores por operador:', error);
+          this.promotoresselect = [];
+          this.getVotantes();
+        },
+        complete: () => {
+          this.isLoading = LoadingStates.falseLoading;
+        },
+      });
+    }
     console.log('ID seleccionado:', operadorIdSeleccionado);
 
     if (operadorIdSeleccionado) {
@@ -670,6 +687,7 @@ export class SimpatizanteComponent {
             this.votantesFilter = this.votantes;
             console.log(this.votantes);
             this.isLoading = LoadingStates.falseLoading;
+            this.getPromotoresSelect();
           },
           error: () => {
             this.isLoading = LoadingStates.errorLoading;
@@ -849,6 +867,7 @@ export class SimpatizanteComponent {
     this.closebutton.nativeElement.click();
     this.simpatizanteForm.reset();
     this.existeCURP = null;
+    this.getPromotoresSelect();
   }
   submit() {
     if (this.isModalAdd === false) {
@@ -859,8 +878,7 @@ export class SimpatizanteComponent {
   }
 
   agregar() {
-
-    if ( this.simpatizanteForm.get('curp')?.value === null ) {
+    if (this.simpatizanteForm.get('curp')?.value === null) {
       this.votante = this.simpatizanteForm.value as Simpatizante;
       const programaSocialId =
         this.simpatizanteForm.get('programaSocial')?.value;
@@ -897,9 +915,7 @@ export class SimpatizanteComponent {
           this.mensajeService.mensajeError(error);
         },
       });
-    }
-
-  else if (this.existeCURP === true) {
+    } else if (this.existeCURP === true) {
       this.votante = this.simpatizanteForm.value as Simpatizante;
       const programaSocialId =
         this.simpatizanteForm.get('programaSocial')?.value;
@@ -976,15 +992,15 @@ export class SimpatizanteComponent {
         'Apellido paterno': votante.apellidoPaterno,
         'Apellido materno': votante.apellidoMaterno,
         'Fecha de nacimiento': fechaFormateada,
-        'Edad': votante.edad,
-        'CURP': votante.curp,
-        'Genero': votante.genero.nombre,
-        'Domicilio': votante.domicilio,
-        'Municipio': votante.municipio.nombre,
-        'Estado': votante.estado.nombre,
-        'Seccion': votante.seccion.clave,
-        'Promotor': votante.promotor.nombreCompleto,
-        'Operador': votante.operador.nombreCompleto,
+        Edad: votante.edad,
+        CURP: votante.curp,
+        Genero: votante.genero.nombre,
+        Domicilio: votante.domicilio,
+        Municipio: votante.municipio.nombre,
+        Estado: votante.estado.nombre,
+        Seccion: votante.seccion.clave,
+        Promotor: votante.promotor.nombreCompleto,
+        Operador: votante.operador.nombreCompleto,
         'Numero de teléfono': votante.numerotel,
         'Programa Social': votante.programaSocial?.nombre,
         'Tercer nivel de referencia': votante.tercerNivelContacto,
