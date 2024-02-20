@@ -119,6 +119,7 @@ export class VisitasComponent {
       ],
       imagenBase64: [''],
       simpatizante: [null, Validators.required],
+      simpatiza: [true],
     });
   }
 
@@ -294,6 +295,10 @@ export class VisitasComponent {
     this.visitaForm.reset();
     this.isModalAdd = true;
     this.candidatosSelect = undefined;
+    const estatusControl = this.visitaForm.get('simpatiza');
+    if (estatusControl) {
+      estatusControl.setValue(true);
+    }
   }
 
   onSelectCandidato(id: number) {
