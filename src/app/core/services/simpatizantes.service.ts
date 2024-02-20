@@ -5,6 +5,7 @@ import { HandleErrorService } from './handle-error.service';
 import { Simpatizante } from 'src/app/models/votante';
 import { Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { Simpatiza } from 'src/app/models/mapa';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,9 @@ export class SimpatizantesService {
 
   getAll() {
     return this.http.get<Simpatizante[]>(`${this.route}/obtener-todos`);
+  }
+  getAll2() {
+    return this.http.get<Simpatiza[]>(`${this.route}/mapa`);
   }
 
   post(dto: Simpatizante) {
