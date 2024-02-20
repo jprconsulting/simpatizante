@@ -615,7 +615,6 @@ export class SimpatizanteComponent {
         error: (error) => {
           console.error('Error al obtener promotores por operador:', error);
           this.promotoresselect = [];
-          this.getVotantes();
         },
       });
     }
@@ -631,7 +630,6 @@ export class SimpatizanteComponent {
         error: (error) => {
           console.error('Error al obtener promotores por operador:', error);
           this.promotoresselect = [];
-          this.getVotantes();
         },
       });
     } else {
@@ -639,8 +637,8 @@ export class SimpatizanteComponent {
         'operadorIdSeleccionado is falsy. Handle this case if needed.'
       );
       this.promotoresselect = [];
-      this.getVotantes();
     }
+    this.getVotantes();
   }
 
   getVotantes() {
@@ -677,7 +675,6 @@ export class SimpatizanteComponent {
             this.votantesFilter = this.votantes;
             console.log(this.votantes);
             this.isLoading = LoadingStates.falseLoading;
-            this.getPromotoresSelect();
           },
           error: () => {
             this.isLoading = LoadingStates.errorLoading;
