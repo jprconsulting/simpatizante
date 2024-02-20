@@ -455,9 +455,16 @@
                     <br />
 
                     <div class="card-footer d-flex align-items-center">
-                        <p class="m-0 text-muted">
-                            Total de registros: <b>{{ simpatizantesOperador.length }}</b>
+                        <p
+                          *ngIf="sinSimpatizantes; else conRegistros"
+                          class="m-0 text-muted">
+                          Total de registros: <b>0</b>
                         </p>
+                        <ng-template #conRegistros>
+                          <p class="m-0 mt-4 text-muted ">
+                            Total de registros: <b>{{ simpatizantesOperador.length }}</b>
+                          </p>
+                        </ng-template>
                         <div class="m-0 ms-auto">
                             <pagination-controls
                               (pageChange)="onPageChange($event)"

@@ -50,9 +50,9 @@ export class OperadoresComponent implements OnInit {
   seccionesFilter: Seccion[] = [];
   votantes: Simpatizante[] = [];
   isLoadingModalPromovidosOperador = LoadingStates.neutro;
-  simpatizantesOperador: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
-  simpatizanteFilter: Simpatizante[] = [];
+  simpatizantesOperador: Simpatizante[] = [];
+  sinSimpatizantes: boolean = true;
   candidatos: Candidato[] = [];
   currentUser!: AppUserAuth | null;
   readonlySelectCandidato = true;
@@ -104,7 +104,6 @@ export class OperadoresComponent implements OnInit {
   mostrarSimpatizantesAsociadosModal( operadorId: number  ) {
 
     this.getSimpatizantesOperadorId( operadorId );
-    this.simpatizanteFilter = this.simpatizantes;
 
     const modal = document.getElementById('modal-simpatizantes');
     if (modal) {
@@ -136,10 +135,13 @@ export class OperadoresComponent implements OnInit {
       .getSimpatizantesPorOperadorId( operadorId )
       .subscribe({
         next: ( dataFromAPI ) => {
-          this.simpatizantesOperador = dataFromAPI;
+          this.sinSimpatizantes = false;
+          this.simpatizantes = dataFromAPI;
+          this.simpatizantesOperador = this.simpatizantes;
           this.isLoadingModalPromovidosOperador = LoadingStates.falseLoading;
         },
         error: () => {
+          this.sinSimpatizantes = true;
           this.isLoadingModalPromovidosOperador = LoadingStates.errorLoading;
         }
       })
@@ -238,7 +240,7 @@ export class OperadoresComponent implements OnInit {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.simpatizanteFilter = this.simpatizantes.filter(
+    this.simpatizantesOperador = this.simpatizantes.filter(
       (Simpatizante) =>
         Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
         Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
