@@ -32,7 +32,6 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     this.getsimpatizantes2();
   }
   setAllMarkers() {
-    this.clearMarkers();
     this.simpatizantes.forEach((simpatizantes) => {
       this.setInfoWindow(
         this.getMarker(simpatizantes),
