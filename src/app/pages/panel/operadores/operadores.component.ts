@@ -33,8 +33,10 @@ export class OperadoresComponent implements OnInit {
   @ViewChild('searchItem') searchItem!: ElementRef;
 
   operador!: Operador;
+  seccionesId!: Operador;
   seccionesOperador: Seccion[] = [];
   seccionesOperadorFilter: Seccion[] = [];
+  isLoadingModalSeccionesOperador = LoadingStates.neutro;
   operadorForm!: FormGroup;
   operadores: Operador[] = [];
   operadorFilter: Operador[] = [];
@@ -57,6 +59,8 @@ export class OperadoresComponent implements OnInit {
   currentUser!: AppUserAuth | null;
   readonlySelectCandidato = true;
   candidatoId = 0;
+  pagModalSecciones: number = 1;
+  pagModalPromovidos: number = 1;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -77,7 +81,6 @@ export class OperadoresComponent implements OnInit {
     this.creteForm();
     this.getCandidatos();
     this.getOperadores();
-    this.getSecciones();
 
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
@@ -91,9 +94,10 @@ export class OperadoresComponent implements OnInit {
 
   }
 
-  verSeccionesOperador(secciones: Seccion[]) {
-    this.seccionesOperador = secciones;
-    this.seccionesOperadorFilter = this.seccionesOperador;
+  verSeccionesOperador( operadorId: number ) {
+
+    this.getSeccionesOperadorId( operadorId );
+
     const modal = document.getElementById('modal-imagen-ampliada');
     if (modal) {
       modal.classList.add('show');
@@ -117,15 +121,6 @@ export class OperadoresComponent implements OnInit {
     return genero ? genero.name : '';
   }
 
-  getSecciones() {
-    this.seccionesService.getAll().subscribe({
-      next: (dataFromAPI) => {
-        this.secciones = dataFromAPI;
-      },
-    });
-    console.log(this.secciones);
-  }
-
 
   getSimpatizantesOperadorId( operadorId: number ) {
 
@@ -143,6 +138,24 @@ export class OperadoresComponent implements OnInit {
         error: () => {
           this.sinSimpatizantes = true;
           this.isLoadingModalPromovidosOperador = LoadingStates.errorLoading;
+        }
+      })
+  }
+
+  getSeccionesOperadorId ( operadorId: number ) {
+
+    this.isLoadingModalSeccionesOperador = LoadingStates.trueLoading;
+
+    this.operadoresService.getById( operadorId )
+      .subscribe({
+        next: ( dataFromAPI ) => {
+          this.seccionesId = dataFromAPI;
+          this.secciones = this.seccionesId.secciones;
+          this.seccionesOperador = this.secciones;
+          this.isLoadingModalSeccionesOperador = LoadingStates.falseLoading;
+        },
+        error: () => {
+          this.isLoadingModalSeccionesOperador = LoadingStates.errorLoading;
         }
       })
   }
@@ -194,9 +207,6 @@ export class OperadoresComponent implements OnInit {
         this.operadores = dataFromAPI;
         this.operadorFilter = this.operadores;
         this.isLoading = LoadingStates.falseLoading;
-        this.obtenerSeccionesIdsDeOperadores();
-        const secciones = this.operadores.map((operador) => operador.secciones);
-        console.log(secciones);
       },
       error: () => {
         this.isLoading = LoadingStates.errorLoading;
@@ -210,13 +220,6 @@ export class OperadoresComponent implements OnInit {
       .subscribe({ next: (dataFromAPI) => (this.candidatos = dataFromAPI) });
   }
 
-  obtenerSeccionesIdsDeOperadores() {
-    this.operadores.forEach((operador) => {
-      const seccionesIds = operador.secciones;
-      this.seccionesFilter = this.secciones;
-      console.log(`SeccionesIds del operador ${operador.id}:`, seccionesIds);
-    });
-  }
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
@@ -236,7 +239,7 @@ export class OperadoresComponent implements OnInit {
     this.configPaginator.currentPage = 1;
   }
 
-  handleChangeSearchModal(event: any) {
+  handleChangeSearchModalSimpatizantesAsociados(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
@@ -252,11 +255,11 @@ export class OperadoresComponent implements OnInit {
     this.configPaginator.currentPage = 1;
   }
 
-  handleChangeSearchModalSimpatizantesAsociados( event: any ) {
+  handleChangeSearchModalSeccionesAsociadas( event: any ) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.seccionesOperadorFilter = this.seccionesOperador.filter(
+    this.seccionesOperador = this.secciones.filter(
       (Seccion) =>
         Seccion.claveYNombre.toLocaleLowerCase().includes(valueSearch) ||
         Seccion.municipio.nombre.toLocaleLowerCase().includes(valueSearch)
