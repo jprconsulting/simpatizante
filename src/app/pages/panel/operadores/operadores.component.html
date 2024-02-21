@@ -317,6 +317,7 @@
                               type="text"
                               class="form-control form-control-rounded"
                               placeholder="Buscar"
+                              [(ngModel)]="initialValueModalSearchSecciones"
                               (input)="handleChangeSearchModalSeccionesAsociadas($event)" />
                             <span class="input-icon-addon me-2  ">
                               <i class="ti ti-search"></i>
@@ -423,6 +424,7 @@
                                   type="text"
                                   class="form-control form-control-rounded"
                                   placeholder="Buscar"
+                                  [(ngModel)]="initialValueModalSearchPromovidos"
                                   (input)="handleChangeSearchModalSimpatizantesAsociados($event)"
                                 />
                                 <span class="input-icon-addon">

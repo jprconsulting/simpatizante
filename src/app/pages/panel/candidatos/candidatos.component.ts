@@ -43,6 +43,7 @@ export class CandidatosComponent implements OnInit {
   errorMessage!: string;
   sinSimpatizantes: boolean = false;
   pagModalPromovidos: number = 1;
+  initialValueModalSearch: string = '';
 
   public imgPreview: string = '';
   public emblemaPreview: string = '';
@@ -276,6 +277,10 @@ export class CandidatosComponent implements OnInit {
     this.pagModalPromovidos = 1;
   }
 
+  clearInputModalSearch() {
+    this.initialValueModalSearch = '';
+  }
+
   formData: any;
 
 
@@ -459,6 +464,7 @@ export class CandidatosComponent implements OnInit {
 
   }
   cerrarModal2() {
+    this.clearInputModalSearch();
     this.imagenAmpliada = null;
     const modal = document.getElementById('modal-simpatizantes');
     if (modal) {

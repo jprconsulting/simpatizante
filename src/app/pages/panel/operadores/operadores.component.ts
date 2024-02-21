@@ -62,6 +62,8 @@ export class OperadoresComponent implements OnInit {
   candidatoId = 0;
   pagModalSecciones: number = 1;
   pagModalPromovidos: number = 1;
+  initialValueModalSearchSecciones: string = '';
+  initialValueModalSearchPromovidos: string = '';
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -240,6 +242,10 @@ export class OperadoresComponent implements OnInit {
     this.configPaginator.currentPage = number;
   }
 
+  clearInputModalSearch() {
+    this.initialValueModalSearchSecciones = '';
+    this.initialValueModalSearchPromovidos = '';
+  }
 
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
@@ -407,6 +413,7 @@ export class OperadoresComponent implements OnInit {
 
 
   cerrarModal2() {
+    this.clearInputModalSearch();
     this.imagenAmpliada = null;
     const modal = document.getElementById('modal-simpatizantes');
     if (modal) {
@@ -538,6 +545,7 @@ export class OperadoresComponent implements OnInit {
   }
 
   cerrarModal() {
+    this.clearInputModalSearch();
     this.imagenAmpliada = null;
     const modal = document.getElementById('modal-imagen-ampliada');
     if (modal) {

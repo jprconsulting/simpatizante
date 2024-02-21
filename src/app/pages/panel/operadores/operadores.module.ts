@@ -6,7 +6,7 @@ import { OperadoresRoutingModule } from './operadores-routing.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -22,6 +22,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     NgxSpinnerModule,
     NgxPaginationModule,
     NgSelectModule,
+    FormsModule
   ]
 })
 export class OperadoresModule { }
