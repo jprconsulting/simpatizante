@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -18,7 +18,7 @@ import { PromotoresService } from 'src/app/core/services/promotores.service';
   templateUrl: './promotor.component.html',
   styleUrls: ['./promotor.component.css'],
 })
-export class PromotorComponent {
+export class PromotorComponent implements OnInit {
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
   dataObject!: AppUserAuth | null;
@@ -73,6 +73,10 @@ export class PromotorComponent {
       this.readonlySelectOperador = false;
       this.getTodosOperadores();
     }
+  }
+
+  ngOnInit(): void {
+    this.configPaginator.currentPage = 1;
   }
 
   creteForm() {

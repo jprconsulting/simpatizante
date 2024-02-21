@@ -93,7 +93,7 @@ export class OperadoresComponent implements OnInit {
   }
   ngOnInit(): void {
     this.isModalAdd = false;
-
+    this.configPaginator.currentPage = 1;
   }
 
   verSeccionesOperador( operadorId: number ) {

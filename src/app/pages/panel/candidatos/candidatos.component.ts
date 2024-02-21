@@ -20,7 +20,7 @@ import { Genero } from 'src/app/models/genero';
   templateUrl: './candidatos.component.html',
   styleUrls: ['./candidatos.component.css']
 })
-export class CandidatosComponent {
+export class CandidatosComponent implements OnInit {
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -42,6 +42,7 @@ export class CandidatosComponent {
   simpatizanteFilter: Simpatizante[] = [];
   errorMessage!: string;
   sinSimpatizantes: boolean = false;
+  pagModalPromovidos: number = 1;
 
   public imgPreview: string = '';
   public emblemaPreview: string = '';
@@ -65,6 +66,10 @@ export class CandidatosComponent {
     this.createForm();
     this.getCargos();
     this.getGeneros();
+  }
+
+  ngOnInit(): void {
+    this.configPaginator.currentPage = 1;
   }
 
   estatusBtn = true;
@@ -268,7 +273,7 @@ export class CandidatosComponent {
       Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
     )
 
-    this.configPaginator.currentPage = 1;
+    this.pagModalPromovidos = 1;
   }
 
   formData: any;
@@ -441,6 +446,9 @@ export class CandidatosComponent {
   }
 
   modalSimpatizantes(id: number) {
+
+    this.pagModalPromovidos = 1;
+
     const modal = document.getElementById('modal-simpatizantes');
     if (modal) {
       modal.classList.add('show');

@@ -469,7 +469,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let simpatizante of simpatizantesOperador | paginate: { itemsPerPage: 2, currentPage: pagModalPromovidos, id:'modal-promovidos' }">
+                                <tr *ngFor="let simpatizante of simpatizantesOperador | paginate: { itemsPerPage: 10, currentPage: pagModalPromovidos, id:'modal-promovidos' }">
                                     <td>{{ simpatizante.nombreCompleto }}</td>
                                     <td>{{ simpatizante.domicilio }}</td>
                                     <td>{{ simpatizante.genero.nombre }}</td>

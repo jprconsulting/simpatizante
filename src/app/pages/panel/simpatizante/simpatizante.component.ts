@@ -38,7 +38,7 @@ import { ProgramasSocialesService } from 'src/app/core/services/programas-social
   templateUrl: './simpatizante.component.html',
   styleUrls: ['./simpatizante.component.css'],
 })
-export class SimpatizanteComponent {
+export class SimpatizanteComponent implements OnInit {
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
   @ViewChild('ngxPlaces') placesRef!: NgxGpAutocompleteDirective;
@@ -146,6 +146,10 @@ export class SimpatizanteComponent {
       this.readonlySelectOperador = false;
       this.getTodosOperadores();
     }
+  }
+
+  ngOnInit(): void {
+    this.configPaginator.currentPage = 1;
   }
 
   getCurrentLocation() {

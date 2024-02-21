@@ -625,7 +625,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">
-          Simpatizantes asociados
+          Promovidos asociados
         </h5>
         <button
           type="button"
@@ -694,7 +694,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let simpatizante of simpatizanteFilter">
+                  <tr *ngFor="let simpatizante of simpatizanteFilter | paginate: { itemsPerPage: 10, currentPage: pagModalPromovidos, id:'modal-promovidos' }">
                     <td>{{ simpatizante.nombreCompleto }}</td>
                     <td>{{ simpatizante.domicilio }}</td>
                     <td>{{ simpatizante.genero.nombre }}</td>
@@ -720,15 +720,19 @@
               <p class="m-0 mt-4 text-muted">
                 Total de registros: <b>{{ simpatizanteFilter.length }}</b>
               </p>
+
+              <div class="m-0 ms-auto">
+                <pagination-controls
+                  id="modal-promovidos"
+                  (pageChange)="pagModalPromovidos = $event"
+                  previousLabel=""
+                  nextLabel=""
+                >
+                </pagination-controls>
+              </div>
+
             </ng-template>
-            <div class="m-0 ms-auto">
-              <pagination-controls
-                (pageChange)="onPageChange($event)"
-                previousLabel=""
-                nextLabel=""
-              >
-              </pagination-controls>
-            </div>
+
           </div>
         </div>
       </div>
