@@ -468,20 +468,6 @@
                   class="form-control"
                   formControlName="fechaNacimiento"
                 />
-                <div
-                  *ngIf="simpatizanteForm.get('fechaNacimiento')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
-                      simpatizanteForm
-                        .get('fechaNacimiento')
-                        ?.hasError('required')
-                    "
-                  >
-                    La fecha de nacimiento es obligatoria
-                  </div>
-                </div>
               </div>
             </div>
 

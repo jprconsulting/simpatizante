@@ -525,7 +525,7 @@ export class SimpatizanteComponent {
           ),
         ],
       ],
-      fechaNacimiento: ['', Validators.required],
+      fechaNacimiento: [null],
       estado: ['29'],
       seccion: [null, Validators.required],
       generoId: [null, Validators.required],
