@@ -3,6 +3,7 @@ import { color } from 'highcharts';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { SeccionService } from 'src/app/core/services/seccion.service';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
+import { Simpatiza } from 'src/app/models/mapa';
 import { Municipio } from 'src/app/models/municipio';
 import { Seccion } from 'src/app/models/seccion';
 import { Simpatizante } from 'src/app/models/votante';
@@ -14,11 +15,12 @@ declare const google: any;
   styleUrls: ['./mapa-simpatizantes.component.css'],
 })
 export class MapaSimpatizantesComponent implements AfterViewInit {
-  simpatizantes: Simpatizante[] = [];
+  simpatizantes: Simpatiza[] = [];
+  simpatizantes2: Simpatizante[] = [];
   infowindow = new google.maps.InfoWindow();
   markers: google.maps.Marker[] = [];
   map: any = {};
-  simpatizantesFiltrados: Simpatizante[] = [];
+  simpatizantesFiltrados: Simpatiza[] = [];
   secciones: Seccion[] = [];
 
   constructor(
@@ -27,34 +29,72 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
   ) {
     this.getsimpatizantes();
     this.getSecciones();
+    this.getsimpatizantes2();
   }
   setAllMarkers() {
-    this.clearMarkers();
     this.simpatizantes.forEach((simpatizantes) => {
       this.setInfoWindow(
         this.getMarker(simpatizantes),
+        this.getContentString(simpatizantes.simpatizante)
+      );
+    });
+  }
+  setAllMarkers2() {
+    this.simpatizantes2.forEach((simpatizantes) => {
+      this.setInfoWindow(
+        this.getMarker2(simpatizantes),
         this.getContentString(simpatizantes)
       );
     });
   }
-
   clearMarkers() {
     this.markers.forEach((marker) => {
       marker.setMap(null);
     });
     this.markers = [];
   }
+  getMarker2(simpatizante: Simpatizante) {
+    const fillColor = 'orange';
 
-  getMarker(simpatizante: Simpatizante) {
     const marker = new google.maps.Marker({
       position: new google.maps.LatLng(
         simpatizante.latitud,
         simpatizante.longitud
       ),
       map: this.map,
-      animation: google.maps.Animation.DROP,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 7,
+        fillColor: 'orange',
+        fillOpacity: 1,
+        strokeWeight: 0,
+      },
       title: `${simpatizante.seccion.clave}`,
     });
+
+    this.markers.push(marker);
+    return marker;
+  }
+
+  getMarker(simpatizante: Simpatiza) {
+    const fillColor = simpatizante.color || 'orange'; // Usar naranja si no hay color asignado
+
+    const marker = new google.maps.Marker({
+      position: new google.maps.LatLng(
+        simpatizante.simpatizante.latitud,
+        simpatizante.simpatizante.longitud
+      ),
+      map: this.map,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 7,
+        fillColor: fillColor,
+        fillOpacity: 1,
+        strokeWeight: 0,
+      },
+      title: `${simpatizante.simpatizante.seccion.clave}`,
+    });
+
     this.markers.push(marker);
     return marker;
   }
@@ -97,7 +137,11 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
         <p style="font-weight:  bolder;" class="">
           Programa inscrito:
           <p class=" text-muted">
-          ${simpatizante.programaSocial ? simpatizante.programaSocial.nombre : 'No hay programa social'}
+          ${
+            simpatizante.programaSocial
+              ? simpatizante.programaSocial.nombre
+              : 'No hay programa social'
+          }
           </p>
         </p>
         <p style="font-weight:  bolder;" class="" >
@@ -168,11 +212,20 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     this.map = new google.maps.Map(mapElement, mapOptions);
   }
   getsimpatizantes() {
-    this.simpatizantesService.getAll().subscribe({
+    this.simpatizantesService.getAll2().subscribe({
       next: (dataFromAPI) => {
         this.simpatizantes = dataFromAPI;
         this.simpatizantesFiltrados = this.simpatizantes;
         this.setAllMarkers();
+      },
+    });
+  }
+  getsimpatizantes2() {
+    this.simpatizantesService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.simpatizantes2 = dataFromAPI;
+        this.simpatizantesFiltrados = this.simpatizantes;
+        this.setAllMarkers2();
       },
     });
   }
@@ -182,13 +235,13 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
 
       // Filtrar los simpatizantes por municipio y asignar el resultado a simpatizantesFiltrados
       this.simpatizantesFiltrados = this.simpatizantes.filter(
-        (v) => v.seccion.id === id
+        (v) => v.simpatizante.seccion.id === id
       );
 
       this.simpatizantesFiltrados.forEach((simpatizante) => {
         this.setInfoWindow(
           this.getMarker(simpatizante),
-          this.getContentString(simpatizante)
+          this.getContentString(simpatizante.simpatizante)
         );
       });
     }

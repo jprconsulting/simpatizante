@@ -33,8 +33,10 @@ export class OperadoresComponent implements OnInit {
   @ViewChild('searchItem') searchItem!: ElementRef;
 
   operador!: Operador;
+  seccionesId!: Operador;
   seccionesOperador: Seccion[] = [];
   seccionesOperadorFilter: Seccion[] = [];
+  isLoadingModalSeccionesOperador = LoadingStates.neutro;
   operadorForm!: FormGroup;
   operadores: Operador[] = [];
   operadorFilter: Operador[] = [];
@@ -49,12 +51,16 @@ export class OperadoresComponent implements OnInit {
   rolId = 0;
   seccionesFilter: Seccion[] = [];
   votantes: Simpatizante[] = [];
+  isLoadingModalPromovidosOperador = LoadingStates.neutro;
   simpatizantes: Simpatizante[] = [];
-  simpatizanteFilter: Simpatizante[] = [];
+  simpatizantesOperador: Simpatizante[] = [];
+  sinSimpatizantes: boolean = true;
   candidatos: Candidato[] = [];
   currentUser!: AppUserAuth | null;
   readonlySelectCandidato = true;
   candidatoId = 0;
+  pagModalSecciones: number = 1;
+  pagModalPromovidos: number = 1;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -75,7 +81,6 @@ export class OperadoresComponent implements OnInit {
     this.creteForm();
     this.getCandidatos();
     this.getOperadores();
-    this.getSecciones();
 
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
@@ -86,13 +91,25 @@ export class OperadoresComponent implements OnInit {
   }
   ngOnInit(): void {
     this.isModalAdd = false;
-    this.loadSimpatizantes();
+
   }
 
-  verSeccionesOperador(secciones: Seccion[]) {
-    this.seccionesOperador = secciones;
-    this.seccionesOperadorFilter = this.seccionesOperador;
+  verSeccionesOperador( operadorId: number ) {
+
+    this.getSeccionesOperadorId( operadorId );
+
     const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+
+  mostrarSimpatizantesAsociadosModal( operadorId: number  ) {
+
+    this.getSimpatizantesOperadorId( operadorId );
+
+    const modal = document.getElementById('modal-simpatizantes');
     if (modal) {
       modal.classList.add('show');
       modal.style.display = 'block';
@@ -104,13 +121,43 @@ export class OperadoresComponent implements OnInit {
     return genero ? genero.name : '';
   }
 
-  getSecciones() {
-    this.seccionesService.getAll().subscribe({
-      next: (dataFromAPI) => {
-        this.secciones = dataFromAPI;
-      },
-    });
-    console.log(this.secciones);
+
+  getSimpatizantesOperadorId( operadorId: number ) {
+
+    this.isLoadingModalPromovidosOperador = LoadingStates.trueLoading;
+
+    this.simpatizantesService
+      .getSimpatizantesPorOperadorId( operadorId )
+      .subscribe({
+        next: ( dataFromAPI ) => {
+          this.sinSimpatizantes = false;
+          this.simpatizantes = dataFromAPI;
+          this.simpatizantesOperador = this.simpatizantes;
+          this.isLoadingModalPromovidosOperador = LoadingStates.falseLoading;
+        },
+        error: () => {
+          this.sinSimpatizantes = true;
+          this.isLoadingModalPromovidosOperador = LoadingStates.errorLoading;
+        }
+      })
+  }
+
+  getSeccionesOperadorId ( operadorId: number ) {
+
+    this.isLoadingModalSeccionesOperador = LoadingStates.trueLoading;
+
+    this.operadoresService.getById( operadorId )
+      .subscribe({
+        next: ( dataFromAPI ) => {
+          this.seccionesId = dataFromAPI;
+          this.secciones = this.seccionesId.secciones;
+          this.seccionesOperador = this.secciones;
+          this.isLoadingModalSeccionesOperador = LoadingStates.falseLoading;
+        },
+        error: () => {
+          this.isLoadingModalSeccionesOperador = LoadingStates.errorLoading;
+        }
+      })
   }
 
   creteForm() {
@@ -160,9 +207,6 @@ export class OperadoresComponent implements OnInit {
         this.operadores = dataFromAPI;
         this.operadorFilter = this.operadores;
         this.isLoading = LoadingStates.falseLoading;
-        this.obtenerSeccionesIdsDeOperadores();
-        const secciones = this.operadores.map((operador) => operador.secciones);
-        console.log(secciones);
       },
       error: () => {
         this.isLoading = LoadingStates.errorLoading;
@@ -176,13 +220,6 @@ export class OperadoresComponent implements OnInit {
       .subscribe({ next: (dataFromAPI) => (this.candidatos = dataFromAPI) });
   }
 
-  obtenerSeccionesIdsDeOperadores() {
-    this.operadores.forEach((operador) => {
-      const seccionesIds = operador.secciones;
-      this.seccionesFilter = this.secciones;
-      console.log(`SeccionesIds del operador ${operador.id}:`, seccionesIds);
-    });
-  }
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
@@ -202,11 +239,11 @@ export class OperadoresComponent implements OnInit {
     this.configPaginator.currentPage = 1;
   }
 
-  handleChangeSearchModal(event: any) {
+  handleChangeSearchModalSimpatizantesAsociados(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.simpatizanteFilter = this.simpatizantes.filter(
+    this.simpatizantesOperador = this.simpatizantes.filter(
       (Simpatizante) =>
         Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
         Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
@@ -218,11 +255,11 @@ export class OperadoresComponent implements OnInit {
     this.configPaginator.currentPage = 1;
   }
 
-  handleChangeSearchModalSimpatizantesAsociados( event: any ) {
+  handleChangeSearchModalSeccionesAsociadas( event: any ) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.seccionesOperadorFilter = this.seccionesOperador.filter(
+    this.seccionesOperador = this.secciones.filter(
       (Seccion) =>
         Seccion.claveYNombre.toLocaleLowerCase().includes(valueSearch) ||
         Seccion.municipio.nombre.toLocaleLowerCase().includes(valueSearch)
@@ -352,14 +389,8 @@ export class OperadoresComponent implements OnInit {
   closeModal() {
     this.showModal = false;
   }
-  mostrarImagenAmpliada2(seccion: string) {
-    this.imagenAmpliada = seccion;
-    const modal = document.getElementById('modal-simpatizantes');
-    if (modal) {
-      modal.classList.add('show');
-      modal.style.display = 'block';
-    }
-  }
+
+
   cerrarModal2() {
     this.imagenAmpliada = null;
     const modal = document.getElementById('modal-simpatizantes');
@@ -369,15 +400,7 @@ export class OperadoresComponent implements OnInit {
     }
   }
 
-  loadSimpatizantes() {
-    // Assuming you have a candidateId, replace it with the actual value
-    const operadorId = 4; // Replace with the actual candidateId
-    this.simpatizantesService
-      .getSimpatizantesPorOperadorId(operadorId)
-      .subscribe((data) => {
-        this.simpatizantes = data;
-      });
-  }
+
 
   exportarDatosAExcel() {
     if (this.operadores.length === 0) {
@@ -415,6 +438,54 @@ export class OperadoresComponent implements OnInit {
 
     this.guardarArchivoExcel(excelBuffer, 'Operadores.xlsx');
   }
+
+
+  exportarDatosAExcelSimpatizantesAsociados() {
+
+    if ( this.sinSimpatizantes ) {
+      console.warn('La lista de promovidos asociados está vacía. No se puede exportar.');
+      return;
+    }
+
+    const datosParaExportar = this.simpatizantesOperador.map(( simpatizante ) => {
+
+      const estatus = simpatizante.estatus ? 'Activo' : 'Inactivo';
+      const fechaNacimiento = simpatizante.fechaNacimiento
+        ? new Date(simpatizante.fechaNacimiento).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })
+        : '';
+
+      return {
+          'Nombre Completo': simpatizante.nombreCompleto,
+          'Fecha de nacimiento': fechaNacimiento,
+          'Domicilio': simpatizante.domicilio,
+          'Genero': simpatizante.genero.nombre,
+          'Programa Social': simpatizante.programaSocial?.nombre,
+          Estatus: estatus,
+        };
+
+
+      });
+
+      const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+
+      const workbook: XLSX.WorkBook = {
+        Sheets: { data: worksheet },
+        SheetNames: ['data'],
+      };
+
+      const excelBuffer: any = XLSX.write(workbook, {
+        bookType: 'xlsx',
+        type: 'array',
+      });
+
+      this.guardarArchivoExcel(excelBuffer, 'PromovidosAOperadores.xlsx');
+
+    }
+
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
     const data: Blob = new Blob([buffer], {

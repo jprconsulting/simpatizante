@@ -119,6 +119,7 @@ export class VisitasComponent {
       ],
       imagenBase64: [''],
       simpatizante: [null, Validators.required],
+      simpatiza: [true],
     });
   }
 
@@ -175,6 +176,7 @@ export class VisitasComponent {
       servicio: dto.servicio,
       simpatizante: dto.simpatizante.id,
       imagenBase64: '',
+      simpatiza: dto.simpatiza,
     });
 
     // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
@@ -294,6 +296,10 @@ export class VisitasComponent {
     this.visitaForm.reset();
     this.isModalAdd = true;
     this.candidatosSelect = undefined;
+    const estatusControl = this.visitaForm.get('simpatiza');
+    if (estatusControl) {
+      estatusControl.setValue(true);
+    }
   }
 
   onSelectCandidato(id: number) {
