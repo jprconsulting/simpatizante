@@ -250,7 +250,7 @@
                         <div class="col-lg-12">
                             <div class="mb-3">
                                 <label class="form-label">Secciones electorales a operar*:</label>
-                                <ng-select #selectSecciones [items]="secciones" [searchable]="false" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true" bindValue="id" bindLabel="claveYNombre" placeholder="Seleccionar" formControlName="seccionesIds">
+                                <ng-select #selectSecciones [items]="seccionesRegistradas" [searchable]="false" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true" bindValue="id" bindLabel="claveYNombre" placeholder="Seleccionar" formControlName="seccionesIds">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="
                         selectSecciones.filter($any($event.target).value)

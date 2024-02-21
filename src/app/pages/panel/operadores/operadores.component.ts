@@ -45,6 +45,7 @@ export class OperadoresComponent implements OnInit {
     { id: 1, name: 'Masculino' },
     { id: 2, name: 'Femenino' },
   ];
+  seccionesRegistradas: Seccion[] = [];
   secciones: Seccion[] = [];
   areasAdscripcion: AreaAdscripcion[] = [];
   isModalAdd = true;
@@ -81,6 +82,7 @@ export class OperadoresComponent implements OnInit {
     this.creteForm();
     this.getCandidatos();
     this.getOperadores();
+    this.getSeccionesRegistradas();
 
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
@@ -158,6 +160,15 @@ export class OperadoresComponent implements OnInit {
           this.isLoadingModalSeccionesOperador = LoadingStates.errorLoading;
         }
       })
+  }
+
+  getSeccionesRegistradas(){
+    this.seccionesService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.seccionesRegistradas = dataFromAPI;
+      },
+    });
+    console.log(this.seccionesRegistradas);
   }
 
   creteForm() {
@@ -531,7 +542,7 @@ export class OperadoresComponent implements OnInit {
     }
   }
   seleccionarTodo() {
-    const todasLasOpciones = this.secciones.map(item => item.id);
+    const todasLasOpciones = this.seccionesRegistradas.map(item => item.id);
 
     if (this.operadorForm !== null && this.operadorForm !== undefined) {
       const seccionesIdsControl = this.operadorForm.get('seccionesIds');
