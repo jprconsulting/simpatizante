@@ -79,7 +79,7 @@
                                           style="margin-right: 10px"
                                           class="btn btn-primary btn-icon btn-sm"
                                           data-bs-toggle="modal"
-                                          (click)="verSeccionesOperador(operador.secciones)"
+                                          (click)="verSeccionesOperador( operador.id )"
                                           >
                                             <i class="ti ti-eye"></i>
                                         </button>
@@ -284,14 +284,28 @@
     </div>
 </div>
 
-<div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5)">
+<div
+  class="modal modal-highlight"
+  id="modal-imagen-ampliada"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="background: rgba(0, 0, 0, 0.5)"
+>
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">
                     Secciones asociadas al operador
                 </h5>
-                <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
+                <button
+                  type="button"
+                  class="btn-close"
+                  aria-label="Close"
+                  (click)="cerrarModal()"
+                >
+                </button>
             </div>
             <div class="modal-body">
                 <div class="col-md-6 col-lg-12">
@@ -303,53 +317,71 @@
                               type="text"
                               class="form-control form-control-rounded"
                               placeholder="Buscar"
-                              (input)="handleChangeSearchModalSimpatizantesAsociados($event)" />
+                              (input)="handleChangeSearchModalSeccionesAsociadas($event)" />
                             <span class="input-icon-addon me-2  ">
                               <i class="ti ti-search"></i>
                             </span>
                         </div>
                     </div>
 
-                    <div class="card">
+                    <ng-container [ngSwitch]="isLoadingModalSeccionesOperador">
+
+                      <div style="height: 300px" *ngSwitchCase="2">
+                        <div class="progress">
+                          <div
+                            class="progress-bar progress-bar-indeterminate bg-green"
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div *ngSwitchCase="3" class="card">
                         <table class="table table-vcenter card-table table-striped">
                             <thead>
                                 <tr>
-                                    <th style="
-                      text-transform: none;
-                      font-size: inherit;
-                      text-align: center;
-                    ">
-                                        Sección
-                                    </th>
-                                    <th style="
-                      text-transform: none;
-                      font-size: inherit;
-                      text-align: center;
-                    ">
-                                        Municipio
-                                    </th>
+                                  <th style="text-transform: none; font-size: inherit">
+                                    Seccion
+                                  </th>
+                                  <th style="text-transform: none; font-size: inherit">
+                                    Municipio
+                                  </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let seccion of seccionesOperadorFilter | paginate : configPaginator;
-                  let pointIndex = index
-                ">
-                                    <td style="text-align: center">
-                                        <p>{{ seccion.claveYNombre }}</p>
+                                <tr
+                                  *ngFor="let seccion of seccionesOperador | paginate: { itemsPerPage: 10, currentPage: pagModalSecciones, id:'modal-secciones' };"
+
+                                >
+                                    <td>
+                                        {{ seccion.claveYNombre }}
                                     </td>
-                                    <td style="text-align: center">
-                                        <p>{{ seccion.municipio.nombre }}</p>
+                                    <td>
+                                        {{ seccion.municipio.nombre }}
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                      </div>
+
+                      <app-no-results *ngSwitchCase="4"></app-no-results>
+
+                    </ng-container>
+
+                    <br />
+
                     <div class="card-footer d-flex align-items-center">
+
                         <p class="m-0 text-muted">
-                            Total de registros: <b>{{ seccionesOperadorFilter.length }}</b>
+                            Total de registros: <b>{{ seccionesOperador.length }}</b>
                         </p>
+
                         <div class="m-0 ms-auto">
-                            <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel=""></pagination-controls>
+                            <pagination-controls
+                              id="modal-secciones"
+                              (pageChange)="pagModalSecciones = $event"
+                              previousLabel=""
+                              nextLabel=""
+                            >
+                            </pagination-controls>
                         </div>
                     </div>
                 </div>
@@ -391,7 +423,7 @@
                                   type="text"
                                   class="form-control form-control-rounded"
                                   placeholder="Buscar"
-                                  (input)="handleChangeSearchModal($event)"
+                                  (input)="handleChangeSearchModalSimpatizantesAsociados($event)"
                                 />
                                 <span class="input-icon-addon">
                                   <i class="ti ti-search"></i>
@@ -437,7 +469,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let simpatizante of simpatizantesOperador">
+                                <tr *ngFor="let simpatizante of simpatizantesOperador | paginate: { itemsPerPage: 10, currentPage: pagModalPromovidos, id:'modal-promovidos' }">
                                     <td>{{ simpatizante.nombreCompleto }}</td>
                                     <td>{{ simpatizante.domicilio }}</td>
                                     <td>{{ simpatizante.genero.nombre }}</td>
@@ -468,7 +500,8 @@
                         </ng-template>
                         <div class="m-0 ms-auto">
                             <pagination-controls
-                              (pageChange)="onPageChange($event)"
+                              id="modal-promovidos"
+                              (pageChange)="pagModalPromovidos = $event"
                               previousLabel=""
                               nextLabel=""
                             >
