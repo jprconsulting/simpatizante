@@ -469,7 +469,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let simpatizante of simpatizantesOperador | paginate: { itemsPerPage: 10, currentPage: pagModalPromovidos, id:'modal-promovidos' }">
+                                <tr *ngFor="let simpatizante of simpatizantesOperador | paginate: { itemsPerPage: 2, currentPage: pagModalPromovidos, id:'modal-promovidos' }">
                                     <td>{{ simpatizante.nombreCompleto }}</td>
                                     <td>{{ simpatizante.domicilio }}</td>
                                     <td>{{ simpatizante.genero.nombre }}</td>
@@ -497,16 +497,19 @@
                           <p class="m-0 mt-4 text-muted ">
                             Total de registros: <b>{{ simpatizantesOperador.length }}</b>
                           </p>
-                        </ng-template>
-                        <div class="m-0 ms-auto">
+
+                          <div class="m-0 ms-auto">
                             <pagination-controls
                               id="modal-promovidos"
                               (pageChange)="pagModalPromovidos = $event"
                               previousLabel=""
                               nextLabel=""
                             >
-                            </pagination-controls>
-                        </div>
+                              </pagination-controls>
+                          </div>
+
+                        </ng-template>
+
                     </div>
                 </div>
             </div>

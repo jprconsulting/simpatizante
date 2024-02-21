@@ -98,6 +98,8 @@ export class OperadoresComponent implements OnInit {
 
   verSeccionesOperador( operadorId: number ) {
 
+    this.pagModalSecciones = 1;
+
     this.getSeccionesOperadorId( operadorId );
 
     const modal = document.getElementById('modal-imagen-ampliada');
@@ -108,6 +110,8 @@ export class OperadoresComponent implements OnInit {
   }
 
   mostrarSimpatizantesAsociadosModal( operadorId: number  ) {
+
+    this.pagModalPromovidos = 1;
 
     this.getSimpatizantesOperadorId( operadorId );
 
@@ -263,7 +267,7 @@ export class OperadoresComponent implements OnInit {
         Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
     );
 
-    this.configPaginator.currentPage = 1;
+    this.pagModalPromovidos = 1;
   }
 
   handleChangeSearchModalSeccionesAsociadas( event: any ) {
@@ -276,7 +280,7 @@ export class OperadoresComponent implements OnInit {
         Seccion.municipio.nombre.toLocaleLowerCase().includes(valueSearch)
     );
 
-    this.configPaginator.currentPage = 1;
+    this.pagModalSecciones = 1;
   }
 
   idUpdate!: number;
