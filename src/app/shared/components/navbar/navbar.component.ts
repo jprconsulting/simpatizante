@@ -6,13 +6,15 @@ import { AppUserAuth } from 'src/app/models/login';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
-
   dataObject!: AppUserAuth | null;
 
-  constructor(private securityService: SecurityService, private router: Router) {
+  constructor(
+    private securityService: SecurityService,
+    private router: Router
+  ) {
     localStorage.getItem('dataObject') && this.setDataUser();
   }
 
@@ -21,7 +23,11 @@ export class NavbarComponent {
   }
 
   logout() {
-    this.securityService.logout();
-    this.router.navigateByUrl('');
+    if (this.dataObject && this.dataObject.usuarioId) {
+      this.securityService.logout(this.dataObject.usuarioId).subscribe(() => {
+        this.router.navigateByUrl('');
+      });
+    } else {
+    }
   }
 }

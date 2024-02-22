@@ -4,9 +4,10 @@ import { AppUser, AppUserAuth } from 'src/app/models/login';
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
 import { catchError, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SecurityService {
   route = `${environment.apiUrl}/auth`;
@@ -15,27 +16,30 @@ export class SecurityService {
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
-  ) { }
+  ) {}
 
   login(entity: AppUser) {
     localStorage.removeItem('dataObject');
     localStorage.removeItem('token');
 
-    return this.http.post<AppUserAuth>(`${this.route}/login`, entity)
-      .pipe(
-        tap((resp: AppUserAuth) => {
-          this.dataObject = resp;
-          localStorage.setItem('dataObject', JSON.stringify(this.dataObject));
-          localStorage.setItem('token', this.dataObject.token);
-        }),
-        catchError(this.handleErrorService.handleError)
-      );
+    return this.http.post<AppUserAuth>(`${this.route}/login`, entity).pipe(
+      tap((resp: AppUserAuth) => {
+        this.dataObject = resp;
+        localStorage.setItem('dataObject', JSON.stringify(this.dataObject));
+        localStorage.setItem('token', this.dataObject.token);
+      }),
+      catchError(this.handleErrorService.handleError)
+    );
   }
 
-  logout() {
-    localStorage.removeItem('dataObject');
-    localStorage.removeItem('token');
-
+  logout(userId: number): Observable<any> {
+    return this.http.delete<any>(`${this.route}/logout/${userId}`).pipe(
+      tap(() => {
+        localStorage.removeItem('dataObject');
+        localStorage.removeItem('token');
+      }),
+      catchError(this.handleErrorService.handleError)
+    );
   }
 
   hasClaim(cliamType: any, claimValue?: any) {
@@ -58,7 +62,6 @@ export class SecurityService {
     return ret;
   }
 
-
   isClaimValid(cliamType: string, claimValue?: string) {
     let ret = false;
     const auth = this.getDataUser();
@@ -71,7 +74,12 @@ export class SecurityService {
         cliamType = cliamType.toLowerCase();
         claimValue = claimValue ? claimValue : 'true';
       }
-      ret = auth.claims.find(c => c.claimType.toLowerCase() == cliamType && c.claimValue.toString() == claimValue) != null;
+      ret =
+        auth.claims.find(
+          (c) =>
+            c.claimType.toLowerCase() == cliamType &&
+            c.claimValue.toString() == claimValue
+        ) != null;
     }
 
     return ret;
@@ -86,5 +94,4 @@ export class SecurityService {
       return null;
     }
   }
-
 }
