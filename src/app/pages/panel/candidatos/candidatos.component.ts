@@ -1,4 +1,10 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenericType, LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
@@ -18,10 +24,9 @@ import { Genero } from 'src/app/models/genero';
 @Component({
   selector: 'app-candidatos',
   templateUrl: './candidatos.component.html',
-  styleUrls: ['./candidatos.component.css']
+  styleUrls: ['./candidatos.component.css'],
 })
 export class CandidatosComponent implements OnInit {
-
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
 
@@ -32,8 +37,8 @@ export class CandidatosComponent implements OnInit {
   candidatoFilter: Candidato[] = [];
   cargos: Cargo[] = [];
   candidato: Candidato[] = [];
-  isLoading = LoadingStates.neutro
-  isLoadingModalSimpatizantes = LoadingStates.neutro
+  isLoading = LoadingStates.neutro;
+  isLoadingModalSimpatizantes = LoadingStates.neutro;
   isModalAdd: boolean = true;
   idUpdate!: number;
   votantes: Simpatizante[] = [];
@@ -59,10 +64,11 @@ export class CandidatosComponent implements OnInit {
     private cargoService: CargoService,
     private candidatosService: CandidatosService,
     private simpatizantesService: SimpatizantesService,
-    private generoService: GeneroService,
-
+    private generoService: GeneroService
   ) {
-    this.candidatosService.refreshListCandidatos.subscribe(() => this.getCandidatos());
+    this.candidatosService.refreshListCandidatos.subscribe(() =>
+      this.getCandidatos()
+    );
     this.getCandidatos();
     this.createForm();
     this.getCargos();
@@ -74,14 +80,13 @@ export class CandidatosComponent implements OnInit {
   }
 
   estatusBtn = true;
-  verdadero = "Activo";
-  falso = "Inactivo";
+  verdadero = 'Activo';
+  falso = 'Inactivo';
   estatusTag = this.verdadero;
 
   setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
-
 
   imagenAmpliada: string | null = null;
 
@@ -124,36 +129,36 @@ export class CandidatosComponent implements OnInit {
   }
 
   getCargos() {
-    this.cargoService.getAll().subscribe({ next: (dataFromAPI) => this.cargos = dataFromAPI });
+    this.cargoService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.cargos = dataFromAPI) });
   }
 
   getGeneros() {
-    this.generoService.getAll().subscribe({ next: (dataFromAPI) => this.generos = dataFromAPI });
+    this.generoService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.generos = dataFromAPI) });
   }
 
   loadSimpatizantes(candidatoId: number) {
-
     this.isLoadingModalSimpatizantes = LoadingStates.trueLoading;
-    this.simpatizantesService.getSimpatizantesPorCandidatoId(candidatoId)
-      .subscribe(
-        {
-          next: (dataFromAPI) => {
-            this.sinSimpatizantes = false;
-            this.simpatizantes = dataFromAPI;
-            this.simpatizanteFilter = this.simpatizantes;
-            this.isLoadingModalSimpatizantes = LoadingStates.falseLoading;
+    this.simpatizantesService
+      .getSimpatizantesPorCandidatoId(candidatoId)
+      .subscribe({
+        next: (dataFromAPI) => {
+          this.sinSimpatizantes = false;
+          this.simpatizantes = dataFromAPI;
+          this.simpatizanteFilter = this.simpatizantes;
+          this.isLoadingModalSimpatizantes = LoadingStates.falseLoading;
 
-            console.log("SimpatizanteFilter", this.simpatizanteFilter);
-          },
-          error: () => {
-            this.sinSimpatizantes = true;
-            this.isLoadingModalSimpatizantes = LoadingStates.errorLoading;
-          }
+          console.log('SimpatizanteFilter', this.simpatizanteFilter);
         },
-
-      );
+        error: () => {
+          this.sinSimpatizantes = true;
+          this.isLoadingModalSimpatizantes = LoadingStates.errorLoading;
+        },
+      });
   }
-
 
   onFileChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;
@@ -168,7 +173,7 @@ export class CandidatosComponent implements OnInit {
         const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
 
         this.candidatoForm.patchValue({
-          imagenBase64: base64WithoutPrefix// Contiene solo la representación en base64
+          imagenBase64: base64WithoutPrefix, // Contiene solo la representación en base64
         });
       };
 
@@ -187,8 +192,9 @@ export class CandidatosComponent implements OnInit {
         const base64String = reader.result as string;
         const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
 
-        this.candidatoForm.patchValue({// Contiene solo la representación en base64
-          emblemaBase64: base64WithoutPrefix // Contiene solo la representación en base64
+        this.candidatoForm.patchValue({
+          // Contiene solo la representación en base64
+          emblemaBase64: base64WithoutPrefix, // Contiene solo la representación en base64
         });
       };
 
@@ -196,50 +202,75 @@ export class CandidatosComponent implements OnInit {
     }
   }
 
-
-
   createForm() {
     this.candidatoForm = this.formBuilder.group({
       id: [null],
-      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      nombres: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      apellidoPaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      apellidoMaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
       fechaNacimiento: ['', Validators.required],
       generoId: [null, Validators.required],
-      sobrenombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      sobrenombre: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$'),
+        ],
+      ],
       cargo: [null, Validators.required],
       estatus: [true],
-      imagenBase64: [''],
-      emblemaBase64: [''],
+      imagenBase64: ['', Validators.required],
+      emblemaBase64: ['', Validators.required],
     });
   }
 
   getCandidatos() {
     this.isLoading = LoadingStates.trueLoading;
-    this.candidatosService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.candidato = dataFromAPI;
-          this.candidatoFilter = this.candidato;
-          this.isLoading = LoadingStates.falseLoading;
-        },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading;
-        }
-      }
-    );
+    this.candidatosService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.candidato = dataFromAPI;
+        this.candidatoFilter = this.candidato;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: () => {
+        this.isLoading = LoadingStates.errorLoading;
+      },
+    });
   }
-
-
-
-
 
   formatoFecha(fecha: string): string {
     // Aquí puedes utilizar la lógica para formatear la fecha según tus necesidades
     const fechaFormateada = new Date(fecha).toISOString().split('T')[0];
     return fechaFormateada;
   }
-
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
@@ -249,14 +280,16 @@ export class CandidatosComponent implements OnInit {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.candidatoFilter = this.candidato.filter(Candidato =>
-      Candidato.nombres.toLowerCase().includes(valueSearch) ||
-      Candidato.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      Candidato.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-      Candidato.cargo.nombre.toLowerCase().includes(valueSearch) ||
-      Candidato.sobrenombre.toLowerCase().includes(valueSearch) ||
-      Candidato.fechaNacimiento.toLowerCase().includes(valueSearch) ||
-      Candidato.genero.nombre.toLowerCase().includes(valueSearch)
+    this.candidatoFilter = this.candidato.filter(
+      (Candidato) =>
+        Candidato.nombres.toLowerCase().includes(valueSearch) ||
+        Candidato.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+        Candidato.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+        Candidato.cargo.nombre.toLowerCase().includes(valueSearch) ||
+        Candidato.sobrenombre.toLowerCase().includes(valueSearch) ||
+        Candidato.fechaNacimiento.toLowerCase().includes(valueSearch) ||
+        Candidato.genero.nombre.toLowerCase().includes(valueSearch) ||
+        Candidato.edad.toString().includes(valueSearch)
     );
 
     this.configPaginator.currentPage = 1;
@@ -266,13 +299,16 @@ export class CandidatosComponent implements OnInit {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.simpatizanteFilter = this.simpatizantes.filter(Simpatizante =>
-      Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
-      Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-      Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
-      Simpatizante.genero.nombre.toLowerCase().includes(valueSearch)
-    )
+    this.simpatizanteFilter = this.simpatizantes.filter(
+      (Simpatizante) =>
+        Simpatizante.nombres.toLowerCase().includes(valueSearch) ||
+        Simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+        Simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+        Simpatizante.fechaNacimiento.toLowerCase().includes(valueSearch) ||
+        Simpatizante.genero.nombre.toLowerCase().includes(valueSearch) ||
+        Simpatizante.domicilio.toLowerCase().includes(valueSearch) ||
+        Simpatizante.programaSocial?.nombre.toLowerCase().includes(valueSearch)
+    );
 
     this.pagModalPromovidos = 1;
   }
@@ -283,13 +319,13 @@ export class CandidatosComponent implements OnInit {
 
   formData: any;
 
-
-
   setDataModalUpdate(dto: Candidato) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     const fechaFormateada = this.formatoFecha(dto.fechaNacimiento);
-    const candidato = this.candidatoFilter.find(candidato => candidato.id === dto.id);
+    const candidato = this.candidatoFilter.find(
+      (candidato) => candidato.id === dto.id
+    );
 
     this.imgPreview = candidato!.foto;
     this.emblemaPreview = candidato!.emblema;
@@ -310,15 +346,13 @@ export class CandidatosComponent implements OnInit {
       sobrenombre: dto.sobrenombre,
       cargo: dto.cargo.id,
       imagenBase64: '',
-      emblemaBase64: ''
+      emblemaBase64: '',
     });
   }
 
-
-
   editarCandidato() {
     this.candidatos = this.candidatoForm.value as Candidato;
-    const candidatoId = this.candidatoForm.get('id')?.value
+    const candidatoId = this.candidatoForm.get('id')?.value;
     const cargoid = this.candidatoForm.get('cargo')?.value;
     const generoId = this.candidatoForm.get('generoId')?.value;
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
@@ -327,7 +361,6 @@ export class CandidatosComponent implements OnInit {
     console.log(imagenBase64);
     console.log(emblemaBase64);
 
-
     this.imgPreview = '';
     this.emblemaPreview = '';
 
@@ -335,24 +368,24 @@ export class CandidatosComponent implements OnInit {
     this.candidatos.genero = { id: generoId } as Genero;
 
     if (!imagenBase64 && !emblemaBase64) {
-
-      const formData = { ...this.candidatos }
+      const formData = { ...this.candidatos };
 
       this.spinnerService.show();
 
       this.candidatosService.put(candidatoId, formData).subscribe({
         next: () => {
           this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Candidato actualizado correctamente');
+          this.mensajeService.mensajeExito(
+            'Candidato actualizado correctamente'
+          );
           this.resetForm();
           this.configPaginator.currentPage = 1;
         },
         error: (error) => {
           this.spinnerService.hide();
           this.mensajeService.mensajeError(error);
-        }
+        },
       });
-
     } else if (imagenBase64 && emblemaBase64) {
       const formData = { ...this.candidatos, imagenBase64, emblemaBase64 };
       this.spinnerService.show();
@@ -360,21 +393,23 @@ export class CandidatosComponent implements OnInit {
       this.candidatosService.put(candidatoId, formData).subscribe({
         next: () => {
           this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Candidato actualizado correctamente');
+          this.mensajeService.mensajeExito(
+            'Candidato actualizado correctamente'
+          );
           this.resetForm();
           this.configPaginator.currentPage = 1;
         },
         error: (error) => {
           this.spinnerService.hide();
           this.mensajeService.mensajeError(error);
-        }
+        },
       });
     } else {
-      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+      console.error(
+        'Error: No se encontró una representación válida en base64 de la imagen.'
+      );
     }
-
   }
-
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
@@ -386,7 +421,7 @@ export class CandidatosComponent implements OnInit {
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
-          error: (error) => this.mensajeService.mensajeError(error)
+          error: (error) => this.mensajeService.mensajeError(error),
         });
       }
     );
@@ -420,25 +455,21 @@ export class CandidatosComponent implements OnInit {
         error: (error) => {
           this.spinnerService.hide();
           this.mensajeService.mensajeError(error);
-
-        }
+        },
       });
     } else {
-      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+      console.error(
+        'Error: No se encontró una representación válida en base64 de la imagen.'
+      );
     }
   }
 
-
-
   submit() {
     if (this.isModalAdd === false) {
-
       this.editarCandidato();
     } else {
       this.agregar();
-
     }
-
   }
   showModal = false;
 
@@ -451,7 +482,6 @@ export class CandidatosComponent implements OnInit {
   }
 
   modalSimpatizantes(id: number) {
-
     this.pagModalPromovidos = 1;
 
     const modal = document.getElementById('modal-simpatizantes');
@@ -461,7 +491,6 @@ export class CandidatosComponent implements OnInit {
     }
 
     this.loadSimpatizantes(id);
-
   }
   cerrarModal2() {
     this.clearInputModalSearch();
@@ -492,30 +521,45 @@ export class CandidatosComponent implements OnInit {
       return;
     }
 
-    const datosParaExportar = this.candidato.map(candidato => {
+    const datosParaExportar = this.candidato.map((candidato) => {
       const estatus = candidato.estatus ? 'Activo' : 'Inactivo';
-      const fechaNacimiento = candidato.fechaNacimiento ?
-        new Date(candidato.fechaNacimiento).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) :
-        '';
+      const fechaNacimiento = candidato.fechaNacimiento
+        ? new Date(candidato.fechaNacimiento).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })
+        : '';
       return {
-        'Nombres': candidato.nombres,
+        Nombres: candidato.nombres,
         'Apellido paterno': candidato.apellidoPaterno,
         'Apellido materno': candidato.apellidoMaterno,
         'Fecha nacimiento': fechaNacimiento,
-        'Estatus': estatus,
-
+        Genero: candidato.genero.nombre,
+        Sobrenombre: candidato.sobrenombre,
+        Cargo: candidato.cargo.nombre,
+        Estatus: estatus,
       };
     });
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
 
     this.guardarArchivoExcel(excelBuffer, 'Candidatos.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const url: string = window.URL.createObjectURL(data);
     const a: HTMLAnchorElement = document.createElement('a');
     a.href = url;
@@ -524,5 +568,70 @@ export class CandidatosComponent implements OnInit {
     window.URL.revokeObjectURL(url);
   }
 
+  exportarDatosAExcelPromovidos() {
+    if (this.simpatizanteFilter.length === 0) {
+      console.warn(
+        'La lista de simpatizantes está vacía, no se puede exportar.'
+      );
+      return;
+    }
 
+    const datosParaExportar = this.simpatizantes.map((votante) => {
+      const estatus = votante.estatus ? 'Activo' : 'Inactivo';
+      const fechaFormateada = new Date(votante.fechaNacimiento)
+        .toISOString()
+        .split('T')[0];
+
+      // Manejo del promotor
+      const promotorNombreCompleto =
+        votante.promotor?.nombreCompleto || 'Sin promotor';
+      const programaSocial =
+        votante.programaSocial?.nombre || 'Sin programa social';
+
+      return {
+        Nombre: votante.nombres,
+        'Apellido paterno': votante.apellidoPaterno,
+        'Apellido materno': votante.apellidoMaterno,
+        'Fecha de nacimiento': fechaFormateada,
+        Edad: votante.edad,
+        CURP: votante.curp,
+        Genero: votante.genero.nombre,
+        Domicilio: votante.domicilio,
+        Municipio: votante.municipio.nombre,
+        Estado: votante.estado.nombre,
+        Seccion: votante.seccion.clave,
+        Promotor: promotorNombreCompleto,
+        Operador: votante.operador.nombreCompleto,
+        'Numero de teléfono': votante.numerotel,
+        'Programa Social': programaSocial,
+        'Tercer nivel de referencia': votante.tercerNivelContacto,
+        Estatus: estatus,
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    this.guardarArchivoExcelpromovidos(excelBuffer, 'Promovidos.xlsx');
+  }
+
+  guardarArchivoExcelpromovidos(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
 }
