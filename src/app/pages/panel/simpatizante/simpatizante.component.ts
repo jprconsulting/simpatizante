@@ -649,7 +649,7 @@ export class SimpatizanteComponent implements OnInit {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rol === 'Administrador';
+    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
 
     if (isAdmin) {
       this.isLoading = LoadingStates.trueLoading;
@@ -666,7 +666,7 @@ export class SimpatizanteComponent implements OnInit {
         },
       });
     }
-    const isAdmin2 = this.dataObject && this.dataObject.rol === 'Operador';
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
 
     if (isAdmin2) {
       const id = this.dataObject && this.dataObject.operadorId;
@@ -686,7 +686,7 @@ export class SimpatizanteComponent implements OnInit {
         });
       }
     }
-    const isCandidato = this.dataObject && this.dataObject.rol === 'Candidato';
+    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
 
     if (isCandidato) {
       const id = this.dataObject && this.dataObject.candidatoId;

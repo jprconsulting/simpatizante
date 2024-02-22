@@ -122,7 +122,9 @@
                   {{ candidato.nombres }} {{ candidato.apellidoPaterno }}
                   {{ candidato.apellidoMaterno }}
                 </td>
-                <td class="text-muted text-center">{{ candidato.edad }} años</td>
+                <td class="text-muted text-center">
+                  {{ candidato.edad }} años
+                </td>
                 <td>{{ candidato.genero.nombre }}</td>
                 <td>{{ candidato.sobrenombre }}</td>
                 <td class="text-muted">{{ candidato.cargo.nombre }}</td>
@@ -543,6 +545,18 @@
                     (change)="onFileChange2($event)"
                     formControlName="emblemaBase64"
                   />
+                  <div
+                    *ngIf="candidatoForm.get('emblemaBase64')?.touched"
+                    class="error-message"
+                  >
+                    <div
+                      *ngIf="
+                        candidatoForm.get('emblemaBase64')?.hasError('required')
+                      "
+                    >
+                      La imagen es obligatoria
+                    </div>
+                  </div>
                   <div *ngIf="isUpdatingEmblema" class="img-preview my-1">
                     <img [src]="emblemaPreview" alt="" class="img-fluid" />
                   </div>
@@ -573,7 +587,11 @@
           Todos los campos marcados con * son requeridos
         </p>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!candidatoForm.valid"
+          >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
@@ -654,6 +672,7 @@
               <a
                 class="btn w-30 btn-icon"
                 aria-label="Dribbble"
+                (click)="exportarDatosAExcelPromovidos()"
                 title="Descargar datos de simpatizantes"
                 style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
               >
@@ -695,7 +714,17 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let simpatizante of simpatizanteFilter | paginate: { itemsPerPage: 10, currentPage: pagModalPromovidos, id:'modal-promovidos' }">
+                  <tr
+                    *ngFor="
+                      let simpatizante of simpatizanteFilter
+                        | paginate
+                          : {
+                              itemsPerPage: 10,
+                              currentPage: pagModalPromovidos,
+                              id: 'modal-promovidos'
+                            }
+                    "
+                  >
                     <td>{{ simpatizante.nombreCompleto }}</td>
                     <td>{{ simpatizante.domicilio }}</td>
                     <td>{{ simpatizante.genero.nombre }}</td>
@@ -731,9 +760,7 @@
                 >
                 </pagination-controls>
               </div>
-
             </ng-template>
-
           </div>
         </div>
       </div>
