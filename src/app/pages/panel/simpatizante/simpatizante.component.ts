@@ -544,20 +544,23 @@ export class SimpatizanteComponent implements OnInit {
 
   mostrar() {
     this.visibility = true;
-    this.programasocial = 'null';
+    this.programasocial = 'si';
   }
+
   ocultar() {
     this.visibility = false;
+    this.programasocial = null;
+
     const radioElement = document.getElementById(
       'flexRadioDefault2'
     ) as HTMLInputElement;
 
     if (radioElement) {
-      radioElement.checked = true;
       radioElement.click();
     }
+
     this.simpatizanteForm.patchValue({
-      programaSocial: '',
+      programaSocial: 'no',
     });
   }
   getSeccion() {
