@@ -1,4 +1,10 @@
-import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  ViewChild,
+  ElementRef,
+  OnInit,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -7,7 +13,6 @@ import { OperadoresService } from 'src/app/core/services/operadores.service';
 import { LoadingStates, RolesBD } from 'src/app/global/global';
 import { Operador } from 'src/app/models/operador';
 import * as XLSX from 'xlsx';
-
 import { AppUserAuth } from 'src/app/models/login';
 import { SecurityService } from 'src/app/core/services/security.service';
 import { Promotor } from 'src/app/models/promotor';
@@ -46,7 +51,9 @@ export class PromotorComponent implements OnInit {
     private formBuilder: FormBuilder,
     private securityService: SecurityService
   ) {
-    this.pomotoresService.refreshListPromotores.subscribe(() => this.getPromotores());
+    this.pomotoresService.refreshListPromotores.subscribe(() =>
+      this.getPromotores()
+    );
     this.currentUser = securityService.getDataUser();
     this.creteForm();
     this.getPromotores();
@@ -195,10 +202,10 @@ export class PromotorComponent implements OnInit {
     const valueSearch = inputValue.toLowerCase();
     this.promotoresFilter = this.promotores.filter(
       (promotor) =>
-      promotor.nombres.toLowerCase().includes(valueSearch) ||
-      promotor.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      promotor.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-      promotor.telefono.toString().includes(valueSearch)
+        promotor.nombres.toLowerCase().includes(valueSearch) ||
+        promotor.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+        promotor.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+        promotor.telefono.toString().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
@@ -269,7 +276,6 @@ export class PromotorComponent implements OnInit {
     const operadoresIds = this.promotorForm.get('operadoresIds')?.value;
     this.promotor.operadoresIds = operadoresIds as number[];
 
-
     this.spinnerService.show();
     console.log(this.promotor);
 
@@ -316,12 +322,20 @@ export class PromotorComponent implements OnInit {
       return;
     }
 
+    const operadoresNombres = this.promotores.map(
+      (operador) => operador.nombreCompleto
+    );
+
     const datosParaExportar = this.promotores.map((promotor) => {
+      const operadoresNombres = promotor.operadores
+        .map((operador) => operador.nombreCompleto)
+        .join(', ');
       return {
-        'Nombre': promotor.nombres,
+        Nombre: promotor.nombres,
         'Apellido paterno': promotor.apellidoPaterno,
         'Apellido materno': promotor.apellidoMaterno,
-        'Teléfono': promotor.telefono,
+        Teléfono: promotor.telefono,
+        'Operador(s)': operadoresNombres,
       };
     });
     const worksheet: XLSX.WorkSheet =
