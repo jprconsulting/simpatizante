@@ -1,274 +1,436 @@
-<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
-    <p style="color: white">Guardando...</p>
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
 <app-page-header headerTitle="Visitas"></app-page-header>
 
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body border-bottom py-3">
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-visita" (click)="handleChangeAdd()">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="d-flex align-items-center">
+          <button
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-visita"
+            (click)="handleChangeAdd()"
+          >
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
-                    <div class="ms-auto d-flex align-items-center">
-                        <div class="input-icon">
-                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
-                            <span class="input-icon-addon">
+          <div class="ms-auto d-flex align-items-center">
+            <div class="input-icon">
+              <input
+                #searchItem
+                type="text"
+                class="form-control form-control-rounded"
+                placeholder="Buscar"
+                (input)="handleChangeSearch($event)"
+              />
+              <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
               </span>
-                        </div>
-                        <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de usuarios" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
-                            <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
-                        </a>
-                    </div>
-                </div>
             </div>
-            <ng-container [ngSwitch]="isLoading">
-                <div style="height: 300px" *ngSwitchCase="2">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-                    </div>
-                </div>
-                <div *ngSwitchCase="3" class="table-responsive">
-                    <table class="table table-vcenter card-table table-striped">
-                        <thead>
-                            <tr>
-                                <th class="text-center">#</th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Promovido
-                                </th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Descripción
-                                </th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Servicios de interés
-                                </th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Usario que realizo la visita
-                                </th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Rol del usuario
-                                </th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Evidencia
-                                </th>
-                                <th style="text-transform: none; font-size: inherit" class="text-center">
-                                    ¿Simpatiza?
-                                </th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Acciones
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="
+            <a
+              class="btn w-30 btn-icon"
+              aria-label="Dribbble"
+              (click)="exportarDatosAExcel()"
+              title="Descargar excel de usuarios"
+              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+            >
+              <i
+                class="ti ti-cloud-down text-muted"
+                style="font-size: 28px"
+              ></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
+        <div *ngSwitchCase="3" class="table-responsive">
+          <table class="table table-vcenter card-table table-striped">
+            <thead>
+              <tr>
+                <th class="text-center">#</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Promovido
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Descripción
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Servicios de interés
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Usario que realizo la visita
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Rol del usuario
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Evidencia
+                </th>
+                <th
+                  style="text-transform: none; font-size: inherit"
+                  class="text-center"
+                >
+                  ¿Simpatiza?
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
                   let visita of visitasFilter | paginate : configPaginator;
                   let pointIndex = index
-                ">
-                                <td class="text-center">
-                                    {{ configPaginator.itemsPerPage * (configPaginator.currentPage - 1) + pointIndex + 1 }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ visita.simpatizante.nombreCompleto }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ visita.descripcion }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ visita.servicio }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ visita.usuario.nombre }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ visita.usuario.rol.nombreRol }}
-                                </td>
-                                <td class="text-muted">
-                                    <div class="flex justify-center items-center">
-                                        <img src="{{ visita.foto }}" alt="Foto de {{ visita.foto }}" width="50" height="50" (click)="mostrarImagenAmpliada(visita.foto)" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <ng-container *ngIf="visita.simpatiza; else elseEstatus">
-                                        <span class="badge bg-success me-1"> </span> Si
-                                    </ng-container>
-                                    <ng-template #elseEstatus>
-                                        <span class="badge bg-warning me-1"></span> No
-                                    </ng-template>
-                                </td>
-                                <td style="width: 50px">
-                                    <div>
-                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-visita" (click)="setDataModalUpdate(visita)" style="margin-right: 5px">
+                "
+              >
+                <td class="text-center">
+                  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}
+                </td>
+                <td class="text-muted">
+                  {{ visita.simpatizante.nombreCompleto }}
+                </td>
+                <td class="text-muted">
+                  {{ visita.descripcion }}
+                </td>
+                <td class="text-muted">
+                  {{ visita.servicio }}
+                </td>
+                <td class="text-muted">
+                  {{ visita.usuario.nombre }}
+                </td>
+                <td class="text-muted">
+                  {{ visita.usuario.rol.nombreRol }}
+                </td>
+                <td class="text-muted">
+                  <div class="flex justify-center items-center">
+                    <img
+                      src="{{ visita.foto }}"
+                      alt="Foto de {{ visita.foto }}"
+                      width="50"
+                      height="50"
+                      (click)="mostrarImagenAmpliada(visita.foto)"
+                    />
+                  </div>
+                </td>
+                <td class="text-center">
+                  <ng-container *ngIf="visita.simpatiza; else elseEstatus">
+                    <span class="badge bg-success me-1"> </span> Si
+                  </ng-container>
+                  <ng-template #elseEstatus>
+                    <span class="badge bg-warning me-1"></span> No
+                  </ng-template>
+                </td>
+                <td style="width: 50px">
+                  <div>
+                    <button
+                      class="btn btn-warning btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal-visita"
+                      (click)="setDataModalUpdate(visita)"
+                      style="margin-right: 5px"
+                    >
                       <i class="ti ti-edit"></i>
                     </button>
-                                        <button class="btn btn-danger btn-icon btn-sm" (click)="
+                    <button
+                      class="btn btn-danger btn-icon btn-sm"
+                      (click)="
                         deleteItem(
                           visita.id,
                           visita.simpatizante.nombreCompleto
                         )
-                      ">
+                      "
+                    >
                       <i class="ti ti-eraser"></i>
                     </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <app-no-results *ngSwitchCase="4"></app-no-results>
-            </ng-container>
-            <!-- Fin *ngSwitchCase-->
-
-            <div class="card-footer d-flex align-items-center">
-                <p class="m-0 text-muted">
-                    Total de registros: <b>{{ visitasFilter.length }}</b>
-                </p>
-                <div class="m-0 ms-auto">
-                    <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
-                    </pagination-controls>
-                </div>
-            </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
+        <app-no-results *ngSwitchCase="4"></app-no-results>
+      </ng-container>
+      <!-- Fin *ngSwitchCase-->
+
+      <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">
+          Total de registros: <b>{{ visitasFilter.length }}</b>
+        </p>
+        <div class="m-0 ms-auto">
+          <pagination-controls
+            (pageChange)="onPageChange($event)"
+            previousLabel=""
+            nextLabel=""
+          >
+          </pagination-controls>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<div class="modal modal-blur fade" id="modal-visita" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {{ isModalAdd ? "Agregar" : "Actualizar" }} visita
-                </h5>
-                <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+<div
+  class="modal modal-blur fade"
+  id="modal-visita"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} visita
+        </h5>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
 
-            <form [formGroup]="visitaForm" (ngSubmit)="submit()">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-9">
-                            <div class="mb-3">
-                                <label class="form-label">Nombre del promovido:</label>
-                                <ng-select formControlName="simpatizante" #selectBeneficiario [searchable]="false" [items]="votantes" bindLabel="nombreCompleto" bindValue="id" placeholder="Elegir" [clearable]="false" (change)="onSelectCandidato($event.id)">
-                                    <ng-template ng-header-tmp>
-                                        <input class="form-control" type="text" (input)="selectBeneficiario.filter($any($event.target).value)" />
-                                    </ng-template>
-                                    <ng-template ng-option-tmp let-item="item" let-index="index">
-                                        {{ item.nombreCompleto }}
-                                    </ng-template>
-                                </ng-select>
-                                <div *ngIf="visitaForm.get('simpatizante')?.touched" class="error-message">
-                                    <div *ngIf="visitaForm.get('simpatizante')?.hasError('required')">
-                                        El promovido es obligatorio
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Columna para el interruptor de estatus -->
-                        <div class="col-lg-3">
-                            <div class="mb-3 custom-green-switch">
-                                <label for="simpatiza" class="form-label" style="
-    margin-bottom: 15px;
-">¿Simpatiza?</label>
-                                <label class="form-check form-switch checkbox-verde">
-                  <input class="form-check-input" type="checkbox" formControlName="simpatiza" />
-                  <span class="form-check-label"
-                    [ngClass]="visitaForm.get('simpatiza')?.value ? 'text-success' : 'text-danger'">
+      <form [formGroup]="visitaForm" (ngSubmit)="submit()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-9">
+              <div class="mb-3">
+                <label class="form-label">Nombre del promovido*:</label>
+                <ng-select
+                  formControlName="simpatizante"
+                  #selectBeneficiario
+                  [searchable]="false"
+                  [items]="votantes"
+                  bindLabel="nombreCompleto"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                  (change)="onSelectCandidato($event.id)"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectBeneficiario.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+                <div
+                  *ngIf="visitaForm.get('simpatizante')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="visitaForm.get('simpatizante')?.hasError('required')"
+                  >
+                    El promovido es obligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Columna para el interruptor de estatus -->
+            <div class="col-lg-3">
+              <div class="mb-3 custom-green-switch">
+                <label
+                  for="simpatiza"
+                  class="form-label"
+                  style="margin-bottom: 15px"
+                  >¿Simpatiza?</label
+                >
+                <label class="form-check form-switch checkbox-verde">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    formControlName="simpatiza"
+                  />
+                  <span
+                    class="form-check-label"
+                    [ngClass]="
+                      visitaForm.get('simpatiza')?.value
+                        ? 'text-success'
+                        : 'text-danger'
+                    "
+                  >
                     {{ visitaForm.get("simpatiza")?.value ? "Sí" : "No" }}
                   </span>
                 </label>
-                            </div>
-                        </div>
+              </div>
+            </div>
 
-                        <div class="col-lg-12">
-                            <div class="mb-3">
-                                <label class="form-label">Servicios de interés</label>
-                                <textarea type="text" class="form-control" formControlName="servicio"></textarea>
-                                <div *ngIf="visitaForm.get('servicio')?.touched" class="error-message">
-                                    <div *ngIf="visitaForm.get('servicio')?.hasError('required')">
-                                        El servicio de interés es obligatorio
-                                    </div>
-                                    <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
-                                        El servicio no puede tener letras
-                                    </div>
-                                    <div *ngIf="visitaForm.get('servicio')?.hasError('minlength')">
-                                        El servicio debe tener al menos 3 caracteres
-                                    </div>
-                                    <div *ngIf="visitaForm.get('servicio')?.hasError('pattern')">
-                                        El servicio no debe tener números
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label class="form-label">Servicios de interés*:</label>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  formControlName="servicio"
+                ></textarea>
+                <div
+                  *ngIf="visitaForm.get('servicio')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="visitaForm.get('servicio')?.hasError('required')">
+                    El servicio de interés es obligatorio
+                  </div>
+                  <div
+                    *ngIf="visitaForm.get('servicio')?.hasError('minlength')"
+                  >
+                    El servicio debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="visitaForm.get('servicio')?.hasError('pattern')">
+                    El servicio no debe tener números ni caracteres especiales
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                        <div class="col-lg-6"></div>
-                        <div class="col-lg-12">
-                            <div class="mb-3">
-                                <label class="form-label">Descripción*</label>
-                                <textarea rows="5" class="form-control" placeholder="" formControlName="descripcion"></textarea>
-                                <div *ngIf="visitaForm.get('descripcion')?.touched" class="error-message">
-                                    <div *ngIf="visitaForm.get('descripcion')?.hasError('required')">
-                                        La descripción es obligatoria
-                                    </div>
-                                    <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
-                                        La descripción no puede tener nùmeros
-                                    </div>
-                                    <div *ngIf="visitaForm.get('descripcion')?.hasError('minlength')">
-                                        La descripción debe tener al menos 3 caracteres
-                                    </div>
-                                    <div *ngIf="visitaForm.get('descripcion')?.hasError('pattern')">
-                                        La descripción no puede llevar números
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="mb-3">
-                                <div class="form-label">Selecciona una imagen*</div>
+            <div class="col-lg-6"></div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label class="form-label">Descripción*:</label>
+                <textarea
+                  rows="5"
+                  class="form-control"
+                  placeholder=""
+                  formControlName="descripcion"
+                ></textarea>
+                <div
+                  *ngIf="visitaForm.get('descripcion')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="visitaForm.get('descripcion')?.hasError('required')"
+                  >
+                    La descripción es obligatoria
+                  </div>
+                  <div *ngIf="visitaForm.get('pattern')?.hasError('required')">
+                    La descripción no puede tener nùmeros ni caracteres
+                    especiales
+                  </div>
+                  <div
+                    *ngIf="visitaForm.get('descripcion')?.hasError('minlength')"
+                  >
+                    La descripción debe tener al menos 3 caracteres
+                  </div>
+                  <div
+                    *ngIf="visitaForm.get('descripcion')?.hasError('pattern')"
+                  >
+                    La descripción no puede llevar números
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <div class="form-label">Selecciona una imagen:</div>
 
-                                <div class="row flex-column">
-                                    <input class="input" type="file" (change)="onFileChange($event)" formControlName="imagenBase64" />
+                <div class="row flex-column">
+                  <input
+                    class="input"
+                    type="file"
+                    (change)="onFileChange($event)"
+                    formControlName="imagenBase64"
+                  />
 
-                                    <div *ngIf="isUpdatingImg" class="img-preview my-1">
-                                        <img [src]="imgPreview" alt="Image preview" class="img-fluid" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="mb-3">
-                                <img class="img" *ngIf="visitaForm.get('imagenBase64')?.value" [src]="
+                  <div *ngIf="isUpdatingImg" class="img-preview my-1">
+                    <img
+                      [src]="imgPreview"
+                      alt="Image preview"
+                      class="img-fluid"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <img
+                  class="img"
+                  *ngIf="visitaForm.get('imagenBase64')?.value"
+                  [src]="
                     'data:image/jpeg;base64,' +
                     visitaForm.get('imagenBase64')?.value
-                  " width="100%" height="100%" alt="Vista previa de la imagen" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <p class="form-label" style="margin-left: 20px; color: red; font-weight: bold">
-                    Todos los campos marcados con * son requeridos
-                </p>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success"  [disabled]="!visitaForm.valid">
+                  "
+                  width="100%"
+                  height="100%"
+                  alt="Vista previa de la imagen"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <p
+          class="form-label"
+          style="margin-left: 20px; color: red; font-weight: bold"
+        >
+          Todos los campos marcados con * son requeridos
+        </p>
+        <div class="modal-footer">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!visitaForm.valid"
+          >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
-                </div>
-            </form>
         </div>
+      </form>
     </div>
+  </div>
 </div>
-
-<div class="modal modal-blur fade" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
-            </div>
-            <div class="modal-body">
-                <img *ngIf="imagenAmpliada" [src]="imagenAmpliada" alt="Imagen Ampliada" class="w-100" />
-            </div>
-        </div>
+<div
+  class="modal modal-blur"
+  id="modal-imagen-ampliada"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="background: rgba(0, 0, 0, 0.2)"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <img
+          *ngIf="imagenAmpliada"
+          [src]="imagenAmpliada"
+          alt="Imagen Ampliada"
+          class="w-100"
+        />
+      </div>
     </div>
+  </div>
 </div>

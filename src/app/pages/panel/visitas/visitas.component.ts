@@ -148,7 +148,18 @@ export class VisitasComponent {
         visita.simpatizante.nombreCompleto
           .toLocaleLowerCase()
           .includes(inputValue.toLowerCase()) ||
-        visita.servicio.toLocaleLowerCase().includes(inputValue.toLowerCase())
+        visita.servicio
+          .toLocaleLowerCase()
+          .includes(inputValue.toLowerCase()) ||
+        visita.usuario.nombre
+          .toLocaleLowerCase()
+          .includes(inputValue.toLowerCase()) ||
+        visita.usuario.rol.nombreRol
+          .toLocaleLowerCase()
+          .includes(inputValue.toLowerCase()) ||
+        visita.descripcion
+          .toLocaleLowerCase()
+          .includes(inputValue.toLowerCase())
     );
 
     this.configPaginator.currentPage = 1;
@@ -383,8 +394,8 @@ export class VisitasComponent {
 
     const datosParaExportar = this.visitas.map((visita) => {
       return {
-        'Nombre completo': visita.simpatizante.nombreCompleto,
-        Servicio: visita.servicio,
+        'Nombre de promovido': visita.simpatizante.nombreCompleto,
+        Servicios: visita.servicio,
         Descripcion: visita.descripcion,
       };
     });
