@@ -251,7 +251,7 @@
                     Todos los campos marcados con * son requeridos
                 </p>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-success"  [disabled]="!visitaForm.valid">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
                 </div>

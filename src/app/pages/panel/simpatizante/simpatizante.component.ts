@@ -560,7 +560,7 @@ export class SimpatizanteComponent implements OnInit {
     }
 
     this.simpatizanteForm.patchValue({
-      programaSocial: 'no',
+      programaSocial: null,
     });
   }
   getSeccion() {
@@ -882,7 +882,6 @@ export class SimpatizanteComponent implements OnInit {
       const seccionId = this.simpatizanteForm.get('seccion')?.value;
       const operadorId = this.simpatizanteForm.get('operadorId')?.value;
       const generoId = this.simpatizanteForm.get('generoId')?.value;
-
       this.votante.programaSocial = programaSocialId
         ? ({ id: programaSocialId } as ProgramaSocial)
         : null;

@@ -310,7 +310,7 @@ export class PromotorComponent implements OnInit {
     if (this.promotorForm) {
       this.promotorForm.reset();
       if (this.currentUser?.rolId === RolesBD.operador) {
-        this.promotorForm.controls['operadorId'].setValue(this.operadorId);
+        this.promotorForm.controls['operadoresIds'].setValue([this.operadorId]);
       }
       this.isModalAdd = true;
     }
