@@ -77,9 +77,7 @@ export class UsuariosComponent {
         '',
         [
           Validators.required,
-          Validators.minLength(8),
-          Validators.pattern(/[A-Z]/),
-          Validators.pattern(/[0-9]/),
+          Validators.minLength(8)
         ],
       ],
       estatus: [true],

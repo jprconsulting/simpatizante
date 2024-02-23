@@ -279,6 +279,9 @@
                   <div *ngIf="usuarioForm.get('correo')?.hasError('email')">
                     <p style="color: red">El correo no es válido</p>
                   </div>
+                  <div *ngIf="usuarioForm.get('correo')?.hasError('pattern')">
+                    <p style="color: red">El correo no es válido</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -350,10 +353,10 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="usuarioForm.get('rol')?.touched"
+                  *ngIf="usuarioForm.get('rolId')?.touched"
                   class="error-message"
                 >
-                  <div *ngIf="usuarioForm.get('rol')?.hasError('required')">
+                  <div *ngIf="usuarioForm.get('rolId')?.hasError('required')">
                     <p style="color: red">El rol es obligatorio</p>
                   </div>
                 </div>
@@ -428,7 +431,7 @@
           <button
             type="submit"
             class="btn btn-success"
-
+            [disabled]="!usuarioForm.valid"
           >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
