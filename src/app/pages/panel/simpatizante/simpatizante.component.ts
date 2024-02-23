@@ -664,8 +664,11 @@ export class SimpatizanteComponent implements OnInit {
           this.votantesFilter = this.votantes;
           this.isLoading = LoadingStates.falseLoading;
         },
-        error: () => {
+        error: ( err ) => {
           this.isLoading = LoadingStates.errorLoading;
+          if ( err.status === 401 ){
+            this.mensajeService.mensajeSesionExpirada();
+          }
         },
       });
     }

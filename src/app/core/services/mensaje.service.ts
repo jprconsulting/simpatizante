@@ -12,7 +12,17 @@ export class MensajeService {
     Swal.fire({
       icon: 'error',
       title: 'Oops...',
-      text: titulo
+      text: titulo,
+    })
+  }
+
+  mensajeSesionExpirada(  ) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Sesion Expirada. Redirigiendo...',
+      showConfirmButton: false,
+      timer: 2500
     })
   }
 

@@ -5,6 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { SecurityService } from 'src/app/core/services/security.service';
 import { AppUser } from 'src/app/models/login';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',

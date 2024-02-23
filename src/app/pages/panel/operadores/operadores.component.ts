@@ -89,7 +89,7 @@ export class OperadoresComponent implements OnInit {
 
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
-      
+
     }
 
     this.readonlySelectCandidato =
@@ -224,8 +224,11 @@ export class OperadoresComponent implements OnInit {
           this.operadorFilter = this.operadores;
           this.isLoading = LoadingStates.falseLoading;
         },
-        error: () => {
+        error: (err) => {
           this.isLoading = LoadingStates.errorLoading;
+          if ( err.status === 401 ){
+            this.mensajeService.mensajeSesionExpirada();
+          }
         },
       });
     }

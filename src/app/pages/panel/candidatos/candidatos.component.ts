@@ -260,8 +260,11 @@ export class CandidatosComponent implements OnInit {
         this.candidatoFilter = this.candidato;
         this.isLoading = LoadingStates.falseLoading;
       },
-      error: () => {
+      error: ( err ) => {
         this.isLoading = LoadingStates.errorLoading;
+        if ( err.status === 401 ){
+          this.mensajeService.mensajeSesionExpirada();
+        }
       },
     });
   }
