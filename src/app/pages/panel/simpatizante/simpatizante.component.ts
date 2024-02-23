@@ -947,7 +947,7 @@ export class SimpatizanteComponent implements OnInit {
         },
       });
     } else {
-      this.mensajeService.mensajeError('CURP ya registrada');
+      this.mensajeService.mensajeError('CURP no validada');
     }
   }
 
