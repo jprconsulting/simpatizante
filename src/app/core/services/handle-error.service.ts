@@ -17,11 +17,14 @@ export class HandleErrorService implements ErrorHandler {
     if (error.status === 400) return throwError(() => 'Dato no válido');
 
     if (error.status === 401) {
-      return throwError(() => 'Sesion expirada');
+      return throwError(() => 'Sesión expirada');
     }
 
     if (error.status === 404) return throwError(() => 'Registro no encontrado');
-    if (error.status === 405) return throwError(() => 'Usuario o contrasena incorrecta');
+    if (error.status === 405)
+      return throwError(() => 'Usuario y/o contraseña incorrectos');
+    if (error.status === 419)
+      return throwError(() => 'El usuario tiene una sesión activa');
 
     if (error.status === 409)
       return throwError(() => 'Ya se encuentra registrado');
