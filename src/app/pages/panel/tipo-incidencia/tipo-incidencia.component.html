@@ -1,139 +1,250 @@
-<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
-    <p style="color: white">Guardando...</p>
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
 <app-page-header headerTitle="Tipos de incidencias"></app-page-header>
 
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body border-bottom py-3">
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-incidencias" (click)="handleChangeAdd()">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="d-flex align-items-center">
+          <button
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-incidencias"
+            (click)="handleChangeAdd()"
+          >
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
-                    <div class="ms-auto d-flex align-items-center">
-                        <div class="input-icon">
-                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
-                            <span class="input-icon-addon">
+          <div class="ms-auto d-flex align-items-center">
+            <div class="input-icon">
+              <input
+                #searchItem
+                type="text"
+                class="form-control form-control-rounded"
+                placeholder="Buscar"
+                (input)="handleChangeSearch($event)"
+              />
+              <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
               </span>
-                        </div>
-
-                        <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de los tipos de incidencia" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
-                            <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
-                        </a>
-                    </div>
-                </div>
             </div>
 
-            <ng-container [ngSwitch]="isLoading">
-                <div style="height: 300px" *ngSwitchCase="2">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-                    </div>
-                </div>
+            <a
+              class="btn w-30 btn-icon"
+              aria-label="Dribbble"
+              (click)="exportarDatosAExcel()"
+              title="Descargar excel de los tipos de incidencia"
+              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+            >
+              <i
+                class="ti ti-cloud-down text-muted"
+                style="font-size: 28px"
+              ></i>
+            </a>
+          </div>
+        </div>
+      </div>
 
-                <div *ngSwitchCase="3" class="table-responsive">
-                    <table class="table table-vcenter card-table">
-                        <thead>
-                            <tr>
-                                <th class="text-center">#</th>
-                                <th class="text-center" style="text-transform: none; font-size: inherit">
-                                    Tipo
-                                </th>
-                                <th class="text-center" style="text-transform: none; font-size: inherit">
-                                    Color
-                                </th>
-                                <th class="text-center" style="text-transform: none; font-size: inherit">
-                                    Acciones
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="
-                  let indicador of indicadores | paginate : configPaginator;
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="3" class="table-responsive">
+          <table class="table table-vcenter card-table">
+            <thead>
+              <tr>
+                <th class="text-center">#</th>
+                <th
+                  class="text-center"
+                  style="text-transform: none; font-size: inherit"
+                >
+                  Tipo
+                </th>
+                <th
+                  class="text-center"
+                  style="text-transform: none; font-size: inherit"
+                >
+                  Color
+                </th>
+                <th
+                  class="text-center"
+                  style="text-transform: none; font-size: inherit"
+                >
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let indicador of incidenciasFilter
+                    | paginate : configPaginator;
                   let pointIndex = index
-                ">
-                                <td class="text-center">
-                                    {{ configPaginator.itemsPerPage * (configPaginator.currentPage - 1) + pointIndex + 1 }}
-                                </td>
-                                <td class="text-center">{{ indicador.tipo }}</td>
-                                <td class="text-center">
-                                    <span class="badge" style="height: 20px; width: 20px" [style.backgroundColor]="indicador.color"></span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="justify-content-between">
-                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-incidencias" (click)="setDataModalUpdate(indicador)" style="margin-right: 10px">
+                "
+              >
+                <td class="text-center">
+                  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}
+                </td>
+                <td class="text-center">{{ indicador.tipo }}</td>
+                <td class="text-center">
+                  <span
+                    class="badge"
+                    style="height: 20px; width: 20px"
+                    [style.backgroundColor]="indicador.color"
+                  ></span>
+                </td>
+                <td class="text-center">
+                  <div class="justify-content-between">
+                    <button
+                      class="btn btn-warning btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal-incidencias"
+                      (click)="setDataModalUpdate(indicador)"
+                      style="margin-right: 10px"
+                    >
                       <i class="ti ti-edit"></i>
                     </button>
-                                        <button class="btn btn-danger btn-icon btn-sm" (click)="deleteItem(indicador.id)">
+                    <button
+                      class="btn btn-danger btn-icon btn-sm"
+                      (click)="deleteItem(indicador.id)"
+                    >
                       <i class="ti ti-eraser"></i>
                     </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <app-no-results *ngSwitchCase="4"></app-no-results>
-            </ng-container>
-
-            <div class="card-footer d-flex align-items-center">
-                <p class="m-0 text-muted">
-                    Total de registros: <b>{{ incidenciasFilter.length }}</b>
-                </p>
-                <div class="m-0 ms-auto">
-                    <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel=""></pagination-controls>
-                </div>
-            </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
+        <app-no-results *ngSwitchCase="4"></app-no-results>
+      </ng-container>
+
+      <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">
+          Total de registros: <b>{{ incidenciasFilter.length }}</b>
+        </p>
+        <div class="m-0 ms-auto">
+          <pagination-controls
+            (pageChange)="onPageChange($event)"
+            previousLabel=""
+            nextLabel=""
+          ></pagination-controls>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<div class="modal modal-blur fade" id="modal-incidencias" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {{ isModalAdd ? "Agregar" : "Actualizar" }} incidencia
-                </h5>
-                <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+<div
+  class="modal modal-blur fade"
+  id="modal-incidencias"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} incidencia
+        </h5>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
 
-            <!-- Código del modal modificado -->
-            <form [formGroup]="incidenciasForm" (ngSubmit)="submit()">
-                <div class="modal-body">
-                    <div class="col-lg-12">
-                        <label class="form-label">Nombre de la Incidencia*</label>
-                        <input type="text" class="form-control" formControlName="retroalimentacion" />
-                        <div *ngIf="incidenciasForm.get('retroalimentacion')?.touched" class="error-message">
-                            <div *ngIf="
+      <!-- Código del modal modificado -->
+      <form [formGroup]="incidenciasForm" (ngSubmit)="submit()">
+        <div class="modal-body">
+          <div class="col-lg-12">
+            <label class="form-label">Nombre de la Incidencia*</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="retroalimentacion"
+            />
+            <div
+              *ngIf="incidenciasForm.get('retroalimentacion')?.touched"
+              class="error-message"
+            >
+              <div
+                *ngIf="
                   incidenciasForm.get('retroalimentacion')?.hasError('required')
-                ">
-                                El nombre es obligatorio
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <label style="margin-top: 15px" class="form-label">Color*:</label>
-                        <input type="color" class="form-control form-control-color" title="Selecciona color" formControlName="color" value="#206bc4" (input)="updateColorCode($event)" />
-                        <div *ngIf="incidenciasForm.get('color')?.touched" class="error-message">
-                            <div *ngIf="incidenciasForm.get('color')?.hasError('required')">
-                                El color es obligatorio
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                "
+              >
+                El nombre es obligatorio
+              </div>
+              <div
+                *ngIf="
+                  incidenciasForm
+                    .get('retroalimentacion')
+                    ?.hasError('minlength')
+                "
+              >
+                El nombre debe tener al menos 3 caracteres
+              </div>
+              <div
+                *ngIf="
+                  incidenciasForm.get('retroalimentacion')?.hasError('pattern')
+                "
+              >
+                El nombre no puede tener números ni signos
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <label style="margin-top: 15px" class="form-label">Color*:</label>
+            <input
+              type="color"
+              class="form-control form-control-color"
+              title="Selecciona color"
+              formControlName="color"
+              value="#206bc4"
+              (input)="updateColorCode($event)"
+            />
+            <div
+              *ngIf="incidenciasForm.get('color')?.touched"
+              class="error-message"
+            >
+              <div *ngIf="incidenciasForm.get('color')?.hasError('required')">
+                El color es obligatorio
+              </div>
+            </div>
+          </div>
+        </div>
 
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" [disabled]="!incidenciasForm.valid">
+        <div class="modal-footer">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!incidenciasForm.valid"
+          >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
-                </div>
-            </form>
-            <!-- Fin del código del modal modificado -->
         </div>
+      </form>
+      <!-- Fin del código del modal modificado -->
     </div>
+  </div>
 </div>

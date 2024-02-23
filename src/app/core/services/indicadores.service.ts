@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject, catchError, tap } from 'rxjs';
 import { Indicadores } from 'src/app/models/indicadores';
+import { HandleErrorService } from './handle-error.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -9,8 +10,10 @@ import { environment } from 'src/environments/environment';
 })
 export class IndicadoresService {
   route = `${environment.apiUrl}/tipos-incidencias`;
+  private _refreshListIncidencia$ = new Subject<Indicadores | null>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+    private handleErrorService: HandleErrorService) {}
 
   getAll() {
     return this.http.get<Indicadores[]>(`${this.route}/obtener-todos`);
@@ -23,14 +26,31 @@ export class IndicadoresService {
   }
 
   create(tipoIncidencia: Indicadores) {
-    return this.http.post(`${this.route}/crear`, tipoIncidencia);
+    return this.http.post(`${this.route}/crear`, tipoIncidencia)
+    .pipe(
+      tap(() => {
+        this._refreshListIncidencia$.next(null);
+      }),
+      catchError(this.handleErrorService.handleError)
+    );
   }
 
   update(id: number, tipoIncidencia: Indicadores) {
-    return this.http.put(`${this.route}/actualizar/${id}`, tipoIncidencia);
+    return this.http.put(`${this.route}/actualizar/${id}`, tipoIncidencia)
+    .pipe(
+      tap(() => {
+        this._refreshListIncidencia$.next(null);
+      }),
+      catchError(this.handleErrorService.handleError)
+    );
   }
-
   delete(id: number) {
-    return this.http.delete(`${this.route}/eliminar/${id}`);
+    return this.http.delete(`${this.route}/eliminar/${id}`)
+    .pipe(
+        tap(() => {
+          this._refreshListIncidencia$.next(null);
+        }),
+        catchError(this.handleErrorService.handleError)
+      );
   }
 }
