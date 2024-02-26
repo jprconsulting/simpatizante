@@ -63,11 +63,6 @@ export class SeguimientoVotoComponent implements OnInit {
     });
   }
 
-  onSelectCandidato(id: number) {
-    if (id) {
-      this.candidatosSelect = this.candidato.find(b => b.id === id);
-    }
-  }
 
   onFileChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;

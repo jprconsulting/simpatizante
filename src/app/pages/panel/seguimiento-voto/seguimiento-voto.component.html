@@ -192,21 +192,20 @@
                             <div class="mb-3">
                                 <label class="form-label">Nombre del promovido:</label>
                                 <ng-select 
-                                  formControlName="simpatizante" 
-                                  #selectBeneficiario 
+                                  formControlName="simpatizanteId" 
+                                  #selectSimpatizante 
                                   [searchable]="false" 
                                   [items]="simpatizantes" 
                                   bindLabel="nombreCompleto" 
                                   bindValue="id" 
                                   placeholder="Elegir" 
                                   [clearable]="false" 
-                                  (change)="onSelectCandidato($event.id)"
                                   >
                                     <ng-template ng-header-tmp>
                                         <input 
                                           class="form-control" 
                                           type="text" 
-                                          (input)="selectBeneficiario.filter($any($event.target).value)" 
+                                          (input)="selectSimpatizante.filter($any($event.target).value)" 
                                           />
                                     </ng-template>
                                     <ng-template ng-option-tmp let-item="item" let-index="index">
