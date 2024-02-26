@@ -11,15 +11,15 @@ import { Subject } from 'rxjs';
 })
 export class VotoService {
   route = `${environment.apiUrl}/voto`;
-  private _refreshListVisitas$ = new Subject<Voto | null>();
+  private _refreshListVotos$ = new Subject<Voto | null>();
 
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
   ) { }
 
-  get refreshListVisitas() {
-    return this._refreshListVisitas$;
+  get refreshListVotos() {
+    return this._refreshListVotos$;
   }
 
   getById(id: number) {
@@ -34,7 +34,7 @@ export class VotoService {
     return this.http.post<Voto>(`${this.route}/crear`, dto)
       .pipe(
         tap(() => {
-          this._refreshListVisitas$.next(null);
+          this._refreshListVotos$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );
@@ -44,7 +44,7 @@ export class VotoService {
     return this.http.put<Voto>(`${this.route}/actualizar/${id}`, dto)
       .pipe(
         tap(() => {
-          this._refreshListVisitas$.next(null);
+          this._refreshListVotos$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );
@@ -54,7 +54,7 @@ export class VotoService {
     return this.http.delete(`${this.route}/eliminar/${id}`)
       .pipe(
         tap(() => {
-          this._refreshListVisitas$.next(null);
+          this._refreshListVotos$.next(null);
         }),
         catchError(this.handleErrorService.handleError)
       );

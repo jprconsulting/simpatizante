@@ -22,11 +22,11 @@ export class SeguimientoVotoComponent implements OnInit {
   seguimientoForm!: FormGroup;
   vistas: Visita [] = [];
   candidato: Candidato[] = [];
-  voto: Voto[] = [];
-  votos!: Voto;
-  votoFilter: Voto[] = [];
+  votos: Voto[] = [];
+  voto!: Voto;
+  votosFilter: Voto[] = [];
   candidatosSelect: any;
-  simpatizantes: Simpatizante[] =[];
+  simpatizantes: Simpatizante[] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd = true;
   isClaveFilled = false;
@@ -41,14 +41,16 @@ export class SeguimientoVotoComponent implements OnInit {
 
 
   ) {
-   this.votoService.refreshListVisitas.subscribe(() => this.actualizarVisita());
-   this.actualizarVisita();
-   this.creteForm();
-   this.getVotantes();
+   this.votoService.refreshListVotos.subscribe(() => 
+      this.getSimpatizantes()
+    );
+    this.creteForm();
+    this.getVotantes();
+    this.getSimpatizantes();
   }
 
   ngOnInit(): void {
-    this.getVotantes();
+    this.isModalAdd = false;
   }
 
 
@@ -56,6 +58,7 @@ export class SeguimientoVotoComponent implements OnInit {
     this.seguimientoForm = this.formBuilder.group({
       id: [null],
       estatusVoto: [true],
+      simpatizanteId: [null, Validators.required],
       imagenBase64: [''],
     });
   }
@@ -87,20 +90,20 @@ export class SeguimientoVotoComponent implements OnInit {
   }
 
   editarVoto(){
-    this.votos = this.seguimientoForm.value as Voto;
-    const simpatizanteId = this.seguimientoForm.get('simpatizante')?.value;
+    this.voto = this.seguimientoForm.value as Voto;
+    const simpatizanteId = this.seguimientoForm.get('simpatizanteId')?.value;
 
 
-    this.votos.simpatizante = { id: simpatizanteId } as Simpatizante
+    this.voto.simpatizante = { id: simpatizanteId } as Simpatizante
     this.spinnerService.show();
     console.log('data:', this.votos);
     const imagenBase64 = this.seguimientoForm.get('imagenBase64')?.value;
 
     if (imagenBase64) {
-      const formData = { ...this.votos, imagenBase64 };
+      const formData = { ...this.voto, imagenBase64 };
 
       this.spinnerService.show();
-      this.votoService.put(simpatizanteId, formData).subscribe({
+      this.votoService.put( simpatizanteId, formData ).subscribe({
         next: () => {
           this.spinnerService.hide();
           this.mensajeService.mensajeExito('Voto actualizado correctamente');
@@ -122,7 +125,9 @@ export class SeguimientoVotoComponent implements OnInit {
     if (this.isModalAdd === false) {
 
       this.editarVoto();
+
     } else {
+
       this.agregar();
 
     }
@@ -134,20 +139,18 @@ export class SeguimientoVotoComponent implements OnInit {
   }
 
   agregar() {
-    this.votos = this.seguimientoForm.value as Voto;
-    const simpatizanteId = this.seguimientoForm.get('simpatizante')?.value;
+    this.voto = this.seguimientoForm.value as Voto;
 
-
-    this.votos.simpatizante = { id: simpatizanteId } as Simpatizante
-    this.spinnerService.show();
-    console.log('data:', this.votos);
+    const simpatizanteId = this.seguimientoForm.get('simpatizanteId')?.value;
     const imagenBase64 = this.seguimientoForm.get('imagenBase64')?.value;
 
+    this.voto.simpatizante = { id: simpatizanteId } as Simpatizante;
+
     if (imagenBase64) {
-      const formData = { ...this.votos, imagenBase64 };
+      const formData = { ...this.voto, imagenBase64 };
 
       this.spinnerService.show();
-      this.votoService.post(formData).subscribe({
+      this.votoService.post( formData ).subscribe({
         next: () => {
           this.spinnerService.hide();
           this.mensajeService.mensajeExito('Voto guardado correctamente');
@@ -164,21 +167,25 @@ export class SeguimientoVotoComponent implements OnInit {
     }
   }
 
-  actualizarVisita() {
+  
+  getSimpatizantes(): void {
     this.isLoading = LoadingStates.trueLoading;
     this.votoService.getAll().subscribe(
       {
-        next: (dataFromAPI) => { 
-          this.voto = dataFromAPI;
-          this.votoFilter = this.voto;
-          this.isLoading = LoadingStates.falseLoading;
+        next: ( dataFromAPI ) => {
+          this.votos = dataFromAPI;
+          this.votosFilter = this.votos;
+          console.log("Votos Filter: ", this.votosFilter);
           
+          this.isLoading = LoadingStates.falseLoading;
         },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading
+        error: ( err ) => {
+          this.isLoading = LoadingStates.errorLoading;
+          console.log("getSimpatizantes: ", err );
+          
         }
-      }
-    );
+      } 
+    )
   }
 
 
@@ -187,11 +194,10 @@ export class SeguimientoVotoComponent implements OnInit {
   }
 
   handleChangeAdd() {
-    this.seguimientoForm.reset();
-    this.isModalAdd = true;
     if (this.seguimientoForm) {
       this.seguimientoForm.reset();
-      const estatusControl = this.seguimientoForm.get('voto');
+      const estatusControl = this.seguimientoForm.get('estatusVoto');
+      
       if (estatusControl) {
         estatusControl.setValue(true);
       }
@@ -201,15 +207,12 @@ export class SeguimientoVotoComponent implements OnInit {
   }
 
   getVotantes() {
-    this.isLoading = LoadingStates.trueLoading;
     this.simpatizantesService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
           this.simpatizantes = dataFromAPI;
+          console.log("Votantes: ", this.simpatizantes );
           
-        },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading
         }
       }
     );
@@ -220,14 +223,14 @@ export class SeguimientoVotoComponent implements OnInit {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.votoFilter = this.voto.filter(Voto => 
+    this.votosFilter = this.votos.filter(Voto => 
       Voto.simpatizante.nombreCompleto.toLowerCase().includes(valueSearch) ||
       Voto.simpatizante.nombres.toLowerCase().includes(valueSearch) ||
       Voto.simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
       Voto.simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch)
     );
 
-    console.log("Votantes filtrados: ", this.votoFilter);
+    console.log("Votantes filtrados: ", this.votosFilter);
     
     this.configPaginator.currentPage = 1;
 
