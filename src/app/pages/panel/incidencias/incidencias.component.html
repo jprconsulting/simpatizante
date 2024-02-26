@@ -37,17 +37,17 @@
               </span>
             </div>
             <a
-            class="btn w-30 btn-icon"
-            aria-label="Dribbble"
-            (click)="exportarDatosAExcel()"
-            title="Descargar excel de usuarios"
-            style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
-          >
-            <i
-              class="ti ti-cloud-down text-muted"
-              style="font-size: 28px"
-            ></i>
-          </a>
+              class="btn w-30 btn-icon"
+              aria-label="Dribbble"
+              (click)="exportarDatosAExcel()"
+              title="Descargar excel de usuarios"
+              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+            >
+              <i
+                class="ti ti-cloud-down text-muted"
+                style="font-size: 28px"
+              ></i>
+            </a>
           </div>
         </div>
       </div>
@@ -69,7 +69,9 @@
                 >
                   #
                 </th>
-                <th style="text-transform: none; font-size: inherit">Retroalimentación</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Retroalimentación
+                </th>
                 <th style="text-transform: none; font-size: inherit">
                   Casilla
                 </th>
@@ -102,7 +104,8 @@
             <tbody>
               <tr
                 *ngFor="
-                  let incidencia of incidenciasFilter | paginate : configPaginator;
+                  let incidencia of incidenciasFilter
+                    | paginate : configPaginator;
                   let pointIndex = index
                 "
               >
@@ -123,13 +126,11 @@
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
                     <img
-                      src="{{incidencia.foto}}"
+                      src="{{ incidencia.foto }}"
                       alt="Foto de {{ incidencia.foto }}"
                       width="50"
                       height="50"
-                      (click)="
-                        mostrarImagenAmpliada(incidencia.foto)
-                      "
+                      (click)="mostrarImagenAmpliada(incidencia.foto)"
                     />
                   </div>
                 </td>
@@ -143,7 +144,10 @@
                     >
                       <i class="ti ti-edit"></i>
                     </button>
-                    <button class="btn btn-danger btn-icon btn-sm" (click)="deleteItem(incidencia.id)">
+                    <button
+                      class="btn btn-danger btn-icon btn-sm"
+                      (click)="deleteItem(incidencia.id)"
+                    >
                       <i class="ti ti-eraser"></i>
                     </button>
                   </div>
@@ -203,31 +207,35 @@
             <div class="col-lg-6">
               <label class="form-label">Tipo de incidencia*</label>
               <ng-select
-              formControlName="tipoIncidencia"
-              #selectipo
-              [searchable]="false"
-              [items]="indicadores"
-              bindLabel="tipo"
-              bindValue="id"
-              placeholder="Elegir"
-              [clearable]="false"
-            >
-              <ng-template ng-header-tmp>
-                <input
-                  class="form-control"
-                  type="text"
-                  (input)="selectipo.filter($any($event.target).value)"
-                />
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item" let-index="index">
-                {{ item.tipo }}
-              </ng-template>
-            </ng-select>
+                formControlName="tipoIncidencia"
+                #selectipo
+                [searchable]="false"
+                [items]="indicadores"
+                bindLabel="tipo"
+                bindValue="id"
+                placeholder="Elegir"
+                [clearable]="false"
+              >
+                <ng-template ng-header-tmp>
+                  <input
+                    class="form-control"
+                    type="text"
+                    (input)="selectipo.filter($any($event.target).value)"
+                  />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{ item.tipo }}
+                </ng-template>
+              </ng-select>
               <div
                 *ngIf="incidenciasForm.get('tipoIncidencia')?.touched"
                 class="error-message"
               >
-                <div *ngIf="incidenciasForm.get('tipoIncidencia')?.hasError('required')">
+                <div
+                  *ngIf="
+                    incidenciasForm.get('tipoIncidencia')?.hasError('required')
+                  "
+                >
                   El tipo de incidencia es obligatorio
                 </div>
               </div>
@@ -282,7 +290,11 @@
                   class="error-message"
                 >
                   <div
-                    *ngIf="incidenciasForm.get('retroalimentacion')?.hasError('required')"
+                    *ngIf="
+                      incidenciasForm
+                        .get('retroalimentacion')
+                        ?.hasError('required')
+                    "
                   >
                     La retroalimentación es obligatoria
                   </div>
@@ -292,12 +304,35 @@
             <div class="col-lg-12">
               <div class="mb-3">
                 <div class="form-label">Selecciona una fotografía*</div>
-                <input
-                  class="input"
-                  type="file"
-                  (change)="onFileChange($event)"
-                  formControlName="imagenBase64"
-                />
+                <div class="row flex-column">
+                  <input
+                    class="input"
+                    type="file"
+                    (change)="onFileChange($event)"
+                    formControlName="imagenBase64"
+                  />
+                  <div *ngIf="isUpdatingfoto" class="img-preview my-1">
+                    <img
+                      [src]="emblemaPreview"
+                      alt="Image preview"
+                      class="img-fluid"
+                    />
+                  </div>
+                  <div
+                    *ngIf="incidenciasForm.get('imagenBase64')?.touched"
+                    class="error-message"
+                  >
+                    <div
+                      *ngIf="
+                        incidenciasForm
+                          .get('imagenBase64')
+                          ?.hasError('required')
+                      "
+                    >
+                      La imagen es obligatoria
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-12">
@@ -306,18 +341,18 @@
                   class="img"
                   *ngIf="incidenciasForm.get('imagenBase64')?.value"
                   [src]="
-                    'data:image/jpeg;base64,' +
+                    'data:image/jpg;base64,' +
                     incidenciasForm.get('imagenBase64')?.value
                   "
-                  width="60%"
-                  height="60%"
+                  width="50%"
+                  height="50%"
                   alt="Vista previa de la imagen"
                 />
               </div>
             </div>
-            <div class="col-lg-12">
-              <div class="mb-3">
-                <label class="form-label">Dirección*</label>
+            <div class="row">
+              <div class="col-lg-10 mt-1 mb-3">
+                <label class="form-label">Domicilio</label>
                 <input
                   #ubicacionInput
                   [options]="options"
@@ -327,6 +362,19 @@
                   formControlName="direccion"
                   (onAddressChange)="selectAddress($event)"
                 />
+              </div>
+  
+              <div
+                class="col-lg-2 d-flex align-items-end justify-content-end mt-1 mb-3"
+              >
+                <button
+                  type="button"
+                  title="Obtener ubicación"
+                  class="btn btn-info float-end"
+                  (click)="getCurrentLocation()"
+                >
+                  <i class="ti ti-map-pin"></i>
+                </button>
               </div>
             </div>
             <div class="col-lg-12">
@@ -347,8 +395,11 @@
           Todos los campos marcados con * son requeridos
         </p>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success"
-          [disabled]="!incidenciasForm.valid">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!incidenciasForm.valid"
+          >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
@@ -357,15 +408,33 @@
   </div>
 </div>
 
-<div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5);">
+<div
+  class="modal modal-highlight"
+  id="modal-imagen-ampliada"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="background: rgba(0, 0, 0, 0.5)"
+>
   <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
-          </div>
-          <div class="modal-body">
-              <img *ngIf="imagenAmpliada" [src]="imagenAmpliada" alt="Imagen Ampliada" class="w-100" />
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="cerrarModal()"
+        ></button>
       </div>
+      <div class="modal-body">
+        <img
+          *ngIf="imagenAmpliada"
+          [src]="imagenAmpliada"
+          alt="Imagen Ampliada"
+          class="w-100"
+        />
+      </div>
+    </div>
   </div>
 </div>

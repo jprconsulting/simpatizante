@@ -87,7 +87,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       map: this.map,
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        scale: 7,
+        scale: 6,
         fillColor: fillColor,
         fillOpacity: 1,
         strokeWeight: 0,

@@ -184,8 +184,8 @@ export class MapaIncidenciasComponent implements AfterViewInit {
         path: google.maps.SymbolPath.CIRCLE,
         fillColor: incidencias.tipoIncidencia.color,
         fillOpacity: 1,
+        scale: 6,
         strokeWeight: 0,
-        scale: 10,
       },
       title: `${incidencias.tipoIncidencia.tipo}`,
     });
