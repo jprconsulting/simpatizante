@@ -28,7 +28,6 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
   ) {
     this.getSimpatizantes();
     this.getSecciones();
-    this.getSimpatizantes2();
   }
 
   clearMarkers() {
