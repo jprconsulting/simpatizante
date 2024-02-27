@@ -22,31 +22,15 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
   map: any = {};
   simpatizantesFiltrados: Simpatiza[] = [];
   secciones: Seccion[] = [];
-
   constructor(
     private simpatizantesService: SimpatizantesService,
     private seccionService: SeccionService
   ) {
-    this.getsimpatizantes();
+    this.getSimpatizantes();
     this.getSecciones();
-    this.getsimpatizantes2();
+    this.getSimpatizantes2();
   }
-  setAllMarkers() {
-    this.simpatizantes.forEach((simpatizantes) => {
-      this.setInfoWindow(
-        this.getMarker(simpatizantes),
-        this.getContentString(simpatizantes.simpatizante)
-      );
-    });
-  }
-  setAllMarkers2() {
-    this.simpatizantes2.forEach((simpatizantes) => {
-      this.setInfoWindow(
-        this.getMarker2(simpatizantes),
-        this.getContentString(simpatizantes)
-      );
-    });
-  }
+
   clearMarkers() {
     this.markers.forEach((marker) => {
       marker.setMap(null);
@@ -76,7 +60,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     return marker;
   }
 
-  getMarker(simpatizante: Simpatiza) {
+  getMarker(simpatizante: Simpatiza): google.maps.Marker {
     const fillColor = simpatizante.color || 'orange'; // Usar naranja si no hay color asignado
 
     const marker = new google.maps.Marker({
@@ -116,43 +100,57 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       .subscribe({ next: (dataFromAPI) => (this.secciones = dataFromAPI) });
   }
 
-  getContentString(simpatizante: Simpatizante) {
-    return `
-    <div style="width: 450px; height: auto;" class=" text-center">
-      <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
-        src="${
-          simpatizante.genero.id === 1
-            ? '../../../../assets/images/hombre.png'
-            : '../../../../assets/images/mujer.png'
-        }"
-        alt="Sunset in the mountains">
+  getContentString(simpatizante: Simpatiza): string {
+    // Verificar si simpatizante y simpatizante.simpatizante están definidos antes de acceder a las propiedades
+    if (simpatizante && simpatizante.simpatizante) {
+      let generoImage = '';
 
-      <div class="px-4 py-4">
-        <p style="font-weight:  bolder;" class=" ">
-          Nombre:
-          <p class="text-muted ">
-            ${simpatizante.nombreCompleto}
-          </p>
-        </p>
-        <p style="font-weight:  bolder;" class="">
-          Programa inscrito:
-          <p class=" text-muted">
-          ${
-            simpatizante.programaSocial
-              ? simpatizante.programaSocial.nombre
-              : 'No hay programa social'
-          }
-          </p>
-        </p>
-        <p style="font-weight:  bolder;" class="" >
-          Dirección:
-          <p class="text-muted">
-            ${simpatizante.domicilio}
-          </p>
-        </p>
-      </div>
-    </div>
-  `;
+      switch (simpatizante.simpatizante.genero.id) {
+        case 1:
+          generoImage = '../../../../assets/images/hombre.png';
+          break;
+        case 2:
+          generoImage = '../../../../assets/images/mujer.png';
+          break;
+        default:
+          generoImage = '../../../../assets/images/binario.png'; // Manejo de casos no esperados
+      }
+
+      return `
+        <div style="width: 450px; height: auto;" class="text-center">
+          <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
+            src="${generoImage}"
+            alt="Imagen de género">
+  
+          <div class="px-4 py-4">
+            <p style="font-weight: bolder;">
+              Nombre:
+              <p class="text-muted">
+                ${simpatizante.simpatizante.nombreCompleto || 'No disponible'}
+              </p>
+            </p>
+            <p style="font-weight: bolder;">
+              Programa inscrito:
+              <p class="text-muted">
+                ${
+                  simpatizante.simpatizante.programaSocial
+                    ? simpatizante.simpatizante.programaSocial.nombre
+                    : 'No hay programa social'
+                }
+              </p>
+            </p>
+            <p style="font-weight: bolder;">
+              Dirección:
+              <p class="text-muted">
+                ${simpatizante.simpatizante.domicilio || 'No disponible'}
+              </p>
+            </p>
+          </div>
+        </div>
+      `;
+    } else {
+      return 'Información no disponible';
+    }
   }
 
   ngAfterViewInit() {
@@ -211,43 +209,139 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     };
     this.map = new google.maps.Map(mapElement, mapOptions);
   }
-  getsimpatizantes() {
+  getSimpatizantes() {
     this.simpatizantesService.getAll2().subscribe({
       next: (dataFromAPI) => {
-        this.simpatizantes = dataFromAPI;
+        this.combineResults(dataFromAPI);
         this.simpatizantesFiltrados = this.simpatizantes;
-        this.setAllMarkers();
       },
     });
   }
-  getsimpatizantes2() {
+
+  combineResults(dataFromAPI: Simpatiza[]): void {
+    const simpatizantesCombinados: {
+      simpatizante: Simpatizante;
+      color: string | null;
+      simpatiza: boolean | null;
+    }[] = [];
+
+    this.simpatizantesService.getAll().subscribe({
+      next: (dataFromAPI2) => {
+        const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
+          (simpatizante) => ({
+            ...simpatizante,
+          })
+        );
+
+        for (const simpatizante of simpatizantesMapeados) {
+          const result = {
+            simpatizante,
+            simpatiza: null,
+            color: null,
+          };
+
+          simpatizantesCombinados.push(result);
+        }
+        const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
+          (simpatiza) => simpatiza
+        );
+        const simpatizantesCombinados2 = [
+          ...simpatizantesCombinados,
+          ...simpatizantesMapeadosf,
+        ];
+
+        console.log('si?', simpatizantesCombinados2);
+        this.setAllMarkers(simpatizantesCombinados2);
+      },
+    });
+  }
+
+  filterMarkersBySeccion(id: number): void {
+    const simpatizantesCombinados: {
+      simpatizante: Simpatizante;
+      color: string | null;
+      simpatiza: boolean | null;
+    }[] = [];
+
+    this.simpatizantesService.getAll().subscribe({
+      next: (dataFromAPI2) => {
+        const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
+          (simpatizante) => ({
+            ...simpatizante,
+          })
+        );
+
+        for (const simpatizante of simpatizantesMapeados) {
+          const result = {
+            simpatizante,
+            simpatiza: null,
+            color: null,
+          };
+
+          simpatizantesCombinados.push(result);
+        }
+        this.simpatizantesService.getAll2().subscribe({
+          next: (dataFromAPI) => {
+            const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
+              (simpatiza) => simpatiza
+            );
+            const simpatizantesCombinados2 = [
+              ...simpatizantesCombinados,
+              ...simpatizantesMapeadosf,
+            ];
+
+            console.log('si?', simpatizantesCombinados2);
+            this.clearMarkers();
+
+            // Filtra los simpatizantes por sección y asigna el resultado a simpatizantesFiltrados
+            const simpatizantesFiltrados = simpatizantesCombinados2.filter(
+              (v) => v.simpatizante.seccion.id === id
+            );
+
+            // Imprime los resultados filtrados en la consola
+            console.log('Simpatizantes Filtrados:', simpatizantesFiltrados);
+
+            // Configura los marcadores y las ventanas de información con los resultados filtrados
+            simpatizantesFiltrados.forEach((simpatizante) => {
+              this.setInfoWindow(
+                this.getMarker(simpatizante),
+                this.getContentString(simpatizante)
+              );
+            });
+
+            // Imprime los datos combinados y el ID de la sección en la consola
+            console.log('simpatizantesCombinados2:', simpatizantesCombinados2);
+            console.log('ID de Sección:', id);
+
+            // Establece todos los marcadores con los datos combinados
+            this.setAllMarkers(simpatizantesFiltrados);
+          },
+        });
+      },
+    });
+  }
+
+  setAllMarkers(simpatizantesCombinados: Simpatiza[]): void {
+    simpatizantesCombinados.forEach((simpatizante) => {
+      this.setInfoWindow(
+        this.getMarker(simpatizante),
+        this.getContentString(simpatizante)
+      );
+    });
+  }
+
+  getSimpatizantes2() {
     this.simpatizantesService.getAll().subscribe({
       next: (dataFromAPI) => {
         this.simpatizantes2 = dataFromAPI;
+        this.combineResults([]);
         this.simpatizantesFiltrados = this.simpatizantes;
-        this.setAllMarkers2();
       },
     });
   }
-  onSelectSeccion(id: number) {
-    if (id) {
-      this.clearMarkers();
-
-      // Filtrar los simpatizantes por municipio y asignar el resultado a simpatizantesFiltrados
-      this.simpatizantesFiltrados = this.simpatizantes.filter(
-        (v) => v.simpatizante.seccion.id === id
-      );
-
-      this.simpatizantesFiltrados.forEach((simpatizante) => {
-        this.setInfoWindow(
-          this.getMarker(simpatizante),
-          this.getContentString(simpatizante.simpatizante)
-        );
-      });
-    }
-  }
 
   onClear() {
-    this.setAllMarkers();
+    this.getSimpatizantes();
+    this.getSimpatizantes();
   }
 }

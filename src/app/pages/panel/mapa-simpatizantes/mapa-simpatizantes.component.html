@@ -15,7 +15,7 @@
                 bindValue="id"
                 placeholder="Elegir"
                 [clearable]="true"
-                (change)="onSelectSeccion($event?.id)"
+                (change)="filterMarkersBySeccion($event?.id)"
                 (clear)="onClear()"
               >
                 <ng-template ng-header-tmp>
