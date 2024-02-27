@@ -30,6 +30,8 @@ export class SeguimientoVotoComponent implements OnInit {
   isLoading = LoadingStates.neutro;
   isModalAdd = true;
   isClaveFilled = false;
+  isUpdatingImg = false;
+  imgPreview = '';
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -59,13 +61,14 @@ export class SeguimientoVotoComponent implements OnInit {
       id: [null],
       estatusVoto: [true],
       simpatizanteId: [null, Validators.required],
-      imagenBase64: [''],
+      imagenBase64: ['',Validators.required],
     });
   }
 
 
   onFileChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;
+    this.isUpdatingImg = false;
 
     if (inputElement.files && inputElement.files.length > 0) {
       const file = inputElement.files[0];
@@ -87,6 +90,8 @@ export class SeguimientoVotoComponent implements OnInit {
   editarVoto(){
     this.voto = this.seguimientoForm.value as Voto;
     const simpatizanteId = this.seguimientoForm.get('simpatizanteId')?.value;
+
+    this.imgPreview = '';
 
 
     this.voto.simpatizante = { id: simpatizanteId } as Simpatizante
@@ -189,6 +194,9 @@ export class SeguimientoVotoComponent implements OnInit {
   }
 
   handleChangeAdd() {
+
+    this.isUpdatingImg = false;
+
     if (this.seguimientoForm) {
       this.seguimientoForm.reset();
       const estatusControl = this.seguimientoForm.get('estatusVoto');
@@ -237,9 +245,14 @@ export class SeguimientoVotoComponent implements OnInit {
   setDataModalUpdate(dto: Voto){
     this.isModalAdd = false;
     this.idUpdate = dto.id;
+    this.isUpdatingImg = true;
+    const voto = this.votosFilter.find( voto => voto.id === dto.id )
+
+    this.imgPreview = voto!.foto;
 
     this.seguimientoForm.patchValue({
       id: dto.id,
+      simpatizanteId: dto.simpatizante.id,
       estatusVoto: dto.estatusVoto,
     })
 
