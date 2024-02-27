@@ -7,6 +7,8 @@ import { GeneralWordCloud } from 'src/app/models/word-cloud';
 
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import { DashboardService } from 'src/app/core/services/dashboard.service';
+import { Seccion } from 'src/app/models/seccion';
+import { SeccionService } from 'src/app/core/services/seccion.service';
 NoDataToDisplay(Highcharts);
 declare var require: any;
 const More = require('highcharts/highcharts-more');
@@ -26,11 +28,11 @@ Wordcloud(Highcharts);
 export class NubePalabrasComponent implements AfterViewInit {
     generalWordCloud!: GeneralWordCloud;
     options: Highcharts.Options = {};
-    municipios: Municipio[] = [];
+    seccion: Seccion[] = [];
 
     constructor(
         private dashboardService: DashboardService,
-        private municipiosService: MunicipiosService
+        private seccionService: SeccionService
     ) {
         this.getWordCloud();
         this.getMunicipios();
@@ -45,9 +47,7 @@ export class NubePalabrasComponent implements AfterViewInit {
     }
 
     getMunicipios() {
-        this.municipiosService.getAll().subscribe({ next: (dataFromAPI) => this.municipios = dataFromAPI });
-        const nuevo = { id: 999, nombre: 'Todos' } as Municipio;
-        this.municipios.unshift(nuevo);
+        this.seccionService.getAll().subscribe({ next: (dataFromAPI) => this.seccion = dataFromAPI });
     }
 
     getWordCloud() {
