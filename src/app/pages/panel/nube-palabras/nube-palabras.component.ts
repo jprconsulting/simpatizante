@@ -7,6 +7,8 @@ import { GeneralWordCloud } from 'src/app/models/word-cloud';
 
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import { DashboardService } from 'src/app/core/services/dashboard.service';
+import { Seccion } from 'src/app/models/seccion';
+import { SeccionService } from 'src/app/core/services/seccion.service';
 NoDataToDisplay(Highcharts);
 declare var require: any;
 const More = require('highcharts/highcharts-more');
@@ -18,82 +20,84 @@ const Wordcloud = require('highcharts/modules/wordcloud');
 Wordcloud(Highcharts);
 
 @Component({
-    selector: 'app-nube-palabras',
-    templateUrl: './nube-palabras.component.html',
-    styleUrls: ['./nube-palabras.component.css']
+  selector: 'app-nube-palabras',
+  templateUrl: './nube-palabras.component.html',
+  styleUrls: ['./nube-palabras.component.css'],
 })
-
 export class NubePalabrasComponent implements AfterViewInit {
-    generalWordCloud!: GeneralWordCloud;
-    options: Highcharts.Options = {};
-    municipios: Municipio[] = [];
+  generalWordCloud!: GeneralWordCloud;
+  options: Highcharts.Options = {};
+  seccion: Seccion[] = [];
 
-    constructor(
-        private dashboardService: DashboardService,
-        private municipiosService: MunicipiosService
-    ) {
-        this.getWordCloud();
-        this.getMunicipios();
-    }
+  constructor(
+    private dashboardService: DashboardService,
+    private seccionService: SeccionService
+  ) {
+    this.getWordCloud();
+    this.getMunicipios();
+  }
 
-    ngAfterViewInit() {
-        this.setSettingsWordCloud();
-    }
+  ngAfterViewInit() {
+    this.setSettingsWordCloud();
+  }
 
-    onClear() {
-        this.dashboardService.updateWordCloud(this.generalWordCloud.generalWordCloud);
-    }
+  onClear() {
+    this.dashboardService.updateWordCloud(
+      this.generalWordCloud.generalWordCloud
+    );
+  }
 
-    getMunicipios() {
-        this.municipiosService.getAll().subscribe({ next: (dataFromAPI) => this.municipios = dataFromAPI });
-        const nuevo = { id: 999, nombre: 'Todos' } as Municipio;
-        this.municipios.unshift(nuevo);
-    }
+  getMunicipios() {
+    this.seccionService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.seccion = dataFromAPI) });
+  }
 
-    getWordCloud() {
-        this.dashboardService.getWordCloud().subscribe({
-            next: (dataFromAPI) => {
-                this.generalWordCloud = dataFromAPI;
-                this.dashboardService.updateWordCloud(dataFromAPI.generalWordCloud);
+  getWordCloud() {
+    this.dashboardService.getWordCloud().subscribe({
+      next: (dataFromAPI) => {
+        this.generalWordCloud = dataFromAPI;
+        this.dashboardService.updateWordCloud(dataFromAPI.generalWordCloud);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
+
+  setSettingsWordCloud() {
+    this.dashboardService.dataWordCloud$.subscribe((newData) => {
+      this.options = {
+        series: [
+          {
+            rotation: {
+              from: -60,
+              to: 60,
+              orientations: 5,
             },
-            error: (error) => {
-                console.error(error);
-            }
-        })
-    }
-
-    setSettingsWordCloud() {
-        this.dashboardService.dataWordCloud$.subscribe((newData) => {
-            this.options = {
-                series: [{
-                    rotation: {
-                        from: -60,
-                        to: 60,
-                        orientations: 5
-                    },
-                    type: 'wordcloud',
-                    data: newData,
-
-                }],
-                title: {
-                    text: ''
-                },
-                lang: {
-                    noData: '<h2 class="page-title">Sin datos</h2>'
-                },
-                tooltip: {
-                    useHTML: true,
-                    padding: 0,
-                    borderRadius: 0,
-                    borderWidth: 0,
-                    shadow: false,
-                    backgroundColor: 'none',
-                    borderColor: 'none',
-                    headerFormat: '',
-                    followPointer: false,
-                    stickOnContact: false,
-                    shared: false,
-                    pointFormat: `
+            type: 'wordcloud',
+            data: newData,
+          },
+        ],
+        title: {
+          text: '',
+        },
+        lang: {
+          noData: '<h2 class="page-title">Sin datos</h2>',
+        },
+        tooltip: {
+          useHTML: true,
+          padding: 0,
+          borderRadius: 0,
+          borderWidth: 0,
+          shadow: false,
+          backgroundColor: 'none',
+          borderColor: 'none',
+          headerFormat: '',
+          followPointer: false,
+          stickOnContact: false,
+          shared: false,
+          pointFormat: `
                         <div
                         style="
                             width: 220px;
@@ -131,26 +135,27 @@ export class NubePalabrasComponent implements AfterViewInit {
                                 <br /><br />
                             </div>
                         </div>
-                    `
-                },
-                subtitle: {
-                    text: ''
-                },
-                credits: {
-                    enabled: false
-                },
-            };
-            Highcharts.chart('container', this.options);
-        });
-    }
+                    `,
+        },
+        subtitle: {
+          text: '',
+        },
+        credits: {
+          enabled: false,
+        },
+      };
+      Highcharts.chart('container', this.options);
+    });
+  }
 
-    onSelectMunicipio(id: number) {
-        if (id) {
-            const wordCountByMunicipio = this.generalWordCloud.wordCloudPorMunicipios.find(i => i.id === id);
-            if (wordCountByMunicipio) {
-                this.dashboardService.updateWordCloud(wordCountByMunicipio.wordCloud);
-                this.setSettingsWordCloud();
-            }
-        }
+  onSelectMunicipio(id: number) {
+    if (id) {
+      const wordCountByMunicipio =
+        this.generalWordCloud.wordCloudPorMunicipios.find((i) => i.id === id);
+      if (wordCountByMunicipio) {
+        this.dashboardService.updateWordCloud(wordCountByMunicipio.wordCloud);
+        this.setSettingsWordCloud();
+      }
     }
+  }
 }

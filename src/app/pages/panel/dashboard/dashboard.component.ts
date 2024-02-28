@@ -23,7 +23,7 @@ export class DashboardComponent implements AfterViewInit {
   optionsBeneficiariosPorProgramaSocial: Highcharts.Options = {};
   optionsSimpatizantesPorProgramaSocial: Highcharts.Options = {};
   optionssimpatizantesPoEdad: Highcharts.Options = {};
-  optionssimpatizantesPorGenero: Highcharts.Options = {};
+  optionssimpatizantesPorGenero: Highcharts.Options = { };
   optionsNubePalabras: Highcharts.Options = {};
 
   constructor(private dashboardService: DashboardService) {
@@ -68,8 +68,8 @@ export class DashboardComponent implements AfterViewInit {
             },
             series: [{
               type: 'pie',
-              name: 'genero',
-              data: dataFromAPI.map((d) => ({ name: d.genero, y: d.totalSinpatizantes }))
+              name: ' ',
+              data: dataFromAPI.map((d) => ({ name: d.nombre, y: d.totalSinpatizantes })),
             }]
           };
 
@@ -123,7 +123,7 @@ export class DashboardComponent implements AfterViewInit {
             },
             series: [{
               type: 'pie',
-              name: 'nombre',
+              name: ' ',
               data: dataFromAPI.map((d) => ({ name: d.nombre, y: d.totalSinpatizantes }))
             }]
           };

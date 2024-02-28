@@ -10,10 +10,10 @@
             <ng-select
               #selectMunicipio
               [searchable]="false"
-              [items]="municipios"
-              bindLabel="nombre"
+              [items]="seccion"
+              bindLabel="claveYNombre"
               bindValue="id"
-              placeholder="Todos los municipios"
+              placeholder="Todas las seccines"
               [clearable]="true"
               (change)="onSelectMunicipio($event?.id)"
               (clear)="onClear()"
@@ -26,7 +26,7 @@
                 />
               </ng-template>
               <ng-template ng-option-tmp let-item="item" let-index="index">
-                {{ item.nombre }}
+                {{ item.claveYNombre }}
               </ng-template>
             </ng-select>
           </div>
