@@ -63,8 +63,7 @@ export class SeguimientoVotoComponent implements OnInit {
       id: [null],
       estatusVoto: [true],
       simpatizante: [null, Validators.required],
-      imagenBase64: ['',Validators.required],
-      fechaHoraVot: ['']
+      imagenBase64: ['', Validators.required],
     });
   }
 
@@ -134,10 +133,32 @@ export class SeguimientoVotoComponent implements OnInit {
         },
         error: (error) => {
           this.spinnerService.hide();
+          this.resetForm();
           this.mensajeService.mensajeError(error);
         }
       });
-    } else {
+
+    } else if( !imagenBase64 ) {
+
+      const formData = { ...this.voto };
+
+      this.spinnerService.show();
+      this.votoService.put( this.idUpdate, formData ).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Voto actualizado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.resetForm();
+          this.mensajeService.mensajeError(error);
+        }
+      });
+
+    }
+     else {
       console.error('Error: No se encontró una representación válida en base64 de la imagen.');
     }
   }
@@ -158,6 +179,7 @@ export class SeguimientoVotoComponent implements OnInit {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.seguimientoForm.reset();
+    this.imgPreview = '';
   }
 
   agregar() {
@@ -181,6 +203,7 @@ export class SeguimientoVotoComponent implements OnInit {
         },
         error: (error) => {
           this.spinnerService.hide();
+          this.resetForm();
           this.mensajeService.mensajeError(error);
         }
       });
