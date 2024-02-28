@@ -100,6 +100,11 @@ const routes: Routes = [
         loadChildren: () => import('./dashboard/dashboard.module')
           .then(i => i.DashboardModule)
       },
+      {
+        path: 'Candidaturas',
+        loadChildren: () => import('./candidaturas/candidaturas.module')
+          .then(i => i.CandidaturasModule)
+      },
     ]
   },
 ];
