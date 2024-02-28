@@ -10,6 +10,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { PaginationInstance } from 'ngx-pagination';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
+import * as XLSX from 'xlsx';
+
 @Component({
   selector: 'app-seguimiento-voto',
   templateUrl: './seguimiento-voto.component.html',
@@ -280,6 +282,58 @@ export class SeguimientoVotoComponent implements OnInit {
       }
     );
   }
+
+  exportarDatosAExcel() {
+    if (this.votos.length === 0) {
+      console.warn('La lista de votos está vacía. No se puede exportar.');
+      return;
+    }
+
+    const datosParaExportar = this.votos.map((voto) => {
+      const estatus = voto.estatusVoto ? 'Voto' : 'No Voto';
+      const fechaRegistro = voto.fechaHoraVot
+        ? new Date(voto.fechaHoraVot).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })
+        : '';
+
+      return {
+        Nombres: voto.simpatizante.nombres,
+        'Apellido paterno': voto.simpatizante.apellidoPaterno,
+        'Apellido materno': voto.simpatizante.apellidoMaterno,
+        'Fecha de registro': fechaRegistro,
+        Voto: estatus,
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    this.guardarArchivoExcel(excelBuffer, 'Votos.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
 
 
 }
