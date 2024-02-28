@@ -1,10 +1,23 @@
-import { Component, ElementRef, Inject, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
 import { Simpatizante } from 'src/app/models/votante';
 import { Candidato } from 'src/app/models/candidato';
 import { Visita } from 'src/app/models/visita';
-import { VotoService} from 'src/app/core/services/voto.service';
+import { VotoService } from 'src/app/core/services/voto.service';
 import { Voto } from 'src/app/models/voto';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
@@ -15,14 +28,14 @@ import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-seguimiento-voto',
   templateUrl: './seguimiento-voto.component.html',
-  styleUrls: ['./seguimiento-voto.component.css']
+  styleUrls: ['./seguimiento-voto.component.css'],
 })
 export class SeguimientoVotoComponent implements OnInit {
   @ViewChild('searchItem') searchItem!: ElementRef;
   @ViewChild('closebutton') closebutton!: ElementRef;
 
   seguimientoForm!: FormGroup;
-  vistas: Visita [] = [];
+  vistas: Visita[] = [];
   candidato: Candidato[] = [];
   votos: Voto[] = [];
   voto!: Voto;
@@ -41,13 +54,9 @@ export class SeguimientoVotoComponent implements OnInit {
     private votoService: VotoService,
     private spinnerService: NgxSpinnerService,
     private mensajeService: MensajeService,
-    private simpatizantesService: SimpatizantesService,
-
-
+    private simpatizantesService: SimpatizantesService
   ) {
-   this.votoService.refreshListVotos.subscribe(() => 
-      this.getSimpatizantes()
-    );
+    this.votoService.refreshListVotos.subscribe(() => this.getSimpatizantes());
     this.creteForm();
     this.getVotantes();
     this.getSimpatizantes();
@@ -57,17 +66,15 @@ export class SeguimientoVotoComponent implements OnInit {
     this.isModalAdd = false;
   }
 
-
   creteForm() {
     this.seguimientoForm = this.formBuilder.group({
       id: [null],
       estatusVoto: [true],
       simpatizante: [null, Validators.required],
-      imagenBase64: ['',Validators.required],
-      fechaHoraVot: ['']
+      imagenBase64: ['', Validators.required],
+      // fechaHoraVot: ['']
     });
   }
-
 
   onFileChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;
@@ -82,7 +89,7 @@ export class SeguimientoVotoComponent implements OnInit {
         const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
 
         this.seguimientoForm.patchValue({
-          imagenBase64: base64WithoutPrefix // Contiene solo la representación en base64
+          imagenBase64: base64WithoutPrefix, // Contiene solo la representación en base64
         });
       };
 
@@ -90,14 +97,13 @@ export class SeguimientoVotoComponent implements OnInit {
     }
   }
 
-  
   idUpdate!: number;
 
-  setDataModalUpdate(dto: Voto){
+  setDataModalUpdate(dto: Voto) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     this.isUpdatingImg = true;
-    const voto = this.votosFilter.find( voto => voto.id === dto.id )
+    const voto = this.votosFilter.find((voto) => voto.id === dto.id);
 
     this.imgPreview = voto!.foto;
 
@@ -105,17 +111,16 @@ export class SeguimientoVotoComponent implements OnInit {
       id: dto.id,
       simpatizante: dto.simpatizante.id,
       estatusVoto: dto.estatusVoto,
-      fechaHoraVot: dto.fechaHoraVot
-    })
-
+      fechaHoraVot: dto.fechaHoraVot,
+    });
   }
 
-  editarVoto(){
+  editarVoto() {
     this.voto = this.seguimientoForm.value as Voto;
     this.voto.id = this.idUpdate;
     const simpatizanteId = this.seguimientoForm.get('simpatizante')?.value;
     const imagenBase64 = this.seguimientoForm.get('imagenBase64')?.value;
-    this.voto.simpatizante = { id: simpatizanteId } as Simpatizante
+    this.voto.simpatizante = { id: simpatizanteId } as Simpatizante;
 
     this.imgPreview = '';
 
@@ -123,6 +128,25 @@ export class SeguimientoVotoComponent implements OnInit {
 
     if (imagenBase64) {
       const formData = { ...this.voto, imagenBase64 };
+
+      this.spinnerService.show();
+      this.votoService.put(this.idUpdate, formData).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Voto actualizado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.resetForm();
+          this.mensajeService.mensajeError(error);
+        },
+      });
+
+    } else if( !imagenBase64 ) {
+
+      const formData = { ...this.voto };
 
       this.spinnerService.show();
       this.votoService.put( this.idUpdate, formData ).subscribe({
@@ -134,30 +158,29 @@ export class SeguimientoVotoComponent implements OnInit {
         },
         error: (error) => {
           this.spinnerService.hide();
+          this.resetForm();
           this.mensajeService.mensajeError(error);
         }
       });
-    } else {
+
+    }
+     else {
       console.error('Error: No se encontró una representación válida en base64 de la imagen.');
     }
   }
 
-
   submit() {
     if (this.isModalAdd === false) {
-
       this.editarVoto();
-
     } else {
-
       this.agregar();
-
     }
   }
 
   resetForm() {
     this.closebutton.nativeElement.click();
     this.seguimientoForm.reset();
+    this.imgPreview = '';
   }
 
   agregar() {
@@ -172,7 +195,7 @@ export class SeguimientoVotoComponent implements OnInit {
       const formData = { ...this.voto, imagenBase64 };
 
       this.spinnerService.show();
-      this.votoService.post( formData ).subscribe({
+      this.votoService.post(formData).subscribe({
         next: () => {
           this.spinnerService.hide();
           this.mensajeService.mensajeExito('Voto guardado correctamente');
@@ -181,90 +204,79 @@ export class SeguimientoVotoComponent implements OnInit {
         },
         error: (error) => {
           this.spinnerService.hide();
+          this.resetForm();
           this.mensajeService.mensajeError(error);
-        }
+        },
       });
     } else {
-      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+      console.error(
+        'Error: No se encontró una representación válida en base64 de la imagen.'
+      );
     }
   }
 
-  
   getSimpatizantes(): void {
     this.isLoading = LoadingStates.trueLoading;
-    this.votoService.getAll().subscribe(
-      {
-        next: ( dataFromAPI ) => {
-          this.votos = dataFromAPI;
-          this.votosFilter = this.votos;
-          console.log("Votos Filter: ", this.votosFilter);
-          
-          this.isLoading = LoadingStates.falseLoading;
-        },
-        error: ( err ) => {
-          this.isLoading = LoadingStates.errorLoading;
-          console.log("getSimpatizantes: ", err );
-          
-        }
-      } 
-    )
-  }
+    this.votoService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.votos = dataFromAPI;
+        this.votosFilter = this.votos;
+        console.log('Votos Filter: ', this.votosFilter);
 
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        console.log('getSimpatizantes: ', err);
+      },
+    });
+  }
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
   }
 
   handleChangeAdd() {
-
     this.isUpdatingImg = false;
 
     if (this.seguimientoForm) {
       this.seguimientoForm.reset();
       const estatusControl = this.seguimientoForm.get('estatusVoto');
-      
+
       if (estatusControl) {
         estatusControl.setValue(true);
       }
       this.isModalAdd = true;
     }
-
   }
 
   getVotantes() {
-    this.simpatizantesService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.simpatizantes = dataFromAPI;
-          console.log("Votantes: ", this.simpatizantes );
-          
-        }
-      }
-    );
+    this.simpatizantesService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.simpatizantes = dataFromAPI;
+        console.log('Votantes: ', this.simpatizantes);
+      },
+    });
   }
 
-
-  handleChangeSearch( event: any){
+  handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.votosFilter = this.votos.filter(Voto => 
-      Voto.simpatizante.nombreCompleto.toLowerCase().includes(valueSearch) ||
-      Voto.simpatizante.nombres.toLowerCase().includes(valueSearch) ||
-      Voto.simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      Voto.simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch)
+    this.votosFilter = this.votos.filter(
+      (Voto) =>
+        Voto.simpatizante.nombreCompleto.toLowerCase().includes(valueSearch) ||
+        Voto.simpatizante.nombres.toLowerCase().includes(valueSearch) ||
+        Voto.simpatizante.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+        Voto.simpatizante.apellidoMaterno.toLowerCase().includes(valueSearch)
     );
 
-    console.log("Votantes filtrados: ", this.votosFilter);
-    
-    this.configPaginator.currentPage = 1;
+    console.log('Votantes filtrados: ', this.votosFilter);
 
+    this.configPaginator.currentPage = 1;
   }
 
-
-
-  deleteItem(id: number, nameItem: string){
-
+  deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar el simpatizante: ${nameItem}?`,
       () => {
@@ -272,15 +284,16 @@ export class SeguimientoVotoComponent implements OnInit {
         this.votoService.delete(id).subscribe({
           next: () => {
             console.log('Delete success callback executed');
-            this.mensajeService.mensajeExito('Simpatizante borrado correctamente');
+            this.mensajeService.mensajeExito(
+              'Simpatizante borrado correctamente'
+            );
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
-
           },
           error: (error) => {
             console.log('Delete error callback executed', error);
             this.mensajeService.mensajeError(error);
-          }
+          },
         });
       }
     );
@@ -336,9 +349,4 @@ export class SeguimientoVotoComponent implements OnInit {
     a.click();
     window.URL.revokeObjectURL(url);
   }
-
-
-
 }
-
-

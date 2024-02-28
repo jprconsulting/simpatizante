@@ -192,7 +192,7 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label">Nombre del promovido:</label>
-                                <ng-select 
+                                <ng-select
                                   formControlName="simpatizante" 
                                   #selectSimpatizante 
                                   [searchable]="false" 
@@ -201,6 +201,7 @@
                                   bindValue="id" 
                                   placeholder="Elegir" 
                                   [clearable]="false" 
+                                  [readonly]="isUpdatingImg"
                                   >
                                     <ng-template ng-header-tmp>
                                         <input 
@@ -268,6 +269,12 @@
                                         height="100%" 
                                         alt="Vista previa de la imagen" />
                                   </div>
+
+                                  <div *ngIf="seguimientoForm.get('imagenBase64')?.touched" class="error-message">
+                                    <div *ngIf="seguimientoForm.get('imagenBase64')?.hasError('required')">
+                                        La imagen es obligatoria
+                                    </div>
+                                </div>
                               </div>
                             </div>
                     
