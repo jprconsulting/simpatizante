@@ -193,7 +193,7 @@
                             <div class="mb-3">
                                 <label class="form-label">Nombre del promovido:</label>
                                 <ng-select 
-                                  formControlName="simpatizanteId" 
+                                  formControlName="simpatizante" 
                                   #selectSimpatizante 
                                   [searchable]="false" 
                                   [items]="simpatizantes" 
@@ -213,8 +213,8 @@
                                         {{ item.nombreCompleto }}
                                     </ng-template>
                                 </ng-select>
-                                <div *ngIf="seguimientoForm.get('simpatizanteId')?.touched" class="error-message">
-                                    <div *ngIf="seguimientoForm.get('simpatizanteId')?.hasError('required')">
+                                <div *ngIf="seguimientoForm.get('simpatizante')?.touched" class="error-message">
+                                    <div *ngIf="seguimientoForm.get('simpatizante')?.hasError('required')">
                                         El nombre del votante es obligatorio
                                     </div>
                                 </div>

@@ -62,8 +62,9 @@ export class SeguimientoVotoComponent implements OnInit {
     this.seguimientoForm = this.formBuilder.group({
       id: [null],
       estatusVoto: [true],
-      simpatizanteId: [null, Validators.required],
+      simpatizante: [null, Validators.required],
       imagenBase64: ['',Validators.required],
+      fechaHoraVot: ['']
     });
   }
 
@@ -89,23 +90,42 @@ export class SeguimientoVotoComponent implements OnInit {
     }
   }
 
+  
+  idUpdate!: number;
+
+  setDataModalUpdate(dto: Voto){
+    this.isModalAdd = false;
+    this.idUpdate = dto.id;
+    this.isUpdatingImg = true;
+    const voto = this.votosFilter.find( voto => voto.id === dto.id )
+
+    this.imgPreview = voto!.foto;
+
+    this.seguimientoForm.patchValue({
+      id: dto.id,
+      simpatizante: dto.simpatizante.id,
+      estatusVoto: dto.estatusVoto,
+      fechaHoraVot: dto.fechaHoraVot
+    })
+
+  }
+
   editarVoto(){
     this.voto = this.seguimientoForm.value as Voto;
-    const simpatizanteId = this.seguimientoForm.get('simpatizanteId')?.value;
+    this.voto.id = this.idUpdate;
+    const simpatizanteId = this.seguimientoForm.get('simpatizante')?.value;
+    const imagenBase64 = this.seguimientoForm.get('imagenBase64')?.value;
+    this.voto.simpatizante = { id: simpatizanteId } as Simpatizante
 
     this.imgPreview = '';
 
-
-    this.voto.simpatizante = { id: simpatizanteId } as Simpatizante
     this.spinnerService.show();
-    console.log('data:', this.votos);
-    const imagenBase64 = this.seguimientoForm.get('imagenBase64')?.value;
 
     if (imagenBase64) {
       const formData = { ...this.voto, imagenBase64 };
 
       this.spinnerService.show();
-      this.votoService.put( simpatizanteId, formData ).subscribe({
+      this.votoService.put( this.idUpdate, formData ).subscribe({
         next: () => {
           this.spinnerService.hide();
           this.mensajeService.mensajeExito('Voto actualizado correctamente');
@@ -143,7 +163,7 @@ export class SeguimientoVotoComponent implements OnInit {
   agregar() {
     this.voto = this.seguimientoForm.value as Voto;
 
-    const simpatizanteId = this.seguimientoForm.get('simpatizanteId')?.value;
+    const simpatizanteId = this.seguimientoForm.get('simpatizante')?.value;
     const imagenBase64 = this.seguimientoForm.get('imagenBase64')?.value;
 
     this.voto.simpatizante = { id: simpatizanteId } as Simpatizante;
@@ -242,23 +262,6 @@ export class SeguimientoVotoComponent implements OnInit {
   }
 
 
-  idUpdate!: number;
-
-  setDataModalUpdate(dto: Voto){
-    this.isModalAdd = false;
-    this.idUpdate = dto.id;
-    this.isUpdatingImg = true;
-    const voto = this.votosFilter.find( voto => voto.id === dto.id )
-
-    this.imgPreview = voto!.foto;
-
-    this.seguimientoForm.patchValue({
-      id: dto.id,
-      simpatizanteId: dto.simpatizante.id,
-      estatusVoto: dto.estatusVoto,
-    })
-
-  }
 
   deleteItem(id: number, nameItem: string){
 
