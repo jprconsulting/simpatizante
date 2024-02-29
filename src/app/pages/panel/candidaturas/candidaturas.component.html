@@ -24,24 +24,22 @@
           <div class="mb-3">
             <label class="form-label">Agrupación política:</label>
             <ng-select
-            #selectBeneficiario
-            [searchable]="false"
-            [items]="agrupaciones"
-            bindLabel="nombre"
-            bindValue="id"
-            placeholder="Elegir"
-            [clearable]="true"
-            [(ngModel)]="selectedAgrupacion"
-            (change)="onSelectOperador($event?.id)"
+              #selectBeneficiario
+              [searchable]="false"
+              [items]="agrupaciones"
+              bindLabel="nombre"
+              bindValue="id"
+              placeholder="Elegir"
+              [clearable]="true"
+              [(ngModel)]="selectedAgrupacion"
+              (change)="onSelectOperador($event?.id)"
               (clear)="onClear()"
             >
               <ng-template ng-header-tmp>
                 <input
                   class="form-control"
                   type="text"
-                  (input)="
-                    selectBeneficiario.filter($any($event.target).value)
-                  "
+                  (input)="selectBeneficiario.filter($any($event.target).value)"
                 />
               </ng-template>
               <ng-template ng-option-tmp let-item="item" let-index="index">
@@ -50,7 +48,6 @@
             </ng-select>
           </div>
           <div class="ms-auto d-flex align-items-center">
-                
             <div class="input-icon">
               <input
                 #searchItem
@@ -84,7 +81,7 @@
             <div class="progress-bar progress-bar-indeterminate bg-green"></div>
           </div>
         </div>
-        <div  *ngSwitchCase="3" class="table-responsive">
+        <div *ngSwitchCase="3" class="table-responsive">
           <table class="table table-vcenter card-table table-striped">
             <thead>
               <tr>
@@ -172,7 +169,7 @@
         <app-no-results *ngSwitchCase="4"></app-no-results>
       </ng-container>
       <!-- Fin *ngSwitchCase-->
-      
+
       <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-muted">
           Total de registros: <b>{{ candidaturasFilter.length }}</b>
@@ -336,7 +333,7 @@
                 "
               >
                 <label class="form-label">Partido*:</label>
-                <ng-select 
+                <ng-select
                   formControlName="partidos"
                   [items]="partidos"
                   #selectBeneficiario
@@ -361,7 +358,8 @@
                       alt="Foto de {{ item.logo }}"
                       width="50"
                       height="50"
-                    /> {{ item.nombre }}  
+                    />
+                    {{ item.nombre }}
                   </ng-template>
                 </ng-select>
                 <div

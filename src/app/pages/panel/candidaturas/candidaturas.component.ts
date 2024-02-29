@@ -33,7 +33,6 @@ export class CandidaturasComponent {
   selectedAgrupacion: any;
   searchText: string = '';
 
-
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private spinnerService: NgxSpinnerService,
@@ -97,7 +96,7 @@ export class CandidaturasComponent {
       },
       error: (err) => {
         this.isLoading = LoadingStates.errorLoading;
-        if ( err.status === 401 ){
+        if (err.status === 401) {
           this.mensajeService.mensajeSesionExpirada();
         }
       },
@@ -105,7 +104,9 @@ export class CandidaturasComponent {
   }
   candidaturaSelect!: Candidatura | undefined;
   onSelectOperador(id: number | null) {
-    this.candidaturaSelect = this.candidaturas.find((v) => v.tipoAgrupacionPolitica.id === id);
+    this.candidaturaSelect = this.candidaturas.find(
+      (v) => v.tipoAgrupacionPolitica.id === id
+    );
 
     if (this.candidaturaSelect) {
       const valueSearch2 =
@@ -113,20 +114,17 @@ export class CandidaturasComponent {
 
       console.log('Search Value:', valueSearch2);
 
-      this.candidaturasFilter = this.candidaturas.filter(
-        (candidaturas) =>
-          candidaturas.tipoAgrupacionPolitica.id.toString().includes(valueSearch2)
+      this.candidaturasFilter = this.candidaturas.filter((candidaturas) =>
+        candidaturas.tipoAgrupacionPolitica.id.toString().includes(valueSearch2)
       );
-      
 
       console.log('Filtered Votantes:', this.candidaturasFilter);
 
       this.configPaginator.currentPage = 1;
     }
   }
-  onClear(){
-      this.getCandidatura();
-    
+  onClear() {
+    this.getCandidatura();
   }
   mostrarImagenAmpliada(rutaImagen: string) {
     this.imagenAmpliada = rutaImagen;
@@ -203,27 +201,29 @@ export class CandidaturasComponent {
     this.candidatura = this.CandidaturaForm.value as Candidatura;
     const tipo = this.CandidaturaForm.get('tipoAgrupacionPolitica')?.value;
     this.candidatura.tipoAgrupacionPolitica = { id: tipo } as TipoAgrupaciones;
-  
+
     this.spinnerService.show();
     console.log('data:', this.candidatura);
     const imagenBase64 = this.CandidaturaForm.get('imagenBase64')?.value;
-  
+
     if (imagenBase64) {
       let formData = { ...this.candidatura, imagenBase64 };
       const tipo2 = this.CandidaturaForm.get('partidos')?.value;
-      console.log('fvdfdv', tipo2)
+      console.log('fvdfdv', tipo2);
       if (tipo2 === null) {
         delete formData.partidos;
       } else {
         const partidosList = tipo2 ? tipo2.split(',') : [];
         formData = { ...formData, partidos: partidosList };
       }
-  
+
       this.spinnerService.show();
       this.candidaturaService.post(formData).subscribe({
         next: () => {
           this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Candidatura guardada correctamente');
+          this.mensajeService.mensajeExito(
+            'Candidatura guardada correctamente'
+          );
           this.resetForm();
           this.configPaginator.currentPage = 1;
         },
@@ -234,11 +234,12 @@ export class CandidaturasComponent {
       });
     } else {
       this.spinnerService.hide();
-      this.mensajeService.mensajeError('Error: No se encontró una representación válida de la imagen.');
+      this.mensajeService.mensajeError(
+        'Error: No se encontró una representación válida de la imagen.'
+      );
     }
   }
-  
-  
+
   actualizar() {
     this.candidatura = this.CandidaturaForm.value as Candidatura;
 
@@ -326,8 +327,11 @@ export class CandidaturasComponent {
 
     this.candidaturasFilter = this.candidaturas.filter(
       (candidaturas) =>
-      candidaturas.nombre.toLowerCase().includes(valueSearch) ||
-      candidaturas.tipoAgrupacionPolitica.nombre.toLowerCase().includes(valueSearch)    );
+        candidaturas.nombre.toLowerCase().includes(valueSearch) ||
+        candidaturas.tipoAgrupacionPolitica.nombre
+          .toLowerCase()
+          .includes(valueSearch)
+    );
 
     console.log('Filtered Votantes:', this.candidaturasFilter);
 
@@ -343,14 +347,15 @@ export class CandidaturasComponent {
 
     const datosParaExportar = this.candidaturas.map((candidatura) => {
       const estatus = candidatura.estatus ? 'Activo' : 'Inactivo';
+      const partidoString = candidatura.partidos?.join(', ');
 
       return {
         'Agupacion politica': candidatura.tipoAgrupacionPolitica.nombre,
-        'Nombre': candidatura.nombre,
-        'Acronimo': candidatura.acronimo,
-        'Partido': candidatura.partidos,
-        'Orden': candidatura.orden,
-        'Estatus': estatus,
+        Nombre: candidatura.nombre,
+        Acronimo: candidatura.acronimo,
+        Partido: partidoString,
+        Orden: candidatura.orden,
+        Estatus: estatus,
       };
     });
 
@@ -379,7 +384,7 @@ export class CandidaturasComponent {
     a.click();
     window.URL.revokeObjectURL(url);
   }
-  
+
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar la visita: ${nameItem}?`,
