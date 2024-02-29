@@ -7,7 +7,7 @@ export interface Candidatura {
     imagenBase64: string;
     acronimo: string;
     estatus: boolean;
-    partidos: string;
+    partidos?: string[] | null;
     orden: number;
     tipoAgrupacionPolitica:TipoAgrupaciones;
 }

@@ -21,7 +21,36 @@
           >
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
+          <div class="mb-3">
+            <label class="form-label">Agrupación política:</label>
+            <ng-select
+            #selectBeneficiario
+            [searchable]="false"
+            [items]="agrupaciones"
+            bindLabel="nombre"
+            bindValue="id"
+            placeholder="Elegir"
+            [clearable]="true"
+            [(ngModel)]="selectedAgrupacion"
+            (change)="onSelectOperador($event?.id)"
+              (clear)="onClear()"
+            >
+              <ng-template ng-header-tmp>
+                <input
+                  class="form-control"
+                  type="text"
+                  (input)="
+                    selectBeneficiario.filter($any($event.target).value)
+                  "
+                />
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                {{ item.nombre }}
+              </ng-template>
+            </ng-select>
+          </div>
           <div class="ms-auto d-flex align-items-center">
+                
             <div class="input-icon">
               <input
                 #searchItem
@@ -49,8 +78,13 @@
           </div>
         </div>
       </div>
-      <ng-container>
-        <div>
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
+        <div  *ngSwitchCase="3" class="table-responsive">
           <table class="table table-vcenter card-table table-striped">
             <thead>
               <tr>
@@ -135,9 +169,10 @@
             </tbody>
           </table>
         </div>
+        <app-no-results *ngSwitchCase="4"></app-no-results>
       </ng-container>
       <!-- Fin *ngSwitchCase-->
-
+      
       <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-muted">
           Total de registros: <b>{{ candidaturasFilter.length }}</b>
@@ -185,7 +220,7 @@
                 <label class="form-label">Agrupación política*:</label>
                 <ng-select
                   formControlName="tipoAgrupacionPolitica"
-                  #selectBeneficiario
+                  #selecttipoagrupacion
                   [searchable]="false"
                   [items]="agrupaciones"
                   bindLabel="nombre"
@@ -198,7 +233,7 @@
                       class="form-control"
                       type="text"
                       (input)="
-                        selectBeneficiario.filter($any($event.target).value)
+                        selecttipoagrupacion.filter($any($event.target).value)
                       "
                     />
                   </ng-template>
@@ -296,16 +331,18 @@
                   CandidaturaForm.get('tipoAgrupacionPolitica')?.value !==
                     undefined &&
                   CandidaturaForm.get('tipoAgrupacionPolitica')?.value !== 1 &&
-                  CandidaturaForm.get('tipoAgrupacionPolitica')?.value !== 4
+                  CandidaturaForm.get('tipoAgrupacionPolitica')?.value !== 4 &&
+                  CandidaturaForm.get('tipoAgrupacionPolitica')?.value !== 2
                 "
               >
                 <label class="form-label">Partido*:</label>
-                <ng-select
+                <ng-select 
                   formControlName="partidos"
+                  [items]="partidos"
                   #selectBeneficiario
                   [searchable]="false"
-                  bindLabel="nombreCompleto"
-                  bindValue="id"
+                  bindLabel="nombre"
+                  bindValue="nombre"
                   placeholder="Elegir"
                   [clearable]="false"
                 >
@@ -319,7 +356,12 @@
                     />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
-                    {{ item.nombreCompleto }}
+                    <img
+                      src="{{ item.logo }}"
+                      alt="Foto de {{ item.logo }}"
+                      width="50"
+                      height="50"
+                    /> {{ item.nombre }}  
                   </ng-template>
                 </ng-select>
                 <div

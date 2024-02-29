@@ -29,6 +29,9 @@ export class CandidaturaService {
   getAll() {
     return this.http.get<Candidatura[]>(`${this.route}/obtener-todos`);
   }
+  getAllPartidos() {
+    return this.http.get<Candidatura[]>(`${this.route}/obtener-por-tipo-agrupacion-partido`);
+  }
 
   post(dto: Candidatura) {
     return this.http.post<Candidatura>(`${this.route}/crear`, dto)

@@ -8,6 +8,7 @@ import { TipoAgrupacionesService } from 'src/app/core/services/tipo-agrupaciones
 import { LoadingStates } from 'src/app/global/global';
 import { Candidatura } from 'src/app/models/candidatura';
 import { TipoAgrupaciones } from 'src/app/models/tipo-agrupaciones';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-candidaturas',
   templateUrl: './candidaturas.component.html',
@@ -20,6 +21,7 @@ export class CandidaturasComponent {
   CandidaturaForm!: FormGroup;
   isModalAdd = true;
   agrupaciones: TipoAgrupaciones[] = [];
+  partidos: Candidatura[] = [];
   candidaturas: Candidatura[] = [];
   public isUpdatingImg: boolean = false;
   public imgPreview: string = '';
@@ -28,6 +30,9 @@ export class CandidaturasComponent {
   candidaturasFilter: Candidatura[] = [];
   imagenAmpliada: string | null = null;
   id!: number;
+  selectedAgrupacion: any;
+  searchText: string = '';
+
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -43,6 +48,7 @@ export class CandidaturasComponent {
     this.creteForm();
     this.getAgrupaciones();
     this.getCandidatura();
+    this.getPartidos();
   }
   creteForm() {
     this.CandidaturaForm = this.formBuilder.group({
@@ -89,10 +95,38 @@ export class CandidaturasComponent {
         this.candidaturasFilter = this.candidaturas;
         this.isLoading = LoadingStates.falseLoading;
       },
-      error: () => {
+      error: (err) => {
         this.isLoading = LoadingStates.errorLoading;
+        if ( err.status === 401 ){
+          this.mensajeService.mensajeSesionExpirada();
+        }
       },
     });
+  }
+  candidaturaSelect!: Candidatura | undefined;
+  onSelectOperador(id: number | null) {
+    this.candidaturaSelect = this.candidaturas.find((v) => v.tipoAgrupacionPolitica.id === id);
+
+    if (this.candidaturaSelect) {
+      const valueSearch2 =
+        this.candidaturaSelect.tipoAgrupacionPolitica.id.toString();
+
+      console.log('Search Value:', valueSearch2);
+
+      this.candidaturasFilter = this.candidaturas.filter(
+        (candidaturas) =>
+          candidaturas.tipoAgrupacionPolitica.id.toString().includes(valueSearch2)
+      );
+      
+
+      console.log('Filtered Votantes:', this.candidaturasFilter);
+
+      this.configPaginator.currentPage = 1;
+    }
+  }
+  onClear(){
+      this.getCandidatura();
+    
   }
   mostrarImagenAmpliada(rutaImagen: string) {
     this.imagenAmpliada = rutaImagen;
@@ -106,6 +140,11 @@ export class CandidaturasComponent {
     this.tipoagrupacionesService
       .getAll()
       .subscribe({ next: (dataFromAPI) => (this.agrupaciones = dataFromAPI) });
+  }
+  getPartidos() {
+    this.candidaturaService
+      .getAllPartidos()
+      .subscribe({ next: (dataFromAPI) => (this.partidos = dataFromAPI) });
   }
   handleChangeAdd() {
     this.isUpdatingImg = false;
@@ -164,20 +203,27 @@ export class CandidaturasComponent {
     this.candidatura = this.CandidaturaForm.value as Candidatura;
     const tipo = this.CandidaturaForm.get('tipoAgrupacionPolitica')?.value;
     this.candidatura.tipoAgrupacionPolitica = { id: tipo } as TipoAgrupaciones;
-
+  
     this.spinnerService.show();
     console.log('data:', this.candidatura);
     const imagenBase64 = this.CandidaturaForm.get('imagenBase64')?.value;
+  
     if (imagenBase64) {
-      const formData = { ...this.candidatura, imagenBase64 };
-
+      let formData = { ...this.candidatura, imagenBase64 };
+      const tipo2 = this.CandidaturaForm.get('partidos')?.value;
+      console.log('fvdfdv', tipo2)
+      if (tipo2 === null) {
+        delete formData.partidos;
+      } else {
+        const partidosList = tipo2 ? tipo2.split(',') : [];
+        formData = { ...formData, partidos: partidosList };
+      }
+  
       this.spinnerService.show();
       this.candidaturaService.post(formData).subscribe({
         next: () => {
           this.spinnerService.hide();
-          this.mensajeService.mensajeExito(
-            'Candidatura guardada correctamente'
-          );
+          this.mensajeService.mensajeExito('Candidatura guardada correctamente');
           this.resetForm();
           this.configPaginator.currentPage = 1;
         },
@@ -188,11 +234,11 @@ export class CandidaturasComponent {
       });
     } else {
       this.spinnerService.hide();
-      this.mensajeService.mensajeError(
-        'Error: No se encontró una representación válida de la imagen.'
-      );
+      this.mensajeService.mensajeError('Error: No se encontró una representación válida de la imagen.');
     }
   }
+  
+  
   actualizar() {
     this.candidatura = this.CandidaturaForm.value as Candidatura;
 
@@ -272,8 +318,68 @@ export class CandidaturasComponent {
     console.log('setDataUpdateDTO', dto);
   }
 
-  handleChangeSearch(event: any) {}
-  exportarDatosAExcel() {}
+  handleChangeSearch(event: any) {
+    const inputValue = event.target.value;
+    const valueSearch = inputValue.toLowerCase();
+
+    console.log('Search Value:', valueSearch);
+
+    this.candidaturasFilter = this.candidaturas.filter(
+      (candidaturas) =>
+      candidaturas.nombre.toLowerCase().includes(valueSearch) ||
+      candidaturas.tipoAgrupacionPolitica.nombre.toLowerCase().includes(valueSearch)    );
+
+    console.log('Filtered Votantes:', this.candidaturasFilter);
+
+    this.configPaginator.currentPage = 1;
+  }
+  exportarDatosAExcel() {
+    if (this.candidaturas.length === 0) {
+      console.warn(
+        'La lista de simpatizantes está vacía, no se puede exportar.'
+      );
+      return;
+    }
+
+    const datosParaExportar = this.candidaturas.map((candidatura) => {
+      const estatus = candidatura.estatus ? 'Activo' : 'Inactivo';
+
+      return {
+        'Agupacion politica': candidatura.tipoAgrupacionPolitica.nombre,
+        'Nombre': candidatura.nombre,
+        'Acronimo': candidatura.acronimo,
+        'Partido': candidatura.partidos,
+        'Orden': candidatura.orden,
+        'Estatus': estatus,
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    this.guardarArchivoExcel(excelBuffer, 'Candidaturas.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+  
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar la visita: ${nameItem}?`,
