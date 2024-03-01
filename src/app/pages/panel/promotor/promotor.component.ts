@@ -120,9 +120,7 @@ export class PromotorComponent implements OnInit {
         ],
       ],
       operadoresIds: [[], Validators.required],
-      telefono: ['',Validators.pattern(
-        /^[0-9]+$/
-      ),],
+      telefono: ['', Validators.pattern(/^[0-9]+$/)],
     });
   }
 
@@ -150,12 +148,11 @@ export class PromotorComponent implements OnInit {
           this.promotoresFilter = this.promotores;
           this.isLoading = LoadingStates.falseLoading;
         },
-        error: (err ) => {
+        error: (err) => {
           this.isLoading = LoadingStates.errorLoading;
-          if ( err.status === 401 ){
+          if (err.status === 401) {
             this.mensajeService.mensajeSesionExpirada();
           }
-
         },
       });
     }
@@ -211,7 +208,7 @@ export class PromotorComponent implements OnInit {
         promotor.nombres.toLowerCase().includes(valueSearch) ||
         promotor.apellidoPaterno.toLowerCase().includes(valueSearch) ||
         promotor.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-        promotor.telefono.toString().includes(valueSearch)
+        promotor.telefono?.toString().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }

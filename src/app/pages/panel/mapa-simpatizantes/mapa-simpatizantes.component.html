@@ -11,7 +11,7 @@
                 #selectsecciones
                 [searchable]="false"
                 [items]="secciones"
-                bindLabel="clave"
+                bindLabel="claveYNombre"
                 bindValue="id"
                 placeholder="Elegir"
                 [clearable]="true"
@@ -26,7 +26,7 @@
                   />
                 </ng-template>
                 <ng-template ng-option-tmp let-item="item" let-index="index">
-                  {{ item.clave }}
+                  {{ item.claveYNombre }}
                 </ng-template>
               </ng-select>
             </div>

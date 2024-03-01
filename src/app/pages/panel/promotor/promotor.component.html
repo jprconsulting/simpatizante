@@ -320,6 +320,18 @@
                   class="form-control"
                   formControlName="telefono"
                 />
+                <div
+                  *ngIf="promotorForm.get('telefono')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      promotorForm.get('telefono')?.hasError('pattern')
+                    "
+                  >
+                    El numero de teléfono no valido
+                  </div>
+                </div>
               </div>
             </div>
           </div>

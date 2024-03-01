@@ -80,7 +80,7 @@ export class IncidenciasComponent implements OnInit {
       retroalimentacion: ['', Validators.required],
       tipoIncidencia: [null, Validators.required],
       casilla: [null, Validators.required],
-      imagenBase64: ['', Validators.required],
+      imagenBase64: [''],
       direccion: [null, Validators.required],
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
@@ -429,8 +429,9 @@ export class IncidenciasComponent implements OnInit {
         },
       });
     } else {
-      console.error(
-        'Error: No se encontró una representación válida en base64 de la imagen.'
+      this.spinnerService.hide();
+      this.mensajeService.mensajeError(
+        'Error: No se encontró una representación válida de la imagen.'
       );
     }
   }
