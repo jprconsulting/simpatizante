@@ -247,8 +247,8 @@ export class CandidatosComponent implements OnInit {
       ],
       cargo: [null, Validators.required],
       estatus: [true],
-      imagenBase64: ['', Validators.required],
-      emblemaBase64: ['', Validators.required],
+      imagenBase64: [''],
+      emblemaBase64: [''],
     });
   }
 
@@ -461,8 +461,9 @@ export class CandidatosComponent implements OnInit {
         },
       });
     } else {
-      console.error(
-        'Error: No se encontró una representación válida en base64 de la imagen.'
+      this.spinnerService.hide();
+      this.mensajeService.mensajeError(
+        'Error: No se encontró una representación válida de la imagen.'
       );
     }
   }

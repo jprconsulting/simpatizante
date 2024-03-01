@@ -120,7 +120,9 @@ export class PromotorComponent implements OnInit {
         ],
       ],
       operadoresIds: [[], Validators.required],
-      telefono: [''],
+      telefono: ['',Validators.pattern(
+        /^[0-9]+$/
+      ),],
     });
   }
 
