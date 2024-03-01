@@ -339,9 +339,11 @@
                   #selectBeneficiario
                   [searchable]="false"
                   bindLabel="nombre"
+                  [multiple]="true"
                   bindValue="nombre"
                   placeholder="Elegir"
-                  [clearable]="false"
+                  [closeOnSelect]="false"
+                  [hideSelected]="true"
                 >
                   <ng-template ng-header-tmp>
                     <input
