@@ -210,12 +210,8 @@ export class CandidaturasComponent {
     if (imagenBase64) {
       let formData = { ...this.candidatura, imagenBase64 };
       const tipo2 = this.CandidaturaForm.get('partidos')?.value;
-      if (tipo2 === null) {
-        delete formData.partidos;
-      } else {
-        const partidosList = tipo2 ? tipo2 as string[] : undefined;
-        formData = { ...formData, partidos: partidosList };
-      }
+      const partidosList = tipo2 ? (tipo2 as string[]) : [];
+      formData = { ...formData, partidos: partidosList };
 
       this.spinnerService.show();
       this.candidaturaService.post(formData).subscribe({
@@ -250,11 +246,10 @@ export class CandidaturasComponent {
     this.imgPreview = '';
 
     if (!imagenBase64) {
-      
       const tipo2 = this.CandidaturaForm.get('partidos')?.value;
 
-        const partidosList = tipo2 ? tipo2 as string[] : undefined;
-       const formData = { ...this.candidatura, partidos: partidosList };
+      const partidosList = tipo2 ? (tipo2 as string[]) : undefined;
+      const formData = { ...this.candidatura, partidos: partidosList };
       this.spinnerService.show();
 
       this.candidaturaService.put(this.id, formData).subscribe({
@@ -273,8 +268,12 @@ export class CandidaturasComponent {
       });
     } else if (imagenBase64) {
       const tipo2 = this.CandidaturaForm.get('partidos')?.value;
-        const partidosList = tipo2 ? tipo2 as string[] : undefined;
-       const formData = { ...this.candidatura, partidos: partidosList, imagenBase64 };
+      const partidosList = tipo2 ? (tipo2 as string[]) : undefined;
+      const formData = {
+        ...this.candidatura,
+        partidos: partidosList,
+        imagenBase64,
+      };
       this.spinnerService.show();
 
       this.candidaturaService.put(this.id, formData).subscribe({
