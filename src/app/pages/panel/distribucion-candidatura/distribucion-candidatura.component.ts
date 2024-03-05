@@ -40,6 +40,9 @@ export class DistribucionCandidaturaComponent {
   isModalAdd = true;
   agrupaciones: TipoAgrupaciones[] = [];
   partidos: Candidatura[] = [];
+  comun: Candidatura[] = [];
+  coalicion: Candidatura[] = [];
+  independiente: Candidatura[] = [];
   candidaturas: Candidatura[] = [];
   public isUpdatingImg: boolean = false;
   public imgPreview: string = '';
@@ -89,6 +92,9 @@ export class DistribucionCandidaturaComponent {
     this.getDistritos();
     this.getComunidad();
     this.getDistribucion();
+    this.getComun();
+    this.getCoalicion();
+    this.getIndependiente();
   }
   creteForm() {
     this.CandidaturaForm = this.formBuilder.group({
@@ -103,18 +109,7 @@ export class DistribucionCandidaturaComponent {
           ),
         ],
       ],
-      acronimo: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.pattern(
-            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
-          ),
-        ],
-      ],
-      imagenBase64: [''],
-      tipoAgrupacionPolitica: [null, Validators.required],
+      tipoEleccion: [null, Validators.required],
       partidos: [null],
       estatus: [true],
       orden: [
@@ -290,16 +285,37 @@ export class DistribucionCandidaturaComponent {
       modal.style.display = 'block';
     }
   }
+
   getAgrupaciones() {
     this.tipoagrupacionesService
       .getAll()
       .subscribe({ next: (dataFromAPI) => (this.agrupaciones = dataFromAPI) });
   }
+
   getPartidos() {
     this.candidaturaService
       .getAllPartidos()
       .subscribe({ next: (dataFromAPI) => (this.partidos = dataFromAPI) });
   }
+
+  getComun() {
+    this.candidaturaService
+      .getAllComun()
+      .subscribe({ next: (dataFromAPI) => (this.comun = dataFromAPI) });
+  }
+
+  getCoalicion() {
+    this.candidaturaService
+      .getAllCoalicion()
+      .subscribe({ next: (dataFromAPI) => (this.coalicion = dataFromAPI) });
+  }
+
+  getIndependiente() {
+    this.candidaturaService
+      .getAllIndependiente()
+      .subscribe({ next: (dataFromAPI) => (this.independiente = dataFromAPI) });
+  }
+
   handleChangeAdd() {
     this.isUpdatingImg = false;
     this.CandidaturaForm.reset();

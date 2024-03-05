@@ -7,7 +7,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { Candidatura } from 'src/app/models/candidatura';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CandidaturaService {
   route = `${environment.apiUrl}/candidaturas`;
@@ -16,7 +16,7 @@ export class CandidaturaService {
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
-  ) { }
+  ) {}
 
   get refreshListCandidatura() {
     return this._refreshListCandidatura$;
@@ -29,22 +29,41 @@ export class CandidaturaService {
   getAll() {
     return this.http.get<Candidatura[]>(`${this.route}/obtener-todos`);
   }
+
   getAllPartidos() {
-    return this.http.get<Candidatura[]>(`${this.route}/obtener-por-tipo-agrupacion-partido`);
+    return this.http.get<Candidatura[]>(
+      `${this.route}/obtener-por-tipo-agrupacion-partido`
+    );
+  }
+
+  getAllComun() {
+    return this.http.get<Candidatura[]>(`${this.route}/obtener-por-tipo-comun`);
+  }
+
+  getAllCoalicion() {
+    return this.http.get<Candidatura[]>(
+      `${this.route}/obtener-por-tipo-coalicion`
+    );
+  }
+
+  getAllIndependiente() {
+    return this.http.get<Candidatura[]>(
+      `${this.route}/obtener-por-tipo-independiente`
+    );
   }
 
   post(dto: Candidatura) {
-    return this.http.post<Candidatura>(`${this.route}/crear`, dto)
-      .pipe(
-        tap(() => {
-          this._refreshListCandidatura$.next(null);
-        }),
-        catchError(this.handleErrorService.handleError)
-      );
+    return this.http.post<Candidatura>(`${this.route}/crear`, dto).pipe(
+      tap(() => {
+        this._refreshListCandidatura$.next(null);
+      }),
+      catchError(this.handleErrorService.handleError)
+    );
   }
 
   put(id: number, dto: Candidatura) {
-    return this.http.put<Candidatura>(`${this.route}/actualizar/${id}`, dto)
+    return this.http
+      .put<Candidatura>(`${this.route}/actualizar/${id}`, dto)
       .pipe(
         tap(() => {
           this._refreshListCandidatura$.next(null);
@@ -54,13 +73,11 @@ export class CandidaturaService {
   }
 
   delete(id: number) {
-    return this.http.delete(`${this.route}/eliminar/${id}`)
-      .pipe(
-        tap(() => {
-          this._refreshListCandidatura$.next(null);
-        }),
-        catchError(this.handleErrorService.handleError)
-      );
+    return this.http.delete(`${this.route}/eliminar/${id}`).pipe(
+      tap(() => {
+        this._refreshListCandidatura$.next(null);
+      }),
+      catchError(this.handleErrorService.handleError)
+    );
   }
-
 }
