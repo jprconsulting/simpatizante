@@ -14,4 +14,7 @@ export class MunicipiosService {
   getAll() {
     return this.http.get<Municipio[]>(`${this.route}/obtener-todos`);
   }
+  getById(id: number) {
+    return this.http.get<Municipio[]>(`${this.route}/obtener-por-id/${id}`);
+  }
 }
