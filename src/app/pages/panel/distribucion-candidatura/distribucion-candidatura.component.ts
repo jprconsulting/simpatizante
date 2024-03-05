@@ -4,19 +4,15 @@ import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CandidaturaService } from 'src/app/core/services/candidaturs.service';
 
-import { PaisService } from 'src/app/core/services/pais.service';
-import { EstadoService } from 'src/app/core/services/estados.service';
 import { DistritoService } from 'src/app/core/services/distrito.service';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { ComunidadService } from 'src/app/core/services/comunidad.service';
 import { TipoEleccionService } from 'src/app/core/services/tipo-elecciones.service';
-
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { TipoAgrupacionesService } from 'src/app/core/services/tipo-agrupaciones.service';
+
 import { LoadingStates } from 'src/app/global/global';
 import { Candidatura } from 'src/app/models/candidatura';
-import { Pais } from 'src/app/models/pais';
-import { Estado } from 'src/app/models/estados';
 import { Distrito } from 'src/app/models/distrito';
 import { Municipio } from 'src/app/models/municipio';
 import { Comunidad } from 'src/app/models/comunidad';
@@ -36,7 +32,7 @@ export class DistribucionCandidaturaComponent {
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
   distribucion!: DistribucionCandidatura;
-  CandidaturaForm!: FormGroup;
+  DistribucionForm!: FormGroup;
   isModalAdd = true;
   agrupaciones: TipoAgrupaciones[] = [];
   partidos: Candidatura[] = [];
@@ -53,8 +49,6 @@ export class DistribucionCandidaturaComponent {
   id!: number;
   selectedAgrupacion: any;
   searchText: string = '';
-  paises: Pais[] = [];
-  estados: Estado[] = [];
   distritos: Distrito[] = [];
   municipios: Municipio[] = [];
   tiposEleccion: TipoEleccion[] = [];
@@ -68,8 +62,6 @@ export class DistribucionCandidaturaComponent {
     private formBuilder: FormBuilder,
     private tipoagrupacionesService: TipoAgrupacionesService,
     private candidaturaService: CandidaturaService,
-    private paisService: PaisService,
-    private estadoService: EstadoService,
     private distritoService: DistritoService,
     private municipiosService: MunicipiosService,
     private comunidadService: ComunidadService,
@@ -85,8 +77,6 @@ export class DistribucionCandidaturaComponent {
     this.getAgrupaciones();
     this.getCandidatura();
     this.getPartidos();
-    this.getPais();
-    this.getEstado();
     this.getMunicipio();
     this.getTipoEleccion();
     this.getDistritos();
@@ -97,29 +87,16 @@ export class DistribucionCandidaturaComponent {
     this.getIndependiente();
   }
   creteForm() {
-    this.CandidaturaForm = this.formBuilder.group({
+    this.DistribucionForm = this.formBuilder.group({
       id: [null],
-      nombre: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.pattern(
-            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
-          ),
-        ],
-      ],
       tipoEleccion: [null, Validators.required],
       partidos: [null],
-      estatus: [true],
-      orden: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(1),
-          Validators.pattern(/^([0-9])+$/),
-        ],
-      ],
+      distrito: [null],
+      municipio: [null],
+      comunidad: [null],
+      coalicion: [null],
+      comun: [null],
+      independiente: [null],
     });
   }
 
@@ -144,38 +121,6 @@ export class DistribucionCandidaturaComponent {
     this.comunidadService.getAll().subscribe({
       next: (dataFromAPI) => {
         this.comunidades = dataFromAPI;
-        this.isLoading = LoadingStates.falseLoading;
-      },
-      error: (err) => {
-        this.isLoading = LoadingStates.errorLoading;
-        if (err.status === 401) {
-          this.mensajeService.mensajeSesionExpirada();
-        }
-      },
-    });
-  }
-
-  getPais() {
-    this.isLoading = LoadingStates.trueLoading;
-    this.paisService.getAll().subscribe({
-      next: (dataFromAPI) => {
-        this.paises = dataFromAPI;
-        this.isLoading = LoadingStates.falseLoading;
-      },
-      error: (err) => {
-        this.isLoading = LoadingStates.errorLoading;
-        if (err.status === 401) {
-          this.mensajeService.mensajeSesionExpirada();
-        }
-      },
-    });
-  }
-
-  getEstado() {
-    this.isLoading = LoadingStates.trueLoading;
-    this.estadoService.getAll().subscribe({
-      next: (dataFromAPI) => {
-        this.estados = dataFromAPI;
         this.isLoading = LoadingStates.falseLoading;
       },
       error: (err) => {
@@ -318,50 +263,33 @@ export class DistribucionCandidaturaComponent {
 
   handleChangeAdd() {
     this.isUpdatingImg = false;
-    this.CandidaturaForm.reset();
+    this.DistribucionForm.reset();
     this.isModalAdd = true;
-    const estatusControl = this.CandidaturaForm.get('estatus');
+    const estatusControl = this.DistribucionForm.get('estatus');
     if (estatusControl) {
       estatusControl.setValue(true);
     }
-    this.CandidaturaForm.get('tipoAgrupacionPolitica')?.valueChanges.subscribe(
+    this.DistribucionForm.get('tipoAgrupacionPolitica')?.valueChanges.subscribe(
       (value) => {
         if (value === 1 || value === 4) {
-          this.CandidaturaForm.get('partidos')?.setValue(''); // Reinicia el valor de la segunda casilla si no cumple la condición
+          this.DistribucionForm.get('partidos')?.setValue(''); // Reinicia el valor de la segunda casilla si no cumple la condición
         }
       }
     );
   }
-  onFileChange(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    this.isUpdatingImg = false;
 
-    if (inputElement.files && inputElement.files.length > 0) {
-      const file = inputElement.files[0];
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
-
-        this.CandidaturaForm.patchValue({
-          imagenBase64: base64WithoutPrefix, // Contiene solo la representación en base64
-        });
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
   onSelectCandidato(id: number) {
     if (id) {
       this.agrupacionSelect = this.agrupaciones.find((b) => b.id === id);
     }
   }
+
   resetForm() {
     this.closebutton.nativeElement.click();
-    this.CandidaturaForm.reset();
+    this.DistribucionForm.reset();
     this.getPartidos();
   }
+
   submit() {
     if (this.isModalAdd === false) {
       this.actualizar();
@@ -370,9 +298,72 @@ export class DistribucionCandidaturaComponent {
     }
   }
 
-  agregar() {}
+  agregar() {
+    this.distribucion = this.DistribucionForm.value as DistribucionCandidatura;
+    const tipo = this.DistribucionForm.get('tipoEleccion')?.value;
+    this.distribucion.tipoEleccion = { id: tipo } as TipoAgrupaciones;
+    const distrito = this.DistribucionForm.get('distrito')?.value;
+    this.distribucion.distrito = { id: distrito } as Distrito;
+    const municipio = this.DistribucionForm.get('muncipio')?.value;
+    this.distribucion.municipio = { id: municipio } as Municipio;
+    const comunidad = this.DistribucionForm.get('comunidad')?.value;
+    this.distribucion.comunidad = { id: distrito } as Comunidad;
+    this.spinnerService.show();
+    console.log('data:', this.distribucion);
 
-  actualizar() {}
+    const partidos = this.DistribucionForm.get('partidos')?.value;
+    const coalicion = this.DistribucionForm.get('coalicion')?.value;
+    const independiente = this.DistribucionForm.get('independiente')?.value;
+    const comun = this.DistribucionForm.get('comun')?.value;
+
+    // Combinar los valores de todos los selectores en una sola lista
+    const allPartidos = [...partidos, ...coalicion, ...independiente, ...comun];
+
+    // Asignar la lista de partidos al objeto distribucion
+    this.distribucion.partidos = allPartidos;
+
+    this.spinnerService.show();
+    this.distribucionCandidaturaService.post(this.distribucion).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito('Distribución guardada correctamente');
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      },
+    });
+  }
+
+  actualizar() {
+    this.distribucion = this.DistribucionForm.value as DistribucionCandidatura;
+
+    const tipo = this.DistribucionForm.get('tipoAgrupacionPolitica')?.value;
+    this.distribucion.tipoEleccion = { id: tipo } as TipoAgrupaciones;
+
+    const tipo2 = this.DistribucionForm.get('partidos')?.value;
+    const partidosList = tipo2 ? (tipo2 as string[]) : undefined;
+    const formData = { ...this.distribucion, partidos: partidosList };
+
+    this.spinnerService.show();
+
+    this.distribucionCandidaturaService.put(this.id, formData).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito(
+          'Candidatura actualizada correctamente'
+        );
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      },
+    });
+  }
 
   setDataModalUpdate(dto: Candidatura) {
     this.isModalAdd = false;
@@ -385,7 +376,7 @@ export class DistribucionCandidaturaComponent {
     this.imgPreview = candidatura!.logo;
     this.isUpdatingImg = true;
 
-    this.CandidaturaForm.patchValue({
+    this.DistribucionForm.patchValue({
       id: dto.id,
 
       nombre: dto.nombre,
@@ -396,7 +387,7 @@ export class DistribucionCandidaturaComponent {
       orden: dto.orden,
       imagenBase64: '',
     });
-    console.log('setDataUpdateVistaForm ', this.CandidaturaForm.value);
+    console.log('setDataUpdateVistaForm ', this.DistribucionForm.value);
     console.log('setDataUpdateDTO', dto);
   }
 
