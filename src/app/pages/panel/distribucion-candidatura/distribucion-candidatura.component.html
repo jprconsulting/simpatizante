@@ -62,13 +62,13 @@
                   {{ distribucion.tipoEleccion.nombre }}
                 </td>
                 <td class="text-muted">
-                  {{ distribucion.distrito.nombre }}
+                  {{ distribucion.distrito?.nombre }}
                 </td>
                 <td class="text-muted">
-                  {{ distribucion.municipio.nombre }}
+                  {{ distribucion.municipio?.nombre }}
                 </td>
                 <td class="text-muted">
-                  {{ distribucion.comunidad.nombre }}
+                  {{ distribucion.comunidad?.nombre }}
                 </td>
                 <td style="width: 50px">
                   <div>
@@ -91,7 +91,7 @@
 
       <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-muted">
-          Total de registros: <b>{{ candidaturasFilter.length }}</b>
+          Total de registros: <b>{{ distribucionCandidaturaFilter.length }}</b>
         </p>
         <div class="m-0 ms-auto">
           <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
@@ -112,7 +112,7 @@
         <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <form [formGroup]="CandidaturaForm" (ngSubmit)="submit()">
+      <form [formGroup]="DistribucionForm" (ngSubmit)="submit()">
         <div class="modal-body">
 
           <div class="row">
@@ -133,7 +133,7 @@
             </div>
 
             <div class="col-lg-6"
-              *ngIf="CandidaturaForm.controls['tipoEleccion'].value == 1 || CandidaturaForm.controls['tipoEleccion'].value == 2">
+              *ngIf="DistribucionForm.controls['tipoEleccion'].value == 1 || DistribucionForm.controls['tipoEleccion'].value == 2">
               <div class="mb-3">
                 <label class="form-label">Distrito:</label>
                 <ng-select formControlName="distrito" #selectDistrito [searchable]="false" [items]="distritos"
@@ -149,7 +149,7 @@
               </div>
             </div>
 
-            <div class="col-lg-6" *ngIf="CandidaturaForm.controls['tipoEleccion'].value == 3">
+            <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 3">
               <div class="mb-3">
                 <label class="form-label">Municipio:</label>
                 <ng-select formControlName="municipio" #selectMunicipio [searchable]="false" [items]="municipios"
@@ -167,7 +167,7 @@
               </div>
             </div>
 
-            <div class="col-lg-6" *ngIf="CandidaturaForm.controls['tipoEleccion'].value == 4">
+            <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 4">
               <div class="mb-3">
                 <label class="form-label">Comunidad:</label>
                 <ng-select formControlName="comunidad" #selectComunidad [searchable]="false" [items]="comunidades"
@@ -201,9 +201,9 @@
                   <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
                 </ng-template>
               </ng-select>
-              <div *ngIf="CandidaturaForm.get('partidos')?.touched" class="error-message">
+              <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
                 <div *ngIf="
-                                  CandidaturaForm.get('partidos')?.hasError('required')
+                                  DistribucionForm.get('partidos')?.hasError('required')
                                 ">
                   El partido es requerido
                 </div>
@@ -214,7 +214,7 @@
           <div class="col-lg-12">
             <div class="mb-3">
               <label class="form-label">Candidatura común*:</label>
-              <ng-select formControlName="partidos" [items]="comun" #selectBeneficiario [searchable]="false"
+              <ng-select formControlName="comun" [items]="comun" #selectBeneficiario [searchable]="false"
                 bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false"
                 [hideSelected]="true">
                 <ng-template ng-header-tmp>
@@ -226,9 +226,9 @@
                   <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
                 </ng-template>
               </ng-select>
-              <div *ngIf="CandidaturaForm.get('partidos')?.touched" class="error-message">
+              <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
                 <div *ngIf="
-                                            CandidaturaForm.get('partidos')?.hasError('required')
+                                            DistribucionForm.get('partidos')?.hasError('required')
                                           ">
                   El partido es requerido
                 </div>
@@ -239,7 +239,7 @@
           <div class="col-lg-12">
             <div class="mb-3">
               <label class="form-label">Coalición*:</label>
-              <ng-select formControlName="partidos" [items]="coalicion" #selectBeneficiario [searchable]="false"
+              <ng-select formControlName="coalicion" [items]="coalicion" #selectBeneficiario [searchable]="false"
                 bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false"
                 [hideSelected]="true">
                 <ng-template ng-header-tmp>
@@ -251,9 +251,9 @@
                   <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
                 </ng-template>
               </ng-select>
-              <div *ngIf="CandidaturaForm.get('partidos')?.touched" class="error-message">
+              <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
                 <div *ngIf="
-                                            CandidaturaForm.get('partidos')?.hasError('required')
+                                            DistribucionForm.get('partidos')?.hasError('required')
                                           ">
                   El partido es requerido
                 </div>
@@ -264,9 +264,9 @@
           <div class="col-lg-12">
             <div class="mb-3">
               <label class="form-label">Candidatura independiente*:</label>
-              <ng-select formControlName="partidos" [items]="independiente" #selectBeneficiario [searchable]="false"
-                bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false"
-                [hideSelected]="true">
+              <ng-select formControlName="independiente" [items]="independiente" #selectBeneficiario
+                [searchable]="false" bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir"
+                [closeOnSelect]="false" [hideSelected]="true">
                 <ng-template ng-header-tmp>
                   <input class="form-control" type="text" (input)="
                                               selectBeneficiario.filter($any($event.target).value)
@@ -276,9 +276,9 @@
                   <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
                 </ng-template>
               </ng-select>
-              <div *ngIf="CandidaturaForm.get('partidos')?.touched" class="error-message">
+              <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
                 <div *ngIf="
-                                            CandidaturaForm.get('partidos')?.hasError('required')
+                                            DistribucionForm.get('partidos')?.hasError('required')
                                           ">
                   El partido es requerido
                 </div>
@@ -291,8 +291,8 @@
           Todos los campos marcados con * son requeridos
         </p>
         <div class=" modal-footer ">
-          <button type=" submit " class=" btn btn-success " [disabled]=" !CandidaturaForm.valid ">
-            {{ CandidaturaForm ? " Agregar " : " Actualizar " }}
+          <button type=" submit " class=" btn btn-success " [disabled]=" !DistribucionForm.valid ">
+            {{ DistribucionForm ? " Agregar " : " Actualizar " }}
           </button>
         </div>
       </form>

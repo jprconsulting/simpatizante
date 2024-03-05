@@ -10,7 +10,7 @@ import { DistribucionCandidatura } from 'src/app/models/distribucion-candidatura
   providedIn: 'root',
 })
 export class DistribucionCandidaturaService {
-  route = `${environment.apiUrl}/distribucion-candidatura`;
+  route = `${environment.apiUrl}/distribucion-candidaturas`;
   private _refreshListCandidatura$ =
     new Subject<DistribucionCandidatura | null>();
 

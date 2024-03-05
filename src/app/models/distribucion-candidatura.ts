@@ -9,10 +9,8 @@ import { Candidatura } from './candidatura';
 export interface DistribucionCandidatura {
   id: number;
   tipoEleccion: TipoEleccion;
-  pais: Pais;
-  estado: Estado;
-  distrito: Distrito;
-  municipio: Municipio;
-  comunidad: Comunidad;
-  candidatura: Candidatura;
+  distrito?: Distrito;
+  municipio?: Municipio;
+  comunidad?: Comunidad;
+  partidos?: string[] | null;
 }
