@@ -7,7 +7,7 @@
 >
   <p style="color: white">Guardando...</p>
 </ngx-spinner>
-<app-page-header headerTitle="Candidaturas"></app-page-header>
+<app-page-header headerTitle="Combinaciones"></app-page-header>
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -16,24 +16,20 @@
           <button
             class="btn btn-primary me-2"
             data-bs-toggle="modal"
-            data-bs-target="#modal-candidatura"
+            data-bs-target="#modal-combinacion"
             (click)="handleChangeAdd()"
           >
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
           <div class="mb-3">
-            <label class="form-label">Agrupación política:</label>
+            <label class="form-label">Coalicion:</label>
             <ng-select
               #selectBeneficiario
               [searchable]="false"
-              [items]="agrupaciones"
               bindLabel="nombre"
               bindValue="id"
               placeholder="Elegir"
               [clearable]="true"
-              [(ngModel)]="selectedAgrupacion"
-              (change)="onSelectOperador($event?.id)"
-              (clear)="onClear()"
             >
               <ng-template ng-header-tmp>
                 <input
@@ -54,7 +50,6 @@
                 type="text"
                 class="form-control form-control-rounded"
                 placeholder="Buscar"
-                (input)="handleChangeSearch($event)"
               />
               <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
@@ -63,7 +58,6 @@
             <a
               class="btn w-30 btn-icon"
               aria-label="Dribbble"
-              (click)="exportarDatosAExcel()"
               title="Descargar excel de usuarios"
               style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
             >
@@ -75,27 +69,22 @@
           </div>
         </div>
       </div>
-      <ng-container [ngSwitch]="isLoading">
-        <div style="height: 300px" *ngSwitchCase="2">
-          <div class="progress">
-            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-          </div>
-        </div>
-        <div *ngSwitchCase="3" class="table-responsive">
+      <ng-container >
+        
+        <div  class="table-responsive">
           <table class="table table-vcenter card-table table-striped">
             <thead>
               <tr>
                 <th class="text-center">#</th>
                 <th style="text-transform: none; font-size: inherit">
-                  Agrupacion Politica
+                  Coalición
                 </th>
                 <th style="text-transform: none; font-size: inherit">Nombre</th>
-                <th style="text-transform: none; font-size: inherit">Logo</th>
+                <th style="text-transform: none; font-size: inherit">Partidos</th>
                 <th
                   style="text-transform: none; font-size: inherit"
-                  class="text-center"
                 >
-                  Estatus
+                  Logo
                 </th>
                 <th style="text-transform: none; font-size: inherit">
                   Acciones
@@ -104,59 +93,40 @@
             </thead>
             <tbody>
               <tr
-                *ngFor="
-                  let candidatura of candidaturasFilter
-                    | paginate : configPaginator;
-                  let pointIndex = index
-                "
+                
               >
                 <td class="text-center">
-                  {{
-                    configPaginator.itemsPerPage *
-                      (configPaginator.currentPage - 1) +
-                      pointIndex +
-                      1
-                  }}
+                 1
                 </td>
                 <td class="text-muted">
-                  {{ candidatura.tipoAgrupacionPolitica.nombre }}
+                  
                 </td>
                 <td class="text-muted">
-                  {{ candidatura.nombre }}
+                
+                </td>
+                <td class="text-muted">
+                
                 </td>
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
                     <img
-                      src="{{ candidatura.logo }}"
-                      alt="Foto de {{ candidatura.logo }}"
                       width="50"
                       height="50"
-                      (click)="mostrarImagenAmpliada(candidatura.logo)"
                     />
                   </div>
-                </td>
-                <td class="text-center">
-                  <ng-container *ngIf="candidatura.estatus; else elseEstatus">
-                    <span class="badge bg-success me-1"> </span> Activo
-                  </ng-container>
-                  <ng-template #elseEstatus>
-                    <span class="badge bg-warning me-1"></span> Inactivo
-                  </ng-template>
                 </td>
                 <td style="width: 50px">
                   <div>
                     <button
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
-                      data-bs-target="#modal-candidatura"
+                      data-bs-target="#modal-combinacion"
                       style="margin-right: 5px"
-                      (click)="setDataModalUpdate(candidatura)"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
-                      (click)="deleteItem(candidatura.id, candidatura.nombre)"
                     >
                       <i class="ti ti-eraser"></i>
                     </button>
@@ -166,17 +136,15 @@
             </tbody>
           </table>
         </div>
-        <app-no-results *ngSwitchCase="4"></app-no-results>
       </ng-container>
       <!-- Fin *ngSwitchCase-->
 
       <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-muted">
-          Total de registros: <b>{{ candidaturasFilter.length }}</b>
+          Total de registros: <b>1</b>
         </p>
         <div class="m-0 ms-auto">
           <pagination-controls
-            (pageChange)="onPageChange($event)"
             previousLabel=""
             nextLabel=""
           >
@@ -189,7 +157,7 @@
 
 <div
   class="modal modal-blur fade"
-  id="modal-candidatura"
+  id="modal-combinacion"
   tabindex="-1"
   role="dialog"
   aria-hidden="true"
@@ -198,7 +166,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          {{ isModalAdd ? "Agregar" : "Actualizar" }} candidatura
+            {{ isModalAdd ? "Agregar" : "Actualizar" }} combinación
         </h5>
         <button
           #closebutton
@@ -209,18 +177,18 @@
         ></button>
       </div>
 
-      <form [formGroup]="CandidaturaForm" (ngSubmit)="submit()">
+      <form [formGroup]="CombinacionForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="row">
             <div class="col-lg-12">
               <div class="mb-3">
-                <label class="form-label">Agrupación política*:</label>
+                <label class="form-label">Coalición*:</label>
                 <ng-select
-                  formControlName="tipoAgrupacionPolitica"
-                  #selecttipoagrupacion
+                  formControlName="coalicion"
+                  #seleccoalicion
                   [searchable]="false"
-                  [items]="agrupaciones"
                   bindLabel="nombre"
+                  [items]="candidatura"
                   bindValue="id"
                   placeholder="Elegir"
                   [clearable]="false"
@@ -230,7 +198,7 @@
                       class="form-control"
                       type="text"
                       (input)="
-                        selecttipoagrupacion.filter($any($event.target).value)
+                        seleccoalicion.filter($any($event.target).value)
                       "
                     />
                   </ng-template>
@@ -239,17 +207,17 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="CandidaturaForm.get('tipoAgrupacionPolitica')?.touched"
+                  *ngIf="CombinacionForm.get('coalicion')?.touched"
                   class="error-message"
                 >
                   <div
                     *ngIf="
-                      CandidaturaForm.get('tipoAgrupacionPolitica')?.hasError(
+                      CombinacionForm.get('coalicion')?.hasError(
                         'required'
                       )
                     "
                   >
-                    La agrupación política es requerida
+                    La coalicion es requerida
                   </div>
                 </div>
               </div>
@@ -263,81 +231,38 @@
                   formControlName="nombre"
                 />
                 <div
-                  *ngIf="CandidaturaForm.get('nombre')?.touched"
+                  *ngIf="CombinacionForm.get('nombre')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="CandidaturaForm.get('nombre')?.hasError('required')"
+                    *ngIf="CombinacionForm.get('nombre')?.hasError('required')"
                   >
                     El nombre es reuqerido
                   </div>
                   <div
-                    *ngIf="CandidaturaForm.get('nombre')?.hasError('minlength')"
+                    *ngIf="CombinacionForm.get('nombre')?.hasError('minlength')"
                   >
                     El nombre debe tener al menos 3 caracteres
                   </div>
                   <div
-                    *ngIf="CandidaturaForm.get('nombre')?.hasError('pattern')"
+                    *ngIf="CombinacionForm.get('nombre')?.hasError('pattern')"
                   >
                     El nombre no debe tener números ni caracteres especiales
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-lg-12">
-              <div class="mb-3">
-                <label class="form-label">Acrónimo*:</label>
-                <input
-                  rows="5"
-                  class="form-control"
-                  placeholder=""
-                  formControlName="acronimo"
-                />
-                <div
-                  *ngIf="CandidaturaForm.get('acronimo')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
-                      CandidaturaForm.get('acronimo')?.hasError('required')
-                    "
-                  >
-                    El acrónimo es requerido
-                  </div>
-                  <div
-                    *ngIf="CandidaturaForm.get('acronimo')?.hasError('pattern')"
-                  >
-                    El acrónimo no puede tener nùmeros ni caracteres especiales
-                  </div>
-                  <div
-                    *ngIf="
-                      CandidaturaForm.get('acronimo')?.hasError('minlength')
-                    "
-                  >
-                    El acrónimo debe tener al menos 3 caracteres
-                  </div>
-                </div>
+                
               </div>
             </div>
             <div class="col-lg-12">
               <div
                 class="mb-3"
-                *ngIf="
-                  CandidaturaForm.get('tipoAgrupacionPolitica')?.value !==
-                    null &&
-                  CandidaturaForm.get('tipoAgrupacionPolitica')?.value !==
-                    undefined &&
-                  CandidaturaForm.get('tipoAgrupacionPolitica')?.value !== 1 &&
-                  CandidaturaForm.get('tipoAgrupacionPolitica')?.value !== 4 &&
-                  CandidaturaForm.get('tipoAgrupacionPolitica')?.value !== 2
-                "
               >
-                <label class="form-label">Partido*:</label>
+                <label class="form-label">Partidos*:</label>
                 <ng-select
                   formControlName="partidos"
-                  [items]="partidos"
                   #selectPartidos
                   [searchable]="false"
+                  [items]="partidos"
                   bindLabel="nombre"
                   [multiple]="true"
                   bindValue="nombre"
@@ -365,75 +290,18 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="CandidaturaForm.get('partidos')?.touched"
+                  *ngIf="CombinacionForm.get('partidos')?.touched"
                   class="error-message"
                 >
                   <div
                     *ngIf="
-                      CandidaturaForm.get('partidos')?.hasError('required')
+                      CombinacionForm.get('partidos')?.hasError('required')
                     "
                   >
                     El partido es requerido
                   </div>
                 </div>
-              </div>
-            </div>
-            <!-- Columna para el interruptor de estatus -->
-            <div class="col-lg-2">
-              <div class="mb-3 custom-green-switch">
-                <label for="estadoActivo" class="form-label">Estatus</label>
-                <label class="form-check form-switch checkbox-verde">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    formControlName="estatus"
-                  />
-                  <span
-                    class="form-check-label"
-                    [ngClass]="
-                      CandidaturaForm.get('estatus')?.value
-                        ? 'text-success'
-                        : 'text-danger'
-                    "
-                  >
-                    {{
-                      CandidaturaForm.get("estatus")?.value
-                        ? "Activo"
-                        : "Inactivo"
-                    }}
-                  </span>
-                </label>
-              </div>
-            </div>
-            <div class="col-lg-12">
-              <div class="mb-3">
-                <label class="form-label">Orden*:</label>
-                <input
-                  rows="5"
-                  class="form-control"
-                  placeholder=""
-                  formControlName="orden"
-                />
-                <div
-                  *ngIf="CandidaturaForm.get('orden')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="CandidaturaForm.get('orden')?.hasError('required')"
-                  >
-                    El orden es requerido
-                  </div>
-                  <div
-                    *ngIf="CandidaturaForm.get('orden')?.hasError('pattern')"
-                  >
-                    El orden no puede tener letras ni caracteres especiales
-                  </div>
-                  <div
-                    *ngIf="CandidaturaForm.get('orden')?.hasError('minlength')"
-                  >
-                    El orden debe tener al menos 1 caracteres
-                  </div>
-                </div>
+                
               </div>
             </div>
             <div class="col-lg-12">
@@ -444,13 +312,12 @@
                   <input
                     class="input"
                     type="file"
-                    (change)="onFileChange($event)"
                     formControlName="imagenBase64"
+                    (change)="onFileChange($event)"
                   />
-
                   <div *ngIf="isUpdatingImg" class="img-preview my-1">
                     <img
-                      [src]="imgPreview"
+                    [src]="imgPreview"
                       alt="Image preview"
                       class="img-fluid"
                     />
@@ -462,10 +329,10 @@
               <div class="mb-3">
                 <img
                   class="img"
-                  *ngIf="CandidaturaForm.get('imagenBase64')?.value"
+                  *ngIf="CombinacionForm.get('imagenBase64')?.value"
                   [src]="
                     'data:image/jpeg;base64,' +
-                    CandidaturaForm.get('imagenBase64')?.value
+                    CombinacionForm.get('imagenBase64')?.value
                   "
                   width="100%"
                   height="100%"
@@ -485,9 +352,9 @@
           <button
             type="submit"
             class="btn btn-success"
-            [disabled]="!CandidaturaForm.valid"
+            [disabled]="!CombinacionForm.valid"
           >
-            {{ CandidaturaForm ? "Agregar" : "Actualizar" }}
+          {{ CombinacionForm ? "Agregar" : "Actualizar" }}
           </button>
         </div>
       </form>
@@ -515,8 +382,8 @@
       </div>
       <div class="modal-body">
         <img
-          *ngIf="imagenAmpliada"
-          [src]="imagenAmpliada"
+        *ngIf="imagenAmpliada"
+        [src]="imagenAmpliada"
           alt="Imagen Ampliada"
           class="w-100"
         />

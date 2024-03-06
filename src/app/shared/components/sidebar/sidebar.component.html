@@ -69,6 +69,13 @@
                 </span>
                 <span class="nav-link-title">Candidaturas</span>
               </a>
+              <a *appHasClaim="'CanAccessCandidaturas'" class="dropdown-item" [routerLink]="['Combinaciones']"
+                routerLinkActive="active" #rlNubePalabras="routerLinkActive">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-layers-subtract"></i>
+                </span>
+                <span class="nav-link-title">Combinaciones</span>
+              </a>
             </div>
           </div>
         </ul>
