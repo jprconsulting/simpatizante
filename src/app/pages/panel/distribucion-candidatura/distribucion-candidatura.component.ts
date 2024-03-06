@@ -32,6 +32,7 @@ export class DistribucionCandidaturaComponent {
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
   distribucion!: DistribucionCandidatura;
+  DistribucionCandidatura!: DistribucionCandidatura;
   DistribucionForm!: FormGroup;
   isModalAdd = true;
   agrupaciones: TipoAgrupaciones[] = [];
@@ -55,6 +56,10 @@ export class DistribucionCandidaturaComponent {
   comunidades: Comunidad[] = [];
   distribucionCandidatura: DistribucionCandidatura[] = [];
   distribucionCandidaturaFilter: DistribucionCandidatura[] = [];
+  isLoadingModalPartidos = LoadingStates.neutro;
+  pagModalSecciones: number = 1;
+  initialValueModalSearchPartidos: string = '';
+  partidosFil: DistribucionCandidatura[] = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -181,6 +186,32 @@ export class DistribucionCandidaturaComponent {
     });
   }
 
+  getDistribucionId(distribucionId: number) {
+    this.isLoadingModalPartidos = LoadingStates.trueLoading;
+
+    this.distribucionCandidaturaService.getById(distribucionId).subscribe({
+      next: (dataFromAPI) => {
+        this.DistribucionCandidatura = dataFromAPI;
+        this.isLoadingModalPartidos = LoadingStates.falseLoading;
+      },
+      error: () => {
+        this.isLoadingModalPartidos = LoadingStates.errorLoading;
+      },
+    });
+  }
+
+  verPartidosDistribucion(distribucionId: number) {
+    this.pagModalSecciones = 1;
+
+    this.getDistribucionId(distribucionId);
+
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+
   getDistribucion() {
     this.isLoading = LoadingStates.trueLoading;
     this.distribucionCandidaturaService.getAll().subscribe({
@@ -222,14 +253,6 @@ export class DistribucionCandidaturaComponent {
   onClear() {
     this.getCandidatura();
   }
-  mostrarImagenAmpliada(rutaImagen: string) {
-    this.imagenAmpliada = rutaImagen;
-    const modal = document.getElementById('modal-imagen-ampliada');
-    if (modal) {
-      modal.classList.add('show');
-      modal.style.display = 'block';
-    }
-  }
 
   getAgrupaciones() {
     this.tipoagrupacionesService
@@ -269,13 +292,6 @@ export class DistribucionCandidaturaComponent {
     if (estatusControl) {
       estatusControl.setValue(true);
     }
-    this.DistribucionForm.get('tipoAgrupacionPolitica')?.valueChanges.subscribe(
-      (value) => {
-        if (value === 1 || value === 4) {
-          this.DistribucionForm.get('partidos')?.setValue(''); // Reinicia el valor de la segunda casilla si no cumple la condición
-        }
-      }
-    );
   }
 
   onSelectCandidato(id: number) {
@@ -287,7 +303,6 @@ export class DistribucionCandidaturaComponent {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.DistribucionForm.reset();
-    this.getPartidos();
   }
 
   submit() {
@@ -304,10 +319,10 @@ export class DistribucionCandidaturaComponent {
     this.distribucion.tipoEleccion = { id: tipo } as TipoAgrupaciones;
     const distrito = this.DistribucionForm.get('distrito')?.value;
     this.distribucion.distrito = { id: distrito } as Distrito;
-    const municipio = this.DistribucionForm.get('muncipio')?.value;
+    const municipio = this.DistribucionForm.get('municipio')?.value;
     this.distribucion.municipio = { id: municipio } as Municipio;
     const comunidad = this.DistribucionForm.get('comunidad')?.value;
-    this.distribucion.comunidad = { id: distrito } as Comunidad;
+    this.distribucion.comunidad = { id: comunidad } as Comunidad;
     this.spinnerService.show();
     console.log('data:', this.distribucion);
 
@@ -317,7 +332,20 @@ export class DistribucionCandidaturaComponent {
     const comun = this.DistribucionForm.get('comun')?.value;
 
     // Combinar los valores de todos los selectores en una sola lista
-    const allPartidos = [...partidos, ...coalicion, ...independiente, ...comun];
+    let allPartidos: string[] = [];
+
+    if (partidos) {
+      allPartidos = [...allPartidos, ...partidos];
+    }
+    if (coalicion) {
+      allPartidos = [...allPartidos, ...coalicion];
+    }
+    if (independiente) {
+      allPartidos = [...allPartidos, ...independiente];
+    }
+    if (comun) {
+      allPartidos = [...allPartidos, ...comun];
+    }
 
     // Asignar la lista de partidos al objeto distribucion
     this.distribucion.partidos = allPartidos;
@@ -328,6 +356,7 @@ export class DistribucionCandidaturaComponent {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito('Distribución guardada correctamente');
         this.resetForm();
+        this.getDistribucion();
         this.configPaginator.currentPage = 1;
       },
       error: (error) => {
@@ -461,11 +490,12 @@ export class DistribucionCandidaturaComponent {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar la distribución?`,
       () => {
-        this.candidaturaService.delete(id).subscribe({
+        this.distribucionCandidaturaService.delete(id).subscribe({
           next: () => {
             this.mensajeService.mensajeExito(
               'Distribución borrada correctamente'
             );
+            this.getDistribucion();
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
@@ -477,5 +507,19 @@ export class DistribucionCandidaturaComponent {
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
+  }
+
+  clearInputModalSearch() {
+    this.initialValueModalSearchPartidos = '';
+  }
+
+  cerrarModal() {
+    this.clearInputModalSearch();
+    this.imagenAmpliada = null;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+    }
   }
 }
