@@ -69,8 +69,12 @@
           </div>
         </div>
       </div>
-      <ng-container >
-        
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+            <div class="progress">
+              <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+            </div>
+          </div>
         <div  class="table-responsive">
           <table class="table table-vcenter card-table table-striped">
             <thead>
@@ -93,25 +97,37 @@
             </thead>
             <tbody>
               <tr
-                
+              *ngFor="
+              let combinacion of combinacionesFilter
+                | paginate : configPaginator;
+              let pointIndex = index
+            "
               >
                 <td class="text-center">
-                 1
+                    {{
+                        configPaginator.itemsPerPage *
+                          (configPaginator.currentPage - 1) +
+                          pointIndex +
+                          1
+                      }}
                 </td>
                 <td class="text-muted">
-                  
+                    {{ combinacion.candidatura.nombre }}
                 </td>
                 <td class="text-muted">
-                
+                    {{ combinacion.nombre }}
                 </td>
                 <td class="text-muted">
-                
+                    {{ combinacion.partidos }}
                 </td>
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
                     <img
+                      src="{{ combinacion.logo }}"
+                      alt="Foto de {{ combinacion.logo }}"
                       width="50"
                       height="50"
+                      (click)="mostrarImagenAmpliada(combinacion.logo)"
                     />
                   </div>
                 </td>
@@ -184,7 +200,7 @@
               <div class="mb-3">
                 <label class="form-label">Coalición*:</label>
                 <ng-select
-                  formControlName="coalicion"
+                  formControlName="candidatura"
                   #seleccoalicion
                   [searchable]="false"
                   bindLabel="nombre"
@@ -207,12 +223,12 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="CombinacionForm.get('coalicion')?.touched"
+                  *ngIf="CombinacionForm.get('candidatura')?.touched"
                   class="error-message"
                 >
                   <div
                     *ngIf="
-                      CombinacionForm.get('coalicion')?.hasError(
+                      CombinacionForm.get('candidatura')?.hasError(
                         'required'
                       )
                     "

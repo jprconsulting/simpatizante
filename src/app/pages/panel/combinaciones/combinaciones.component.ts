@@ -3,8 +3,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CandidaturaService } from 'src/app/core/services/candidaturs.service';
+import { CombinacionService } from 'src/app/core/services/combinacion.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
+import { LoadingStates } from 'src/app/global/global';
 import { Candidatura } from 'src/app/models/candidatura';
+import { Combinacion } from 'src/app/models/combinacion';
+import { TipoAgrupaciones } from 'src/app/models/tipo-agrupaciones';
 
 @Component({
   selector: 'app-combinaciones',
@@ -20,22 +24,28 @@ export class CombinacionesComponent {
   public isUpdatingImg: boolean = false;
   public imgPreview: string = '';
   imagenAmpliada: string | null = null;
+  isLoading = LoadingStates.neutro;
+  combinaciones: Combinacion[] = [];
+  combinacionesFilter: Combinacion[] = [];
+  combinacion!: Combinacion;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private spinnerService: NgxSpinnerService,
     private formBuilder: FormBuilder,
     private candidaturaService: CandidaturaService,
+    private combinacionService: CombinacionService,
     private mensajeService: MensajeService
   ) {
     this.getPartidos();
     this.creteForm();
     this.getCandidatura();
+    this.getCombinaciones();
   }
   creteForm() {
     this.CombinacionForm = this.formBuilder.group({
       id: [null],
-      coalicion: ['', Validators.required],
+      candidatura: ['', Validators.required],
       nombre: [
         '',
         [
@@ -67,9 +77,48 @@ export class CombinacionesComponent {
       this.agregar();
     }
   }
-  agregar(){
+  agregar() {
+    this.combinacion = this.CombinacionForm.value as Combinacion;
+    const tipo = this.CombinacionForm.get('candidatura')?.value;
+    this.combinacion.candidatura = { id: tipo } as Candidatura;
 
-  }
+    this.spinnerService.show();
+    console.log('data:', this.combinacion);
+    const imagenBase64 = this.CombinacionForm.get('imagenBase64')?.value;
+
+    if (imagenBase64) {
+        let formData = {
+            ...this.combinacion,
+            imagenBase64,
+            partidos: [] as string[], // Initialize 'partidos' property as an empty array
+        };
+
+        const tipo2 = this.CombinacionForm.get('partidos')?.value;
+        const partidosList = tipo2 ? (tipo2 as string[]) : [];
+        formData = { ...formData, partidos: partidosList };
+
+        // Elimina la propiedad 'id' del objeto formData
+        delete formData.id;
+
+        this.spinnerService.show();
+        this.combinacionService.post(formData).subscribe({
+            next: () => {
+                this.spinnerService.hide();
+                this.mensajeService.mensajeExito('Candidatura guardada correctamente');
+                this.resetForm();
+                this.configPaginator.currentPage = 1;
+            },
+            error: (error) => {
+                this.spinnerService.hide();
+                this.mensajeService.mensajeError(error);
+            },
+        });
+    } else {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError('Error: No se encontró una representación válida de la imagen.');
+    }
+}
+
   actualizar(){
 
   }
@@ -87,9 +136,9 @@ export class CombinacionesComponent {
 
         this.CombinacionForm.patchValue({
           imagenBase64: base64WithoutPrefix, // Contiene solo la representación en base64
+         
         });
       };
-
       reader.readAsDataURL(file);
     }
   }
@@ -110,4 +159,30 @@ export class CombinacionesComponent {
     this.resetForm();
     this.isModalAdd = true;
   }
+  getCombinaciones() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.combinacionService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.combinaciones = dataFromAPI;
+        this.combinacionesFilter = this.combinaciones;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        if (err.status === 401) {
+          this.mensajeService.mensajeSesionExpirada();
+        }
+      },
+    });
+  }
+  mostrarImagenAmpliada(rutaImagen: string) {
+    this.imagenAmpliada = rutaImagen;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+  
+
 }
