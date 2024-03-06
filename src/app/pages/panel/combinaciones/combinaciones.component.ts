@@ -67,7 +67,7 @@ export class CombinacionesComponent {
   }
   getCandidatura() {
     this.candidaturaService
-      .getAll()
+      .getAllCoalicion()
       .subscribe({ next: (dataFromAPI) => (this.candidatura = dataFromAPI) });
   }
   submit() {
