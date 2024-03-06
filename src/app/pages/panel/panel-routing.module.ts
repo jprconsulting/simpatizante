@@ -141,6 +141,13 @@ const routes: Routes = [
             './distribucion-candidatura/distribucion-candidatura.module'
           ).then((i) => i.DistribucionCandidaturaModule),
       },
+      {
+        path: 'Combinaciones',
+        loadChildren: () =>
+          import('./combinaciones/combinaciones.module').then(
+            (i) => i.CombinacionesModule
+          ),
+      },
     ],
   },
 ];
