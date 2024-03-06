@@ -1,7 +1,7 @@
 import { Candidatura } from './candidatura';
 
 export interface Combinacion {
-  id?: number;
+  id: number;
   candidatura: Candidatura;
   nombre: string;
   partidos?: string[] | null;

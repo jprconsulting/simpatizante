@@ -17,6 +17,7 @@ import { TipoAgrupaciones } from 'src/app/models/tipo-agrupaciones';
 })
 export class CombinacionesComponent {
   @ViewChild('closebutton') closebutton!: ElementRef;
+  @ViewChild('searchItem') searchItem!: ElementRef;
   CombinacionForm!: FormGroup;
   partidos: Candidatura[] = [];
   candidatura: Candidatura[] = [];
@@ -98,7 +99,7 @@ export class CombinacionesComponent {
         formData = { ...formData, partidos: partidosList };
 
         // Elimina la propiedad 'id' del objeto formData
-        delete formData.id;
+        
 
         this.spinnerService.show();
         this.combinacionService.post(formData).subscribe({
@@ -183,6 +184,22 @@ export class CombinacionesComponent {
       modal.style.display = 'block';
     }
   }
-  
+  deleteItem(id: number, nameItem: string) {
+    this.mensajeService.mensajeAdvertencia(
+      `¿Estás seguro de eliminar la combinacion: ${nameItem}?`,
+      () => {
+        this.combinacionService.delete(id).subscribe({
+          next: () => {
+            this.mensajeService.mensajeExito(
+              'Combinacion borrada correctamente'
+            );
+            this.configPaginator.currentPage = 1;
+            this.searchItem.nativeElement.value = '';
+          },
+          error: (error) => this.mensajeService.mensajeError(error),
+        });
+      }
+    );
+  }
 
 }
