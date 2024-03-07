@@ -22,6 +22,10 @@ import * as XLSX from 'xlsx';
 import { TipoEleccion } from 'src/app/models/tipo-eleccion';
 import { DistribucionCandidatura } from '../../../models/distribucion-candidatura';
 import { DistribucionCandidaturaService } from 'src/app/core/services/distribucion-candidatura.service';
+import { concatMap, map } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-distribucion-candidatura',
@@ -60,6 +64,7 @@ export class DistribucionCandidaturaComponent {
   pagModalSecciones: number = 1;
   initialValueModalSearchPartidos: string = '';
   partidosFil: DistribucionCandidatura[] = [];
+  partidosConLogo: { nombre: string; logoUrl: string }[] = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -102,6 +107,40 @@ export class DistribucionCandidaturaComponent {
       coalicion: [null],
       comun: [null],
       independiente: [null],
+    });
+  }
+
+  getLogo(partido: string): { nombre: string; logoUrl: string } | undefined {
+    return this.partidosConLogo.find(
+      (partidoConLogo) => partidoConLogo.nombre === partido
+    );
+  }
+
+  obtenerLogosPartidos(): void {
+    this.partidosConLogo = []; // Limpiamos el arreglo antes de comenzar
+
+    const solicitudes = this.partidos.map((partido) =>
+      this.candidaturaService.obtenerLogoPartido(partido.nombre).pipe(
+        map((respuesta) => ({
+          nombre: partido.nombre,
+          logoUrl: respuesta.logoUrl,
+        })),
+        catchError((error) => {
+          console.error(
+            `Error al obtener el logo para el partido ${partido.nombre}:`,
+            error
+          );
+          // Devolver un objeto con la URL de un logo por defecto en caso de error
+          return of({
+            nombre: partido.nombre,
+            logoUrl: 'URL del logo por defecto',
+          });
+        })
+      )
+    );
+
+    forkJoin(solicitudes).subscribe((partidosConLogo) => {
+      this.partidosConLogo = partidosConLogo;
     });
   }
 
@@ -186,12 +225,15 @@ export class DistribucionCandidaturaComponent {
     });
   }
 
-  getDistribucionId(distribucionId: number) {
+  getDistribucionId(distribucionId: number): void {
     this.isLoadingModalPartidos = LoadingStates.trueLoading;
 
     this.distribucionCandidaturaService.getById(distribucionId).subscribe({
       next: (dataFromAPI) => {
         this.DistribucionCandidatura = dataFromAPI;
+
+        this.obtenerLogosPartidos();
+
         this.isLoadingModalPartidos = LoadingStates.falseLoading;
       },
       error: () => {

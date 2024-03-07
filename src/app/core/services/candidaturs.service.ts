@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Candidatura } from 'src/app/models/candidatura';
 
@@ -20,6 +20,12 @@ export class CandidaturaService {
 
   get refreshListCandidatura() {
     return this._refreshListCandidatura$;
+  }
+
+  obtenerLogoPartido(nombrePartido: string): Observable<{ logoUrl: string }> {
+    return this.http.get<{ logoUrl: string }>(
+      `${this.route}/obtener-logo-por-nombre?nombre=${nombrePartido}`
+    );
   }
 
   getById(id: number) {

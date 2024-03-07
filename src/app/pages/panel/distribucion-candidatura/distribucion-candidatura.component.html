@@ -1,318 +1,366 @@
 <ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
-    <p style="color: white">Guardando...</p>
+  <p style="color: white">Guardando...</p>
 </ngx-spinner>
 <app-page-header headerTitle="Distribución candidatura"></app-page-header>
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body border-bottom py-3">
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-candidatura" (click)="handleChangeAdd()">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="d-flex align-items-center">
+          <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-candidatura"
+            (click)="handleChangeAdd()">
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
 
-                    <div class="ms-auto d-flex align-items-center">
-                        <div class="input-icon">
-                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
-                            <span class="input-icon-addon">
+          <div class="ms-auto d-flex align-items-center">
+            <div class="input-icon">
+              <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar"
+                (input)="handleChangeSearch($event)" />
+              <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
               </span>
-                        </div>
-                        <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de usuarios" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
-                            <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
-                        </a>
-                    </div>
-                </div>
             </div>
-            <ng-container [ngSwitch]="isLoading">
-                <div style="height: 300px" *ngSwitchCase="2">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-                    </div>
-                </div>
-                <div *ngSwitchCase="3" class="table-responsive">
-                    <table class="table table-vcenter card-table table-striped">
-                        <thead>
-                            <tr>
-                                <th class="text-center">#</th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Tipo elección
-                                </th>
-                                <th style="text-transform: none; font-size: inherit">Distrito</th>
-                                <th style="text-transform: none; font-size: inherit">Municipio</th>
-                                <th style="text-transform: none; font-size: inherit">Comunidad</th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Acciones
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="
+            <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()"
+              title="Descargar excel de usuarios" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
+              <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
+        <div *ngSwitchCase="3" class="table-responsive">
+          <table class="table table-vcenter card-table table-striped">
+            <thead>
+              <tr>
+                <th class="text-center">#</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Tipo elección
+                </th>
+                <th style="text-transform: none; font-size: inherit">Distrito</th>
+                <th style="text-transform: none; font-size: inherit">Municipio</th>
+                <th style="text-transform: none; font-size: inherit">Comunidad</th>
+                <th style="text-transform: none; font-size: inherit">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="
                   let distribucion of distribucionCandidaturaFilter
                     | paginate : configPaginator;
                   let pointIndex = index
                 ">
-                                <td class="text-center">
-                                    {{ configPaginator.itemsPerPage * (configPaginator.currentPage - 1) + pointIndex + 1 }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ distribucion.tipoEleccion.nombre }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ distribucion.distrito?.nombre || 'N/R' }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ distribucion.municipio?.nombre || 'N/R' }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ distribucion.comunidad?.nombre || 'N/R' }}
-                                </td>
-                                <td style="width: 50px">
-                                    <div class="d-flex justify-content-between">
-                                        <button alt="Ver secciones asociadas al operador" style="margin-right: 10px" class="btn btn-primary btn-icon btn-sm" data-bs-toggle="modal" (click)="verPartidosDistribucion(distribucion.id)">
+                <td class="text-center">
+                  {{ configPaginator.itemsPerPage * (configPaginator.currentPage - 1) + pointIndex + 1 }}
+                </td>
+                <td class="text-muted">
+                  {{ distribucion.tipoEleccion.nombre }}
+                </td>
+                <td class="text-muted">
+                  {{ distribucion.distrito?.nombre || 'N/R' }}
+                </td>
+                <td class="text-muted">
+                  {{ distribucion.municipio?.nombre || 'N/R' }}
+                </td>
+                <td class="text-muted">
+                  {{ distribucion.comunidad?.nombre || 'N/R' }}
+                </td>
+                <td style="width: 50px">
+                  <div class="d-flex justify-content-between">
+                    <button alt="Ver secciones asociadas al operador" style="margin-right: 10px"
+                      class="btn btn-primary btn-icon btn-sm" data-bs-toggle="modal"
+                      (click)="verPartidosDistribucion(distribucion.id)">
                       <i class="ti ti-eye"></i>
                     </button>
-                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-candidatura" style="margin-right: 5px">
+                    <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal"
+                      data-bs-target="#modal-candidatura" style="margin-right: 5px">
                       <i class="ti ti-edit"></i>
                     </button>
-                                        <button class="btn btn-danger btn-icon btn-sm" (click)="deleteItem(distribucion.id)">
+                    <button class="btn btn-danger btn-icon btn-sm" (click)="deleteItem(distribucion.id)">
                       <i class="ti ti-eraser"></i>
                     </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <app-no-results *ngSwitchCase="4"></app-no-results>
-            </ng-container>
-            <!-- Fin *ngSwitchCase-->
-
-            <div class="card-footer d-flex align-items-center">
-                <p class="m-0 text-muted">
-                    Total de registros: <b>{{ distribucionCandidaturaFilter.length }}</b>
-                </p>
-                <div class="m-0 ms-auto">
-                    <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
-                    </pagination-controls>
-                </div>
-            </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        <app-no-results *ngSwitchCase="4"></app-no-results>
+      </ng-container>
+      <!-- Fin *ngSwitchCase-->
+
+      <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">
+          Total de registros: <b>{{ distribucionCandidaturaFilter.length }}</b>
+        </p>
+        <div class="m-0 ms-auto">
+          <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
+          </pagination-controls>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="modal modal-blur fade" id="modal-candidatura" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {{ isModalAdd ? "Agregar" : "Actualizar" }} distribución de candidatura
-                </h5>
-                <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} distribución de candidatura
+        </h5>
+        <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form [formGroup]="DistribucionForm" (ngSubmit)="submit()">
+        <div class="modal-body">
+
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Tipo de elección*:</label>
+                <ng-select formControlName="tipoEleccion" #selectEstado [searchable]="false" [items]="tiposEleccion"
+                  bindLabel="nombre" bindValue="id" placeholder="Selecciona una opción" [clearable]="false" value="">
+                  <ng-template ng-header-tmp>
+                    <input class="form-control" type="text" value=""
+                      (input)="selectEstado.filter($any($event.target).value)" />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
             </div>
 
-            <form [formGroup]="DistribucionForm" (ngSubmit)="submit()">
-                <div class="modal-body">
+            <div class="col-lg-6"
+              *ngIf="DistribucionForm.controls['tipoEleccion'].value == 1 || DistribucionForm.controls['tipoEleccion'].value == 2">
+              <div class="mb-3">
+                <label class="form-label">Distrito:</label>
+                <ng-select formControlName="distrito" #selectDistrito [searchable]="false" [items]="distritos"
+                  bindLabel="nombre" bindValue="id" placeholder="Selecciona una opción" [clearable]="false" value="">
+                  <ng-template ng-header-tmp>
+                    <input class="form-control" type="text" value=""
+                      (input)="selectDistrito.filter($any($event.target).value)" />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
 
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">Tipo de elección*:</label>
-                                <ng-select formControlName="tipoEleccion" #selectEstado [searchable]="false" [items]="tiposEleccion" bindLabel="nombre" bindValue="id" placeholder="Selecciona una opción" [clearable]="false" value="">
-                                    <ng-template ng-header-tmp>
-                                        <input class="form-control" type="text" value="" (input)="selectEstado.filter($any($event.target).value)" />
-                                    </ng-template>
-                                    <ng-template ng-option-tmp let-item="item" let-index="index">
-                                        {{ item.nombre }}
-                                    </ng-template>
-                                </ng-select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 1 || DistribucionForm.controls['tipoEleccion'].value == 2">
-                            <div class="mb-3">
-                                <label class="form-label">Distrito:</label>
-                                <ng-select formControlName="distrito" #selectDistrito [searchable]="false" [items]="distritos" bindLabel="nombre" bindValue="id" placeholder="Selecciona una opción" [clearable]="false" value="">
-                                    <ng-template ng-header-tmp>
-                                        <input class="form-control" type="text" value="" (input)="selectDistrito.filter($any($event.target).value)" />
-                                    </ng-template>
-                                    <ng-template ng-option-tmp let-item="item" let-index="index">
-                                        {{ item.nombre }}
-                                    </ng-template>
-                                </ng-select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 3">
-                            <div class="mb-3">
-                                <label class="form-label">Municipio:</label>
-                                <ng-select formControlName="municipio" #selectMunicipio [searchable]="false" [items]="municipios" bindLabel="nombre" bindValue="id" placeholder="Selecciona una opción" [clearable]="false" [clearable]="false">
-                                    <ng-template ng-header-tmp>
-                                        <input class="form-control color" type="text" value="" (input)="
+            <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 3">
+              <div class="mb-3">
+                <label class="form-label">Municipio:</label>
+                <ng-select formControlName="municipio" #selectMunicipio [searchable]="false" [items]="municipios"
+                  bindLabel="nombre" bindValue="id" placeholder="Selecciona una opción" [clearable]="false"
+                  [clearable]="false">
+                  <ng-template ng-header-tmp>
+                    <input class="form-control color" type="text" value="" (input)="
                                                 selectMunicipio.filter($any($event.target).value)
                                               " />
-                                    </ng-template>
-                                    <ng-template ng-option-tmp let-item="item" let-index="index">
-                                        {{ item.nombre }}
-                                    </ng-template>
-                                </ng-select>
-                            </div>
-                        </div>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
 
-                        <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 4">
-                            <div class="mb-3">
-                                <label class="form-label">Comunidad:</label>
-                                <ng-select formControlName="comunidad" #selectComunidad [searchable]="false" [items]="comunidades" bindLabel="nombre" bindValue="id" placeholder="Selecciona una comunidad" [clearable]="false" value="" [clearable]="false">
-                                    <ng-template ng-header-tmp>
-                                        <input class="form-control color" type="text" value="" (input)="
+            <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 4">
+              <div class="mb-3">
+                <label class="form-label">Comunidad:</label>
+                <ng-select formControlName="comunidad" #selectComunidad [searchable]="false" [items]="comunidades"
+                  bindLabel="nombre" bindValue="id" placeholder="Selecciona una comunidad" [clearable]="false" value=""
+                  [clearable]="false">
+                  <ng-template ng-header-tmp>
+                    <input class="form-control color" type="text" value="" (input)="
                                               selectComunidad.filter($any($event.target).value)
                                             " />
-                                    </ng-template>
-                                    <ng-template ng-option-tmp let-item="item" let-index="index">
-                                        {{ item.nombre }}
-                                    </ng-template>
-                                </ng-select>
-                            </div>
-                        </div>
-                    </div>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+          </div>
 
-                    <div class="col-lg-12">
-                        <div class="mb-3">
-                            <label class="form-label">Partido político*:</label>
-                            <ng-select formControlName="partidos" [items]="partidos" #selectBeneficiario [searchable]="false" bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false" [hideSelected]="true">
-                                <ng-template ng-header-tmp>
-                                    <input class="form-control" type="text" (input)="
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">Partido político*:</label>
+              <ng-select formControlName="partidos" [items]="partidos" #selectBeneficiario [searchable]="false"
+                bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false"
+                [hideSelected]="true">
+                <ng-template ng-header-tmp>
+                  <input class="form-control" type="text" (input)="
                                     selectBeneficiario.filter($any($event.target).value)
                                   " />
-                                </ng-template>
-                                <ng-template ng-option-tmp let-item="item" let-index="index">
-                                    <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
-                                </ng-template>
-                            </ng-select>
-                            <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
-                                <div *ngIf="
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+              <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
+                <div *ngIf="
                                   DistribucionForm.get('partidos')?.hasError('required')
                                 ">
-                                    El partido es requerido
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12">
-                        <div class="mb-3">
-                            <label class="form-label">Candidatura común*:</label>
-                            <ng-select formControlName="comun" [items]="comun" #selectBeneficiario [searchable]="false" bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false" [hideSelected]="true">
-                                <ng-template ng-header-tmp>
-                                    <input class="form-control" type="text" (input)="
-                                              selectBeneficiario.filter($any($event.target).value)
-                                            " />
-                                </ng-template>
-                                <ng-template ng-option-tmp let-item="item" let-index="index">
-                                    <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
-                                </ng-template>
-                            </ng-select>
-                            <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
-                                <div *ngIf="
-                                            DistribucionForm.get('partidos')?.hasError('required')
-                                          ">
-                                    El partido es requerido
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12">
-                        <div class="mb-3">
-                            <label class="form-label">Coalición*:</label>
-                            <ng-select formControlName="coalicion" [items]="coalicion" #selectBeneficiario [searchable]="false" bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false" [hideSelected]="true">
-                                <ng-template ng-header-tmp>
-                                    <input class="form-control" type="text" (input)="
-                                              selectBeneficiario.filter($any($event.target).value)
-                                            " />
-                                </ng-template>
-                                <ng-template ng-option-tmp let-item="item" let-index="index">
-                                    <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
-                                </ng-template>
-                            </ng-select>
-                            <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
-                                <div *ngIf="
-                                            DistribucionForm.get('partidos')?.hasError('required')
-                                          ">
-                                    El partido es requerido
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12">
-                        <div class="mb-3">
-                            <label class="form-label">Candidatura independiente*:</label>
-                            <ng-select formControlName="independiente" [items]="independiente" #selectBeneficiario [searchable]="false" bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false" [hideSelected]="true">
-                                <ng-template ng-header-tmp>
-                                    <input class="form-control" type="text" (input)="
-                                              selectBeneficiario.filter($any($event.target).value)
-                                            " />
-                                </ng-template>
-                                <ng-template ng-option-tmp let-item="item" let-index="index">
-                                    <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
-                                </ng-template>
-                            </ng-select>
-                            <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
-                                <div *ngIf="
-                                            DistribucionForm.get('partidos')?.hasError('required')
-                                          ">
-                                    El partido es requerido
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                  El partido es requerido
                 </div>
-                <p class=" form-label " style=" margin-left: 20px; color: red; font-weight: bold ">
-                    Todos los campos marcados con * son requeridos
-                </p>
-                <div class=" modal-footer ">
-                    <button type=" submit " class=" btn btn-success " [disabled]=" !DistribucionForm.valid ">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">Candidatura común*:</label>
+              <ng-select formControlName="comun" [items]="comun" #selectBeneficiario [searchable]="false"
+                bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false"
+                [hideSelected]="true">
+                <ng-template ng-header-tmp>
+                  <input class="form-control" type="text" (input)="
+                                              selectBeneficiario.filter($any($event.target).value)
+                                            " />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+              <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
+                <div *ngIf="
+                                            DistribucionForm.get('partidos')?.hasError('required')
+                                          ">
+                  El partido es requerido
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">Coalición*:</label>
+              <ng-select formControlName="coalicion" [items]="coalicion" #selectBeneficiario [searchable]="false"
+                bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir" [closeOnSelect]="false"
+                [hideSelected]="true">
+                <ng-template ng-header-tmp>
+                  <input class="form-control" type="text" (input)="
+                                              selectBeneficiario.filter($any($event.target).value)
+                                            " />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+              <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
+                <div *ngIf="
+                                            DistribucionForm.get('partidos')?.hasError('required')
+                                          ">
+                  El partido es requerido
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">Candidatura independiente*:</label>
+              <ng-select formControlName="independiente" [items]="independiente" #selectBeneficiario
+                [searchable]="false" bindLabel="nombre" [multiple]="true" bindValue="nombre" placeholder="Elegir"
+                [closeOnSelect]="false" [hideSelected]="true">
+                <ng-template ng-header-tmp>
+                  <input class="form-control" type="text" (input)="
+                                              selectBeneficiario.filter($any($event.target).value)
+                                            " />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  <img src="{{ item.logo }}" alt="Foto de {{ item.logo }}" width="50" height="50" /> {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+              <div *ngIf="DistribucionForm.get('partidos')?.touched" class="error-message">
+                <div *ngIf="
+                                            DistribucionForm.get('partidos')?.hasError('required')
+                                          ">
+                  El partido es requerido
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <p class=" form-label " style=" margin-left: 20px; color: red; font-weight: bold ">
+          Todos los campos marcados con * son requeridos
+        </p>
+        <div class=" modal-footer ">
+          <button type=" submit " class=" btn btn-success " [disabled]=" !DistribucionForm.valid ">
             {{ DistribucionForm ? " Agregar " : " Actualizar " }}
           </button>
-                </div>
-            </form>
         </div>
+      </form>
     </div>
+  </div>
 </div>
 
-<div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5)">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">
-                    Secciones asociadas al operador
-                </h5>
-                <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
+<div class="modal modal-highlight" id="modal-imagen-ampliada" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5)">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">
+          Partidos
+        </h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-6 col-lg-12">
+          <div class="row d-flex justify-content-end mt-0 mb-3">
+          </div>
+
+          <ng-container [ngSwitch]="isLoadingModalPartidos">
+            <div style="height: 300px" *ngSwitchCase="2">
+              <div class="progress">
+                <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+              </div>
             </div>
-            <div class="modal-body">
-                <div class="col-md-6 col-lg-12">
-                    <div class="row d-flex justify-content-end mt-0 mb-3">
-                    </div>
 
-                    <ng-container [ngSwitch]="isLoadingModalPartidos">
-                        <div style="height: 300px" *ngSwitchCase="2">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-                            </div>
+            <div *ngSwitchCase="3" class="card">
+              <table class="table table-vcenter card-table table-striped">
+                <thead>
+                  <tr>
+                    <th>Logo</th>
+                    <th>Partido</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let partido of DistribucionCandidatura?.partidos">
+                    <tr>
+                      <td>
+                        <div class="flex justify-center items-center">
+                          <ng-container *ngIf="getLogo(partido)">
+                            <img [src]="getLogo(partido)?.logoUrl" alt="Logo de {{ partido }}" width="50">
+                          </ng-container>
+                          <ng-template #noLogo>
+                            <span>No hay logo disponible</span>
+                          </ng-template>
                         </div>
+                      </td>
+                      <td>{{ partido }}</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
 
-                        <div *ngSwitchCase="3" class="card">
-                        </div>
-
-                        <app-no-results *ngSwitchCase="4"></app-no-results>
-                    </ng-container>
-
-                    <br />
-
-                </div>
             </div>
+
+            <app-no-results *ngSwitchCase="4"></app-no-results>
+          </ng-container>
+          <br />
         </div>
+      </div>
     </div>
+  </div>
 </div>
