@@ -110,6 +110,7 @@ export class DistribucionCandidaturaComponent {
     });
   }
 
+
   getLogo(partido: string): { nombre: string; logoUrl: string } | undefined {
     return this.partidosConLogo.find(
       (partidoConLogo) => partidoConLogo.nombre === partido
@@ -436,7 +437,7 @@ export class DistribucionCandidaturaComponent {
     });
   }
 
-  setDataModalUpdate(dto: Candidatura) {
+  setDataModalUpdate(dto: DistribucionCandidatura) {
     this.isModalAdd = false;
     this.id = dto.id;
 
@@ -449,13 +450,11 @@ export class DistribucionCandidaturaComponent {
 
     this.DistribucionForm.patchValue({
       id: dto.id,
-
-      nombre: dto.nombre,
-      acronimo: dto.acronimo,
-      tipoAgrupacionPolitica: dto.tipoAgrupacionPolitica.id,
+      tipoEleccion: dto.tipoEleccion.id,
       partidos: dto.partidos,
-      estatus: dto.estatus,
-      orden: dto.orden,
+      distrito: dto.distrito?.id,
+      municipio: dto.municipio?.id,
+      comunidad: dto.comunidad?.id,
       imagenBase64: '',
     });
     console.log('setDataUpdateVistaForm ', this.DistribucionForm.value);
