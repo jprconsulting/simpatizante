@@ -468,39 +468,39 @@ export class DistribucionCandidaturaComponent {
 
     console.log('Search Value:', valueSearch);
 
-    this.candidaturasFilter = this.candidaturas.filter(
-      (candidaturas) =>
-        candidaturas.nombre.toLowerCase().includes(valueSearch) ||
-        candidaturas.tipoAgrupacionPolitica.nombre
-          .toLowerCase()
-          .includes(valueSearch)
+    this.distribucionCandidaturaFilter = this.distribucionCandidatura.filter(
+      (distribucion) =>
+        distribucion.tipoEleccion.nombre.toLowerCase().includes(valueSearch) ||
+        distribucion.distrito?.nombre.toLowerCase().includes(valueSearch) ||
+        distribucion.municipio?.nombre.toLowerCase().includes(valueSearch) ||
+        distribucion.comunidad?.nombre.toLowerCase().includes(valueSearch)
     );
 
-    console.log('Filtered Votantes:', this.candidaturasFilter);
+    console.log('Filtered Votantes:', this.distribucionCandidaturaFilter);
 
     this.configPaginator.currentPage = 1;
   }
   exportarDatosAExcel() {
     if (this.candidaturas.length === 0) {
       console.warn(
-        'La lista de simpatizantes está vacía, no se puede exportar.'
+        'La lista de distribución está vacía, no se puede exportar.'
       );
       return;
     }
 
-    const datosParaExportar = this.candidaturas.map((candidatura) => {
-      const estatus = candidatura.estatus ? 'Activo' : 'Inactivo';
-      const partidoString = candidatura.partidos?.join(', ');
+    const datosParaExportar = this.distribucionCandidatura.map(
+      (distribucionCandidatura) => {
+        const partidoString = distribucionCandidatura.partidos?.join(', ');
 
-      return {
-        'Agupacion politica': candidatura.tipoAgrupacionPolitica.nombre,
-        Nombre: candidatura.nombre,
-        Acronimo: candidatura.acronimo,
-        Partido: partidoString,
-        Orden: candidatura.orden,
-        Estatus: estatus,
-      };
-    });
+        return {
+          'Tipo elección': distribucionCandidatura.tipoEleccion.nombre,
+          Distrito: distribucionCandidatura.distrito?.nombre,
+          Municipio: distribucionCandidatura.municipio?.nombre,
+          Comunidad: distribucionCandidatura.comunidad?.nombre,
+          Partido: partidoString,
+        };
+      }
+    );
 
     const worksheet: XLSX.WorkSheet =
       XLSX.utils.json_to_sheet(datosParaExportar);
@@ -513,7 +513,7 @@ export class DistribucionCandidaturaComponent {
       type: 'array',
     });
 
-    this.guardarArchivoExcel(excelBuffer, 'Candidaturas.xlsx');
+    this.guardarArchivoExcel(excelBuffer, 'Distribuciones.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
