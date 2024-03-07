@@ -49,6 +49,7 @@ export class IncidenciasComponent implements OnInit {
   latitude: number = 19.316818295403003;
   longitude: number = -98.23837658175323;
   public emblemaPreview: string = '';
+  public imgPreview: string = '';
   options = {
     types: [],
     componentRestrictions: { country: 'MX' },
@@ -81,9 +82,10 @@ export class IncidenciasComponent implements OnInit {
       tipoIncidencia: [null, Validators.required],
       casilla: [null, Validators.required],
       imagenBase64: [''],
-      direccion: [null, Validators.required],
-      latitud: [null, Validators.required],
-      longitud: [null, Validators.required],
+      //direccion: [null, Validators.required],
+      //latitud: [null, Validators.required],
+      //longitud: [null, Validators.required],
+
     });
   }
 
@@ -444,6 +446,7 @@ export class IncidenciasComponent implements OnInit {
       (incidencia) => incidencia.id === dto.id
     );
     this.emblemaPreview = incidencia!.foto;
+    this.imgPreview = incidencia!.foto;
     this.isUpdatingfoto = true;
     this.incidenciasForm.patchValue({
       id: dto.id,
@@ -489,7 +492,29 @@ export class IncidenciasComponent implements OnInit {
           this.mensajeService.mensajeError(error);
         },
       });
-    } else {
+    } else   
+    this.imgPreview = '';
+
+    if (!imagenBase64) {
+
+      const formData = { ...this.incidencia };
+      this.spinnerService.show();
+
+      this.incidenciasService.put(incidenciaId, formData).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito(
+            'Candidatura actualizada correctamente'
+          );
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        },
+      });
+    }else {
       console.error(
         'Error: No se encontró una representación válida en base64 de la imagen.'
       );

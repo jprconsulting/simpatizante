@@ -12,70 +12,78 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body border-bottom py-3">
-        <div class="d-flex align-items-center">
-          <button
-            class="btn btn-primary me-2"
-            data-bs-toggle="modal"
-            data-bs-target="#modal-combinacion"
-            (click)="handleChangeAdd()"
-          >
-            <i class="ti ti-plus me-1"></i>Agregar
-          </button>
-          <div class="mb-3">
-            <label class="form-label">Coalicion:</label>
-            <ng-select
-              #selectBeneficiario
-              [searchable]="false"
-              bindLabel="nombre"
-              bindValue="id"
-              placeholder="Elegir"
-              [clearable]="true"
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <button
+              class="btn btn-primary me-2"
+              data-bs-toggle="modal"
+              data-bs-target="#modal-combinacion"
+              (click)="handleChangeAdd()"
             >
-              <ng-template ng-header-tmp>
+              <i class="ti ti-plus me-1"></i>Agregar
+            </button>
+            <div class="ms-auto d-flex align-items-center">
+              <div class="input-icon">
                 <input
-                  class="form-control"
+                  #searchItem
                   type="text"
-                  (input)="selectBeneficiario.filter($any($event.target).value)"
+                  class="form-control form-control-rounded"
+                  placeholder="Buscar"
+                  (input)="handleChangeSearch($event)"
                 />
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item" let-index="index">
-                {{ item.nombre }}
-              </ng-template>
-            </ng-select>
-          </div>
-          <div class="ms-auto d-flex align-items-center">
-            <div class="input-icon">
-              <input
-                #searchItem
-                type="text"
-                class="form-control form-control-rounded"
-                placeholder="Buscar"
-              />
-              <span class="input-icon-addon">
-                <i class="ti ti-search"></i>
-              </span>
+                <span class="input-icon-addon">
+                  <i class="ti ti-search"></i>
+                </span>
+              </div>
+              <a
+                class="btn w-30 btn-icon"
+                aria-label="Dribbble"
+                (click)="exportarDatosAExcel()"
+                title="Descargar excel de usuarios"
+                style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+              >
+                <i
+                  class="ti ti-cloud-down text-muted"
+                  style="font-size: 28px"
+                ></i>
+              </a>
             </div>
-            <a
-              class="btn w-30 btn-icon"
-              aria-label="Dribbble"
-              title="Descargar excel de usuarios"
-              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
-            >
-              <i
-                class="ti ti-cloud-down text-muted"
-                style="font-size: 28px"
-              ></i>
-            </a>
           </div>
         </div>
+        <div class="col-lg-4" style="margin-top: 10px">
+          <label class="form-label">Coalicion:</label>
+          <ng-select
+            #selectcoalicion
+            [searchable]="false"
+            bindLabel="nombre"
+            [items]="candidatura"
+            bindValue="id"
+            placeholder="Elegir"
+            [clearable]="true"
+            (change)="onSelectOperador($event?.id)"
+            (clear)="onClear()"
+          >
+            <ng-template ng-header-tmp>
+              <input
+                class="form-control"
+                type="text"
+                (input)="selectcoalicion.filter($any($event.target).value)"
+              />
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+              {{ item.nombre }}
+            </ng-template>
+          </ng-select>
+        </div>
       </div>
+
       <ng-container [ngSwitch]="isLoading">
         <div style="height: 300px" *ngSwitchCase="2">
-            <div class="progress">
-              <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-            </div>
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
           </div>
-        <div  class="table-responsive">
+        </div>
+        <div *ngSwitchCase="3" class="table-responsive">
           <table class="table table-vcenter card-table table-striped">
             <thead>
               <tr>
@@ -84,12 +92,10 @@
                   Coalición
                 </th>
                 <th style="text-transform: none; font-size: inherit">Nombre</th>
-                <th style="text-transform: none; font-size: inherit">Partidos</th>
-                <th
-                  style="text-transform: none; font-size: inherit"
-                >
-                  Logo
+                <th style="text-transform: none; font-size: inherit">
+                  Partidos
                 </th>
+                <th style="text-transform: none; font-size: inherit">Logo</th>
                 <th style="text-transform: none; font-size: inherit">
                   Acciones
                 </th>
@@ -97,28 +103,28 @@
             </thead>
             <tbody>
               <tr
-              *ngFor="
-              let combinacion of combinacionesFilter
-                | paginate : configPaginator;
-              let pointIndex = index
-            "
+                *ngFor="
+                  let combinacion of combinacionesFilter
+                    | paginate : configPaginator;
+                  let pointIndex = index
+                "
               >
                 <td class="text-center">
-                    {{
-                        configPaginator.itemsPerPage *
-                          (configPaginator.currentPage - 1) +
-                          pointIndex +
-                          1
-                      }}
+                  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}
                 </td>
                 <td class="text-muted">
-                    {{ combinacion.candidatura.nombre }}
+                  {{ combinacion.candidatura.nombre }}
                 </td>
                 <td class="text-muted">
-                    {{ combinacion.nombre }}
+                  {{ combinacion.nombre }}
                 </td>
                 <td class="text-muted">
-                    {{ combinacion.partidos }}
+                  {{ combinacion.partidos }}
                 </td>
                 <td class="text-muted">
                   <div class="flex justify-center items-center">
@@ -138,13 +144,13 @@
                       data-bs-toggle="modal"
                       data-bs-target="#modal-combinacion"
                       style="margin-right: 5px"
+                      (click)="setDataModalUpdate(combinacion)"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
                       (click)="deleteItem(combinacion.id, combinacion.nombre)"
-
                     >
                       <i class="ti ti-eraser"></i>
                     </button>
@@ -154,15 +160,17 @@
             </tbody>
           </table>
         </div>
+        <app-no-results *ngSwitchCase="4"></app-no-results>
       </ng-container>
       <!-- Fin *ngSwitchCase-->
 
       <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-muted">
-          Total de registros: <b>1</b>
+          Total de registros: <b>{{ combinacionesFilter.length }}</b>
         </p>
         <div class="m-0 ms-auto">
           <pagination-controls
+            (pageChange)="onPageChange($event)"
             previousLabel=""
             nextLabel=""
           >
@@ -184,7 +192,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-            {{ isModalAdd ? "Agregar" : "Actualizar" }} combinación
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} combinación
         </h5>
         <button
           #closebutton
@@ -215,9 +223,7 @@
                     <input
                       class="form-control"
                       type="text"
-                      (input)="
-                        seleccoalicion.filter($any($event.target).value)
-                      "
+                      (input)="seleccoalicion.filter($any($event.target).value)"
                     />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
@@ -230,9 +236,7 @@
                 >
                   <div
                     *ngIf="
-                      CombinacionForm.get('candidatura')?.hasError(
-                        'required'
-                      )
+                      CombinacionForm.get('candidatura')?.hasError('required')
                     "
                   >
                     La coalicion es requerida
@@ -268,13 +272,10 @@
                     El nombre no debe tener números ni caracteres especiales
                   </div>
                 </div>
-                
               </div>
             </div>
             <div class="col-lg-12">
-              <div
-                class="mb-3"
-              >
+              <div class="mb-3">
                 <label class="form-label">Partidos*:</label>
                 <ng-select
                   formControlName="partidos"
@@ -292,9 +293,7 @@
                     <input
                       class="form-control"
                       type="text"
-                      (input)="
-                        selectPartidos.filter($any($event.target).value)
-                      "
+                      (input)="selectPartidos.filter($any($event.target).value)"
                     />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
@@ -319,7 +318,6 @@
                     El partido es requerido
                   </div>
                 </div>
-                
               </div>
             </div>
             <div class="col-lg-12">
@@ -335,7 +333,7 @@
                   />
                   <div *ngIf="isUpdatingImg" class="img-preview my-1">
                     <img
-                    [src]="imgPreview"
+                      [src]="imgPreview"
                       alt="Image preview"
                       class="img-fluid"
                     />
@@ -372,7 +370,7 @@
             class="btn btn-success"
             [disabled]="!CombinacionForm.valid"
           >
-          {{ CombinacionForm ? "Agregar" : "Actualizar" }}
+            {{ CombinacionForm ? "Agregar" : "Actualizar" }}
           </button>
         </div>
       </form>
@@ -400,8 +398,8 @@
       </div>
       <div class="modal-body">
         <img
-        *ngIf="imagenAmpliada"
-        [src]="imagenAmpliada"
+          *ngIf="imagenAmpliada"
+          [src]="imagenAmpliada"
           alt="Imagen Ampliada"
           class="w-100"
         />

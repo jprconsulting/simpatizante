@@ -38,6 +38,7 @@ export class SidebarComponent implements AfterViewInit {
   @ViewChild('rlOperadores') rlOperadores: RouterLinkActive | undefined;
   @ViewChild('rlPromotores') rlPromotores: RouterLinkActive | undefined;
   @ViewChild('rlPromovidos') rlPromovidos: RouterLinkActive | undefined;
+  @ViewChild('rlCombinaciones') rlCombinaciones: RouterLinkActive | undefined;
   @ViewChild('rlDistribucionCandidatura') rlDistribucionCandidatura:
     | RouterLinkActive
     | undefined;

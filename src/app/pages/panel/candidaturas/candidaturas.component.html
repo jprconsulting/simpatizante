@@ -21,32 +21,6 @@
           >
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
-          <div class="mb-3">
-            <label class="form-label">Agrupación política:</label>
-            <ng-select
-              #selectBeneficiario
-              [searchable]="false"
-              [items]="agrupaciones"
-              bindLabel="nombre"
-              bindValue="id"
-              placeholder="Elegir"
-              [clearable]="true"
-              [(ngModel)]="selectedAgrupacion"
-              (change)="onSelectOperador($event?.id)"
-              (clear)="onClear()"
-            >
-              <ng-template ng-header-tmp>
-                <input
-                  class="form-control"
-                  type="text"
-                  (input)="selectBeneficiario.filter($any($event.target).value)"
-                />
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item" let-index="index">
-                {{ item.nombre }}
-              </ng-template>
-            </ng-select>
-          </div>
           <div class="ms-auto d-flex align-items-center">
             <div class="input-icon">
               <input
@@ -73,6 +47,32 @@
               ></i>
             </a>
           </div>
+        </div>
+        <div class="col-lg-4" style="margin-top: 10px">
+          <label class="form-label">Agrupación política:</label>
+          <ng-select
+            #selectBeneficiario
+            [searchable]="false"
+            [items]="agrupaciones"
+            bindLabel="nombre"
+            bindValue="id"
+            placeholder="Elegir"
+            [clearable]="true"
+            [(ngModel)]="selectedAgrupacion"
+            (change)="onSelectOperador($event?.id)"
+            (clear)="onClear()"
+          >
+            <ng-template ng-header-tmp>
+              <input
+                class="form-control"
+                type="text"
+                (input)="selectBeneficiario.filter($any($event.target).value)"
+              />
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+              {{ item.nombre }}
+            </ng-template>
+          </ng-select>
         </div>
       </div>
       <ng-container [ngSwitch]="isLoading">
@@ -274,7 +274,7 @@
                   <div
                     *ngIf="CandidaturaForm.get('nombre')?.hasError('minlength')"
                   >
-                    El nombre debe tener al menos 3 caracteres
+                    El nombre debe tener al menos 2 caracteres
                   </div>
                   <div
                     *ngIf="CandidaturaForm.get('nombre')?.hasError('pattern')"
@@ -314,7 +314,7 @@
                       CandidaturaForm.get('acronimo')?.hasError('minlength')
                     "
                   >
-                    El acrónimo debe tener al menos 3 caracteres
+                    El acrónimo debe tener al menos 2 caracteres
                   </div>
                 </div>
               </div>
@@ -349,9 +349,7 @@
                     <input
                       class="form-control"
                       type="text"
-                      (input)="
-                        selectPartidos.filter($any($event.target).value)
-                      "
+                      (input)="selectPartidos.filter($any($event.target).value)"
                     />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">

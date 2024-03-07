@@ -22,7 +22,9 @@
             (rlDashboard && rlDashboard.isActive) ||
             (rlUsuarios && rlUsuarios.isActive) ||
             (rlProgramasSociales && rlProgramasSociales.isActive) ||
-            (rlTipoIncidencias && rlTipoIncidencias.isActive)
+            (rlTipoIncidencias && rlTipoIncidencias.isActive) ||
+            (rlDistribucionCandidatura && rlDistribucionCandidatura.isActive)||
+            (rlCombinaciones && rlCombinaciones.isActive)
         }">
         <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false"
           role="button" aria-expanded="true">
@@ -63,14 +65,14 @@
                 <span class="nav-link-title">Tipos Incidencias</span>
               </a>
               <a *appHasClaim="'CanAccessCandidaturas'" class="dropdown-item" [routerLink]="['Candidaturas']"
-                routerLinkActive="active" #rlNubePalabras="routerLinkActive">
+                routerLinkActive="active" #rlDistribucionCandidatura="routerLinkActive">
                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                   <i class="ti ti-clipboard"></i>
                 </span>
                 <span class="nav-link-title">Candidaturas</span>
               </a>
-              <a *appHasClaim="'CanAccessCandidaturas'" class="dropdown-item" [routerLink]="['Combinaciones']"
-                routerLinkActive="active" #rlNubePalabras="routerLinkActive">
+              <a *appHasClaim="'CanAccessCombinaciones'" class="dropdown-item" [routerLink]="['Combinaciones']"
+                routerLinkActive="active" #rlCombinaciones="routerLinkActive">
                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                   <i class="ti ti-layers-subtract"></i>
                 </span>
@@ -145,8 +147,7 @@
             (rlSeguimientoVoto && rlSeguimientoVoto.isActive) ||
             (rlResultados && rlResultados.isActive) ||
             (rlReportes && rlReportes.isActive) ||
-            (rlNubePalabras && rlNubePalabras.isActive) ||
-            (rlDistribucionCandidatura && rlDistribucionCandidatura.isActive)
+            (rlNubePalabras && rlNubePalabras.isActive)
         }">
         <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false"
           role="button" aria-expanded="true">
