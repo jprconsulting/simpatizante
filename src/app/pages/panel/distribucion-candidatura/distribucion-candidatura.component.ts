@@ -110,7 +110,6 @@ export class DistribucionCandidaturaComponent {
     });
   }
 
-
   getLogo(partido: string): { nombre: string; logoUrl: string } | undefined {
     return this.partidosConLogo.find(
       (partidoConLogo) => partidoConLogo.nombre === partido
@@ -120,29 +119,41 @@ export class DistribucionCandidaturaComponent {
   obtenerLogosPartidos(): void {
     this.partidosConLogo = []; // Limpiamos el arreglo antes de comenzar
 
-    const solicitudes = this.partidos.map((partido) =>
-      this.candidaturaService.obtenerLogoPartido(partido.nombre).pipe(
-        map((respuesta) => ({
-          nombre: partido.nombre,
-          logoUrl: respuesta.logoUrl,
-        })),
-        catchError((error) => {
-          console.error(
-            `Error al obtener el logo para el partido ${partido.nombre}:`,
-            error
+    // Verificamos si la propiedad partidos está presente y no es nula
+    if (
+      this.DistribucionCandidatura.partidos &&
+      this.DistribucionCandidatura.partidos.length > 0
+    ) {
+      const solicitudes = this.DistribucionCandidatura.partidos.map(
+        (partido) => {
+          console.log('Buscando logo para el partido:', partido); // Agregamos el console.log()
+          return this.candidaturaService.obtenerLogoPartido(partido).pipe(
+            map((respuesta) => ({
+              nombre: partido,
+              logoUrl: respuesta.logoUrl,
+            })),
+            catchError((error) => {
+              console.error(
+                `Error al obtener el logo para el partido ${partido}:`,
+                error
+              );
+              // Devolver un objeto con la URL de un logo por defecto en caso de error
+              return of({
+                nombre: partido,
+                logoUrl: 'URL del logo por defecto',
+              });
+            })
           );
-          // Devolver un objeto con la URL de un logo por defecto en caso de error
-          return of({
-            nombre: partido.nombre,
-            logoUrl: 'URL del logo por defecto',
-          });
-        })
-      )
-    );
+        }
+      );
 
-    forkJoin(solicitudes).subscribe((partidosConLogo) => {
-      this.partidosConLogo = partidosConLogo;
-    });
+      forkJoin(solicitudes).subscribe((partidosConLogo) => {
+        this.partidosConLogo = partidosConLogo;
+      });
+    } else {
+      // Si no hay partidos o la lista está vacía, podemos manejarlo de alguna manera
+      console.log('No se encontraron partidos para obtener logos.');
+    }
   }
 
   getTipoEleccion() {
