@@ -8,6 +8,7 @@ import { PropagandaService } from 'src/app/core/services/programa-electoral.serv
 import { LoadingStates } from 'src/app/global/global';
 import { Municipio } from 'src/app/models/municipio';
 import { Propaganda } from 'src/app/models/propaganda-electoral';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-propaganda-electoral',
@@ -491,4 +492,67 @@ export class PropagandaElectoralComponent {
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
   }
+  handleChangeSearch(event: any) {
+    const inputValue = event.target.value;
+    const valueSearch = inputValue.toLowerCase();
+
+    console.log('Search Value:', valueSearch);
+
+    this.PropagandasFilter = this.Propagandas.filter(
+      (p) =>
+        p.dimensiones.toLowerCase().includes(valueSearch) ||
+        p.municipio.nombre.toLowerCase().includes(valueSearch) ||
+        p.folio.toLowerCase().includes(valueSearch) ||
+        p.ubicacion.toString().includes(valueSearch)
+    );
+
+    console.log('Filtered:', this.PropagandasFilter);
+
+    this.configPaginator.currentPage = 1;
+  }
+  exportarDatosAExcel() {
+    if (this.Propagandas.length === 0) {
+      console.warn(
+        'La lista de simpatizantes está vacía, no se puede exportar.'
+      );
+      return;
+    }
+
+    const datosParaExportar = this.Propagandas.map((p) => {
+
+      return {
+        'Folio': p.folio,
+        'Municipio': p.municipio.nombre,
+        'Dimenciones': p.dimensiones,
+        'Comentarios': p.comentarios,
+        'ubicacion': p.ubicacion
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    this.guardarArchivoExcel(excelBuffer, 'Propagandas.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
 }

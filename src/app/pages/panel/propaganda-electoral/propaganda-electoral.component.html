@@ -36,6 +36,7 @@
                   type="text"
                   class="form-control form-control-rounded"
                   placeholder="Buscar"
+                  (input)="handleChangeSearch($event)"
                 />
                 <span class="input-icon-addon">
                   <i class="ti ti-search"></i>
@@ -44,6 +45,7 @@
               <a
                 class="btn w-30 btn-icon"
                 aria-label="Dribbble"
+                (click)="exportarDatosAExcel()"
                 title="Descargar excel de promovidos"
                 style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
               >
