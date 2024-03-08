@@ -24,7 +24,8 @@
             (rlProgramasSociales && rlProgramasSociales.isActive) ||
             (rlTipoIncidencias && rlTipoIncidencias.isActive) ||
             (rlDistribucionCandidatura && rlDistribucionCandidatura.isActive)||
-            (rlCombinaciones && rlCombinaciones.isActive)
+            (rlCombinaciones && rlCombinaciones.isActive)||
+            (rlPropagandaElectoral && rlPropagandaElectoral.isActive)
         }">
         <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false"
           role="button" aria-expanded="true">
@@ -77,6 +78,13 @@
                   <i class="ti ti-layers-subtract"></i>
                 </span>
                 <span class="nav-link-title">Combinaciones</span>
+              </a>
+              <a class="dropdown-item" [routerLink]="['Propaganda-Electoral']"
+                routerLinkActive="active" #rlPropagandaElectoral="routerLinkActive">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-wall"></i>
+                </span>
+                <span class="nav-link-title">Propaganda Electoral</span>
               </a>
             </div>
           </div>

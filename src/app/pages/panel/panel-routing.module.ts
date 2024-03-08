@@ -148,6 +148,13 @@ const routes: Routes = [
             (i) => i.CombinacionesModule
           ),
       },
+      {
+        path: 'Propaganda-Electoral',
+        loadChildren: () =>
+          import('./propaganda-electoral/propaganda-electoral.module').then(
+            (i) => i.PropagandaElectoralModule
+          ),
+      },
     ],
   },
 ];

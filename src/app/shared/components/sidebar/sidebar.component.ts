@@ -39,6 +39,7 @@ export class SidebarComponent implements AfterViewInit {
   @ViewChild('rlPromotores') rlPromotores: RouterLinkActive | undefined;
   @ViewChild('rlPromovidos') rlPromovidos: RouterLinkActive | undefined;
   @ViewChild('rlCombinaciones') rlCombinaciones: RouterLinkActive | undefined;
+  @ViewChild('rlPropagandaElectoral') rlPropagandaElectoral: RouterLinkActive | undefined;
   @ViewChild('rlDistribucionCandidatura') rlDistribucionCandidatura:
     | RouterLinkActive
     | undefined;
