@@ -123,6 +123,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'mapa-propaganda',
+        loadChildren: () =>
+          import('./mapa-propaganda/mapa-propaganda.module').then(
+            (i) => i.MapaPropagandaModule
+          ),
+      },
+      {
         path: 'dashboard',
         loadChildren: () =>
           import('./dashboard/dashboard.module').then((i) => i.DashboardModule),
@@ -158,9 +165,9 @@ const routes: Routes = [
       {
         path: 'Distribuciones-Ordenadas',
         loadChildren: () =>
-          import('./distribuciones-ordenadas/distribuciones-ordenadas.module').then(
-            (i) => i.DistribucionesOrdenadasModule
-          ),
+          import(
+            './distribuciones-ordenadas/distribuciones-ordenadas.module'
+          ).then((i) => i.DistribucionesOrdenadasModule),
       },
     ],
   },
