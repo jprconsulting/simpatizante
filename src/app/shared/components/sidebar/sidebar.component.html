@@ -79,7 +79,7 @@
                 </span>
                 <span class="nav-link-title">Combinaciones</span>
               </a>
-              <a class="dropdown-item" [routerLink]="['Propaganda-Electoral']"
+              <a class="dropdown-item" *appHasClaim="'CanAccessPropaganda'" [routerLink]="['Propaganda-Electoral']"
                 routerLinkActive="active" #rlPropagandaElectoral="routerLinkActive">
                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                   <i class="ti ti-wall"></i>
