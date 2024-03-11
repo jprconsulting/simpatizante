@@ -80,8 +80,8 @@ export class PropagandaElectoralComponent {
       dimensiones: ['', Validators.required],
       comentarios: [''],
       imagenBase64: [''],
-      latitud: [19.316818295403003],
-      longitud: [-98.23837658175323],
+      latitud: [],
+      longitud: [],
       ubicacion: ['', Validators.required],
     });
   }
@@ -519,7 +519,7 @@ export class PropagandaElectoralComponent {
       return {
         'Folio': p.folio,
         'Municipio': p.municipio.nombre,
-        'Dimenciones': p.dimensiones,
+        'Dimensiones': p.dimensiones,
         'Comentarios': p.comentarios,
         'ubicacion': p.ubicacion
       };

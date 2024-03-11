@@ -1,1 +1,538 @@
-<p>distribuciones-ordenadas works!</p>
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p style="color: white">Guardando...</p>
+</ngx-spinner>
+
+<app-page-header headerTitle="Distribuciones ordenadas"></app-page-header>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <button
+              class="btn btn-primary mb-2"
+              data-bs-toggle="modal"
+              data-bs-target="#modal-propaganda"
+              (click)="handleChangeAdd()"
+            >
+              <i class="ti ti-plus me-1"></i>Agregar
+            </button>
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <div
+              class="d-flex align-items-center justify-content-between justify-content-md-end"
+            >
+              <div class="input-icon col-sm-8">
+                <input
+                  #searchItem
+                  type="text"
+                  class="form-control form-control-rounded"
+                  placeholder="Buscar"
+                  (input)="handleChangeSearch($event)"
+                />
+                <span class="input-icon-addon">
+                  <i class="ti ti-search"></i>
+                </span>
+              </div>
+              <a
+                class="btn w-30 btn-icon"
+                aria-label="Dribbble"
+                (click)="exportarDatosAExcel()"
+                title="Descargar excel de promovidos"
+                style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+              >
+                <i
+                  class="ti ti-cloud-down text-muted"
+                  style="font-size: 28px"
+                ></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-container>
+        <div class="table-responsive">
+          <table class="table table-vcenter table-responsive card-table">
+            <thead>
+              <tr>
+                <th class="text-center" style="text-transform: none">#</th>
+                <th style="text-transform: none; font-size: inherit">
+                    NombreCandidatura
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                    TipoAgrupacionPolitica
+                </th>
+                <th style="text-transform: none; font-size: inherit">Candidatura</th>
+                <th
+                  class="text-center"
+                  style="text-transform: none; font-size: inherit"
+                >
+                  Foto 
+                </th>
+                <th
+                  class="w-1"
+                  style="text-transform: none; font-size: inherit"
+                >
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="
+              let distribuciones of DistribucionesFilter | paginate : configPaginator;
+              let pointIndex = index
+            ">
+                <td class="text-center">  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}</td>
+                <td>{{ distribuciones.nombreCandidatura }} </td>
+                <td class="text-muted">{{ distribuciones.tipoAgrupacionPolitica.nombre }}</td>
+                <td class="text-muted"> {{ distribuciones.candidatura.nombre }}</td>
+                <td class="text-muted">
+                  <div class="flex justify-center items-center">
+                    <img
+                    src="{{ distribuciones.logo}}"
+                    alt="Foto de {{ distribuciones.logo }}"
+                    width="50"
+                    height="50"
+                    (click)="mostrarImagenAmpliada(distribuciones.logo)"
+                  />
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between">
+                    <button
+                      class="btn btn-warning btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal-propaganda"
+                    >
+                      <i class="ti ti-edit"></i>
+                    </button>
+                    <button class="btn btn-danger btn-icon btn-sm">
+                      <i class="ti ti-eraser"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+      <!-- Fin *ngSwitchCase-->
+
+      <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">Total de registros: <b>1</b></p>
+
+        <div class="m-0 ms-auto">
+          <pagination-controls previousLabel="" nextLabel="">
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal"
+  id="modal-propaganda"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"> {{ isModalAdd ? "Agregar" : "Actualizar" }} distribuciones ordenadas</h5>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form [formGroup]="DistribucionesForm" (ngSubmit)="submit()">
+        <div class="modal-body">
+          <div class="row d-flex align-items-center align-items-end">
+            <div class="row">
+              <div class="col">
+                <label class="form-label">InputId*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="InputId"
+                />
+                <div
+                    *ngIf="DistribucionesForm.get('InputId')?.touched"
+                    class="error-message"
+                  >
+                    <div
+                      *ngIf="DistribucionesForm.get('InputId')?.hasError('required')"
+                    >
+                      El inputId es requerido
+                    </div>
+                    <div
+                      *ngIf="DistribucionesForm.get('InputId')?.hasError('pattern')"
+                    >
+                      El inputId solo puede tener números
+                    </div>
+                    <div
+                    *ngIf="
+                      DistribucionesForm.get('InputId')?.hasError('minlength')
+                    "
+                  >
+                    El inputId debe tener al menos 3 caracteres
+                  </div>
+                  <div
+                  *ngIf="
+                    DistribucionesForm.get('InputId')?.hasError('maxlength')
+                  "
+                >
+                  El inputId debe tener al maximo 5 caracteres
+                </div>
+                  </div>
+              </div>
+              <div class="col">
+                <label class="form-label">Distribucion candidatura*:</label>
+                <ng-select
+                  formControlName="distribucionCandidatura"
+                  #selectDistribucion
+                  [searchable]="false"
+                  bindLabel="id"
+                  [items]="distribucionC"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  [clearable]="false"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control color"
+                      type="text"
+                      (input)="
+                        selectDistribucion.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                        {{ item.tipoEleccion.nombre }} 
+
+                  </ng-template>
+                </ng-select>
+                <div
+                    *ngIf="DistribucionesForm.get('distribucionCandidatura')?.touched"
+                    class="error-message"
+                  >
+                    <div
+                      *ngIf="DistribucionesForm.get('distribucionCandidatura')?.hasError('required')"
+                    >
+                      la distribucion de candidatura es requerida
+                    </div>
+                  </div>
+              </div>
+              <div class="col">
+                <div class="mb-3">
+                  <label class="form-label">Orden: </label><br />
+
+                  <div
+                    class="form-check form-switch mt-1 ml-2 custom-green-switch"
+                  >
+                  <input
+                  class="form-check-input"
+                  type="checkbox"
+                  (change)="setEstatus()"
+                  [(ngModel)]="estatusBtn"
+                  name="estatusBtn"
+                  formControlName="orden"
+                  [ngStyle]="{
+                    'background-color': estatusBtn ? '#1db83f' : '#b2c0b5'
+                  }"
+                />
+                <span
+                  class="form-check-label"
+                  [ngClass]="
+                    DistribucionesForm.get('orden')?.value
+                      ? 'text-success'
+                      : 'text-danger'
+                  "
+                >
+                  {{
+                    DistribucionesForm.get("orden")?.value
+                      ? "Activo"
+                      : "Inactivo"
+                  }}
+                </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Tipo de agrupacion politica*:</label>
+              <ng-select
+                formControlName="tipoAgrupacionPolitica"
+                #selectTipo
+                [searchable]="false"
+                [items]="TipoAgrupaciones"
+                bindLabel="nombre"
+                bindValue="id"
+                placeholder="Elegir"
+                [clearable]="false"
+              >
+                <ng-template ng-header-tmp>
+                  <input
+                    class="form-control"
+                    type="text"
+                    (input)="selectTipo.filter($any($event.target).value)"
+                  />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+              <div
+                    *ngIf="DistribucionesForm.get('tipoAgrupacionPolitica')?.touched"
+                    class="error-message"
+                  >
+                    <div
+                      *ngIf="DistribucionesForm.get('tipoAgrupacionPolitica')?.hasError('required')"
+                    >
+                      El tipo agrupacion politica es requerido
+                    </div>
+                  </div>
+            </div>
+            <div class="col">
+              <label class="form-label">Candidatura*:</label>
+              <ng-select
+                formControlName="candidatura"
+                #selectCandidatura
+                [searchable]="false"
+                [items]="candidatura"
+                bindLabel="nombre"
+                bindValue="id"
+                placeholder="Elegir"
+                [clearable]="false"
+              >
+                <ng-template ng-header-tmp>
+                  <input
+                    class="form-control color"
+                    type="text"
+                    (input)="selectCandidatura.filter($any($event.target).value)"
+                  />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+              <div
+                    *ngIf="DistribucionesForm.get('candidatura')?.touched"
+                    class="error-message"
+                  >
+                    <div
+                      *ngIf="DistribucionesForm.get('candidatura')?.hasError('required')"
+                    >
+                      La candidatura es requerida
+                    </div>
+                  </div>
+            </div>
+            <div class="col">
+              <label class="form-label">Combinacion*:</label>
+              <ng-select
+                formControlName="combinacion"
+                #selectCombinacion
+                [searchable]="false"
+                [items]="combinacion"
+                bindLabel="nombre"
+                bindValue="id"
+                placeholder="Elegir"
+                [clearable]="false"
+              >
+                <ng-template ng-header-tmp>
+                  <input
+                    class="form-control color"
+                    type="text"
+                    (input)="selectCombinacion.filter($any($event.target).value)"
+                  />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{ item.nombre }}
+                </ng-template>
+              </ng-select>
+              <div
+                    *ngIf="DistribucionesForm.get('combinacion')?.touched"
+                    class="error-message"
+                  >
+                    <div
+                      *ngIf="DistribucionesForm.get('combinacion')?.hasError('required')"
+                    >
+                      La combinacion es requerida
+                    </div>
+                  </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-lg-4">
+                <div class="mb-3">
+                <label class="form-label">PadreId*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="PadreId"
+                />
+                <div
+                    *ngIf="DistribucionesForm.get('PadreId')?.touched"
+                    class="error-message"
+                  >
+                    <div
+                      *ngIf="DistribucionesForm.get('PadreId')?.hasError('required')"
+                    >
+                      El padreId es requerido
+                    </div>
+                    <div
+                      *ngIf="DistribucionesForm.get('PadreId')?.hasError('pattern')"
+                    >
+                      El padreId solo puede tener números
+                    </div>
+                    <div
+                    *ngIf="
+                      DistribucionesForm.get('PadreId')?.hasError('minlength')
+                    "
+                  >
+                    El padreId debe tener al menos 3 caracteres
+                  </div>
+                  <div
+                  *ngIf="
+                    DistribucionesForm.get('PadreId')?.hasError('maxlength')
+                  "
+                >
+                  El padreId debe tener al maximo 5 caracteres
+                </div>
+                  </div>
+            </div>
+        </div>
+            <div class="col-lg-4">
+                <div class="mb-3">
+              <label class="form-label">NombreCandidatura*:</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="NombreCandidatura"
+              />
+              <div
+                    *ngIf="DistribucionesForm.get('NombreCandidatura')?.touched"
+                    class="error-message"
+                  >
+                    <div
+                      *ngIf="DistribucionesForm.get('NombreCandidatura')?.hasError('required')"
+                    >
+                      El nombre de la candidatura es requerido
+                    </div>
+                    <div
+                      *ngIf="DistribucionesForm.get('NombreCandidatura')?.hasError('pattern')"
+                    >
+                      El nombre de la candidatura solo puede tener letras
+                    </div>
+                    <div
+                    *ngIf="
+                      DistribucionesForm.get('NombreCandidatura')?.hasError('minlength')
+                    "
+                  >
+                    El nombre de la candidatura debe tener al menos 2 caracteres
+                  </div>
+                  <div
+                  *ngIf="
+                    DistribucionesForm.get('NombreCandidatura')?.hasError('maxlength')
+                  "
+                >
+                  El nombre de la candidatura debe tener al maximo 25 caracteres
+                </div>
+                  </div>
+            </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+                <div class="mb-3">
+                    <div class="form-label">Selecciona una fotografía*</div>
+                    <div class="row flex-column">
+                      <input class="input" type="file" formControlName="imagenBase64" (change)="onFileChange($event)" />
+                      <div  *ngIf="isUpdatingImg" class="img-preview my-1">
+                        <img
+                          alt="Image preview"
+                          [src]="imgPreview"
+                          class="img-fluid"
+                          width="50%"
+                          height="50%"
+                        />
+                      </div>
+                    </div>
+            </div>
+        </div>
+            
+          </div>
+          <div class="col-lg-4">
+            <div class="mb-3">
+                <img
+                *ngIf="DistribucionesForm.get('imagenBase64')?.value"
+            [src]="
+              'data:image/jpeg;base64,' +
+              DistribucionesForm.get('imagenBase64')?.value
+            "
+                class="img"
+                width="80%"
+                height="80%"
+                alt="Vista previa de la imagen"
+              />
+        </div>
+        </div>
+
+        </div>
+        <p
+          class="form-label"
+          style="margin-left: 20px; color: red; font-weight: bold"
+        >
+          Todos los campos marcados con * son requeridos
+        </p>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" [disabled]="!DistribucionesForm.valid"> {{ isModalAdd ? "Agregar" : "Actualizar" }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div
+  class="modal modal-highlight"
+  id="modal-imagen-ampliada"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="background: rgba(0, 0, 0, 0.5)"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img alt="Imagen Ampliada" class="w-100"  *ngIf="imagenAmpliada"
+        [src]="imagenAmpliada" />
+      </div>
+    </div>
+  </div>
+</div>
