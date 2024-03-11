@@ -155,6 +155,13 @@ const routes: Routes = [
             (i) => i.PropagandaElectoralModule
           ),
       },
+      {
+        path: 'Distribuciones-Ordenadas',
+        loadChildren: () =>
+          import('./distribuciones-ordenadas/distribuciones-ordenadas.module').then(
+            (i) => i.DistribucionesOrdenadasModule
+          ),
+      },
     ],
   },
 ];
