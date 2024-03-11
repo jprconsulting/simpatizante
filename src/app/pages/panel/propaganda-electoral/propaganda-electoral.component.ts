@@ -147,10 +147,6 @@ export class PropagandaElectoralComponent {
     } 
   }
   agregar() {
-    this.propagandaForm.patchValue({
-      latitud: 19.316818295403003,
-      longitud: -98.23837658175323,
-    });
     this.propagandas = this.propagandaForm.value as Propaganda;
     const tipo = this.propagandaForm.get('municipio')?.value;
     this.propagandas.municipio = { id: tipo } as Municipio;
@@ -554,5 +550,16 @@ export class PropagandaElectoralComponent {
     a.click();
     window.URL.revokeObjectURL(url);
   }
+  mapa() {
+    this.setCurrentLocation();
+    const dummyPlace: google.maps.places.PlaceResult = {
+      geometry: {
+        location: new google.maps.LatLng(0, 0),
+      },
+      formatted_address: '',
+      name: '',
+    };
 
+    this.selectAddress2(dummyPlace);
+  }
 }
