@@ -241,67 +241,9 @@
                 </div>
               </div>
               <div class="col-lg-4">
-                <label class="form-label">Representantes de partidos que botaron*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="boletas"
-                />
-                <div
-                  *ngIf="resultadosForm.get('boletas')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="resultadosForm.get('boletas')?.hasError('required')"
-                  >
-                    Las boletas son obligatorio
-                  </div>
-                </div>
-              </div>
-            </div>
-            <br />
-            <div class="row" style="margin-top: 15px">
-              <div class="col-lg-4">
-                <label class="form-label">Personas que botaron*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="boletas"
-                />
-                <div
-                  *ngIf="resultadosForm.get('boletas')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="resultadosForm.get('boletas')?.hasError('required')"
-                  >
-                    Las boletas son obligatorio
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4">
-                <label class="form-label">Boletas*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="boletas"
-                />
-                <div
-                  *ngIf="resultadosForm.get('boletas')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="resultadosForm.get('boletas')?.hasError('required')"
-                  >
-                    Las boletas son obligatorio
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-4">
                 <label class="form-label">Boletas sobrantes*:</label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   formControlName="boletassobrantes"
                 />
@@ -318,6 +260,87 @@
                   >
                     Las boletas sobrantes son obligatorias
                   </div>
+                </div>
+              </div>
+             
+            </div>
+            <br />
+            <div class="row" >
+              <div class="col-lg-4" style="margin-top: 20px">
+                <label class="form-label">2.Personas que votaron*:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="votaron"
+                />
+                <div
+                  *ngIf="resultadosForm.get('votaron')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="resultadosForm.get('votaron')?.hasError('required')"
+                  >
+                     Peronas que botaron es requerido
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label">3.Votos de representantes de partidos*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="representantes"
+                />
+                <div
+                  *ngIf="resultadosForm.get('representantes')?.touched"
+                  class="error-message"
+                >
+                <div
+                    *ngIf="resultadosForm.get('representantes')?.hasError('required')"
+                  >
+                     Votos de represantes de partidos es requerido
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4" style="margin-top: 20px;">
+                <label class="form-label">Suma apartado 2 y 3:</label>
+                <input
+                type="text"
+                class="form-control desactiva"
+                formControlName="sumaapartados"
+                [value]="calcularSuma()"
+                placeholder="0"
+                value="{{sumaTotal}}"
+                readonly
+                [disabled]="true"
+            />
+              </div>
+            </div>
+            <br />
+            <div class="row" style="margin-top: 15px">
+              <div class="col-lg-6">
+                <div class="mb-2">
+                  <label class="form-label">Votos sacados de la urna:*:</label>
+                  <input
+                  type="number"
+                  class="form-control"
+                  formControlName="urna"
+                />
+                <div
+                  *ngIf="resultadosForm.get('urna')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="resultadosForm.get('urna')?.hasError('required')"
+                  >
+                    Campo obligatorio
+                  </div>
+                  <div
+                    *ngIf="resultadosForm.get('urna')?.hasError('pattern')"
+                  >
+                     No puede tener letras 
+                  </div>
+                </div>
                 </div>
               </div>
             </div>
@@ -386,14 +409,11 @@
                             </td>
                             <td>{{ partido }}</td>
                             <td class="col-lg-6 text-center" style="text-transform: none; font-size: inherit">
-                              <input type="number" class="form-control" />
+                              <input class="col-lg-6 text-center form-control" type="number" value="0" (blur)="actualizarSuma($event, partido)" />
                             </td>
                           </tr>
                         </ng-container>
                       </ng-container>
-                      
-                     
-                      
                       <tr>
                         <td><img src="assets/images/1.jpg" class="d-block mx-auto" alt="" width="20%"></td>
                         <td>
@@ -404,7 +424,7 @@
                           style="text-transform: none; font-size: inherit"
                         >
                           <div>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" id="casillaValor" (blur)="actualizarSuma2($event)" />
                           </div>
                         </td>
                       </tr>
@@ -418,13 +438,12 @@
                           style="text-transform: none; font-size: inherit"
                         >
                           <div>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" id="casillaValor" (blur)="actualizarSuma2($event)" />
                           </div>
                         </td>
                       </tr>
                       
-
-                      <td class="rojo-pastel"></td>
+                      <td class="rojo-pastel"> </td>
                       <td class="rojo-pastel">
                         <label class="form-label">Total</label>
                       </td>
@@ -432,13 +451,25 @@
                         class="col-lg-4 text-center rojo-pastel"
                         style="text-transform: none; font-size: inherit"
                       >
-                        <div>
-                          <input type="text" class="form-control" />
+                        <div *ngIf="visibiliti">
+                          <input type="text" class="form-control color text-center" value="{{ sumaDeValores }}" disabled />
+
                         </div>
                       </td>
                     </tbody>
                   </table>
                 </div>
+                <div class="row justify-content-center d-grid gap-2">
+                  <div class="col-lg-2"> <!-- Este div ocupa la mitad del ancho del formulario -->
+                      <button class="btn btn-primary" type="button" (click)="mostrar()" style="
+                      margin-top: 10px;
+                      margin-bottom: 10px;
+                      width: 134.22222px;
+                  ">Sumar</button>
+                  </div>
+              </div>
+              
+              
               </div>
             </div>
           </div>

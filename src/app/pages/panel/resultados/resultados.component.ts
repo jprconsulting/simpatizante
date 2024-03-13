@@ -65,6 +65,13 @@ export class ResultadosComponent {
   ComunidadSelect!: Comunidad | undefined;
   distribucionCandidatura: DistribucionCandidatura[] = [];
   distribucionCandidaturaFilter: DistribucionCandidatura[] = [];
+  sumaDeValores: number = 0;
+  valoresInput: number[] = [];
+  isLoadingModalPartidos = LoadingStates.neutro;
+  pagModalSecciones: number = 1;
+  visibiliti=false;
+  sumaTotal: number = 0;
+  
 
   isModalAdd = true;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -99,7 +106,9 @@ export class ResultadosComponent {
       firstName: new FormControl()
   });
   }
-
+mostrar(){
+  this.visibiliti = true;
+}
   isClaveFilled = false;
   ngOnInit(): void {}
 
@@ -267,6 +276,9 @@ export class ResultadosComponent {
       }
       this.isModalAdd = true;
     }
+    this.visibiliti= false;
+    this.sumaTotal=0
+    this.sumaDeValores=0
   }
   creteForm() {
     this.resultadosForm = this.formBuilder.group({
@@ -274,11 +286,14 @@ export class ResultadosComponent {
       seccion: ['', Validators.required],
       tipoelecion: ['', Validators.required],
       casilla: ['', Validators.required],
-      municipio: ['', Validators.required],
-      boletas: ['', Validators.required],
+      municipio: [''],
       boletassobrantes: ['', Validators.required],
-      distrito:[],
-      comunidad:[],
+      distrito:[''],
+      comunidad:[''],
+      votaron: ['', Validators.required],
+      representantes: ['', Validators.required],
+      urna: ['', Validators.required],
+      retroalimentacion:[''],
     });
   }
   getDistribucion() {
@@ -430,7 +445,7 @@ getLogo(partido: string): { nombre: string; logoUrl: string } | undefined {
     (partidoConLogo) => partidoConLogo.nombre === partido
   );
 }
-pagModalSecciones: number = 1;
+
 verPartidosDistribucion(distribucionId: number) {
   this.pagModalSecciones = 1;
 
@@ -442,7 +457,7 @@ verPartidosDistribucion(distribucionId: number) {
     modal.style.display = 'block';
   }
 }
-isLoadingModalPartidos = LoadingStates.neutro;
+
 getDistribucionId(distribucionId: number): void {
   this.isLoadingModalPartidos = LoadingStates.trueLoading;
 
@@ -477,6 +492,39 @@ return true; // Mostrar el div si todas las condiciones son verdaderas
 } else {
 return false; // Ocultar el div si alguna de las condiciones es falsa
 }
+}
+
+  actualizarSuma(event: any, partidoItem: any) {
+    const valor = parseFloat(event.target.value);
+    if (!isNaN(valor)) {
+      const valor: string = (event.target as HTMLInputElement).value;
+     if (valor) {
+       this.sumaDeValores += parseFloat(valor);
+     }
+      console.log(valor )
+    }
+  }
+  actualizarSuma2(event: any) {
+    const valor = parseFloat(event.target.value);
+    if (!isNaN(valor)) {
+        this.sumaDeValores += valor;
+        console.log("Valor actualizado:", valor);
+    }
+}
+deshabilitarTodosLosControles() {
+  Object.keys(this.resultadosForm.controls).forEach((controlName) => {
+    if (controlName !== 'curp') {
+      this.resultadosForm.get(controlName)?.disable();
+    }
+  });
+}
+
+calcularSuma(): void {
+  const votaronValue = this.resultadosForm.get('votaron')?.value;
+  const representantesValue = this.resultadosForm.get('representantes')?.value;
+
+  // Realizar la suma de los valores
+  this.sumaTotal = parseInt(votaronValue) + parseInt(representantesValue);
 }
 
 }
