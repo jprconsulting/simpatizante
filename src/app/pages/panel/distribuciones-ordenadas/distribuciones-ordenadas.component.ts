@@ -260,7 +260,7 @@ exportarDatosAExcel() {
       'Nombre de candidatura': d.nombreCandidatura,
       'InputId': d.inputId,
       'Distribucion candidatura': d.distribucionCandidatura.tipoEleccion.nombre,
-      Estatus: orden,
+      'Orden': orden,
       'Tipo de agrupacion politica': d.tipoAgrupacionPolitica.nombre,
       'Candidatura': d.candidatura.nombre,
       'Combinacion': d.combinacion.nombre,

@@ -97,20 +97,20 @@
       <form [formGroup]="resultadosForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <label class="form-label">Tipo de elección*:</label>
-              <ng-select
-                placeholder="Elegir"
-                [items]="tipoelecion"
-                bindLabel="nombre"
-                [searchable]="false"
-                [clearable]="false"
-                formControlName="tipoelecion"
-              >
-                <ng-template ng-option-tmp let-item="item">
+              <ng-select formControlName="tipoelecion" #selectEstado [searchable]="false" [items]="tiposEleccion"
+              bindLabel="nombre" bindValue="id" (change)="onSelectTipoE($event?.id); verPartidosDistribucion($event?.id)"
+              placeholder="Selecciona una opción" [clearable]="false" value="">
+              <ng-template ng-header-tmp>
+                  <input class="form-control" type="text" value=""
+                      (input)="selectEstado.filter($any($event.target).value)" />
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
                   {{ item.nombre }}
-                </ng-template>
-              </ng-select>
+              </ng-template>
+          </ng-select>
+          
               <div
                 *ngIf="resultadosForm.get('tipoelecion')?.touched"
                 class="error-message"
@@ -124,103 +124,85 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4">
-              <label class="form-label">Seccion*:</label>
-              <ng-select
-                formControlName="seccion"
-                #selectseccion
-                [searchable]="false"
-                [items]="secciones"
-                bindLabel="nombre"
-                bindValue="id"
-                placeholder="Elegir"
-                (change)="fetchMunicipios(resultadosForm.get('seccion')?.value)"
-                [clearable]="false"
-              >
-                <ng-template ng-header-tmp>
-                  <input
-                    class="form-control"
-                    type="text"
-                    (input)="selectseccion.filter($any($event.target).value)"
-                  />
-                </ng-template>
-                <ng-template ng-option-tmp let-item="item" let-index="index">
-                  {{ item.nombre }}
-                </ng-template>
-              </ng-select>
-              <div
-                *ngIf="resultadosForm.get('seccion')?.touched"
-                class="error-message"
-              >
-                <div
-                  *ngIf="resultadosForm.get('seccion')?.hasError('required')"
-                >
-                  La seccion es obligatoria
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <label class="form-label">Casilla*:</label>
-              <ng-select
-                placeholder="Elegir"
-                bindLabel="nombre"
-                [items]="casillas"
-                [searchable]="false"
-                [clearable]="false"
-                formControlName="casilla"
-              >
-                <ng-template ng-option-tmp let-item="item">
-                  {{ item.nombre }}
-                </ng-template>
-              </ng-select>
-              <div
-                *ngIf="resultadosForm.get('casilla')?.touched"
-                class="error-message"
-              >
-                <div
-                  *ngIf="resultadosForm.get('casilla')?.hasError('required')"
-                >
-                  La casilla es obligatorio
-                </div>
-              </div>
-            </div>
-            <br />
-            <div class="row" style="margin-top: 15px">
-              <div class="col-lg-4">
-                <label class="form-label">Municipio*:</label>
-                <ng-select
-                  formControlName="municipio"
-                  #selectMunicipio
-                  [searchable]="false"
-                  [items]="municipios"
-                  bindLabel="nombre"
-                  bindValue="id"
-                  placeholder="Elije"
-                  [clearable]="false"
-                >
+            <div class="col-lg-6">
+              <div 
+              *ngIf="resultadosForm.controls['tipoelecion'].value == 1 || resultadosForm.controls['tipoelecion'].value == 2">
+              <div class="mb-3">
+                <label class="form-label">Distrito:</label>
+                <ng-select formControlName="distrito" #selectDistrito [searchable]="false" [items]="distritos"
+                  bindLabel="nombre" bindValue="id" (change)="onSelectdistrito($event?.id)" placeholder="Selecciona una opción" [clearable]="false" value="">
                   <ng-template ng-header-tmp>
-                    <input
-                      class="form-control color"
-                      type="text"
-                      (input)="
-                        selectMunicipio.filter($any($event.target).value)
-                      "
-                    />
+                    <input class="form-control" type="text" value=""
+                      (input)="selectDistrito.filter($any($event.target).value)" />
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-index="index">
                     {{ item.nombre }}
                   </ng-template>
                 </ng-select>
+              </div>
+            </div>
+
+            <div  *ngIf="resultadosForm.controls['tipoelecion'].value == 3">
+              <div class="mb-3">
+                <label class="form-label">Municipio:</label>
+                <ng-select formControlName="municipio" #selectMunicipio [searchable]="false" [items]="municipios"
+                  bindLabel="nombre" bindValue="id" (change)="onSelectmunicipios($event?.id);verPartidosDistribucion($event?.id)" placeholder="Selecciona una opción" [clearable]="false"
+                  [clearable]="false">
+                  <ng-template ng-header-tmp>
+                    <input class="form-control color" type="text" value="" (input)="
+                                                selectMunicipio.filter($any($event.target).value)
+                                              " />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+
+            <div  *ngIf="resultadosForm.controls['tipoelecion'].value == 4">
+              <div class="mb-3">
+                <label class="form-label">Comunidad:</label>
+                <ng-select formControlName="comunidad" #selectComunidad [searchable]="false" [items]="comunidades"
+                  bindLabel="nombre" bindValue="id" (change)="onSelectComunidades($event?.id)" placeholder="Selecciona una comunidad" [clearable]="false" value=""
+                  [clearable]="false">
+                  <ng-template ng-header-tmp>
+                    <input class="form-control color" type="text" value="" (input)="
+                                              selectComunidad.filter($any($event.target).value)
+                                            " />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+            </div>
+           
+            <br />
+            <div class="row" style="margin-top: 15px">
+              <div class="col-lg-4">
+                <label class="form-label">Casilla*:</label>
+                <ng-select
+                  placeholder="Elegir"
+                  bindLabel="nombre"
+                  [items]="casillas"
+                  [searchable]="false"
+                  [clearable]="false"
+                  formControlName="casilla"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
                 <div
-                  *ngIf="resultadosForm.get('municipio')?.touched"
+                  *ngIf="resultadosForm.get('casilla')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="
-                      resultadosForm.get('municipio')?.hasError('required')
-                    "
+                    *ngIf="resultadosForm.get('casilla')?.hasError('required')"
                   >
-                    El municipio es obligatorio
+                    La casilla es obligatorio
                   </div>
                 </div>
               </div>
@@ -269,10 +251,7 @@
 
             <div
               class="col-12"
-              *ngIf="
-                resultadosForm.get('tipoelecion')?.value !== null &&
-                resultadosForm.get('tipoelecion')?.value !== undefined
-              "
+              *ngIf="checkValores()"
             >
               <div class="card" style="margin-top: 15px">
                 <div class="table-responsive">
@@ -309,34 +288,26 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr
-                        style="text-align: center"
-                        *ngFor="
-                          let candidatura of candidaturasFilter
-                            | paginate : configPaginator;
-                          let pointIndex = index
-                        "
-                      >
-                        <td class="text-muted">
-                          <div class="flex justify-center items-center">
-                            <img
-                              src="{{ candidatura.logo }}"
-                              alt="Foto de {{ candidatura.logo }}"
-                              width="50"
-                              height="50"
-                            />
-                          </div>
-                        </td>
-                        <td class="text-muted">{{ candidatura.nombre }}</td>
-                        <td
-                          class="col-lg-4 text-center"
-                          style="text-transform: none; font-size: inherit"
-                        >
-                          <div>
-                            <input type="text" class="form-control" />
-                          </div>
-                        </td>
-                      </tr>
+                      <ng-container *ngFor="let partido of distribucionCandidaturaFilter">
+                        <ng-container *ngFor="let partido of partido.partidos">
+                          <tr>
+                            <td>
+                              <div class="d-block mx-auto">
+                                <ng-container *ngIf="getLogo(partido)">
+                                  <img [src]="getLogo(partido)?.logoUrl" alt="Logo de {{ partido }}" width="50">
+                                </ng-container>
+                              </div>
+                            </td>
+                            <td>{{ partido }}</td>
+                            <td class="col-lg-6 text-center" style="text-transform: none; font-size: inherit">
+                              <input type="text" class="form-control" />
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                      
+                     
+                      
                       <tr>
                         <td><img src="assets/images/1.jpg" class="d-block mx-auto" alt="" width="20%"></td>
                         <td>
