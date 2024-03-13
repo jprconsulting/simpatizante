@@ -45,6 +45,7 @@ import { Visita } from 'src/app/models/visita';
 })
 export class ResultadosComponent {
   resultadosForm!: FormGroup;
+  myGroup!: FormGroup;
   DistribucionCandidatura!: DistribucionCandidatura;
   secciones: Seccion[] = [];
   resultado!: Resultado;
@@ -94,6 +95,9 @@ export class ResultadosComponent {
     this.getDistribucion();
     this.getDistritos();
     this.getComunidad();
+    this.myGroup = new FormGroup({
+      firstName: new FormControl()
+  });
   }
 
   isClaveFilled = false;

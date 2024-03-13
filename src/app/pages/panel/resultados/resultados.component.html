@@ -178,10 +178,44 @@
               </div>
             </div>
             </div>
-           
             <br />
             <div class="row" style="margin-top: 15px">
               <div class="col-lg-4">
+                <label class="form-label">Seccion*:</label>
+                <ng-select
+                  formControlName="seccion"
+                  #selectseccion
+                  [searchable]="false"
+                  [items]="secciones"
+                  bindLabel="nombre"
+                  bindValue="id"
+                  placeholder="Elegir"
+                  (change)="fetchMunicipios(resultadosForm.get('seccion')?.value)"
+                  [clearable]="false"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="selectseccion.filter($any($event.target).value)"
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+                <div
+                  *ngIf="resultadosForm.get('seccion')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="resultadosForm.get('seccion')?.hasError('required')"
+                  >
+                    La seccion es obligatoria
+                  </div>
+                </div>
+              </div>
+<div class="col-lg-4">
                 <label class="form-label">Casilla*:</label>
                 <ng-select
                   placeholder="Elegir"
@@ -203,6 +237,45 @@
                     *ngIf="resultadosForm.get('casilla')?.hasError('required')"
                   >
                     La casilla es obligatorio
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label">Representantes de partidos que botaron*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="boletas"
+                />
+                <div
+                  *ngIf="resultadosForm.get('boletas')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="resultadosForm.get('boletas')?.hasError('required')"
+                  >
+                    Las boletas son obligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div class="row" style="margin-top: 15px">
+              <div class="col-lg-4">
+                <label class="form-label">Personas que botaron*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="boletas"
+                />
+                <div
+                  *ngIf="resultadosForm.get('boletas')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="resultadosForm.get('boletas')?.hasError('required')"
+                  >
+                    Las boletas son obligatorio
                   </div>
                 </div>
               </div>
@@ -248,7 +321,20 @@
                 </div>
               </div>
             </div>
-
+            <br />
+            <div class="row" style="margin-top: 15px">
+              <div class="col-lg-12">
+                <div class="mb-3">
+                  <label class="form-label">La casilla se instalo en:*:</label>
+                  <textarea
+                    rows="4"
+                    class="form-control"
+                    placeholder=""
+                    formControlName="retroalimentacion"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
             <div
               class="col-12"
               *ngIf="checkValores()"
@@ -300,7 +386,7 @@
                             </td>
                             <td>{{ partido }}</td>
                             <td class="col-lg-6 text-center" style="text-transform: none; font-size: inherit">
-                              <input type="text" class="form-control" />
+                              <input type="number" class="form-control" />
                             </td>
                           </tr>
                         </ng-container>

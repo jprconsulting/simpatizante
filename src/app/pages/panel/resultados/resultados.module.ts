@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ResultadosComponent } from './resultados.component';
 import { ResultadosRoutingModule } from './resultados-routing.module';
 import { SharedModule } from "../../../shared/shared.module";
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -21,7 +21,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
         NgxSpinnerModule,
         NgxPaginationModule,
         NgSelectModule,
-        SharedModule
+        SharedModule,
+        FormsModule 
     ]
 })
 export class ResultadosModule { }
