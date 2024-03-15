@@ -1,7 +1,7 @@
 .rojo-pastel {
     background-color: #ffced6; 
   }
-  .ng-select.disabled {
+  .desactiva {
     background-color: #ada7a7;
     color: #ada7a7;
     pointer-events: none;

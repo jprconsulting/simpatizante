@@ -45,13 +45,14 @@ import { Visita } from 'src/app/models/visita';
 })
 export class ResultadosComponent {
   resultadosForm!: FormGroup;
+  sumaForm!: FormGroup;
   myGroup!: FormGroup;
   DistribucionCandidatura!: DistribucionCandidatura;
   secciones: Seccion[] = [];
   resultado!: Resultado;
   casillas: Casillas[] = [];
   isLoading = LoadingStates.neutro;
-  tipoelecion: Cargo[] = [];
+  tipoEleccionId: Cargo[] = [];
   partidosConLogo: { nombre: string; logoUrl: string }[] = [];
   municipios: Municipio[] = [];
   candidaturasFilter: Candidatura[] = [];
@@ -71,6 +72,11 @@ export class ResultadosComponent {
   pagModalSecciones: number = 1;
   visibiliti=false;
   sumaTotal: number = 0;
+  partidosData: { nombre: string, valor: number }[] = [];
+
+  
+
+
   
 
   isModalAdd = true;
@@ -102,10 +108,16 @@ export class ResultadosComponent {
     this.getDistribucion();
     this.getDistritos();
     this.getComunidad();
-    this.myGroup = new FormGroup({
-      firstName: new FormControl()
-  });
+    this.creteForm2();
+    
   }
+  creteForm2() {
+    this.sumaForm = this.formBuilder.group({
+      Candidatonoregistrado:[''],
+      Votosnulos:['']
+    });
+  }
+  
 mostrar(){
   this.visibiliti = true;
 }
@@ -231,22 +243,47 @@ mostrar(){
   agregar() {
     this.resultado = this.resultadosForm.value as Resultado;
 
-    const seccion = this.resultadosForm.get('seccion')?.value;
-    this.resultado.seccion = { id: seccion } as Seccion;
+    const seccion = this.resultadosForm.get('seccionId')?.value;
+    this.resultado.seccionId = { id: seccion } as Seccion;
 
-    const tipoelecion = this.resultadosForm.get('tipoelecion')?.value;
-    this.resultado.tipoelecion = { id: tipoelecion } as Cargo;
+    const tipoelecion = this.resultadosForm.get('tipoEleccionId')?.value;
+    this.resultado.tipoEleccionId = { id: tipoelecion } as Cargo;
 
-    const casilla = this.resultadosForm.get('casilla')?.value;
-    this.resultado.casilla = { id: casilla } as Casillas;
+    const casilla = this.resultadosForm.get('casillaId')?.value;
+    this.resultado.casillaId = { id: casilla } as Casillas;
 
-    const municipio = this.resultadosForm.get('municipio')?.value;
-    this.resultado.municipio = { id: municipio } as Municipio;
+   
 
+    const distrito = this.resultadosForm.get('distritoId')?.value;
+    this.resultado.distritoId = { id: distrito } as Distrito;
+
+   
+    
+    
+let listaActual= this.partidosData;
+
+
+let partidos = [];
+
+
+for (let i = 0; i < listaActual.length; i++) {
+  partidos.push(listaActual[i].nombre);
+  partidos.push(listaActual[i].valor.toString()); // Convertir el valor a cadena si es necesario
+}
+
+console.log(partidos); // Output: ["pan", "10", "kfc", "10", "pan", "10"]
+
+let formData = {
+      ...this.resultado,
+      partidos: partidos 
+    };
+
+    
+    // Tu lista actual
     this.spinnerService.show();
-    console.log(this.resultado);
+    console.log(formData);
 
-    this.resultadoService.post(this.resultado).subscribe({
+    this.resultadoService.post(formData).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito('Resultados guardados correctamente');
@@ -259,7 +296,6 @@ mostrar(){
       },
     });
   }
-
   resetForm() {
     this.resultadosForm.reset();
   }
@@ -283,19 +319,19 @@ mostrar(){
   creteForm() {
     this.resultadosForm = this.formBuilder.group({
       id: [null],
-      seccion: ['', Validators.required],
-      tipoelecion: ['', Validators.required],
-      casilla: ['', Validators.required],
-      municipio: [''],
-      boletassobrantes: ['', Validators.required],
-      distrito:[''],
-      comunidad:[''],
-      votaron: ['', Validators.required],
-      representantes: ['', Validators.required],
-      urna: ['', Validators.required],
-      retroalimentacion:[''],
+      seccionId: ['', Validators.required],
+      tipoEleccionId: ['', Validators.required],
+      casillaId: ['', Validators.required],
+
+      boletasSobrantes: ['', Validators.required],
+      distritoId:[''],
+
+      personasVotaron: ['', Validators.required],
+      votosRepresentantes: ['', Validators.required],
+      suma:[''],
     });
   }
+ 
   getDistribucion() {
     this.isLoading = LoadingStates.trueLoading;
     this.distribucionCandidaturaService.getAll().subscribe({
@@ -383,11 +419,14 @@ filtrarCandidaturas(id: number | null) {
   if (!distritoSelect) return;
 
   console.log('Search Value:', distritoSelect.id.toString());
-  this.distribucionCandidaturaFilter = this.distribucionCandidatura.filter((c) =>
+
+  // Guardar los resultados de la búsqueda en una variable local
+  const resultadosFiltrados = this.distribucionCandidatura.filter((c) =>
     c.distrito?.id === id
   );
 
-  console.log('Filtered Candidaturas:', this.distribucionCandidaturaFilter);
+  // Puedes utilizar 'resultadosFiltrados' en lugar de 'this.distribucionCandidaturaFilter' a partir de aquí
+  console.log('Filtered Candidaturas:', resultadosFiltrados);
 
   // Después de aplicar el filtro por distrito, llamamos a la función para obtener los logos de los partidos
   this.obtenerLogosPartidos();
@@ -476,9 +515,9 @@ getDistribucionId(distribucionId: number): void {
 }
 
 checkValores() {
-  const distrito = this.resultadosForm.get('distrito')?.value;
-  const municipio = this.resultadosForm.get('municipio')?.value;
-  const comunidad = this.resultadosForm.get('comunidad')?.value;
+  const distrito = this.resultadosForm.get('distritoId')?.value;
+  const municipio = this.resultadosForm.get('municipioId')?.value;
+  const comunidad = this.resultadosForm.get('comunidadId')?.value;
   
   // Verifica si alguno de los valores es null o undefined
   if (distrito !== null && distrito !== undefined ) {
@@ -493,24 +532,40 @@ return true; // Mostrar el div si todas las condiciones son verdaderas
 return false; // Ocultar el div si alguna de las condiciones es falsa
 }
 }
-
-  actualizarSuma(event: any, partidoItem: any) {
-    const valor = parseFloat(event.target.value);
-    if (!isNaN(valor)) {
-      const valor: string = (event.target as HTMLInputElement).value;
-     if (valor) {
-       this.sumaDeValores += parseFloat(valor);
-     }
-      console.log(valor )
-    }
+lista(event: any, partidoItem: any) {
+  const valor = parseFloat(event.target.value);
+  if (!isNaN(valor)) {
+    const nombrePartido: string = partidoItem;
+    this.sumaDeValores += valor;
+    this.partidosData.push({ nombre: nombrePartido, valor: valor });
+    console.log(this.partidosData); 
   }
-  actualizarSuma2(event: any) {
-    const valor = parseFloat(event.target.value);
-    if (!isNaN(valor)) {
-        this.sumaDeValores += valor;
-        console.log("Valor actualizado:", valor);
-    }
 }
+
+nombrePartido: string = 'Candidato-no-registrado';
+nombrePartido2: string = 'Votos nulos'; 
+actualizarSuma2(event: any) {
+  const valor = parseFloat(event.target.value);
+  const Candidatonoregistrado = this.sumaForm.get('Candidatonoregistrado')?.value;
+  if (Candidatonoregistrado != null) {
+    const valorTotal = this.sumaDeValores + Candidatonoregistrado; 
+    this.partidosData.push({ nombre: this.nombrePartido, valor: Candidatonoregistrado }); 
+    console.log(this.partidosData);
+  }
+
+}
+actualizarSuma3(event: any) {
+  const valor = parseFloat(event.target.value);
+  const Votosnulos = this.sumaForm.get('Votosnulos')?.value;
+  if (Votosnulos != null) {
+    const valorTotal = this.sumaDeValores + Votosnulos; 
+    this.partidosData.push({ nombre: this.nombrePartido2, valor: Votosnulos }); 
+    console.log(this.partidosData);
+  }
+
+}
+
+
 deshabilitarTodosLosControles() {
   Object.keys(this.resultadosForm.controls).forEach((controlName) => {
     if (controlName !== 'curp') {
@@ -520,11 +575,13 @@ deshabilitarTodosLosControles() {
 }
 
 calcularSuma(): void {
-  const votaronValue = this.resultadosForm.get('votaron')?.value;
-  const representantesValue = this.resultadosForm.get('representantes')?.value;
+  const votaronValue = this.resultadosForm.get('votosRepresentantes')?.value;
+  const representantesValue = this.resultadosForm.get('personasVotaron')?.value;
 
   // Realizar la suma de los valores
   this.sumaTotal = parseInt(votaronValue) + parseInt(representantesValue);
 }
+
+
 
 }

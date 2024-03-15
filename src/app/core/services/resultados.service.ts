@@ -8,7 +8,7 @@ import { Resultado } from 'src/app/models/resultados';
 
 @Injectable({providedIn: 'root'})
 export class ResultadoService {
-  route = `${environment.apiUrl}/resultados`;
+  route = `${environment.apiUrl}/resultados-pre-eliminares`;
   private _refreshListResultados$ = new Subject<Resultado | null>();
 
   constructor(

@@ -99,7 +99,7 @@
           <div class="row">
             <div class="col-lg-6">
               <label class="form-label">Tipo de elección*:</label>
-              <ng-select formControlName="tipoelecion" #selectEstado [searchable]="false" [items]="tiposEleccion"
+              <ng-select formControlName="tipoEleccionId" #selectEstado [searchable]="false" [items]="tiposEleccion"
               bindLabel="nombre" bindValue="id" (change)="onSelectTipoE($event?.id); verPartidosDistribucion($event?.id)"
               placeholder="Selecciona una opción" [clearable]="false" value="">
               <ng-template ng-header-tmp>
@@ -112,12 +112,12 @@
           </ng-select>
           
               <div
-                *ngIf="resultadosForm.get('tipoelecion')?.touched"
+                *ngIf="resultadosForm.get('tipoEleccionId')?.touched"
                 class="error-message"
               >
                 <div
                   *ngIf="
-                    resultadosForm.get('tipoelecion')?.hasError('required')
+                    resultadosForm.get('tipoEleccionId')?.hasError('required')
                   "
                 >
                   <p style="color: red">El tipo de elección es obligatorio</p>
@@ -126,10 +126,10 @@
             </div>
             <div class="col-lg-6">
               <div 
-              *ngIf="resultadosForm.controls['tipoelecion'].value == 1 || resultadosForm.controls['tipoelecion'].value == 2">
+              *ngIf="resultadosForm.controls['tipoEleccionId'].value == 1 || resultadosForm.controls['tipoEleccionId'].value == 2">
               <div class="mb-3">
                 <label class="form-label">Distrito:</label>
-                <ng-select formControlName="distrito" #selectDistrito [searchable]="false" [items]="distritos"
+                <ng-select formControlName="distritoId" #selectDistrito [searchable]="false" [items]="distritos"
                   bindLabel="nombre" bindValue="id" (change)="onSelectdistrito($event?.id)" placeholder="Selecciona una opción" [clearable]="false" value="">
                   <ng-template ng-header-tmp>
                     <input class="form-control" type="text" value=""
@@ -142,10 +142,10 @@
               </div>
             </div>
 
-            <div  *ngIf="resultadosForm.controls['tipoelecion'].value == 3">
+            <div  *ngIf="resultadosForm.controls['tipoEleccionId'].value == 3">
               <div class="mb-3">
                 <label class="form-label">Municipio:</label>
-                <ng-select formControlName="municipio" #selectMunicipio [searchable]="false" [items]="municipios"
+                <ng-select formControlName="municipioId" #selectMunicipio [searchable]="false" [items]="municipios"
                   bindLabel="nombre" bindValue="id" (change)="onSelectmunicipios($event?.id);verPartidosDistribucion($event?.id)" placeholder="Selecciona una opción" [clearable]="false"
                   [clearable]="false">
                   <ng-template ng-header-tmp>
@@ -160,10 +160,10 @@
               </div>
             </div>
 
-            <div  *ngIf="resultadosForm.controls['tipoelecion'].value == 4">
+            <div  *ngIf="resultadosForm.controls['tipoEleccionId'].value == 4">
               <div class="mb-3">
                 <label class="form-label">Comunidad:</label>
-                <ng-select formControlName="comunidad" #selectComunidad [searchable]="false" [items]="comunidades"
+                <ng-select formControlName="comunidadId" #selectComunidad [searchable]="false" [items]="comunidades"
                   bindLabel="nombre" bindValue="id" (change)="onSelectComunidades($event?.id)" placeholder="Selecciona una comunidad" [clearable]="false" value=""
                   [clearable]="false">
                   <ng-template ng-header-tmp>
@@ -183,14 +183,13 @@
               <div class="col-lg-4">
                 <label class="form-label">Seccion*:</label>
                 <ng-select
-                  formControlName="seccion"
+                  formControlName="seccionId"
                   #selectseccion
                   [searchable]="false"
                   [items]="secciones"
                   bindLabel="nombre"
                   bindValue="id"
                   placeholder="Elegir"
-                  (change)="fetchMunicipios(resultadosForm.get('seccion')?.value)"
                   [clearable]="false"
                 >
                   <ng-template ng-header-tmp>
@@ -205,11 +204,11 @@
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="resultadosForm.get('seccion')?.touched"
+                  *ngIf="resultadosForm.get('seccionId')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="resultadosForm.get('seccion')?.hasError('required')"
+                    *ngIf="resultadosForm.get('seccionId')?.hasError('required')"
                   >
                     La seccion es obligatoria
                   </div>
@@ -223,18 +222,18 @@
                   [items]="casillas"
                   [searchable]="false"
                   [clearable]="false"
-                  formControlName="casilla"
+                  formControlName="casillaId"
                 >
                   <ng-template ng-option-tmp let-item="item">
                     {{ item.nombre }}
                   </ng-template>
                 </ng-select>
                 <div
-                  *ngIf="resultadosForm.get('casilla')?.touched"
+                  *ngIf="resultadosForm.get('casillaId')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="resultadosForm.get('casilla')?.hasError('required')"
+                    *ngIf="resultadosForm.get('casillaId')?.hasError('required')"
                   >
                     La casilla es obligatorio
                   </div>
@@ -243,18 +242,18 @@
               <div class="col-lg-4">
                 <label class="form-label">Boletas sobrantes*:</label>
                 <input
-                  type="number"
+                  type="text"
                   class="form-control"
-                  formControlName="boletassobrantes"
+                  formControlName="boletasSobrantes"
                 />
                 <div
-                  *ngIf="resultadosForm.get('boletassobrantes')?.touched"
+                  *ngIf="resultadosForm.get('boletasSobrantes')?.touched"
                   class="error-message"
                 >
                   <div
                     *ngIf="
                       resultadosForm
-                        .get('boletassobrantes')
+                        .get('boletasSobrantes')
                         ?.hasError('required')
                     "
                   >
@@ -269,16 +268,16 @@
               <div class="col-lg-4" style="margin-top: 20px">
                 <label class="form-label">2.Personas que votaron*:</label>
                 <input
-                  type="number"
+                  type="text"
                   class="form-control"
-                  formControlName="votaron"
+                  formControlName="personasVotaron"
                 />
                 <div
-                  *ngIf="resultadosForm.get('votaron')?.touched"
+                  *ngIf="resultadosForm.get('personasVotaron')?.touched"
                   class="error-message"
                 >
                   <div
-                    *ngIf="resultadosForm.get('votaron')?.hasError('required')"
+                    *ngIf="resultadosForm.get('personasVotaron')?.hasError('required')"
                   >
                      Peronas que botaron es requerido
                   </div>
@@ -289,79 +288,28 @@
                 <input
                   type="text"
                   class="form-control"
-                  formControlName="representantes"
+                  formControlName="votosRepresentantes"
                 />
                 <div
-                  *ngIf="resultadosForm.get('representantes')?.touched"
+                  *ngIf="resultadosForm.get('votosRepresentantes')?.touched"
                   class="error-message"
                 >
                 <div
-                    *ngIf="resultadosForm.get('representantes')?.hasError('required')"
+                    *ngIf="resultadosForm.get('votosRepresentantes')?.hasError('required')"
                   >
                      Votos de represantes de partidos es requerido
                   </div>
                 </div>
               </div>
-              <div class="col-lg-4" style="margin-top: 20px;">
-                <label class="form-label">Suma apartado 2 y 3:</label>
-                <input
-                type="text"
-                class="form-control desactiva"
-                formControlName="sumaapartados"
-                [value]="calcularSuma()"
-                placeholder="0"
-                value="{{sumaTotal}}"
-                readonly
-                [disabled]="true"
-            />
-              </div>
+             
             </div>
-            <br />
-            <div class="row" style="margin-top: 15px">
-              <div class="col-lg-6">
-                <div class="mb-2">
-                  <label class="form-label">Votos sacados de la urna:*:</label>
-                  <input
-                  type="number"
-                  class="form-control"
-                  formControlName="urna"
-                />
-                <div
-                  *ngIf="resultadosForm.get('urna')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="resultadosForm.get('urna')?.hasError('required')"
-                  >
-                    Campo obligatorio
-                  </div>
-                  <div
-                    *ngIf="resultadosForm.get('urna')?.hasError('pattern')"
-                  >
-                     No puede tener letras 
-                  </div>
-                </div>
-                </div>
-              </div>
-            </div>
-            <br />
-            <div class="row" style="margin-top: 15px">
-              <div class="col-lg-12">
-                <div class="mb-3">
-                  <label class="form-label">La casilla se instalo en:*:</label>
-                  <textarea
-                    rows="4"
-                    class="form-control"
-                    placeholder=""
-                    formControlName="retroalimentacion"
-                  ></textarea>
-                </div>
-              </div>
-            </div>
+            
+           
             <div
               class="col-12"
               *ngIf="checkValores()"
             >
+            <form [formGroup]="sumaForm" >
               <div class="card" style="margin-top: 15px">
                 <div class="table-responsive">
                   <table class="table table-vcenter card-table">
@@ -409,7 +357,7 @@
                             </td>
                             <td>{{ partido }}</td>
                             <td class="col-lg-6 text-center" style="text-transform: none; font-size: inherit">
-                              <input class="col-lg-6 text-center form-control" type="number" value="0" (blur)="actualizarSuma($event, partido)" />
+                              <input class="col-lg-6 text-center form-control" type="text"  (blur)="lista($event,partido)" />
                             </td>
                           </tr>
                         </ng-container>
@@ -424,7 +372,7 @@
                           style="text-transform: none; font-size: inherit"
                         >
                           <div>
-                            <input type="text" class="form-control" id="casillaValor" (blur)="actualizarSuma2($event)" />
+                            <input type="text" class="form-control" id="casillaValor"  formControlName="Candidatonoregistrado" (blur)="actualizarSuma2($event)" />
                           </div>
                         </td>
                       </tr>
@@ -438,7 +386,7 @@
                           style="text-transform: none; font-size: inherit"
                         >
                           <div>
-                            <input type="text" class="form-control" id="casillaValor" (blur)="actualizarSuma2($event)" />
+                            <input type="text" class="form-control" id="casillaValor"  formControlName="Votosnulos" (blur)="actualizarSuma3($event)" />
                           </div>
                         </td>
                       </tr>
@@ -452,7 +400,8 @@
                         style="text-transform: none; font-size: inherit"
                       >
                         <div *ngIf="visibiliti">
-                          <input type="text" class="form-control color text-center" value="{{ sumaDeValores }}" disabled />
+                          <input type="text"  class="form-control color text-center"  value="{{ sumaDeValores }}" readonly
+                          [disabled]="true" />
 
                         </div>
                       </td>
@@ -461,7 +410,7 @@
                 </div>
                 <div class="row justify-content-center d-grid gap-2">
                   <div class="col-lg-2"> <!-- Este div ocupa la mitad del ancho del formulario -->
-                      <button class="btn btn-primary" type="button" (click)="mostrar()" style="
+                      <button class="btn btn-primary" type="button"  (click)="mostrar()" style="
                       margin-top: 10px;
                       margin-bottom: 10px;
                       width: 134.22222px;
@@ -471,6 +420,12 @@
               
               
               </div>
+            </form>
+            <div *ngIf="visibiliti">
+              <input type="text"  class="form-control color text-center" formControlName="suma" value="54"
+            />
+
+            </div>
             </div>
           </div>
         </div>
