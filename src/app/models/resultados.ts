@@ -8,17 +8,15 @@ import { TipoEleccion } from "./tipo-eleccion";
 
 export interface Resultado {
     id: number,
-    tipoEleccionId:TipoEleccion,
-    distritoId: Distrito,
+    tipoEleccion:TipoEleccion,
+    distrito: Distrito,
 
 
-    casillaId:Casillas,
-    seccionId:Seccion,
+    casilla:Casillas,
+    seccion:Seccion,
     boletasSobrantes: string,
     personasVotaron: number,
     votosRepresentantes: number,
     suma: number,
     partidos: string[];
-    votosUrna: number,
-    casillaInstalado: number,
 }

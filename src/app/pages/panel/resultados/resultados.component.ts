@@ -70,14 +70,9 @@ export class ResultadosComponent {
   valoresInput: number[] = [];
   isLoadingModalPartidos = LoadingStates.neutro;
   pagModalSecciones: number = 1;
-  visibiliti=false;
+  visibiliti = false;
   sumaTotal: number = 0;
-  partidosData: { nombre: string, valor: number }[] = [];
-
-  
-
-
-  
+  partidosData: { nombre: string; valor: number }[] = [];
 
   isModalAdd = true;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -96,7 +91,7 @@ export class ResultadosComponent {
     private tipoEleccionService: TipoEleccionService,
     private distritoService: DistritoService,
     private distribucionCandidaturaService: DistribucionCandidaturaService,
-    private comunidadService: ComunidadService,
+    private comunidadService: ComunidadService
   ) {
     this.creteForm();
     this.getSecciones();
@@ -109,18 +104,17 @@ export class ResultadosComponent {
     this.getDistritos();
     this.getComunidad();
     this.creteForm2();
-    
   }
   creteForm2() {
     this.sumaForm = this.formBuilder.group({
-      Candidatonoregistrado:[''],
-      Votosnulos:['']
+      Candidatonoregistrado: [''],
+      Votosnulos: [''],
     });
   }
-  
-mostrar(){
-  this.visibiliti = true;
-}
+
+  mostrar() {
+    this.visibiliti = true;
+  }
   isClaveFilled = false;
   ngOnInit(): void {}
 
@@ -175,7 +169,6 @@ mostrar(){
       .getAll()
       .subscribe({ next: (dataFromAPI) => (this.municipios = dataFromAPI) });
   }
- 
 
   getCasillas() {
     this.casillasService
@@ -243,42 +236,34 @@ mostrar(){
   agregar() {
     this.resultado = this.resultadosForm.value as Resultado;
 
-    const seccion = this.resultadosForm.get('seccionId')?.value;
-    this.resultado.seccionId = { id: seccion } as Seccion;
+    const seccion = this.resultadosForm.get('seccion')?.value;
+    this.resultado.seccion = { id: seccion } as Seccion;
 
-    const tipoelecion = this.resultadosForm.get('tipoEleccionId')?.value;
-    this.resultado.tipoEleccionId = { id: tipoelecion } as Cargo;
+    const tipoelecion = this.resultadosForm.get('tipoEleccion')?.value;
+    this.resultado.tipoEleccion = { id: tipoelecion } as Cargo;
 
-    const casilla = this.resultadosForm.get('casillaId')?.value;
-    this.resultado.casillaId = { id: casilla } as Casillas;
+    const casilla = this.resultadosForm.get('casilla')?.value;
+    this.resultado.casilla = { id: casilla } as Casillas;
 
-   
+    const distrito = this.resultadosForm.get('distrito')?.value;
+    this.resultado.distrito = { id: distrito } as Distrito;
 
-    const distrito = this.resultadosForm.get('distritoId')?.value;
-    this.resultado.distritoId = { id: distrito } as Distrito;
+    let listaActual = this.partidosData;
 
-   
-    
-    
-let listaActual= this.partidosData;
+    let partidos = [];
 
+    for (let i = 0; i < listaActual.length; i++) {
+      partidos.push(listaActual[i].nombre);
+      partidos.push(listaActual[i].valor.toString()); // Convertir el valor a cadena si es necesario
+    }
 
-let partidos = [];
+    console.log(partidos); // Output: ["pan", "10", "kfc", "10", "pan", "10"]
 
-
-for (let i = 0; i < listaActual.length; i++) {
-  partidos.push(listaActual[i].nombre);
-  partidos.push(listaActual[i].valor.toString()); // Convertir el valor a cadena si es necesario
-}
-
-console.log(partidos); // Output: ["pan", "10", "kfc", "10", "pan", "10"]
-
-let formData = {
+    let formData = {
       ...this.resultado,
-      partidos: partidos 
+      partidos: partidos,
     };
 
-    
     // Tu lista actual
     this.spinnerService.show();
     console.log(formData);
@@ -312,26 +297,26 @@ let formData = {
       }
       this.isModalAdd = true;
     }
-    this.visibiliti= false;
-    this.sumaTotal=0
-    this.sumaDeValores=0
+    this.visibiliti = false;
+    this.sumaTotal = 0;
+    this.sumaDeValores = 0;
   }
   creteForm() {
     this.resultadosForm = this.formBuilder.group({
       id: [null],
-      seccionId: ['', Validators.required],
-      tipoEleccionId: ['', Validators.required],
-      casillaId: ['', Validators.required],
+      seccion: ['', Validators.required],
+      tipoEleccion: ['', Validators.required],
+      casilla: ['', Validators.required],
 
       boletasSobrantes: ['', Validators.required],
-      distritoId:[''],
+      distrito: [''],
 
       personasVotaron: ['', Validators.required],
       votosRepresentantes: ['', Validators.required],
-      suma:[''],
+      suma: [''],
     });
   }
- 
+
   getDistribucion() {
     this.isLoading = LoadingStates.trueLoading;
     this.distribucionCandidaturaService.getAll().subscribe({
@@ -350,238 +335,230 @@ let formData = {
     });
   }
   onSelectTipoE(id: number | null) {
-    this.TipoSelect = this.tiposEleccion.find(
-        (v) => v.id === id
-    );
+    this.TipoSelect = this.tiposEleccion.find((v) => v.id === id);
 
     if (this.TipoSelect) {
-        const valueSearch2 = this.TipoSelect.id.toString();
+      const valueSearch2 = this.TipoSelect.id.toString();
 
-        console.log('Search Value:', valueSearch2);
+      console.log('Search Value:', valueSearch2);
 
-        this.distribucionCandidaturaFilter = this.distribucionCandidatura.filter((c) =>
-            c.tipoEleccion.id === id
-        );
+      this.distribucionCandidaturaFilter = this.distribucionCandidatura.filter(
+        (c) => c.tipoEleccion.id === id
+      );
 
-        console.log('Filtered Candidaturas:', this.distribucionCandidaturaFilter);
+      console.log('Filtered Candidaturas:', this.distribucionCandidaturaFilter);
 
-        this.configPaginator.currentPage = 1;
-        
+      this.configPaginator.currentPage = 1;
     }
-    
-}
+  }
 
-onSelectmunicipios(id: number | null) {
-  this.MunicipioSelect = this.municipios.find(
-      (v) => v.id === id
-  );
+  onSelectmunicipios(id: number | null) {
+    this.MunicipioSelect = this.municipios.find((v) => v.id === id);
 
-  if (this.MunicipioSelect) {
+    if (this.MunicipioSelect) {
       const valueSearch2 = this.MunicipioSelect.id.toString();
 
       console.log('Search Value:', valueSearch2);
-      this.distribucionCandidaturaFilter = this.distribucionCandidatura.filter((c) =>
-          c.municipio?.id === id
+      this.distribucionCandidaturaFilter = this.distribucionCandidatura.filter(
+        (c) => c.municipio?.id === id
       );
 
       console.log('Filtered Candidaturas:', this.distribucionCandidaturaFilter);
 
       this.configPaginator.currentPage = 1;
+    }
   }
-  
-}
-onSelectComunidades(id: number | null) {
-  this.ComunidadSelect = this.comunidades.find(
-      (v) => v.id === id
-  );
+  onSelectComunidades(id: number | null) {
+    this.ComunidadSelect = this.comunidades.find((v) => v.id === id);
 
-  if (this.ComunidadSelect) {
+    if (this.ComunidadSelect) {
       const valueSearch2 = this.ComunidadSelect.id.toString();
 
       console.log('Search Value:', valueSearch2);
-      this.distribucionCandidaturaFilter = this.distribucionCandidatura.filter((c) =>
-          c.comunidad?.id === id
+      this.distribucionCandidaturaFilter = this.distribucionCandidatura.filter(
+        (c) => c.comunidad?.id === id
       );
 
       console.log('Filtered Candidaturas:', this.distribucionCandidaturaFilter);
 
       this.configPaginator.currentPage = 1;
-  }
-  
-}
-onSelectdistrito(id: number | null) {
-  this.filtrarCandidaturas(id);
-}
-
-
-filtrarCandidaturas(id: number | null) {
-  const distritoSelect = this.distritos.find((v) => v.id === id);
-  if (!distritoSelect) return;
-
-  console.log('Search Value:', distritoSelect.id.toString());
-
-  // Guardar los resultados de la búsqueda en una variable local
-  const resultadosFiltrados = this.distribucionCandidatura.filter((c) =>
-    c.distrito?.id === id
-  );
-
-  // Puedes utilizar 'resultadosFiltrados' en lugar de 'this.distribucionCandidaturaFilter' a partir de aquí
-  console.log('Filtered Candidaturas:', resultadosFiltrados);
-
-  // Después de aplicar el filtro por distrito, llamamos a la función para obtener los logos de los partidos
-  this.obtenerLogosPartidos();
-
-  this.configPaginator.currentPage = 1;
-}
-
-obtenerLogosPartidos(): void {
-  this.partidosConLogo = []; // Limpiamos el arreglo antes de comenzar
-
-  // Verificamos si la propiedad partidos está presente y no es nula
-  if (
-    this.distribucionCandidaturaFilter &&
-    this.distribucionCandidaturaFilter.length > 0
-  ) {
-    const partidos = this.distribucionCandidaturaFilter.reduce(
-      (acumulador: string[], candidatura) => {
-        if (candidatura.partidos) {
-          return acumulador.concat(candidatura.partidos);
-        }
-        return acumulador;
-      },
-      []
-    );
-
-    const solicitudes = partidos.map((partido) =>
-      this.candidaturaService.obtenerLogoPartido(partido).pipe(
-        map((respuesta) => ({
-          nombre: partido,
-          logoUrl: respuesta.logoUrl,
-        })),
-        catchError((error) => {
-          console.error(`Error al obtener el logo para el partido ${partido}:`, error);
-          // Devolver un objeto con la URL de un logo por defecto en caso de error
-          return of({
-            nombre: partido,
-            logoUrl: 'URL del logo por defecto',
-          });
-        })
-      )
-    );
-
-    forkJoin(solicitudes).subscribe((partidosConLogo) => {
-      this.partidosConLogo = partidosConLogo;
-    });
-  } else {
-    // Si no hay candidaturas filtradas o la lista está vacía, podemos manejarlo de alguna manera
-    console.log('No se encontraron candidaturas para obtener logos.');
-  }
-}
-
-
-getLogo(partido: string): { nombre: string; logoUrl: string } | undefined {
-  return this.partidosConLogo.find(
-    (partidoConLogo) => partidoConLogo.nombre === partido
-  );
-}
-
-verPartidosDistribucion(distribucionId: number) {
-  this.pagModalSecciones = 1;
-
-  this.getDistribucionId(distribucionId);
-
-  const modal = document.getElementById('modal-imagen-ampliada');
-  if (modal) {
-    modal.classList.add('show');
-    modal.style.display = 'block';
-  }
-}
-
-getDistribucionId(distribucionId: number): void {
-  this.isLoadingModalPartidos = LoadingStates.trueLoading;
-
-  this.distribucionCandidaturaService.getById(distribucionId).subscribe({
-    next: (dataFromAPI) => {
-      this.DistribucionCandidatura = dataFromAPI;
-
-      this.obtenerLogosPartidos();
-
-      this.isLoadingModalPartidos = LoadingStates.falseLoading;
-    },
-    error: () => {
-      this.isLoadingModalPartidos = LoadingStates.errorLoading;
-    },
-  });
-}
-
-checkValores() {
-  const distrito = this.resultadosForm.get('distritoId')?.value;
-  const municipio = this.resultadosForm.get('municipioId')?.value;
-  const comunidad = this.resultadosForm.get('comunidadId')?.value;
-  
-  // Verifica si alguno de los valores es null o undefined
-  if (distrito !== null && distrito !== undefined ) {
-    return true; // Mostrar el div si todas las condiciones son verdaderas
-  } else if (
-    municipio !== null && municipio !== undefined ) {
-  return true; // Mostrar el div si todas las condiciones son verdaderas
-} else if (
-  comunidad !== null && comunidad !== undefined) {
-return true; // Mostrar el div si todas las condiciones son verdaderas
-} else {
-return false; // Ocultar el div si alguna de las condiciones es falsa
-}
-}
-lista(event: any, partidoItem: any) {
-  const valor = parseFloat(event.target.value);
-  if (!isNaN(valor)) {
-    const nombrePartido: string = partidoItem;
-    this.sumaDeValores += valor;
-    this.partidosData.push({ nombre: nombrePartido, valor: valor });
-    console.log(this.partidosData); 
-  }
-}
-
-nombrePartido: string = 'Candidato-no-registrado';
-nombrePartido2: string = 'Votos nulos'; 
-actualizarSuma2(event: any) {
-  const valor = parseFloat(event.target.value);
-  const Candidatonoregistrado = this.sumaForm.get('Candidatonoregistrado')?.value;
-  if (Candidatonoregistrado != null) {
-    const valorTotal = this.sumaDeValores + Candidatonoregistrado; 
-    this.partidosData.push({ nombre: this.nombrePartido, valor: Candidatonoregistrado }); 
-    console.log(this.partidosData);
-  }
-
-}
-actualizarSuma3(event: any) {
-  const valor = parseFloat(event.target.value);
-  const Votosnulos = this.sumaForm.get('Votosnulos')?.value;
-  if (Votosnulos != null) {
-    const valorTotal = this.sumaDeValores + Votosnulos; 
-    this.partidosData.push({ nombre: this.nombrePartido2, valor: Votosnulos }); 
-    console.log(this.partidosData);
-  }
-
-}
-
-
-deshabilitarTodosLosControles() {
-  Object.keys(this.resultadosForm.controls).forEach((controlName) => {
-    if (controlName !== 'curp') {
-      this.resultadosForm.get(controlName)?.disable();
     }
-  });
-}
+  }
+  onSelectdistrito(id: number | null) {
+    this.filtrarCandidaturas(id);
+  }
 
-calcularSuma(): void {
-  const votaronValue = this.resultadosForm.get('votosRepresentantes')?.value;
-  const representantesValue = this.resultadosForm.get('personasVotaron')?.value;
+  filtrarCandidaturas(id: number | null) {
+    const distritoSelect = this.distritos.find((v) => v.id === id);
+    if (!distritoSelect) return;
 
-  // Realizar la suma de los valores
-  this.sumaTotal = parseInt(votaronValue) + parseInt(representantesValue);
-}
+    console.log('Search Value:', distritoSelect.id.toString());
 
+    // Guardar los resultados de la búsqueda en una variable local
+    const resultadosFiltrados = this.distribucionCandidatura.filter(
+      (c) => c.distrito?.id === id
+    );
 
+    // Puedes utilizar 'resultadosFiltrados' en lugar de 'this.distribucionCandidaturaFilter' a partir de aquí
+    console.log('Filtered Candidaturas:', resultadosFiltrados);
 
+    // Después de aplicar el filtro por distrito, llamamos a la función para obtener los logos de los partidos
+    this.obtenerLogosPartidos();
+
+    this.configPaginator.currentPage = 1;
+  }
+
+  obtenerLogosPartidos(): void {
+    this.partidosConLogo = []; // Limpiamos el arreglo antes de comenzar
+
+    // Verificamos si la propiedad partidos está presente y no es nula
+    if (
+      this.distribucionCandidaturaFilter &&
+      this.distribucionCandidaturaFilter.length > 0
+    ) {
+      const partidos = this.distribucionCandidaturaFilter.reduce(
+        (acumulador: string[], candidatura) => {
+          if (candidatura.partidos) {
+            return acumulador.concat(candidatura.partidos);
+          }
+          return acumulador;
+        },
+        []
+      );
+
+      const solicitudes = partidos.map((partido) =>
+        this.candidaturaService.obtenerLogoPartido(partido).pipe(
+          map((respuesta) => ({
+            nombre: partido,
+            logoUrl: respuesta.logoUrl,
+          })),
+          catchError((error) => {
+            console.error(
+              `Error al obtener el logo para el partido ${partido}:`,
+              error
+            );
+            // Devolver un objeto con la URL de un logo por defecto en caso de error
+            return of({
+              nombre: partido,
+              logoUrl: 'URL del logo por defecto',
+            });
+          })
+        )
+      );
+
+      forkJoin(solicitudes).subscribe((partidosConLogo) => {
+        this.partidosConLogo = partidosConLogo;
+      });
+    } else {
+      // Si no hay candidaturas filtradas o la lista está vacía, podemos manejarlo de alguna manera
+      console.log('No se encontraron candidaturas para obtener logos.');
+    }
+  }
+
+  getLogo(partido: string): { nombre: string; logoUrl: string } | undefined {
+    return this.partidosConLogo.find(
+      (partidoConLogo) => partidoConLogo.nombre === partido
+    );
+  }
+
+  verPartidosDistribucion(distribucionId: number) {
+    this.pagModalSecciones = 1;
+
+    this.getDistribucionId(distribucionId);
+
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+
+  getDistribucionId(distribucionId: number): void {
+    this.isLoadingModalPartidos = LoadingStates.trueLoading;
+
+    this.distribucionCandidaturaService.getById(distribucionId).subscribe({
+      next: (dataFromAPI) => {
+        this.DistribucionCandidatura = dataFromAPI;
+
+        this.obtenerLogosPartidos();
+
+        this.isLoadingModalPartidos = LoadingStates.falseLoading;
+      },
+      error: () => {
+        this.isLoadingModalPartidos = LoadingStates.errorLoading;
+      },
+    });
+  }
+
+  checkValores() {
+    const distrito = this.resultadosForm.get('distrito')?.value;
+    const municipio = this.resultadosForm.get('municipio')?.value;
+    const comunidad = this.resultadosForm.get('comunidad')?.value;
+
+    // Verifica si alguno de los valores es null o undefined
+    if (distrito !== null && distrito !== undefined) {
+      return true; // Mostrar el div si todas las condiciones son verdaderas
+    } else if (municipio !== null && municipio !== undefined) {
+      return true; // Mostrar el div si todas las condiciones son verdaderas
+    } else if (comunidad !== null && comunidad !== undefined) {
+      return true; // Mostrar el div si todas las condiciones son verdaderas
+    } else {
+      return false; // Ocultar el div si alguna de las condiciones es falsa
+    }
+  }
+  lista(event: any, partidoItem: any) {
+    const valor = parseFloat(event.target.value);
+    if (!isNaN(valor)) {
+      const nombrePartido: string = partidoItem;
+      this.sumaDeValores += valor;
+      this.partidosData.push({ nombre: nombrePartido, valor: valor });
+      console.log(this.partidosData);
+    }
+  }
+
+  nombrePartido: string = 'Candidato-no-registrado';
+  nombrePartido2: string = 'Votos nulos';
+  actualizarSuma2(event: any) {
+    const valor = parseFloat(event.target.value);
+    const Candidatonoregistrado = this.sumaForm.get(
+      'Candidatonoregistrado'
+    )?.value;
+    if (Candidatonoregistrado != null) {
+      const valorTotal = this.sumaDeValores + Candidatonoregistrado;
+      this.partidosData.push({
+        nombre: this.nombrePartido,
+        valor: Candidatonoregistrado,
+      });
+      console.log(this.partidosData);
+    }
+  }
+  actualizarSuma3(event: any) {
+    const valor = parseFloat(event.target.value);
+    const Votosnulos = this.sumaForm.get('Votosnulos')?.value;
+    if (Votosnulos != null) {
+      const valorTotal = this.sumaDeValores + Votosnulos;
+      this.partidosData.push({
+        nombre: this.nombrePartido2,
+        valor: Votosnulos,
+      });
+      console.log(this.partidosData);
+    }
+  }
+
+  deshabilitarTodosLosControles() {
+    Object.keys(this.resultadosForm.controls).forEach((controlName) => {
+      if (controlName !== 'curp') {
+        this.resultadosForm.get(controlName)?.disable();
+      }
+    });
+  }
+
+  calcularSuma(): void {
+    const votaronValue = this.resultadosForm.get('votosRepresentantes')?.value;
+    const representantesValue =
+      this.resultadosForm.get('personasVotaron')?.value;
+
+    // Realizar la suma de los valores
+    this.sumaTotal = parseInt(votaronValue) + parseInt(representantesValue);
+  }
 }
