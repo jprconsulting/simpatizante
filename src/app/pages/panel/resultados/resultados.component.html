@@ -14,7 +14,7 @@
           </button>
                     <div class="ms-auto d-flex align-items-center">
                         <div class="input-icon">
-                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" />
+                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar"  (input)="handleChangeSearch($event)" />
                             <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
               </span>
@@ -26,12 +26,84 @@
                 </div>
             </div>
             <ng-container [ngSwitch]="isLoading">
-                <div style="height: 300px" *ngSwitchCase="2">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-                    </div>
+              <div style="height: 300px" *ngSwitchCase="2">
+                <div class="progress">
+                  <div class="progress-bar progress-bar-indeterminate bg-green"></div>
                 </div>
-                <app-no-results *ngSwitchCase="4"></app-no-results>
+              </div>
+              <div *ngSwitchCase="3" class="table-responsive">
+                <table class="table table-vcenter card-table table-striped">
+                  <thead>
+                    <tr>
+                      <th class="text-center">#</th>
+                      <th style="text-transform: none; font-size: inherit">
+                        Tipo de elecion
+                      </th>
+                      <th style="text-transform: none; font-size: inherit">Seccion</th>
+                      <th style="text-transform: none; font-size: inherit">Casilla</th>
+                      <th style="text-transform: none; font-size: inherit">
+                        Distrito
+                      </th>
+                      <th style="text-transform: none; font-size: inherit">Resultado</th>
+                      <th style="text-transform: none; font-size: inherit">
+                        Acciones
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      *ngFor="
+                        let resultados of resultadosFilter
+                          | paginate : configPaginator;
+                        let pointIndex = index
+                      "
+                    >
+                      <td class="text-center">
+                        {{
+                          configPaginator.itemsPerPage *
+                            (configPaginator.currentPage - 1) +
+                            pointIndex +
+                            1
+                        }}
+                      </td>
+                      <td class="text-muted">
+                        {{ resultados.tipoEleccion.nombre }}
+                      </td>
+                      <td class="text-muted">
+                        {{ resultados.seccion.claveYNombre }}
+                      </td>
+                      <td class="text-muted">
+                        {{ resultados.casilla.nombre }}
+                      </td>
+                      <td class="text-muted">
+                        {{ resultados.distrito.nombre }}
+                      </td>
+                      <td class="text-muted">
+                        {{ resultados.suma }}
+                      </td>
+                      <td style="width: 50px">
+                        <div>
+                          <button
+                            class="btn btn-warning btn-icon btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-combinacion"
+                            style="margin-right: 5px"
+                          >
+                            <i class="ti ti-edit"></i>
+                          </button>
+                          <button
+                            class="btn btn-danger btn-icon btn-sm"
+                            (click)="deleteItem(resultados.id)"
+                          >
+                            <i class="ti ti-eraser"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <app-no-results *ngSwitchCase="4"></app-no-results>
             </ng-container>
             <!-- Fin *ngSwitchCase-->
 
@@ -129,12 +201,12 @@
                         <div class="row" style="margin-top: 15px">
                             <div class="col-lg-4">
                                 <label class="form-label">Seccion*:</label>
-                                <ng-select formControlName="seccion" #selectseccion [searchable]="false" [items]="secciones" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
+                                <ng-select formControlName="seccion" #selectseccion [searchable]="false" [items]="secciones" bindLabel="claveYNombre" bindValue="id" placeholder="Elegir" [clearable]="false">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="selectseccion.filter($any($event.target).value)" />
                                     </ng-template>
                                     <ng-template ng-option-tmp let-item="item" let-index="index">
-                                        {{ item.nombre }}
+                                        {{ item.claveYNombre }}
                                     </ng-template>
                                 </ng-select>
                                 <div *ngIf="resultadosForm.get('seccion')?.touched" class="error-message">
@@ -145,7 +217,7 @@
                             </div>
                             <div class="col-lg-4">
                                 <label class="form-label">Casilla*:</label>
-                                <ng-select placeholder="Elegir" bindLabel="nombre" [items]="casillas" [searchable]="false" [clearable]="false" formControlName="casilla">
+                                <ng-select placeholder="Elegir" bindLabel="nombre" [items]="casillas" bindLabel="nombre" bindValue="id" [searchable]="false" [clearable]="false" formControlName="casilla">
                                     <ng-template ng-option-tmp let-item="item">
                                         {{ item.nombre }}
                                     </ng-template>
@@ -196,7 +268,7 @@
 
 
                         <div class="col-12" *ngIf="checkValores()">
-                            <form [formGroup]="sumaForm">
+                           
                                 <div class="card" style="margin-top: 15px">
                                     <div class="table-responsive">
                                         <table class="table table-vcenter card-table">
@@ -243,6 +315,7 @@
                                                         </tr>
                                                     </ng-container>
                                                 </ng-container>
+                                               
                                                 <tr>
                                                     <td><img src="assets/images/1.jpg" class="d-block mx-auto" alt="" width="20%"></td>
                                                     <td>
@@ -250,7 +323,7 @@
                                                     </td>
                                                     <td class="col-lg-4 text-center" style="text-transform: none; font-size: inherit">
                                                         <div>
-                                                            <input type="text" class="form-control" id="casillaValor" formControlName="Candidatonoregistrado" (blur)="actualizarSuma2($event)" />
+                                                            <input type="text" class="col-lg-6 text-center form-control" id="casillaValor" formControlName="Candidatonoregistrado" (blur)="actualizarSuma2($event)" />
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -261,18 +334,18 @@
                                                     </td>
                                                     <td class="col-lg-4 text-center" style="text-transform: none; font-size: inherit">
                                                         <div>
-                                                            <input type="text" class="form-control" id="casillaValor" formControlName="Votosnulos" (blur)="actualizarSuma3($event)" />
+                                                            <input type="text" class="col-lg-6 text-center form-control" id="casillaValor" formControlName="Votosnulos" (blur)="actualizarSuma3($event)" />
                                                         </div>
                                                     </td>
                                                 </tr>
-
+                                         
                                                 <td class="rojo-pastel"> </td>
                                                 <td class="rojo-pastel">
                                                     <label class="form-label">Total</label>
                                                 </td>
                                                 <td class="col-lg-4 text-center rojo-pastel" style="text-transform: none; font-size: inherit">
                                                     <div *ngIf="visibiliti">
-                                                        <input type="text" class="form-control color text-center" value="{{ sumaDeValores }}" readonly [disabled]="true" />
+                                                      <input type="text" class="form-control color text-center" value="{{ sumaDeValores }}" readonly [disabled]="true" />
 
                                                     </div>
                                                 </td>
@@ -292,11 +365,8 @@
 
 
                                 </div>
-                            </form>
-                            <div *ngIf="visibiliti">
-                                <input type="text" class="form-control color text-center" formControlName="suma" value="54" />
-
-                            </div>
+                            
+                            
                         </div>
                     </div>
                 </div>

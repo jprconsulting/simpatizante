@@ -10,8 +10,8 @@ export interface Resultado {
     id: number,
     tipoEleccion:TipoEleccion,
     distrito: Distrito,
-
-
+    comunidad:Comunidad,
+    municipio:Municipio,
     casilla:Casillas,
     seccion:Seccion,
     boletasSobrantes: string,

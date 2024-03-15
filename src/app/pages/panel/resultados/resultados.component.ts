@@ -44,12 +44,14 @@ import { Visita } from 'src/app/models/visita';
   styleUrls: ['./resultados.component.css'],
 })
 export class ResultadosComponent {
+  @ViewChild('closebutton') closebutton!: ElementRef;
   resultadosForm!: FormGroup;
   sumaForm!: FormGroup;
-  myGroup!: FormGroup;
   DistribucionCandidatura!: DistribucionCandidatura;
   secciones: Seccion[] = [];
   resultado!: Resultado;
+  resultados: Resultado[] = [];
+  resultadosFilter: Resultado[] = [];
   casillas: Casillas[] = [];
   isLoading = LoadingStates.neutro;
   tipoEleccionId: Cargo[] = [];
@@ -93,6 +95,9 @@ export class ResultadosComponent {
     private distribucionCandidaturaService: DistribucionCandidaturaService,
     private comunidadService: ComunidadService
   ) {
+    this.resultadoService.refreshListPresultados.subscribe(() =>
+      this.Resultados()
+    );
     this.creteForm();
     this.getSecciones();
     this.getCasillas();
@@ -103,15 +108,25 @@ export class ResultadosComponent {
     this.getDistribucion();
     this.getDistritos();
     this.getComunidad();
-    this.creteForm2();
-  }
-  creteForm2() {
-    this.sumaForm = this.formBuilder.group({
-      Candidatonoregistrado: [''],
-      Votosnulos: [''],
-    });
-  }
+    this.Resultados();
 
+  }
+Resultados(){
+  this.isLoading = LoadingStates.trueLoading;
+    this.resultadoService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.resultados = dataFromAPI;
+        this.resultadosFilter = this.resultados;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        if (err.status === 401) {
+          this.mensajeService.mensajeSesionExpirada();
+        }
+      },
+    });
+}
   mostrar() {
     this.visibiliti = true;
   }
@@ -248,16 +263,24 @@ export class ResultadosComponent {
     const distrito = this.resultadosForm.get('distrito')?.value;
     this.resultado.distrito = { id: distrito } as Distrito;
 
+    const municipio = this.resultadosForm.get('municipio')?.value;
+    this.resultado.municipio = { id: municipio } as Municipio;
+
+    const comunidad = this.resultadosForm.get('comunidad')?.value;
+    this.resultado.comunidad = { id: comunidad } as Comunidad;
+
+    
+
     let listaActual = this.partidosData;
 
     let partidos = [];
 
     for (let i = 0; i < listaActual.length; i++) {
       partidos.push(listaActual[i].nombre);
-      partidos.push(listaActual[i].valor.toString()); // Convertir el valor a cadena si es necesario
+      partidos.push(listaActual[i].valor.toString()); 
     }
 
-    console.log(partidos); // Output: ["pan", "10", "kfc", "10", "pan", "10"]
+    console.log(partidos);
 
     let formData = {
       ...this.resultado,
@@ -282,6 +305,7 @@ export class ResultadosComponent {
     });
   }
   resetForm() {
+    this.closebutton.nativeElement.click();
     this.resultadosForm.reset();
   }
   actualizarVisita() {}
@@ -307,13 +331,15 @@ export class ResultadosComponent {
       seccion: ['', Validators.required],
       tipoEleccion: ['', Validators.required],
       casilla: ['', Validators.required],
-
+     municipio: [''],
       boletasSobrantes: ['', Validators.required],
       distrito: [''],
-
+     comunidad: [''],
       personasVotaron: ['', Validators.required],
       votosRepresentantes: ['', Validators.required],
       suma: [''],
+      Candidatonoregistrado:[''],
+      Votosnulos:[''],
     });
   }
 
@@ -513,6 +539,10 @@ export class ResultadosComponent {
       this.sumaDeValores += valor;
       this.partidosData.push({ nombre: nombrePartido, valor: valor });
       console.log(this.partidosData);
+
+      this.resultadosForm.patchValue({
+        suma: this.sumaDeValores.toString()
+      });
     }
   }
 
@@ -520,31 +550,33 @@ export class ResultadosComponent {
   nombrePartido2: string = 'Votos nulos';
   actualizarSuma2(event: any) {
     const valor = parseFloat(event.target.value);
-    const Candidatonoregistrado = this.sumaForm.get(
-      'Candidatonoregistrado'
-    )?.value;
-    if (Candidatonoregistrado != null) {
-      const valorTotal = this.sumaDeValores + Candidatonoregistrado;
+    if (!isNaN(valor)) {
+      this.sumaDeValores += valor;
       this.partidosData.push({
         nombre: this.nombrePartido,
-        valor: Candidatonoregistrado,
+        valor: valor,
       });
-      console.log(this.partidosData);
-    }
-  }
-  actualizarSuma3(event: any) {
-    const valor = parseFloat(event.target.value);
-    const Votosnulos = this.sumaForm.get('Votosnulos')?.value;
-    if (Votosnulos != null) {
-      const valorTotal = this.sumaDeValores + Votosnulos;
-      this.partidosData.push({
-        nombre: this.nombrePartido2,
-        valor: Votosnulos,
+      console.log(this.partidosData); 
+      this.resultadosForm.patchValue({
+        suma: this.sumaDeValores.toString()
       });
-      console.log(this.partidosData);
     }
   }
 
+  actualizarSuma3(event: any) {
+    const valor = parseFloat(event.target.value);
+    if (!isNaN(valor)) {
+      this.sumaDeValores += valor;
+      this.partidosData.push({
+        nombre: this.nombrePartido2,
+        valor: valor,
+      });
+      console.log(this.partidosData); 
+      this.resultadosForm.patchValue({
+        suma: this.sumaDeValores.toString()
+      });
+    }
+  }
   deshabilitarTodosLosControles() {
     Object.keys(this.resultadosForm.controls).forEach((controlName) => {
       if (controlName !== 'curp') {
@@ -552,13 +584,31 @@ export class ResultadosComponent {
       }
     });
   }
-
-  calcularSuma(): void {
-    const votaronValue = this.resultadosForm.get('votosRepresentantes')?.value;
-    const representantesValue =
-      this.resultadosForm.get('personasVotaron')?.value;
-
-    // Realizar la suma de los valores
-    this.sumaTotal = parseInt(votaronValue) + parseInt(representantesValue);
+  deleteItem(id: number) {
+    this.mensajeService.mensajeAdvertencia(
+      `¿Estás seguro de eliminar?`,
+      () => {
+        this.resultadoService.delete(id).subscribe({
+          next: () => {
+            this.mensajeService.mensajeExito('Resultado pre-eliminar borrado correctamente');
+            this.configPaginator.currentPage = 1;
+            this.searchItem.nativeElement.value = '';
+          },
+          error: (error) => this.mensajeService.mensajeError(error)
+        });
+      }
+    );
+  }
+  handleChangeSearch(event: any) {
+    const inputValue = event.target.value;
+    const valueSearch = inputValue.toLowerCase();
+    this.resultadosFilter = this.resultados.filter(programa =>
+      programa.tipoEleccion.nombre.toLowerCase().includes(valueSearch) ||
+      programa.seccion.claveYNombre.toString().includes(valueSearch)||
+      programa.casilla.nombre.toString().includes(valueSearch)||
+      programa.distrito.nombre.toString().includes(valueSearch)||
+      programa.suma.toString().includes(valueSearch)
+    );
+    this.configPaginator.currentPage = 1;
   }
 }

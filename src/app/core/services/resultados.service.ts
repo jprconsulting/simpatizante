@@ -16,7 +16,7 @@ export class ResultadoService {
     private handleErrorService: HandleErrorService
   ) { }
 
-  get refreshListPromotores() {
+  get refreshListPresultados() {
     return this._refreshListResultados$;
   }
 
