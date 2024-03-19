@@ -37,6 +37,7 @@ import { Resultado } from 'src/app/models/resultados';
 import { Seccion } from 'src/app/models/seccion';
 import { TipoEleccion } from 'src/app/models/tipo-eleccion';
 import { Visita } from 'src/app/models/visita';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-resultados',
@@ -73,6 +74,7 @@ export class ResultadosComponent {
   isLoadingModalPartidos = LoadingStates.neutro;
   pagModalSecciones: number = 1;
   visibiliti = false;
+  idUpdate!: number;
   sumaTotal: number = 0;
   partidosData: { nombre: string; valor: number }[] = [];
 
@@ -611,4 +613,74 @@ Resultados(){
     );
     this.configPaginator.currentPage = 1;
   }
+  exportarDatosAExcel() {
+    if (this.resultados.length === 0) {
+      console.warn('La lista de reasultados está vacía. No se puede exportar.');
+      return;
+    }
+    
+    const datosParaExportar = this.resultados.map(resultados => {
+      const partidos = resultados.partidos
+      .map((s) => s)
+      .join(', ');
+      const distrito =
+    resultados.distrito?.nombre || 'N/R';
+    const municipio =
+    resultados.municipio?.nombre || 'N/R';
+    const comunidad =
+    resultados.comunidad?.nombre || 'N/R';
+      return {
+        'Tipo de eleccion': resultados.tipoEleccion.nombre,
+        'Disdtrito': distrito,
+        'Municipio': municipio,
+        'Comunidad': comunidad,
+        'Seccion': resultados.seccion.claveYNombre,
+        'Casilla': resultados.casilla.nombre,
+        'Boletas sobrantes': resultados.boletasSobrantes,
+        'Personas votaron': resultados.personasVotaron,
+        'Votos representantes': resultados.votosRepresentantes,
+        'Suma': resultados.suma,
+        'Partidos': partidos,
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    this.guardarArchivoExcel(excelBuffer, 'Resultados.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+  setDataModalUpdate(dto: Resultado) {
+    this.isModalAdd = false;
+    this.idUpdate = dto.id;
+    
+    this.resultadosForm.patchValue({
+      id: dto.id,
+      seccion: dto.seccion.id,
+      tipoEleccion: dto.tipoEleccion.id,
+      casilla: dto.casilla.id,
+      municipio: dto.municipio?.id,
+      boletasSobrantes: dto.boletasSobrantes,
+      distrito: dto.distrito?.id,
+      comunidad: dto.comunidad?.id,
+      personasVotaron: dto.personasVotaron,
+      votosRepresentantes: dto.votosRepresentantes, 
+      suma: dto.suma,
+      Votosnulos:dto.partidos.map((s) => s),
+      partidos: dto.partidos.map((s) => s),
+    });
+    console.log('resultadosForm', this.resultadosForm.value);
+
+}
+
 }

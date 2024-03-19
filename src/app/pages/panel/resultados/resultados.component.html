@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-body border-bottom py-3">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-seguimiento" (click)="handleChangeAdd()">
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-resultados" (click)="handleChangeAdd()">
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
                     <div class="ms-auto d-flex align-items-center">
@@ -19,7 +19,7 @@
                 <i class="ti ti-search"></i>
               </span>
                         </div>
-                        <a class="btn w-30 btn-icon" aria-label="Dribbble" title="Descargar excel de incidencias" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
+                        <a class="btn w-30 btn-icon" aria-label="Dribbble"  (click)="exportarDatosAExcel()" title="Descargar excel de incidencias" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
                             <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
                         </a>
                     </div>
@@ -86,8 +86,9 @@
                           <button
                             class="btn btn-warning btn-icon btn-sm"
                             data-bs-toggle="modal"
-                            data-bs-target="#modal-combinacion"
+                            data-bs-target="#modal-resultados"
                             style="margin-right: 5px"
+                            (click)="setDataModalUpdate(resultados)"
                           >
                             <i class="ti ti-edit"></i>
                           </button>
@@ -118,7 +119,7 @@
     </div>
 </div>
 
-<div class="modal modal-blur fade" id="modal-seguimiento" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal modal-blur fade" id="modal-resultados" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -315,7 +316,25 @@
                                                         </tr>
                                                     </ng-container>
                                                 </ng-container>
-                                               
+                                                <div style="columns: 2;">
+                                                    <div style="column-count: 1;">
+                                                      <ul>
+                                                        <ng-container *ngFor="let partido of resultadosForm.get('Votosnulos')?.value; let i = index">
+                                                          <li *ngIf="i % 2 === 0">{{ partido }}</li>
+                                                        </ng-container>
+                                                      </ul>
+                                                    </div>
+                                                    <div style="column-count: 1;">
+                                                      <ul>
+                                                        <ng-container *ngFor="let partido of resultadosForm.get('Votosnulos')?.value; let i = index">
+                                                          <li *ngIf="i % 2 !== 0">{{ partido }}</li>
+                                                        </ng-container>
+                                                      </ul>
+                                                    </div>
+                                                  </div>
+                                                  
+
+                                                
                                                 <tr>
                                                     <td><img src="assets/images/1.jpg" class="d-block mx-auto" alt="" width="20%"></td>
                                                     <td>
