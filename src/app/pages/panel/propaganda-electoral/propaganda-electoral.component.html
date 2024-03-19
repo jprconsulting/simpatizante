@@ -256,9 +256,9 @@
                       El folio es requerido
                     </div>
                     <div
-                      *ngIf="propagandaForm.get('folio')?.hasError('pattern')"
+                      *ngIf="propagandaForm.get('folio')?.hasError('maxlength')"
                     >
-                      El folio solo puede tener mumeros
+                      El folio debe tener maximo 10 caracteres
                     </div>
                   </div>
                 </div>
@@ -282,6 +282,18 @@
                     >
                       Las dimensiones son requerido
                     </div>
+                    <div
+                    *ngIf="propagandaForm.get('dimensiones')?.hasError('maxlength')"
+                  >
+                      Las dimensiones debe tener maximo 30 cara cteres
+                  </div>
+                  <div
+                    *ngIf="
+                      propagandaForm.get('dimensiones')?.hasError('minlength')
+                    "
+                  >
+                    Las dimensiones debe tener al menos 3 caracteres
+                  </div>
                   </div>
                 </div>
               </div>

@@ -271,6 +271,9 @@
                   >
                     El nombre no debe tener números ni caracteres especiales
                   </div>
+                  <div *ngIf="CombinacionForm.get('nombre')?.hasError('maxlength')">
+                    <p style="color: red">El nombre debe tener maximo 50 caracteres </p>
+                  </div>
                 </div>
               </div>
             </div>

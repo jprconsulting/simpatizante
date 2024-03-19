@@ -262,6 +262,11 @@
                     El nombre debe tener al menos 3 caracteres
                   </div>
                   <div
+                    *ngIf="candidatoForm.get('nombres')?.hasError('maxlength')"
+                  >
+                    El nombre debe tener maximo 22 caracteres
+                  </div>
+                  <div
                     *ngIf="candidatoForm.get('nombres')?.hasError('pattern')"
                   >
                     El nombre no puede tener números ni signos
@@ -304,6 +309,11 @@
                   >
                     El apellido paterno no puede tener números ni signos
                   </div>
+                  <div
+                  *ngIf="candidatoForm.get('apellidoPaterno')?.hasError('maxlength')"
+                >
+                  El apellido paterno debe tener maximo 17 caracteres
+                </div>
                 </div>
               </div>
             </div>
@@ -342,6 +352,11 @@
                   >
                     El apellido materno no puede tener números ni signos
                   </div>
+                  <div
+                  *ngIf="candidatoForm.get('apellidoMaterno')?.hasError('maxlength')"
+                >
+                  El apellido materno debe tener maximo 17 caracteres
+                </div>
                 </div>
               </div>
             </div>
@@ -425,6 +440,9 @@
                       "
                     >
                       El sobrenombre no es valido
+                    </div>
+                    <div *ngIf="candidatoForm.get('sobrenombre')?.hasError('maxlength')">
+                      <p style="color: red">El sobrenombre debe tener maximo 25 caracteres </p>
                     </div>
                   </div>
                 </div>

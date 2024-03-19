@@ -94,6 +94,7 @@ export class PromotorComponent implements OnInit {
         [
           Validators.required,
           Validators.minLength(2),
+          Validators.maxLength(17),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),
@@ -104,6 +105,7 @@ export class PromotorComponent implements OnInit {
         [
           Validators.required,
           Validators.minLength(2),
+          Validators.maxLength(22),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),
@@ -114,6 +116,7 @@ export class PromotorComponent implements OnInit {
         [
           Validators.required,
           Validators.minLength(2),
+          Validators.maxLength(22),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),

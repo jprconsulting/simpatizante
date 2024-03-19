@@ -232,6 +232,11 @@
                   >
                     El nombre debe tener al menos 3 caracteres
                   </div>
+                  <div
+                    *ngIf="promotorForm.get('nombres')?.hasError('maxlength')"
+                  >
+                    El nombre debe tener maximo 17 caracteres
+                  </div>
                   <div *ngIf="promotorForm.get('nombres')?.hasError('pattern')">
                     El nombre no puede tener números ni signos
                   </div>
@@ -263,6 +268,13 @@
                     "
                   >
                     El apellido paterno debe tener al menos 3 caracteres
+                  </div>
+                  <div
+                    *ngIf="
+                      promotorForm.get('apellidoPaterno')?.hasError('maxlength')
+                    "
+                  >
+                    El apellido paterno debe tener maximo 17 caracteres
                   </div>
                   <div
                     *ngIf="
@@ -302,6 +314,13 @@
                   </div>
                   <div
                     *ngIf="
+                      promotorForm.get('apellidoMaterno')?.hasError('maxlength')
+                    "
+                  >
+                    El apellido materno debe tener maximo 17 caracteres
+                  </div>
+                  <div
+                    *ngIf="
                       promotorForm.get('apellidoMaterno')?.hasError('pattern')
                     "
                   >
@@ -329,7 +348,7 @@
                       promotorForm.get('telefono')?.hasError('pattern')
                     "
                   >
-                    El numero de teléfono no valido
+                    El numero de teléfono no es valido
                   </div>
                 </div>
               </div>

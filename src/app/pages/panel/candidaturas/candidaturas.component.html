@@ -277,6 +277,11 @@
                     El nombre debe tener al menos 2 caracteres
                   </div>
                   <div
+                  *ngIf="CandidaturaForm.get('nombre')?.hasError('maxlength')"
+                >
+                  El nombre debe tener maximo 50 caracteres
+                </div>
+                  <div
                     *ngIf="CandidaturaForm.get('nombre')?.hasError('pattern')"
                   >
                     El nombre no debe tener números ni caracteres especiales
@@ -309,6 +314,11 @@
                   >
                     El acrónimo no puede tener nùmeros ni caracteres especiales
                   </div>
+                  <div
+                  *ngIf="CandidaturaForm.get('acronimo')?.hasError('maxlength')"
+                >
+                  El acronimo debe tener maximo 50 caracteres
+                </div>
                   <div
                     *ngIf="
                       CandidaturaForm.get('acronimo')?.hasError('minlength')
@@ -421,6 +431,11 @@
                   >
                     El orden es requerido
                   </div>
+                  <div
+                  *ngIf="CandidaturaForm.get('orden')?.hasError('maxlength')"
+                >
+                  El orden debe tener maximo 4 caracteres
+                </div>
                   <div
                     *ngIf="CandidaturaForm.get('orden')?.hasError('pattern')"
                   >

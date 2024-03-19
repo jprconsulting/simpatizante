@@ -76,8 +76,8 @@ export class PropagandaElectoralComponent {
     this.propagandaForm = this.formBuilder.group({
       id: [null],
       municipio: ['', Validators.required],
-      folio: ['', [Validators.required]],
-      dimensiones: ['', Validators.required],
+      folio: ['', [Validators.required, Validators.maxLength(10)]],
+      dimensiones: ['', [Validators.required, Validators.maxLength(30),Validators.minLength(3),]],
       comentarios: [''],
       imagenBase64: [''],
       latitud: [],

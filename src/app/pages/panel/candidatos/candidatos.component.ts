@@ -210,6 +210,7 @@ export class CandidatosComponent implements OnInit {
         [
           Validators.required,
           Validators.minLength(2),
+          Validators.maxLength(22),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),
@@ -220,6 +221,7 @@ export class CandidatosComponent implements OnInit {
         [
           Validators.required,
           Validators.minLength(2),
+          Validators.maxLength(17),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),
@@ -230,6 +232,7 @@ export class CandidatosComponent implements OnInit {
         [
           Validators.required,
           Validators.minLength(2),
+          Validators.maxLength(17),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),
@@ -243,6 +246,7 @@ export class CandidatosComponent implements OnInit {
           Validators.required,
           Validators.minLength(2),
           Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$'),
+          Validators.maxLength(25),
         ],
       ],
       cargo: [null, Validators.required],

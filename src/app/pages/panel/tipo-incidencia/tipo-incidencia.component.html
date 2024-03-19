@@ -178,7 +178,7 @@
       <form [formGroup]="incidenciasForm" (ngSubmit)="submit()">
         <div class="modal-body">
           <div class="col-lg-12">
-            <label class="form-label">Nombre de la Incidencia*</label>
+            <label class="form-label">Nombre de la Incidencia*:</label>
             <input
               type="text"
               class="form-control"
@@ -204,6 +204,15 @@
               >
                 El nombre debe tener al menos 3 caracteres
               </div>
+              <div
+              *ngIf="
+                incidenciasForm
+                  .get('retroalimentacion')
+                  ?.hasError('maxlength')
+              "
+            >
+              El nombre debe tener maximo 20 caracteres
+            </div>
               <div
                 *ngIf="
                   incidenciasForm.get('retroalimentacion')?.hasError('pattern')
@@ -233,7 +242,12 @@
             </div>
           </div>
         </div>
-
+        <p
+        class="form-label"
+        style="margin-left: 20px; color: red; font-weight: bold"
+      >
+        Todos los campos marcados con * son requeridos
+      </p>
         <div class="modal-footer">
           <button
             type="submit"

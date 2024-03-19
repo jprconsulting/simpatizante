@@ -57,6 +57,7 @@ export class CandidaturasComponent {
         [
           Validators.required,
           Validators.minLength(2),
+          Validators.maxLength(50),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{1})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),
@@ -67,6 +68,7 @@ export class CandidaturasComponent {
         [
           Validators.required,
           Validators.minLength(2),
+          Validators.maxLength(50),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{1})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),
@@ -82,6 +84,7 @@ export class CandidaturasComponent {
           Validators.required,
           Validators.minLength(1),
           Validators.pattern(/^([0-9])+$/),
+          Validators.maxLength(4),
         ],
       ],
     });

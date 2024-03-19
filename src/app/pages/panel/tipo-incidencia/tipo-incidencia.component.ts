@@ -90,6 +90,7 @@ export class TipoIncidenciasComponent implements OnInit {
         [
           Validators.required,
           Validators.minLength(2),
+          Validators.maxLength(20),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),

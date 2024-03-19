@@ -202,8 +202,11 @@
                     <div *ngIf="usuarioForm.get('nombre')?.hasError('pattern')">
                       <p style="color: red">El nombre no debe tener números</p>
                     </div>
-                    <div *ngIf="usuarioForm.get('nombre')?.hasError('pattern')">
+                    <div *ngIf="usuarioForm.get('nombre')?.hasError('minlength')">
                       <p style="color: red">El nombre debe tener al menos 3 caracteres </p>
+                    </div>
+                    <div *ngIf="usuarioForm.get('nombre')?.hasError('maxlength')">
+                      <p style="color: red">El nombre debe tener maximo 22 caracteres </p>
                     </div>
                   </div>
                 </div>
@@ -226,8 +229,11 @@
                     <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('pattern')">
                       <p style="color: red">El apellido paterno no debe tener números</p>
                     </div>
-                    <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('pattern')">
+                    <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('minlength')">
                       <p style="color: red">El apellido paterno debe tener al menos 3 caracteres </p>
+                    </div>
+                    <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('maxlength')">
+                      <p style="color: red">El apellido paterno debe tener maximo 17 caracteres </p>
                     </div>
                   </div>
                 </div>
@@ -250,8 +256,11 @@
                     <div *ngIf="usuarioForm.get('apellidoMaterno')?.hasError('pattern')">
                       <p style="color: red">El apellido materno no debe tener números</p>
                     </div>
-                    <div *ngIf="usuarioForm.get('apellidoMaterno')?.hasError('pattern')">
+                    <div *ngIf="usuarioForm.get('apellidoMaterno')?.hasError('minlength')">
                       <p style="color: red">El apellido materno debe tener al menos 3 caracteres</p>
+                    </div>
+                    <div *ngIf="usuarioForm.get('apellidoMaterno')?.hasError('maxlength')">
+                      <p style="color: red">El apellido materno debe tener maximo 17 caracteres </p>
                     </div>
                   </div>
                 </div>

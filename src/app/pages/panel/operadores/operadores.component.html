@@ -256,6 +256,11 @@
                   >
                     El nombre debe tener al menos 3 caracteres
                   </div>
+                  <div
+                    *ngIf="operadorForm.get('nombres')?.hasError('maxlength')"
+                  >
+                    El nombre debe tener maximo 22 caracteres
+                  </div>
                   <div *ngIf="operadorForm.get('nombres')?.hasError('pattern')">
                     El nombre no puede tener números ni signos
                   </div>
@@ -290,6 +295,13 @@
                   </div>
                   <div
                     *ngIf="
+                      operadorForm.get('apellidoPaterno')?.hasError('maxlength')
+                    "
+                  >
+                    El apellido paterno debe tener maximo 17 caracteres
+                  </div>
+                  <div
+                    *ngIf="
                       operadorForm.get('apellidoPaterno')?.hasError('pattern')
                     "
                   >
@@ -316,6 +328,13 @@
                     "
                   >
                     <p style="color: red">El apellido materno es obligatorio</p>
+                  </div>
+                  <div
+                    *ngIf="
+                      operadorForm.get('apellidoMaterno')?.hasError('maxlength')
+                    "
+                  >
+                    El apellido materno debe tener maximo 17 caracteres
                   </div>
                   <div
                     *ngIf="

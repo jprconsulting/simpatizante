@@ -193,6 +193,9 @@
                   >
                     El nombre no puede tener números ni caracteres especiales
                   </div>
+                  <div *ngIf="programaSocialForm.get('nombre')?.hasError('maxlength')">
+                    <p style="color: red">El nombre debe tener maximo 40 caracteres </p>
+                  </div>
                 </div>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
+ import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -56,6 +56,7 @@ export class CombinacionesComponent {
         [
           Validators.required,
           Validators.minLength(1),
+          Validators.maxLength(50),
           Validators.pattern(
             /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
           ),
