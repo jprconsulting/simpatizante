@@ -40,6 +40,12 @@
                 </span>
                                 <span class="nav-link-title">Tablero</span>
                             </a>
+                            <a *appHasClaim="'CanAccessFormulario'" class="dropdown-item" [routerLink]="['formulario']" routerLinkActive="active" #rlDashboard="routerLinkActive">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-chart-infographic"></i>
+                </span>
+                                <span class="nav-link-title">Practica</span>
+                            </a>
                             <a *appHasClaim="'CanAccessUsuarios'" class="dropdown-item" [routerLink]="['usuarios']" routerLinkActive="active" #rlUsuarios="routerLinkActive">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                   <i class="ti ti-users"></i>
@@ -64,7 +70,7 @@
                 </span>
                                 <span class="nav-link-title">Candidatos</span>
                             </a>
-                            
+
 
 
                             <a *appHasClaim="'CanAccessProgramasSociales'" class="dropdown-item" [routerLink]="['programas-sociales']" routerLinkActive="active" #rlProgramasSociales="routerLinkActive">
@@ -79,7 +85,7 @@
                 </span>
                                 <span class="nav-link-title">Tipos Incidencias</span>
                             </a>
-                            
+
                         </div>
                     </div>
                 </ul>
@@ -124,19 +130,19 @@
                 </span>
                                 <span class="nav-link-title">Nube de palabras</span>
                             </a>
-                            
+
                         </div>
                     </div>
                 </ul>
             </li>
             <li class="nav-item dropdown" *appHasClaim="'canAccessJornadaElectoral'" [ngClass]="{
           active:
-            
+
             (rlIncidencias && rlIncidencias.isActive) ||
             (rlMapaIncidencias && rlMapaIncidencias.isActive) ||
             (rlSeguimientoVoto && rlSeguimientoVoto.isActive) ||
             (rlResultados && rlResultados.isActive) ||
-            (rlReportes && rlReportes.isActive) 
+            (rlReportes && rlReportes.isActive)
         }">
                 <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -147,7 +153,7 @@
                 <ul class="dropdown-menu show">
                     <div class="dropdown-menu-columns">
                         <div class="dropdown-menu-column">
-                           
+
                             <a *appHasClaim="'canAccessIncidencias'" class="dropdown-item" [routerLink]="['incidencias']" routerLinkActive="active" #rlIncidencias="routerLinkActive">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                   <i class="ti ti-calendar-clock"></i>
@@ -187,59 +193,59 @@
             (rlDistribucionCandidatura && rlDistribucionCandidatura.isActive) ||
             (rlCombinaciones && rlCombinaciones.isActive) ||
             (rlPropagandaElectoral && rlPropagandaElectoral.isActive) ||
-            (rlMapaPropagandaElectoral && rlMapaPropagandaElectoral.isActive) || 
+            (rlMapaPropagandaElectoral && rlMapaPropagandaElectoral.isActive) ||
             (rlCandidaturas && rlCandidaturas.isActive)
               }">
-                      <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
-                          <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <i class="ti ti-password"></i>
+                <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
+                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <i class="ti ti-password"></i>
+          </span>
+                    <span class="nav-link-title"> PREP</span>
+                </a>
+                <ul class="dropdown-menu show">
+                    <div class="dropdown-menu-columns">
+                        <div class="dropdown-menu-column">
+                            <a *appHasClaim="'CanAccessCandidaturas'" class="dropdown-item" [routerLink]="['Candidaturas']" #rlCandidaturas="routerLinkActive" routerLinkActive="active">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-clipboard"></i>
                 </span>
-                          <span class="nav-link-title"> PREP</span>
-                      </a>
-                      <ul class="dropdown-menu show">
-                          <div class="dropdown-menu-columns">
-                              <div class="dropdown-menu-column">
-                                <a *appHasClaim="'CanAccessCandidaturas'" class="dropdown-item" [routerLink]="['Candidaturas']" #rlCandidaturas="routerLinkActive" routerLinkActive="active">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                      <i class="ti ti-clipboard"></i>
-                    </span>
-                                    <span class="nav-link-title">Candidaturas</span>
-                                </a>
-                                <a *appHasClaim="'CanAccessCombinaciones'" class="dropdown-item" [routerLink]="['Combinaciones']" routerLinkActive="active" #rlCombinaciones="routerLinkActive">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                      <i class="ti ti-layers-subtract"></i>
-                    </span>
-                                    <span class="nav-link-title">Combinaciones</span>
-                                </a>
-                                <a class="dropdown-item" *appHasClaim="'CanAccessPropaganda'" [routerLink]="['Propaganda-Electoral']" routerLinkActive="active" #rlPropagandaElectoral="routerLinkActive">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                      <i class="ti ti-wall"></i>
-                    </span>
-                                    <span class="nav-link-title">Propaganda Electoral</span>
-                                </a>
-                                <a class="dropdown-item" *appHasClaim="'CanAccessMapaPropaganda'" [routerLink]="['mapa-propaganda']" routerLinkActive="active" #rlMapaPropagandaElectoral="routerLinkActive">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                      <i class="ti ti-map-search"></i>
-                    </span>
-                                    <span class="nav-link-title">Mapa de Propaganda Electoral</span>
-                                </a>
-                                <a *appHasClaim="'CanAccessDistribucionCandidaturas'" class="dropdown-item" [routerLink]="['distribucion-candidatura']" routerLinkActive="active" #rlDistribucionCandidatura="routerLinkActive">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                      <i class="ti ti-file-like"></i>
-                    </span>
-                                    <span class="nav-link-title">Distribucion Candidatura</span>
-                                </a>
-                                <!-- <a class="dropdown-item" [routerLink]="['Distribuciones-Ordenadas']" routerLinkActive="active" #rlPropagandaElectoral="routerLinkActive">
+                                <span class="nav-link-title">Candidaturas</span>
+                            </a>
+                            <a *appHasClaim="'CanAccessCombinaciones'" class="dropdown-item" [routerLink]="['Combinaciones']" routerLinkActive="active" #rlCombinaciones="routerLinkActive">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-layers-subtract"></i>
+                </span>
+                                <span class="nav-link-title">Combinaciones</span>
+                            </a>
+                            <a class="dropdown-item" *appHasClaim="'CanAccessPropaganda'" [routerLink]="['Propaganda-Electoral']" routerLinkActive="active" #rlPropagandaElectoral="routerLinkActive">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-wall"></i>
+                </span>
+                                <span class="nav-link-title">Propaganda Electoral</span>
+                            </a>
+                            <a class="dropdown-item" *appHasClaim="'CanAccessMapaPropaganda'" [routerLink]="['mapa-propaganda']" routerLinkActive="active" #rlMapaPropagandaElectoral="routerLinkActive">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-map-search"></i>
+                </span>
+                                <span class="nav-link-title">Mapa de Propaganda Electoral</span>
+                            </a>
+                            <a *appHasClaim="'CanAccessDistribucionCandidaturas'" class="dropdown-item" [routerLink]="['distribucion-candidatura']" routerLinkActive="active" #rlDistribucionCandidatura="routerLinkActive">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-file-like"></i>
+                </span>
+                                <span class="nav-link-title">Distribucion Candidatura</span>
+                            </a>
+                            <!-- <a class="dropdown-item" [routerLink]="['Distribuciones-Ordenadas']" routerLinkActive="active" #rlPropagandaElectoral="routerLinkActive">
                                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <i class="ti ti-sitemap"></i>
                     </span>
                                     <span class="nav-link-title">Distribucion ordenadas</span>
                                 </a> -->
-                              </div>
-                          </div>
-                      </ul>
-                  </li>
-            
+                        </div>
+                    </div>
+                </ul>
+            </li>
+
         </ul>
     </div>
 </div>
