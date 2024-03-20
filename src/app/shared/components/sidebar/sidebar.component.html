@@ -187,7 +187,8 @@
             (rlDistribucionCandidatura && rlDistribucionCandidatura.isActive) ||
             (rlCombinaciones && rlCombinaciones.isActive) ||
             (rlPropagandaElectoral && rlPropagandaElectoral.isActive) ||
-            (rlMapaPropagandaElectoral && rlMapaPropagandaElectoral.isActive)
+            (rlMapaPropagandaElectoral && rlMapaPropagandaElectoral.isActive) || 
+            (rlCandidaturas && rlCandidaturas.isActive)
               }">
                       <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
                           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -198,7 +199,7 @@
                       <ul class="dropdown-menu show">
                           <div class="dropdown-menu-columns">
                               <div class="dropdown-menu-column">
-                                <a *appHasClaim="'CanAccessCandidaturas'" class="dropdown-item" [routerLink]="['Candidaturas']" routerLinkActive="active">
+                                <a *appHasClaim="'CanAccessCandidaturas'" class="dropdown-item" [routerLink]="['Candidaturas']" #rlCandidaturas="routerLinkActive" routerLinkActive="active">
                                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <i class="ti ti-clipboard"></i>
                     </span>

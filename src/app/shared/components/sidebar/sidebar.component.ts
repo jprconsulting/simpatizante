@@ -31,6 +31,7 @@ export class SidebarComponent implements AfterViewInit {
     | RouterLinkActive
     | undefined;
   @ViewChild('rlResultados') rlResultados: RouterLinkActive | undefined;
+  @ViewChild('rlCandidaturas') rlCandidaturas: RouterLinkActive | undefined;
   @ViewChild('rlReportes') rlReportes: RouterLinkActive | undefined;
   @ViewChild('rlNubePalabras') rlNubePalabras: RouterLinkActive | undefined;
   @ViewChild('rlCandidatos') rlCandidatos: RouterLinkActive | undefined;
