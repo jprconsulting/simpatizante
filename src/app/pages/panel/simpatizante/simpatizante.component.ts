@@ -176,7 +176,7 @@ export class SimpatizanteComponent implements OnInit {
       this.votantesFilter = this.votantes.filter((votante) =>
         votante.operador.nombreCompleto.toLowerCase().includes(valueSearch2)
       );
-  
+      this.sinPrimovidosMessage = '';
       console.log('Filtered Votantes:', this.votantesFilter);
   
       // Verificar si votantesFilter es null o vacío
