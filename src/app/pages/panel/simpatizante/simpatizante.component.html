@@ -118,6 +118,13 @@
                   Edad
                 </th>
                 <th
+                class="text-center"
+                style="text-transform: none; font-size: inherit"
+              >
+                Candidato
+              </th>
+
+                <th
                   class="text-center"
                   style="text-transform: none; font-size: inherit"
                 >
@@ -158,6 +165,7 @@
                 <td class="text-muted text-center">
                   {{ simpatizante.edad }} años
                 </td>
+                <td class="text-muted">{{ simpatizante.operador.candidato.nombreCompleto }}</td>
                 <td class="text-center">
                   <ng-container *ngIf="simpatizante.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
