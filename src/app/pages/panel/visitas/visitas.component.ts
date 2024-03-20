@@ -15,6 +15,8 @@ import { Operador } from 'src/app/models/operador';
 import { OperadoresService } from 'src/app/core/services/operadores.service';
 import { Simpatizante } from 'src/app/models/votante';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
+import { AppUserAuth } from 'src/app/models/login';
+import { SecurityService } from 'src/app/core/services/security.service';
 
 @Component({
   selector: 'app-visitas',
@@ -40,7 +42,7 @@ export class VisitasComponent {
   mostrarModal = false;
   selectedProgramaSocial: number = 0;
   candidatosSelect: any;
-
+  dataObject!: AppUserAuth | null;
   public imgPreview: string = '';
   public isUpdatingImg: boolean = false;
 
@@ -52,7 +54,8 @@ export class VisitasComponent {
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private operadoresService: OperadoresService,
-    private simpatizantesService: SimpatizantesService
+    private simpatizantesService: SimpatizantesService,
+    private securityService: SecurityService
   ) {
     this.visitasService.refreshListVisitas.subscribe(() => this.getVisitas());
     this.getVisitas();
@@ -62,15 +65,57 @@ export class VisitasComponent {
     this.getSimpatizante();
   }
   getSimpatizante() {
-    this.simpatizantesService.getAll().subscribe({
-      next: (dataFromAPI) => {
-        this.votantes = dataFromAPI;
-        console.log('simpatizante', this.votantes);
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
+    this.dataObject = this.securityService.getDataUser();
+    console.log(this.dataObject);
+    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    if (isAdmin) {
+      this.simpatizantesService.getAll().subscribe({
+        next: (dataFromAPI) => {
+          this.votantes = dataFromAPI;
+          console.log('simpatizante', this.votantes);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
+    }
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
+
+    if (isAdmin2) {
+      const id = this.dataObject && this.dataObject.operadorId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.simpatizantesService.getSimpatizantesPorOperadorId(id).subscribe({
+          next: (dataFromAPI) => {
+            this.votantes = dataFromAPI;
+            console.log('simpatizante', this.votantes);
+          },
+          error: (error) => {
+            console.error(error);
+          },
+        });
+      }
+    }
+    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
+
+    if (isCandidato) {
+      const id = this.dataObject && this.dataObject.candidatoId;
+      console.log(id);
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.simpatizantesService.getSimpatizantesPorCandidatoId(id).subscribe({
+          next: (dataFromAPI) => {
+            this.votantes = dataFromAPI;
+            console.log('simpatizante', this.votantes);
+          },
+          error: (error) => {
+            console.error(error);
+          },
+        });
+      }
+    }
+    
   }
   getOperadores() {
     this.operadoresService.getAll().subscribe({
