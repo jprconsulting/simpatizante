@@ -46,8 +46,14 @@ export class SimpatizantesService {
   getAll() {
     return this.http.get<Simpatizante[]>(`${this.route}/obtener-todos`);
   }
-  getAll2() {
+  getAll2() { 
     return this.http.get<Simpatiza[]>(`${this.route}/mapa`);
+  }
+  getSimpatizantesSimapatizaPorOperadorId(operadorId: number) {
+    return this.http.get<Simpatiza[]>(`${this.route}/obtener-simpatizantes-por-simpatiza-operador-id/${operadorId}`);
+  }
+  getSimpatizantessimpatizaPorCandidatoId(candidatoId: number) {
+    return this.http.get<Simpatiza[]>(`${this.route}/obtener-simpatizantessimpatiza-por-candidato-id/${candidatoId}`);
   }
 
   post(dto: Simpatizante) {
