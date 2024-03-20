@@ -169,6 +169,13 @@ const routes: Routes = [
             './distribuciones-ordenadas/distribuciones-ordenadas.module'
           ).then((i) => i.DistribucionesOrdenadasModule),
       },
+      {
+        path: 'formulario',
+        loadChildren: () =>
+          import('./formulario/formulario.module').then(
+            (i) => i.FormulariosModule
+          ),
+      },
     ],
   },
 ];
