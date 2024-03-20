@@ -20,6 +20,14 @@ import { SimpatizantesService } from 'src/app/core/services/simpatizantes.servic
 import { Simpatizante } from 'src/app/models/votante';
 import { GeneroService } from 'src/app/core/services/genero.service';
 import { Genero } from 'src/app/models/genero';
+import { Estado } from 'src/app/models/estados';
+import { Distrito } from 'src/app/models/distrito';
+import { Municipio } from 'src/app/models/municipio';
+import { Comunidad } from 'src/app/models/comunidad';
+import { EstadoService } from 'src/app/core/services/estados.service';
+import { DistritoService } from 'src/app/core/services/distrito.service';
+import { MunicipiosService } from 'src/app/core/services/municipios.service';
+import { ComunidadService } from 'src/app/core/services/comunidad.service';
 
 @Component({
   selector: 'app-candidatos',
@@ -45,6 +53,10 @@ export class CandidatosComponent implements OnInit {
   simpatizantesFilter: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
   simpatizanteFilter: Simpatizante[] = [];
+  estados: Estado[] = [];
+  distritos: Distrito[] = [];
+  municipios: Municipio[] = [];
+  comunidades: Comunidad[] = [];
   errorMessage!: string;
   sinSimpatizantes: boolean = false;
   pagModalPromovidos: number = 1;
@@ -64,7 +76,11 @@ export class CandidatosComponent implements OnInit {
     private cargoService: CargoService,
     private candidatosService: CandidatosService,
     private simpatizantesService: SimpatizantesService,
-    private generoService: GeneroService
+    private generoService: GeneroService,
+    private estadoService: EstadoService,
+    private distritoService: DistritoService,
+    private municipiosService: MunicipiosService,
+    private comunidadService: ComunidadService
   ) {
     this.candidatosService.refreshListCandidatos.subscribe(() =>
       this.getCandidatos()
@@ -73,6 +89,10 @@ export class CandidatosComponent implements OnInit {
     this.createForm();
     this.getCargos();
     this.getGeneros();
+    this.getMunicipio();
+    this.getEstado();
+    this.getDistritos();
+    this.getComunidad();
   }
 
   ngOnInit(): void {
@@ -125,6 +145,69 @@ export class CandidatosComponent implements OnInit {
       };
 
       reader.readAsDataURL(new Blob([filePath]));
+    });
+  }
+  getComunidad() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.comunidadService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.comunidades = dataFromAPI;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        if (err.status === 401) {
+          this.mensajeService.mensajeSesionExpirada();
+        }
+      },
+    });
+  }
+
+  getMunicipio() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.municipiosService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.municipios = dataFromAPI;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        if (err.status === 401) {
+          this.mensajeService.mensajeSesionExpirada();
+        }
+      },
+    });
+  }
+
+  getDistritos() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.distritoService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.distritos = dataFromAPI;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        if (err.status === 401) {
+          this.mensajeService.mensajeSesionExpirada();
+        }
+      },
+    });
+  }
+
+  getEstado() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.estadoService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.estados = dataFromAPI;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        if (err.status === 401) {
+          this.mensajeService.mensajeSesionExpirada();
+        }
+      },
     });
   }
 
@@ -239,7 +322,7 @@ export class CandidatosComponent implements OnInit {
         ],
       ],
       fechaNacimiento: ['', Validators.required],
-      generoId: [null, Validators.required],
+      genero: [null, Validators.required],
       sobrenombre: [
         '',
         [
@@ -253,6 +336,10 @@ export class CandidatosComponent implements OnInit {
       estatus: [true],
       imagenBase64: [''],
       emblemaBase64: [''],
+      estado: [29],
+      distrito: [null],
+      municipio: [null],
+      comunidad: [null],
     });
   }
 
@@ -264,9 +351,9 @@ export class CandidatosComponent implements OnInit {
         this.candidatoFilter = this.candidato;
         this.isLoading = LoadingStates.falseLoading;
       },
-      error: ( err ) => {
+      error: (err) => {
         this.isLoading = LoadingStates.errorLoading;
-        if ( err.status === 401 ){
+        if (err.status === 401) {
           this.mensajeService.mensajeSesionExpirada();
         }
       },
@@ -348,7 +435,7 @@ export class CandidatosComponent implements OnInit {
       estatus: dto.estatus,
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
-      generoId: dto.genero.id,
+      genero: dto.genero.id,
       fechaNacimiento: fechaFormateada,
       sobrenombre: dto.sobrenombre,
       cargo: dto.cargo.id,
@@ -361,7 +448,7 @@ export class CandidatosComponent implements OnInit {
     this.candidatos = this.candidatoForm.value as Candidato;
     const candidatoId = this.candidatoForm.get('id')?.value;
     const cargoid = this.candidatoForm.get('cargo')?.value;
-    const generoId = this.candidatoForm.get('generoId')?.value;
+    const genero = this.candidatoForm.get('genero')?.value;
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
     const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
 
@@ -372,7 +459,7 @@ export class CandidatosComponent implements OnInit {
     this.emblemaPreview = '';
 
     this.candidatos.cargo = { id: cargoid } as Cargo;
-    this.candidatos.genero = { id: generoId } as Genero;
+    this.candidatos.genero = { id: genero } as Genero;
 
     if (!imagenBase64 && !emblemaBase64) {
       const formData = { ...this.candidatos };
@@ -444,10 +531,21 @@ export class CandidatosComponent implements OnInit {
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
     const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
     const cargoid = this.candidatoForm.get('cargo')?.value;
-    const generoId = this.candidatoForm.get('generoId')?.value;
+    const genero = this.candidatoForm.get('genero')?.value;
 
     this.candidatos.cargo = { id: cargoid } as Cargo;
-    this.candidatos.genero = { id: generoId } as Genero;
+    this.candidatos.genero = { id: genero } as Genero;
+
+    this.candidatos.estado = { id: 29 } as Estado;
+
+    const distrito = this.candidatoForm.get('distrito')?.value;
+    this.candidatos.distrito = { id: distrito } as Distrito;
+
+    const municipio = this.candidatoForm.get('municipio')?.value;
+    this.candidatos.municipio = { id: municipio } as Municipio;
+
+    const comunidad = this.candidatoForm.get('comunidad')?.value;
+    this.candidatos.comunidad = { id: comunidad } as Comunidad;
 
     if (imagenBase64 && emblemaBase64) {
       const formData = { ...this.candidatos, imagenBase64, emblemaBase64 };

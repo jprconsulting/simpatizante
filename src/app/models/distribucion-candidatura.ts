@@ -1,5 +1,6 @@
 import { TipoEleccion } from './tipo-eleccion';
 
+import { Estado } from './estados';
 import { Distrito } from './distrito';
 import { Municipio } from './municipio';
 import { Comunidad } from './comunidad';
@@ -7,6 +8,7 @@ import { Comunidad } from './comunidad';
 export interface DistribucionCandidatura {
   id: number;
   tipoEleccion: TipoEleccion;
+  estado?: Estado;
   distrito?: Distrito;
   municipio?: Municipio;
   comunidad?: Comunidad;
