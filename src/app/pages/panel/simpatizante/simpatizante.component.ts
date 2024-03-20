@@ -164,25 +164,33 @@ export class SimpatizanteComponent implements OnInit {
       });
     }
   }
+  sinPrimovidosMessage = '';
   onSelectOperador(id: number | null) {
     this.votantesSelect = this.votantes.find((v) => v.operador.id === id);
-
+  
     if (this.votantesSelect) {
-      const valueSearch2 =
-        this.votantesSelect.operador.nombreCompleto.toLowerCase();
-
+      const valueSearch2 = this.votantesSelect.operador.nombreCompleto.toLowerCase();
       console.log('Search Value:', valueSearch2);
-
-      this.votantesFilter = this.votantes.filter((Votante) =>
-        Votante.operador.nombreCompleto.toLowerCase().includes(valueSearch2)
+  
+      // Filtrar los votantes
+      this.votantesFilter = this.votantes.filter((votante) =>
+        votante.operador.nombreCompleto.toLowerCase().includes(valueSearch2)
       );
-
+  
       console.log('Filtered Votantes:', this.votantesFilter);
-
+  
+      // Verificar si votantesFilter es null o vacío
+      if (!this.votantesFilter || this.votantesFilter.length === 0) {
+        this.votantesFilter = [];
+      }
       this.configPaginator.currentPage = 1;
+    } else {
+      this.sinPrimovidosMessage = 'No se encontraron primovidos.';
+      // Si no se encuentra el votante seleccionado, establecer votantesFilter como un array vacío
+      this.votantesFilter = [];
     }
   }
-
+  
   resetMap() {
     this.ubicacionInput.nativeElement.value = '';
     this.setCurrentLocation();
