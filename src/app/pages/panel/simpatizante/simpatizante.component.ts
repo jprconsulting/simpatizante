@@ -185,7 +185,7 @@ export class SimpatizanteComponent implements OnInit {
       }
       this.configPaginator.currentPage = 1;
     } else {
-      this.sinPrimovidosMessage = 'No se encontraron primovidos.';
+      this.sinPrimovidosMessage = 'No se encontraron promovidos.';
       // Si no se encuentra el votante seleccionado, establecer votantesFilter como un array vacío
       this.votantesFilter = [];
     }
@@ -253,6 +253,7 @@ export class SimpatizanteComponent implements OnInit {
     if (this.votantes) {
       this.getVotantes();
     }
+    this.sinPrimovidosMessage = '';
   }
 
   selectAddress2(place: google.maps.places.PlaceResult) {
