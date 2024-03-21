@@ -52,6 +52,12 @@
                 </span>
                                 <span class="nav-link-title">Usuarios</span>
                             </a>
+                            <a *appHasClaim="'canAccessCandidatos'" class="dropdown-item" [routerLink]="['candidatos']" routerLinkActive="active" #rlCandidatos="routerLinkActive">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-user-check"></i>
+                </span>
+                                <span class="nav-link-title">Candidatos</span>
+                            </a>
                             <a *appHasClaim="'canAccessOperadores'" class="dropdown-item" [routerLink]="['operadores']" routerLinkActive="active" #rlOperadores="routerLinkActive">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                   <i class="ti ti-user-cog"></i>
@@ -64,15 +70,6 @@
                 </span>
                                 <span class="nav-link-title">Promotores</span>
                             </a>
-                            <a *appHasClaim="'canAccessCandidatos'" class="dropdown-item" [routerLink]="['candidatos']" routerLinkActive="active" #rlCandidatos="routerLinkActive">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-user-check"></i>
-                </span>
-                                <span class="nav-link-title">Candidatos</span>
-                            </a>
-
-
-
                             <a *appHasClaim="'CanAccessProgramasSociales'" class="dropdown-item" [routerLink]="['programas-sociales']" routerLinkActive="active" #rlProgramasSociales="routerLinkActive">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                   <i class="ti ti-social"></i>
@@ -95,6 +92,8 @@
           (rlVisitas && rlVisitas.isActive)  ||
             (rlMapaPromovidos && rlMapaPromovidos.isActive) ||
             (rlPromovidos && rlPromovidos.isActive)||
+            (rlPropagandaElectoral && rlPropagandaElectoral.isActive) ||
+            (rlMapaPropagandaElectoral && rlMapaPropagandaElectoral.isActive) ||
             (rlNubePalabras && rlNubePalabras.isActive)
         }">
                 <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
@@ -123,6 +122,18 @@
                   <i class="ti ti-map-search"></i>
                 </span>
                                 <span class="nav-link-title">Mapa de Promovidos</span>
+                            </a>
+                            <a class="dropdown-item" *appHasClaim="'CanAccessPropaganda'" [routerLink]="['Propaganda-Electoral']" routerLinkActive="active" #rlPropagandaElectoral="routerLinkActive">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-wall"></i>
+                </span>
+                                <span class="nav-link-title">Propaganda Electoral</span>
+                            </a>
+                            <a class="dropdown-item" *appHasClaim="'CanAccessMapaPropaganda'" [routerLink]="['mapa-propaganda']" routerLinkActive="active" #rlMapaPropagandaElectoral="routerLinkActive">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-map-search"></i>
+                </span>
+                                <span class="nav-link-title">Mapa de Propaganda Electoral</span>
                             </a>
                             <a *appHasClaim="'canAccessNubePalabras'" class="dropdown-item" [routerLink]="['nube-palabras']" routerLinkActive="active" #rlNubePalabras="routerLinkActive">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -192,8 +203,6 @@
                 active:
             (rlDistribucionCandidatura && rlDistribucionCandidatura.isActive) ||
             (rlCombinaciones && rlCombinaciones.isActive) ||
-            (rlPropagandaElectoral && rlPropagandaElectoral.isActive) ||
-            (rlMapaPropagandaElectoral && rlMapaPropagandaElectoral.isActive) ||
             (rlCandidaturas && rlCandidaturas.isActive)
               }">
                 <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
@@ -216,18 +225,6 @@
                   <i class="ti ti-layers-subtract"></i>
                 </span>
                                 <span class="nav-link-title">Combinaciones</span>
-                            </a>
-                            <a class="dropdown-item" *appHasClaim="'CanAccessPropaganda'" [routerLink]="['Propaganda-Electoral']" routerLinkActive="active" #rlPropagandaElectoral="routerLinkActive">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-wall"></i>
-                </span>
-                                <span class="nav-link-title">Propaganda Electoral</span>
-                            </a>
-                            <a class="dropdown-item" *appHasClaim="'CanAccessMapaPropaganda'" [routerLink]="['mapa-propaganda']" routerLinkActive="active" #rlMapaPropagandaElectoral="routerLinkActive">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-map-search"></i>
-                </span>
-                                <span class="nav-link-title">Mapa de Propaganda Electoral</span>
                             </a>
                             <a *appHasClaim="'CanAccessDistribucionCandidaturas'" class="dropdown-item" [routerLink]="['distribucion-candidatura']" routerLinkActive="active" #rlDistribucionCandidatura="routerLinkActive">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
