@@ -248,6 +248,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     this.map = new google.maps.Map(mapElement, mapOptions);
   }
   getSimpatizantes() {
+
     this.dataObject = this.securityService.getDataUser();
     this.isLoading = LoadingStates.trueLoading;
     const isAdmin = this.dataObject && this.dataObject.rolId === 1;
@@ -255,10 +256,9 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     if (isAdmin) {
       this.simpatizantesService.getAll2().subscribe({
         next: (dataFromAPI) => {
-          this.combineResults(dataFromAPI);
           this.simpatizantesFiltrados = this.simpatizantes
-         
-
+          this.combineResults(dataFromAPI);
+          
         },
       });
     }
@@ -329,6 +329,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
             ...simpatizantesCombinados,
             ...simpatizantesMapeadosf,
           ];
+         
           console.log(simpatizantesCombinados2,'uhidea')
           this.setAllMarkers(simpatizantesCombinados2);
         },
@@ -369,6 +370,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
           },
         });
       }
+      
     }
     const isCandidato = this.dataObject && this.dataObject.rolId === 3;
 
@@ -577,6 +579,10 @@ console.log(simpatizantesFiltrados);
         });
       }
     }
+    console.log(id2)
+      if(id2===null){
+        this.getSimpatizantes();
+      }
   }
   setAllMarkers(simpatizantesCombinados: Simpatiza[]): void {
     simpatizantesCombinados.forEach((simpatizante) => {
@@ -598,7 +604,10 @@ console.log(simpatizantesFiltrados);
   }
  
   onClear() {
+    this.simpatizantesFiltrados;
     this.getSimpatizantes();
+
+    
   }
 
   filterCandidatos(id: number): void {
@@ -653,5 +662,10 @@ console.log(simpatizantesFiltrados);
         });
       },
     });
+    console.log(id)
+    if(id===null){
+      this.getSimpatizantes();
+      this.getSimpatizantes();
+    }
   }
 }

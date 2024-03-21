@@ -13,54 +13,51 @@
           <div class="col">
             <h5 class="page-title mb-3">Candidato</h5>
             <ng-select
-              formControlName="candidatoId"
-              #selectCandidato
-              [searchable]="false"
-              [items]="candidatos"
-              bindLabel="nombreCompleto"
-              [readonly]="readonlySelectCandidato"
-              bindValue="id"
-              [clearable]="true"
-              (change)="filterCandidatos($event?.id)"
-              (clear)="onClear()"
-            >
-              <ng-template ng-header-tmp>
+            formControlName="candidatoId"
+            #selectCandidato
+            [searchable]="false"
+            [items]="candidatos"
+            bindLabel="nombreCompleto"
+            [readonly]="readonlySelectCandidato"
+            bindValue="id"
+            [clearable]="true"
+            (change)="filterCandidatos($event?.id)"
+            (clear)="onClear()">
+            <ng-template ng-header-tmp>
                 <input
-                  class="form-control"
-                  type="text"
-                  (input)="selectCandidato.filter($any($event.target).value)"
-                />
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item" let-index="index">
+                    class="form-control"
+                    type="text"
+                    (input)="selectCandidato.filter($any($event.target).value)" />
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index">
                 {{ item.nombreCompleto }}
-              </ng-template>
-            </ng-select>
+            </ng-template>
+        </ng-select>
+        
           </div>
           <div class="col">
             <h5 class="page-title mb-3">Promovidos</h5>
             <ng-select
-              formControlName="seccion"
-              formControlName="promovidos"
-              #selectsecciones
-              [searchable]="false"
-              [items]="secciones"
-              bindLabel="claveYNombre"
-              bindValue="id"
-              [clearable]="true"
-              (change)="filterMarkersBySeccion($event?.id)"
-              (clear)="onClear()"
-            >
-              <ng-template ng-header-tmp>
+            formControlName="promovidos"
+            #selectsecciones
+            [searchable]="false"
+            [items]="secciones"
+            bindLabel="claveYNombre"
+            bindValue="id"
+            [clearable]="true"
+            (change)="filterMarkersBySeccion($event?.id)"
+            (clear)="onClear()">
+            <ng-template ng-header-tmp>
                 <input
-                  class="form-control"
-                  type="text"
-                  (input)="selectsecciones.filter($any($event.target).value)"
-                />
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item" let-index="index">
+                    class="form-control"
+                    type="text"
+                    (input)="selectsecciones.filter($any($event.target).value)" />
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index">
                 {{ item.claveYNombre }}
-              </ng-template>
-            </ng-select>
+            </ng-template>
+        </ng-select>
+        
           </div>
         </div>
       </form>
