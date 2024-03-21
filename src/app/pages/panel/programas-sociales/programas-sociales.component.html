@@ -1,255 +1,176 @@
-<ngx-spinner
-  bdColor="rgba(0,0,0,0.41)"
-  size="large"
-  color="#ffffff"
-  type="ball-scale-multiple"
-  [fullScreen]="true"
->
-  <p style="color: white">Guardando...</p>
+<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
+    <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
 <app-page-header headerTitle="Programas sociales"></app-page-header>
 
 <div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-body border-bottom py-3">
-        <div class="d-flex align-items-center">
-          <button
-            class="btn btn-primary me-2"
-            data-bs-toggle="modal"
-            data-bs-target="#modal-programa-social"
-            (click)="handleChangeAdd()"
-          >
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body border-bottom py-3">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-programa-social" (click)="handleChangeAdd()">
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
-          <div class="ms-auto d-flex align-items-center">
-            <div class="input-icon">
-              <input
-                #searchItem
-                type="text"
-                class="form-control form-control-rounded"
-                placeholder="Buscar"
-                (input)="handleChangeSearch($event)"
-              />
-              <span class="input-icon-addon">
+                    <div class="ms-auto d-flex align-items-center">
+                        <div class="input-icon">
+                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
+                            <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
               </span>
+                        </div>
+                        <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de programas sociales" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px">
+                            <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <a
-              class="btn w-30 btn-icon"
-              aria-label="Dribbble"
-              (click)="exportarDatosAExcel()"
-              title="Descargar excel de programas sociales"
-              style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
-            >
-              <i
-                class="ti ti-cloud-down text-muted"
-                style="font-size: 28px"
-              ></i>
-            </a>
-          </div>
-        </div>
-      </div>
 
-      <ng-container [ngSwitch]="isLoading">
-        <div style="height: 300px" *ngSwitchCase="2">
-          <div class="progress">
-            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-          </div>
-        </div>
+            <ng-container [ngSwitch]="isLoading">
+                <div style="height: 300px" *ngSwitchCase="2">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+                    </div>
+                </div>
 
-        <div *ngSwitchCase="3" class="table-responsive">
-          <table class="table table-vcenter card-table">
-            <thead>
-              <tr>
-                <th class="text-center">#</th>
-                <th style="text-transform: none; font-size: inherit">Nombre</th>
-                <th
-                  class="w-1"
-                  style="text-transform: none; font-size: inherit"
-                >
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="
+                <div *ngSwitchCase="3" class="table-responsive">
+                    <table class="table table-vcenter card-table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th style="text-transform: none; font-size: inherit">Nombre</th>
+                                <th style="text-transform: none; font-size: inherit" class="text-center">
+                                    Estatus
+                                </th>
+                                <th class="w-1" style="text-transform: none; font-size: inherit">
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="
                   let programa of programasSocialesFilter
                     | paginate : configPaginator;
                   let pointIndex = index
-                "
-              >
-                <td class="text-center">
-                  {{
-                    configPaginator.itemsPerPage *
-                      (configPaginator.currentPage - 1) +
-                      pointIndex +
-                      1
-                  }}
-                </td>
-                <td>{{ programa.nombre }}</td>
-
-                <td>
-                  <div class="d-flex justify-content-between">
-                    <button
-                      class="btn btn-warning btn-icon btn-sm"
-                      data-bs-toggle="modal"
-                      data-bs-target="#modal-programa-social"
-                      (click)="setDataModalUpdate(programa)"
-                    >
+                ">
+                                <td class="text-center">
+                                    {{ configPaginator.itemsPerPage * (configPaginator.currentPage - 1) + pointIndex + 1 }}
+                                </td>
+                                <td>{{ programa.nombre }}</td>
+                                <td class="text-center">
+                                    <ng-container *ngIf="programa.estatus; else elseEstatus">
+                                        <span class="badge bg-success me-1"> </span> Activo
+                                    </ng-container>
+                                    <ng-template #elseEstatus>
+                                        <span class="badge bg-warning me-1"></span> Inactivo
+                                    </ng-template>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-programa-social" (click)="setDataModalUpdate(programa)">
                       <i class="ti ti-edit"></i>
                     </button>
-                    <button
-                      class="btn btn-danger btn-icon btn-sm"
-                      (click)="deleteItem(programa.id, programa.nombre)"
-                    >
+                                        <button class="btn btn-danger btn-icon btn-sm" (click)="deleteItem(programa.id, programa.nombre)">
                       <i class="ti ti-eraser"></i>
                     </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-        <app-no-results *ngSwitchCase="4"></app-no-results>
-      </ng-container>
-      <!-- Fin *ngSwitchCase-->
+                <app-no-results *ngSwitchCase="4"></app-no-results>
+            </ng-container>
+            <!-- Fin *ngSwitchCase-->
 
-      <div class="card-footer d-flex align-items-center">
-        <p class="m-0 text-muted">
-          Total de registros: <b>{{ programasSocialesFilter.length }}</b>
-        </p>
-        <div class="m-0 ms-auto">
-          <pagination-controls
-            (pageChange)="onPageChange($event)"
-            previousLabel=""
-            nextLabel=""
-          >
-          </pagination-controls>
+            <div class="card-footer d-flex align-items-center">
+                <p class="m-0 text-muted">
+                    Total de registros: <b>{{ programasSocialesFilter.length }}</b>
+                </p>
+                <div class="m-0 ms-auto">
+                    <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
+                    </pagination-controls>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
-<div
-  class="modal modal-blur fade"
-  id="modal-programa-social"
-  tabindex="-1"
-  role="dialog"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          {{ isModalAdd ? "Agregar" : "Actualizar" }} programa social
-        </h5>
-        <button
-          #closebutton
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
+<div class="modal modal-blur fade" id="modal-programa-social" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {{ isModalAdd ? "Agregar" : "Actualizar" }} programa social
+                </h5>
+                <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-      <form [formGroup]="programaSocialForm" (ngSubmit)="submit()">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="col-lg-2">
-                <div class="mb-3 custom-green-switch">
-                  <label for="estadoActivo" class="form-label">Estatus</label>
-                  <label class="form-check form-switch checkbox-verde">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      formControlName="estatus"
-                    />
-                    <span
-                      class="form-check-label"
-                      [ngClass]="
-                        programaSocialForm.get('estatus')?.value
-                          ? 'text-success'
-                          : 'text-danger'
-                      "
-                    >
+            <form [formGroup]="programaSocialForm" (ngSubmit)="submit()">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-10">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre*:</label>
+                                <input type="text" class="form-control" formControlName="nombre" />
+                                <div *ngIf="programaSocialForm.get('nombre')?.touched" class="error-message">
+                                    <div *ngIf="
+                      programaSocialForm.get('nombre')?.hasError('required')
+                    ">
+                                        El nombre es obligatorio
+                                    </div>
+                                    <div *ngIf="
+                      programaSocialForm.get('nombre')?.hasError('minlength')
+                    ">
+                                        El nombre debe tener al menos 3 caracteres
+                                    </div>
+                                    <div *ngIf="
+                      programaSocialForm.get('nombre')?.hasError('pattern')
+                    ">
+                                        El nombre no puede tener números ni caracteres especiales
+                                    </div>
+                                    <div *ngIf="
+                      programaSocialForm.get('nombre')?.hasError('maxlength')
+                    ">
+                                        <p style="color: red">
+                                            El nombre debe tener maximo 40 caracteres
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="mb-3 custom-green-switch">
+                                    <label for="estadoActivo" class="form-label">Estatus</label>
+                                    <label class="form-check form-switch checkbox-verde">
+                    <input class="form-check-input" type="checkbox" formControlName="estatus" />
+                    <span class="form-check-label" [ngClass]="
+                                      programaSocialForm.get('estatus')?.value
+                                        ? 'text-success'
+                                        : 'text-danger'
+                                    ">
                       {{
-                        programaSocialForm.get("estatus")?.value
-                          ? "Activo"
-                          : "Inactivo"
+                      programaSocialForm.get("estatus")?.value
+                      ? "Activo"
+                      : "Inactivo"
                       }}
                     </span>
                   </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Nombre*:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="nombre"
-                />
-                <div
-                  *ngIf="programaSocialForm.get('nombre')?.touched"
-                  class="error-message"
-                >
-                  <div
-                    *ngIf="
-                      programaSocialForm.get('nombre')?.hasError('required')
-                    "
-                  >
-                    El nombre es obligatorio
-                  </div>
-                  <div
-                    *ngIf="
-                      programaSocialForm.get('nombre')?.hasError('minlength')
-                    "
-                  >
-                    El nombre debe tener al menos 3 caracteres
-                  </div>
-                  <div
-                    *ngIf="
-                      programaSocialForm.get('nombre')?.hasError('pattern')
-                    "
-                  >
-                    El nombre no puede tener números ni caracteres especiales
-                  </div>
-                  <div
-                    *ngIf="
-                      programaSocialForm.get('nombre')?.hasError('maxlength')
-                    "
-                  >
-                    <p style="color: red">
-                      El nombre debe tener maximo 40 caracteres
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p
-          class="form-label"
-          style="margin-left: 20px; color: red; font-weight: bold"
-        >
-          Todos los campos marcados con * son requeridos
-        </p>
+                <p class="form-label" style="margin-left: 20px; color: red; font-weight: bold">
+                    Todos los campos marcados con * son requeridos
+                </p>
 
-        <div class="modal-footer">
-          <button
-            type="submit"
-            class="btn btn-success"
-            [disabled]="!programaSocialForm.valid"
-          >
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" [disabled]="!programaSocialForm.valid">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
 </div>
