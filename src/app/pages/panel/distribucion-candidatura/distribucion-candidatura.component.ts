@@ -4,6 +4,7 @@ import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CandidaturaService } from 'src/app/core/services/candidaturs.service';
 
+import { EstadoService } from 'src/app/core/services/estados.service';
 import { DistritoService } from 'src/app/core/services/distrito.service';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { ComunidadService } from 'src/app/core/services/comunidad.service';
@@ -13,6 +14,7 @@ import { TipoAgrupacionesService } from 'src/app/core/services/tipo-agrupaciones
 
 import { LoadingStates } from 'src/app/global/global';
 import { Candidatura } from 'src/app/models/candidatura';
+import { Estado } from 'src/app/models/estados';
 import { Distrito } from 'src/app/models/distrito';
 import { Municipio } from 'src/app/models/municipio';
 import { Comunidad } from 'src/app/models/comunidad';
@@ -54,6 +56,7 @@ export class DistribucionCandidaturaComponent {
   id!: number;
   selectedAgrupacion: any;
   searchText: string = '';
+  estados: Estado[] = [];
   distritos: Distrito[] = [];
   municipios: Municipio[] = [];
   tiposEleccion: TipoEleccion[] = [];
@@ -72,6 +75,7 @@ export class DistribucionCandidaturaComponent {
     private formBuilder: FormBuilder,
     private tipoagrupacionesService: TipoAgrupacionesService,
     private candidaturaService: CandidaturaService,
+    private estadoService: EstadoService,
     private distritoService: DistritoService,
     private municipiosService: MunicipiosService,
     private comunidadService: ComunidadService,
@@ -89,6 +93,7 @@ export class DistribucionCandidaturaComponent {
     this.getPartidos();
     this.getMunicipio();
     this.getTipoEleccion();
+    this.getEstado();
     this.getDistritos();
     this.getComunidad();
     this.getDistribucion();
@@ -101,6 +106,7 @@ export class DistribucionCandidaturaComponent {
       id: [null],
       tipoEleccion: [null, Validators.required],
       partidos: [null],
+      estado: [null],
       distrito: [null],
       municipio: [null],
       comunidad: [null],
@@ -209,6 +215,22 @@ export class DistribucionCandidaturaComponent {
     this.distritoService.getAll().subscribe({
       next: (dataFromAPI) => {
         this.distritos = dataFromAPI;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        if (err.status === 401) {
+          this.mensajeService.mensajeSesionExpirada();
+        }
+      },
+    });
+  }
+
+  getEstado() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.estadoService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.estados = dataFromAPI;
         this.isLoading = LoadingStates.falseLoading;
       },
       error: (err) => {
@@ -371,10 +393,15 @@ export class DistribucionCandidaturaComponent {
     this.distribucion = this.DistribucionForm.value as DistribucionCandidatura;
     const tipo = this.DistribucionForm.get('tipoEleccion')?.value;
     this.distribucion.tipoEleccion = { id: tipo } as TipoAgrupaciones;
+
+    this.distribucion.estado = { id: 29 } as Estado;
+
     const distrito = this.DistribucionForm.get('distrito')?.value;
     this.distribucion.distrito = { id: distrito } as Distrito;
+
     const municipio = this.DistribucionForm.get('municipio')?.value;
     this.distribucion.municipio = { id: municipio } as Municipio;
+
     const comunidad = this.DistribucionForm.get('comunidad')?.value;
     this.distribucion.comunidad = { id: comunidad } as Comunidad;
     this.spinnerService.show();
@@ -463,6 +490,7 @@ export class DistribucionCandidaturaComponent {
       id: dto.id,
       tipoEleccion: dto.tipoEleccion.id,
       partidos: dto.partidos,
+      estado: dto.estado?.id,
       distrito: dto.distrito?.id,
       municipio: dto.municipio?.id,
       comunidad: dto.comunidad?.id,

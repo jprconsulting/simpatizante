@@ -41,6 +41,7 @@
                 <th style="text-transform: none; font-size: inherit">
                   Tipo elección
                 </th>
+                <th style="text-transform: none; font-size: inherit">Estado</th>
                 <th style="text-transform: none; font-size: inherit">Distrito</th>
                 <th style="text-transform: none; font-size: inherit">Municipio</th>
                 <th style="text-transform: none; font-size: inherit">Comunidad</th>
@@ -62,6 +63,9 @@
                   {{ distribucion.tipoEleccion.nombre }}
                 </td>
                 <td class="text-muted">
+                  Tlaxcala
+                </td>
+                <td class="text-muted">
                   {{ distribucion.distrito?.nombre || 'N/R' }}
                 </td>
                 <td class="text-muted">
@@ -78,7 +82,8 @@
                       <i class="ti ti-eye"></i>
                     </button>
                     <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal"
-                      data-bs-target="#modal-candidatura"  (click)="setDataModalUpdate(distribucion)" style="margin-right: 5px">
+                      data-bs-target="#modal-candidatura" (click)="setDataModalUpdate(distribucion)"
+                      style="margin-right: 5px">
                       <i class="ti ti-edit"></i>
                     </button>
                     <button class="btn btn-danger btn-icon btn-sm" (click)="deleteItem(distribucion.id)">
@@ -138,7 +143,23 @@
             </div>
 
             <div class="col-lg-6"
-              *ngIf="DistribucionForm.controls['tipoEleccion'].value == 1 || DistribucionForm.controls['tipoEleccion'].value == 2">
+              *ngIf="DistribucionForm.controls['tipoEleccion'].value == 1 || DistribucionForm.controls['tipoEleccion'].value == 2 || DistribucionForm.controls['tipoEleccion'].value == 3">
+              <div class="mb-3">
+                <label class="form-label">Estado:</label>
+                <ng-select formControlName="estado" #selectEstado [searchable]="false" [items]="estados"
+                  bindLabel="nombre" bindValue="id" placeholder="Selecciona una opción" [clearable]="false" value="">
+                  <ng-template ng-header-tmp>
+                    <input class="form-control" type="text" value=""
+                      (input)="selectEstado.filter($any($event.target).value)" />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 4">
               <div class="mb-3">
                 <label class="form-label">Distrito:</label>
                 <ng-select formControlName="distrito" #selectDistrito [searchable]="false" [items]="distritos"
@@ -154,7 +175,7 @@
               </div>
             </div>
 
-            <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 3">
+            <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 5">
               <div class="mb-3">
                 <label class="form-label">Municipio:</label>
                 <ng-select formControlName="municipio" #selectMunicipio [searchable]="false" [items]="municipios"
@@ -172,7 +193,7 @@
               </div>
             </div>
 
-            <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 4">
+            <div class="col-lg-6" *ngIf="DistribucionForm.controls['tipoEleccion'].value == 6">
               <div class="mb-3">
                 <label class="form-label">Comunidad:</label>
                 <ng-select formControlName="comunidad" #selectComunidad [searchable]="false" [items]="comunidades"
