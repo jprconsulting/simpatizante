@@ -46,6 +46,9 @@ export class VisitasComponent {
   public imgPreview: string = '';
   public isUpdatingImg: boolean = false;
 
+  existeVisita: boolean | null = null;
+  mensajeExisteVisita: string | null = null;
+
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private spinnerService: NgxSpinnerService,
@@ -115,7 +118,6 @@ export class VisitasComponent {
         });
       }
     }
-    
   }
   getOperadores() {
     this.operadoresService.getAll().subscribe({
@@ -178,6 +180,37 @@ export class VisitasComponent {
       },
       error: () => {
         this.isLoading = LoadingStates.errorLoading;
+      },
+    });
+  }
+
+  deshabilitarTodosLosControles() {
+    Object.keys(this.visitaForm.controls).forEach((controlName) => {
+      if (controlName !== 'simpatizante') {
+        this.visitaForm.get(controlName)?.disable();
+      }
+    });
+  }
+
+  habilitarTodosLosControles() {
+    Object.keys(this.visitaForm.controls).forEach((controlName) => {
+      this.visitaForm.get(controlName)?.enable();
+    });
+  }
+
+  validarCURP() {
+    const simpatizanteId = this.visitaForm.get('simpatizante')?.value as number;
+
+    this.visitasService.validarVisitaPorSimpatizante(simpatizanteId).subscribe({
+      next: () => {
+        this.deshabilitarTodosLosControles();
+        this.existeVisita = false;
+        this.mensajeExisteVisita = 'El promovido ya cuenta con visita';
+      },
+      error: () => {
+        this.existeVisita = true;
+        this.habilitarTodosLosControles();
+        this.mensajeExisteVisita = '';
       },
     });
   }
