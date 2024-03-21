@@ -161,6 +161,32 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-lg-12">
+              <div class="col-lg-2">
+                <div class="mb-3 custom-green-switch">
+                  <label for="estadoActivo" class="form-label">Estatus</label>
+                  <label class="form-check form-switch checkbox-verde">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      formControlName="estatus"
+                    />
+                    <span
+                      class="form-check-label"
+                      [ngClass]="
+                        programaSocialForm.get('estatus')?.value
+                          ? 'text-success'
+                          : 'text-danger'
+                      "
+                    >
+                      {{
+                        programaSocialForm.get("estatus")?.value
+                          ? "Activo"
+                          : "Inactivo"
+                      }}
+                    </span>
+                  </label>
+                </div>
+              </div>
               <div class="mb-3">
                 <label class="form-label">Nombre*:</label>
                 <input
@@ -193,8 +219,14 @@
                   >
                     El nombre no puede tener números ni caracteres especiales
                   </div>
-                  <div *ngIf="programaSocialForm.get('nombre')?.hasError('maxlength')">
-                    <p style="color: red">El nombre debe tener maximo 40 caracteres </p>
+                  <div
+                    *ngIf="
+                      programaSocialForm.get('nombre')?.hasError('maxlength')
+                    "
+                  >
+                    <p style="color: red">
+                      El nombre debe tener maximo 40 caracteres
+                    </p>
                   </div>
                 </div>
               </div>
