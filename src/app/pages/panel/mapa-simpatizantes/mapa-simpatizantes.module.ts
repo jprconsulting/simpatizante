@@ -7,6 +7,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -21,7 +22,9 @@ import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
     NgxPaginationModule,
     NgSelectModule,
     NgxGpAutocompleteModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class MapaSimpatizantesModule { }
