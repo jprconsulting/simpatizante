@@ -1,4 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { color } from 'highcharts';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
@@ -32,26 +33,45 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
   readonlySelectCandidato = true;
   candidatos: Candidato[] = [];
   currentUser!: AppUserAuth | null;
+  mapaForm!: FormGroup;
   candidatoId = 0;
-  
+  visibility = true;
   constructor(
     private simpatizantesService: SimpatizantesService,
     private seccionService: SeccionService,
     private securityService: SecurityService,
     private candidatosService: CandidatosService,
+    private formBuilder: FormBuilder
   ) {
     this.getSimpatizantes();
     this.getSecciones();
     this.getCandidatos();
+    this.creteForm();
     this.currentUser = securityService.getDataUser();
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
-
+    }
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
+    }
+    if (this.currentUser?.rolId === RolesBD.operador) {
+      this.ocultar();
+      
     }
 
     this.readonlySelectCandidato =
       this.currentUser?.rolId !== RolesBD.administrador;
   }
+  creteForm() {
+    this.mapaForm = this.formBuilder.group({
+      candidatoId: [],
+      promovidos: [],
+    });
+  }
+ocultar(){
+  this.visibility = false;
+}
+
   getCandidatos() {
     this.candidatosService
       .getAll()
@@ -236,48 +256,52 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     this.map = new google.maps.Map(mapElement, mapOptions);
   }
   getSimpatizantes() {
+
     this.dataObject = this.securityService.getDataUser();
-    console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
     const isAdmin = this.dataObject && this.dataObject.rolId === 1;
 
     if (isAdmin) {
-    this.simpatizantesService.getAll2().subscribe({
-      next: (dataFromAPI) => {
-        this.combineResults(dataFromAPI);
-        this.simpatizantesFiltrados = this.simpatizantes;
-      },
-    });
-  }
-  const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
-
-  if (isAdmin2) {
-    const id = this.dataObject && this.dataObject.operadorId;
-    console.log(id);
-    if (id) {
-    this.simpatizantesService.getSimpatizantesSimapatizaPorOperadorId(id).subscribe({
-      next: (dataFromAPI) => {
-        this.combineResults(dataFromAPI);
-        this.simpatizantesFiltrados = this.simpatizantes;
-      },
-    });
-  }
-  }
-  const isCandidato = this.dataObject && this.dataObject.rolId === 3;
-
-    if (isCandidato) {
-      const id = this.dataObject && this.dataObject.candidatoId;
-      console.log(id);
-      if (id) {
-      this.simpatizantesService.getSimpatizantessimpatizaPorCandidatoId(id).subscribe({
+      this.simpatizantesService.getAll2().subscribe({
         next: (dataFromAPI) => {
+          this.simpatizantesFiltrados = this.simpatizantes
           this.combineResults(dataFromAPI);
-          this.simpatizantesFiltrados = this.simpatizantes;
+          
         },
       });
     }
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
+
+    if (isAdmin2) {
+      const id = this.dataObject && this.dataObject.operadorId;
+      if (id) {
+        this.simpatizantesService
+          .getSimpatizantesSimapatizaPorOperadorId(id)
+          .subscribe({
+            next: (dataFromAPI) => {
+              this.combineResults(dataFromAPI);
+              this.simpatizantesFiltrados = this.simpatizantes;
+            },
+          });
+      }
     }
-}
+    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
+
+    if (isCandidato) {
+      const id = this.dataObject && this.dataObject.candidatoId;
+      if (id) {
+        this.simpatizantesService
+          .getSimpatizantessimpatizaPorCandidatoId(id)
+          .subscribe({
+            next: (dataFromAPI) => {
+              this.combineResults(dataFromAPI);
+              this.simpatizantesFiltrados = this.simpatizantes;
+              
+            },
+          });
+      }
+    }
+  }
 
   combineResults(dataFromAPI: Simpatiza[]): void {
     const simpatizantesCombinados: {
@@ -286,116 +310,113 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       simpatiza: boolean | null;
     }[] = [];
     this.dataObject = this.securityService.getDataUser();
-    console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
     const isAdmin = this.dataObject && this.dataObject.rolId === 1;
     if (isAdmin) {
-    this.simpatizantesService.getAll().subscribe({
-      next: (dataFromAPI2) => {
-        const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
-          (simpatizante) => ({
-            ...simpatizante,
-          })
-        );
+      this.simpatizantesService.getAll().subscribe({
+        next: (dataFromAPI2) => {
+          const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
+            (simpatizante) => ({
+              ...simpatizante,
+            })
+          );
+
+          for (const simpatizante of simpatizantesMapeados) {
+            const result = {
+              simpatizante,
+              simpatiza: null,
+              color: null,
+            };
+
+            simpatizantesCombinados.push(result);
+          }
+          const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
+            (simpatiza) => simpatiza
+          );
+          const simpatizantesCombinados2 = [
+            ...simpatizantesCombinados,
+            ...simpatizantesMapeadosf,
+          ];
+         
+          console.log(simpatizantesCombinados2,'uhidea')
+          this.setAllMarkers(simpatizantesCombinados2);
+        },
+      });
+    }
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
+
+    if (isAdmin2) {
+      const id = this.dataObject && this.dataObject.operadorId;
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.simpatizantesService.getSimpatizantesPorOperadorId(id).subscribe({
+          next: (dataFromAPI2) => {
+            const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
+              (simpatizante) => ({
+                ...simpatizante,
+              })
+            );
+
+            for (const simpatizante of simpatizantesMapeados) {
+              const result = {
+                simpatizante,
+                simpatiza: null,
+                color: null,
+              };
+
+              simpatizantesCombinados.push(result);
+            }
+            const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
+              (simpatiza) => simpatiza
+            );
+            const simpatizantesCombinados2 = [
+              ...simpatizantesCombinados,
+              ...simpatizantesMapeadosf,
+            ];
+
+            this.setAllMarkers(simpatizantesCombinados2);
+          },
+        });
+      }
       
-        for (const simpatizante of simpatizantesMapeados) {
-          const result = {
-            simpatizante,
-            simpatiza: null,
-            color: null,
-          };
-
-          simpatizantesCombinados.push(result);
-        }
-        const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
-          (simpatiza) => simpatiza
-        );
-        const simpatizantesCombinados2 = [
-          ...simpatizantesCombinados,
-          ...simpatizantesMapeadosf,
-        ];
-
-        console.log('si?', simpatizantesCombinados2);
-        this.setAllMarkers(simpatizantesCombinados2);
-      },
-    });
-  }
-  const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
-
-  if (isAdmin2) {
-    const id = this.dataObject && this.dataObject.operadorId;
-    console.log(id);
-    if (id) {
-      this.isLoading = LoadingStates.trueLoading;
-      this.simpatizantesService.getSimpatizantesPorOperadorId(id).subscribe({
-        next: (dataFromAPI2) => {
-          const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
-            (simpatizante) => ({
-              ...simpatizante,
-            })
-          );
-        
-          for (const simpatizante of simpatizantesMapeados) {
-            const result = {
-              simpatizante,
-              simpatiza: null,
-              color: null,
-            };
-  
-            simpatizantesCombinados.push(result);
-          }
-          const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
-            (simpatiza) => simpatiza
-          );
-          const simpatizantesCombinados2 = [
-            ...simpatizantesCombinados,
-            ...simpatizantesMapeadosf,
-          ];
-  
-          console.log('si?', simpatizantesCombinados2);
-          this.setAllMarkers(simpatizantesCombinados2);
-        },
-      });
     }
-  }
-  const isCandidato = this.dataObject && this.dataObject.rolId === 3;
+    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
 
-  if (isCandidato) {
-    const id = this.dataObject && this.dataObject.candidatoId;
-    console.log(id);
-    if (id) {
-      this.isLoading = LoadingStates.trueLoading;
-      this.simpatizantesService.getSimpatizantesPorCandidatoId(id).subscribe({
-        next: (dataFromAPI2) => {
-          const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
-            (simpatizante) => ({
-              ...simpatizante,
-            })
-          );
-        
-          for (const simpatizante of simpatizantesMapeados) {
-            const result = {
-              simpatizante,
-              simpatiza: null,
-              color: null,
-            };
-  
-            simpatizantesCombinados.push(result);
-          }
-          const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
-            (simpatiza) => simpatiza
-          );
-          const simpatizantesCombinados2 = [
-            ...simpatizantesCombinados,
-            ...simpatizantesMapeadosf,
-          ];
-  
-          console.log('si?', simpatizantesCombinados2);
-          this.setAllMarkers(simpatizantesCombinados2);
-        },
-      });
+    if (isCandidato) {
+      const id = this.dataObject && this.dataObject.candidatoId;
+      if (id) {
+        this.isLoading = LoadingStates.trueLoading;
+        this.simpatizantesService.getSimpatizantesPorCandidatoId(id).subscribe({
+          next: (dataFromAPI2) => {
+            const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
+              (simpatizante) => ({
+                ...simpatizante,
+              })
+            );
+
+            for (const simpatizante of simpatizantesMapeados) {
+              const result = {
+                simpatizante,
+                simpatiza: null,
+                color: null,
+              };
+
+              simpatizantesCombinados.push(result);
+            }
+            const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
+              (simpatiza) => simpatiza
+            );
+            const simpatizantesCombinados2 = [
+              ...simpatizantesCombinados,
+              ...simpatizantesMapeadosf,
+            ];
+         
+
+            this.setAllMarkers(simpatizantesCombinados2);
+          },
+        });
+      }
     }
-  }
   }
 
   filterMarkersBySeccion(id2: number): void {
@@ -405,170 +426,172 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       simpatiza: boolean | null;
     }[] = [];
     this.dataObject = this.securityService.getDataUser();
-    console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
     const isAdmin = this.dataObject && this.dataObject.rolId === 1;
 
-
     if (isAdmin) {
-console.log('ADMIN',isAdmin);
-    this.simpatizantesService.getAll().subscribe({
-      next: (dataFromAPI2) => {
-        const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
-          (simpatizante) => ({
-            ...simpatizante,
-          })
-        );
+      this.simpatizantesService.getAll().subscribe({
+        next: (dataFromAPI2) => {
+          const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
+            (simpatizante) => ({
+              ...simpatizante,
+            })
+          );
 
-        for (const simpatizante of simpatizantesMapeados) {
-          const result = {
-            simpatizante,
-            simpatiza: null,
-            color: null,
-          };
+          for (const simpatizante of simpatizantesMapeados) {
+            const result = {
+              simpatizante,
+              simpatiza: null,
+              color: null,
+            };
 
-          simpatizantesCombinados.push(result);
-        }
-        this.simpatizantesService.getAll2().subscribe({
-          next: (dataFromAPI) => {
-            const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
-              (simpatiza) => simpatiza
-            );
-            const simpatizantesCombinados2 = [
-              ...simpatizantesCombinados,
-              ...simpatizantesMapeadosf,
-            ];
-
-            this.clearMarkers();
-            const simpatizantesFiltrados = simpatizantesCombinados2.filter(
-              (v) => v.simpatizante.seccion.id === id2
-            );
-
-          console.log('lista', simpatizantesFiltrados);
-            simpatizantesFiltrados.forEach((simpatizante) => {
-              this.setInfoWindow(
-                this.getMarker(simpatizante),
-                this.getContentString(simpatizante)
+            simpatizantesCombinados.push(result);
+          }
+          this.simpatizantesService.getAll2().subscribe({
+            next: (dataFromAPI) => {
+              const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
+                (simpatiza) => simpatiza
               );
-            });
+              const simpatizantesCombinados2 = [
+                ...simpatizantesCombinados,
+                ...simpatizantesMapeadosf,
+              ];
 
-            this.setAllMarkers(simpatizantesFiltrados);
+              this.clearMarkers();
+              const simpatizantesFiltrados = simpatizantesCombinados2.filter(
+                (v) => v.simpatizante.seccion.id === id2
+              );
+
+              simpatizantesFiltrados.forEach((simpatizante) => {
+                this.setInfoWindow(
+                  this.getMarker(simpatizante),
+                  this.getContentString(simpatizante)
+                );
+              });
+              console.log(simpatizantesFiltrados,'fjid');
+
+              this.setAllMarkers(simpatizantesFiltrados);
+            },
+          });
+        },
+      });
+      this.mapaForm.controls['candidatoId'].setValue('');
+    }
+
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
+
+    if (isAdmin2) {
+      const id = this.dataObject && this.dataObject.operadorId;
+
+      if (id) {
+        this.simpatizantesService.getSimpatizantesPorOperadorId(id).subscribe({
+          next: (dataFromAPI2) => {
+            const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
+              (simpatizante) => ({
+                ...simpatizante,
+              })
+            );
+
+            for (const simpatizante of simpatizantesMapeados) {
+              const result = {
+                simpatizante,
+                simpatiza: null,
+                color: null,
+              };
+
+              simpatizantesCombinados.push(result);
+            }
+            this.simpatizantesService
+              .getSimpatizantesSimapatizaPorOperadorId(id)
+              .subscribe({
+                next: (dataFromAPI) => {
+                  const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
+                    (simpatiza) => simpatiza
+                  );
+                  const simpatizantesCombinados2 = [
+                    ...simpatizantesCombinados,
+                    ...simpatizantesMapeadosf,
+                  ];
+
+                  this.clearMarkers();
+
+                  const simpatizantesFiltrados =
+                    simpatizantesCombinados2.filter(
+                      (v) => v.simpatizante.seccion.id === id2
+                    );
+
+                  simpatizantesFiltrados.forEach((simpatizante) => {
+                    this.setInfoWindow(
+                      this.getMarker(simpatizante),
+                      this.getContentString(simpatizante)
+                    );
+                  });
+                  this.setAllMarkers(simpatizantesFiltrados);
+                },
+              });
           },
         });
-      },
-    });
-  }
-
-  const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
-
-  if (isAdmin2) {
-    console.log('ADMIN2',isAdmin2);
-    const id = this.dataObject && this.dataObject.operadorId;
-    console.log('sduhauhjdsa',id)
-    console.log(id);
-    if (id) {
-      this.simpatizantesService.getSimpatizantesPorOperadorId(id).subscribe({
-        next: (dataFromAPI2) => {
-          const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
-            (simpatizante) => ({
-              ...simpatizante,
-            })
-          );
-  
-          for (const simpatizante of simpatizantesMapeados) {
-            const result = {
-              simpatizante,
-              simpatiza: null,
-              color: null,
-            };
-  
-            simpatizantesCombinados.push(result);
-          }
-          this.simpatizantesService.getSimpatizantesSimapatizaPorOperadorId(id).subscribe({
-            next: (dataFromAPI) => {
-              const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
-                (simpatiza) => simpatiza
-              );
-              const simpatizantesCombinados2 = [
-                ...simpatizantesCombinados,
-                ...simpatizantesMapeadosf,
-              ];
-  
-              this.clearMarkers();
-              
-              
-              const simpatizantesFiltrados = simpatizantesCombinados2.filter(
-                (v) => v.simpatizante.seccion.id === id2
-              );
-              console.log('lista', simpatizantesFiltrados);
-            
-              simpatizantesFiltrados.forEach((simpatizante) => {
-                this.setInfoWindow(
-                  this.getMarker(simpatizante),
-                  this.getContentString(simpatizante)
-                );
-              });
-              this.setAllMarkers(simpatizantesFiltrados);
-            },
-          });
-        },
-      });
+      }
     }
-  }
 
-  const isCandidato = this.dataObject && this.dataObject.rolId === 3;
+    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
 
-  if (isCandidato) {
-    console.log('ADMIN3',isCandidato);
-    const id = this.dataObject && this.dataObject.candidatoId;
-    console.log('sduhauhjdsa',id)
-    console.log(id);
-    if (id) {
-      this.simpatizantesService.getSimpatizantesPorCandidatoId(id).subscribe({
-        next: (dataFromAPI2) => {
-          const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
-            (simpatizante) => ({
-              ...simpatizante,
-            })
-          );
-  
-          for (const simpatizante of simpatizantesMapeados) {
-            const result = {
-              simpatizante,
-              simpatiza: null,
-              color: null,
-            };
-  
-            simpatizantesCombinados.push(result);
-          }
-          this.simpatizantesService.getSimpatizantessimpatizaPorCandidatoId(id).subscribe({
-            next: (dataFromAPI) => {
-              const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
-                (simpatiza) => simpatiza
-              );
-              const simpatizantesCombinados2 = [
-                ...simpatizantesCombinados,
-                ...simpatizantesMapeadosf,
-              ];
-              this.clearMarkers();
-              const simpatizantesFiltrados = simpatizantesCombinados2.filter(
-                (v) => v.simpatizante.seccion.id === id2
-              );
-              console.log('lista', simpatizantesFiltrados);
-            
-              simpatizantesFiltrados.forEach((simpatizante) => {
-                this.setInfoWindow(
-                  this.getMarker(simpatizante),
-                  this.getContentString(simpatizante)
-                );
+    if (isCandidato) {
+      const id = this.dataObject && this.dataObject.candidatoId;
+
+      if (id) {
+        this.simpatizantesService.getSimpatizantesPorCandidatoId(id).subscribe({
+          next: (dataFromAPI2) => {
+            const simpatizantesMapeados: Simpatizante[] = dataFromAPI2.map(
+              (simpatizante) => ({
+                ...simpatizante,
+              })
+            );
+
+            for (const simpatizante of simpatizantesMapeados) {
+              const result = {
+                simpatizante,
+                simpatiza: null,
+                color: null,
+              };
+
+              simpatizantesCombinados.push(result);
+            }
+            this.simpatizantesService
+              .getSimpatizantessimpatizaPorCandidatoId(id)
+              .subscribe({
+                next: (dataFromAPI) => {
+                  const simpatizantesMapeadosf: Simpatiza[] = dataFromAPI.map(
+                    (simpatiza) => simpatiza
+                  );
+                  const simpatizantesCombinados2 = [
+                    ...simpatizantesCombinados,
+                    ...simpatizantesMapeadosf,
+                  ];
+                  this.clearMarkers();
+                  const simpatizantesFiltrados =
+                    simpatizantesCombinados2.filter(
+                      (v) => v.simpatizante.seccion.id === id2
+                    );
+console.log(simpatizantesFiltrados);
+                  simpatizantesFiltrados.forEach((simpatizante) => {
+                    this.setInfoWindow(
+                      this.getMarker(simpatizante),
+                      this.getContentString(simpatizante)
+                    );
+                  });
+                  this.setAllMarkers(simpatizantesFiltrados);
+                },
               });
-              this.setAllMarkers(simpatizantesFiltrados);
-            },
-          });
-        },
-      });
+          },
+        });
+      }
     }
-}
+    console.log(id2)
+      if(id2===null){
+        this.getSimpatizantes();
+        this.getSimpatizantes();
+      }
   }
   setAllMarkers(simpatizantesCombinados: Simpatiza[]): void {
     simpatizantesCombinados.forEach((simpatizante) => {
@@ -588,10 +611,12 @@ console.log('ADMIN',isAdmin);
       },
     });
   }
-
+ 
   onClear() {
+    this.simpatizantesFiltrados;
     this.getSimpatizantes();
-    this.getSimpatizantes();
+
+    
   }
 
   filterCandidatos(id: number): void {
@@ -633,7 +658,6 @@ console.log('ADMIN',isAdmin);
               (v) => v.simpatizante.operador.candidato.id === id
             );
 
-          console.log('lista', simpatizantesFiltrados);
             simpatizantesFiltrados.forEach((simpatizante) => {
               this.setInfoWindow(
                 this.getMarker(simpatizante),
@@ -642,11 +666,15 @@ console.log('ADMIN',isAdmin);
             });
 
             this.setAllMarkers(simpatizantesFiltrados);
+            this.mapaForm.controls['promovidos'].setValue('');
           },
         });
       },
     });
-  
-
-}
+    console.log(id)
+    if(id===null){
+      this.getSimpatizantes();
+      this.getSimpatizantes();
+    }
+  }
 }

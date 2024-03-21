@@ -86,7 +86,11 @@ export class OperadoresComponent implements OnInit {
     this.getCandidatos();
     this.getOperadores();
     this.getSeccionesRegistradas();
-
+    this.dataObject = this.securityService.getDataUser();
+    console.log(this.dataObject);
+    this.isLoading = LoadingStates.trueLoading;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
 

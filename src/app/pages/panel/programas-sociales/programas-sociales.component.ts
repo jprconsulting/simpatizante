@@ -12,10 +12,9 @@ import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-programas-sociales',
   templateUrl: './programas-sociales.component.html',
-  styleUrls: ['./programas-sociales.component.css']
+  styleUrls: ['./programas-sociales.component.css'],
 })
 export class ProgramasSocialesComponent {
-
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
 
@@ -33,47 +32,54 @@ export class ProgramasSocialesComponent {
   defaultColor = '#206bc4';
   id!: number;
   estatusBtn = true;
-  verdadero = "Activo";
-  falso = "Inactivo";
+  verdadero = 'Activo';
+  falso = 'Inactivo';
   estatusTag = this.verdadero;
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private spinnerService: NgxSpinnerService,
     private programasSocialesService: ProgramasSocialesService,
     private mensajeService: MensajeService,
-    private formBuilder: FormBuilder,
+    private formBuilder: FormBuilder
   ) {
-    this.programasSocialesService.refreshListProgramasSociales.subscribe(() => this.getProgramasSociales());
+    this.programasSocialesService.refreshListProgramasSociales.subscribe(() =>
+      this.getProgramasSociales()
+    );
     this.getProgramasSociales();
     this.creteForm();
   }
 
-
   creteForm() {
     this.programaSocialForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', [Validators.required,Validators.maxLength(40), Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      nombre: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(40),
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      estatus: [true],
     });
   }
 
-
-
   getProgramasSociales() {
     this.isLoading = LoadingStates.trueLoading;
-    this.programasSocialesService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.programasSociales = dataFromAPI;
-          this.programasSocialesFilter = this.programasSociales;
-          this.isLoading = LoadingStates.falseLoading;
-        },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading
-        }
-      }
-    );
+    this.programasSocialesService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.programasSociales = dataFromAPI;
+        this.programasSocialesFilter = this.programasSociales;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: () => {
+        this.isLoading = LoadingStates.errorLoading;
+      },
+    });
   }
-
 
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
@@ -81,13 +87,13 @@ export class ProgramasSocialesComponent {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
-    this.programasSocialesFilter = this.programasSociales.filter(programa =>
-      programa.nombre.toLowerCase().includes(valueSearch) ||
-      programa.id.toString().includes(valueSearch)
+    this.programasSocialesFilter = this.programasSociales.filter(
+      (programa) =>
+        programa.nombre.toLowerCase().includes(valueSearch) ||
+        programa.id.toString().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
-
 
   actualizar() {
     const programaSocialData = { ...this.programaSocialForm.value };
@@ -96,17 +102,18 @@ export class ProgramasSocialesComponent {
     this.programasSocialesService.put(this.id, this.programaSocial).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito("Programa social actualizado con éxito");
+        this.mensajeService.mensajeExito(
+          'Programa social actualizado con éxito'
+        );
         this.resetForm();
         this.configPaginator.currentPage = 1;
       },
       error: (error) => {
-        this.mensajeService.mensajeError("Error al actualizar programa social");
+        this.mensajeService.mensajeError('Error al actualizar programa social');
         console.error(error);
-      }
+      },
     });
   }
-
 
   setDataModalUpdate(dto: ProgramaSocial) {
     this.isModalAdd = false;
@@ -114,10 +121,10 @@ export class ProgramasSocialesComponent {
     this.programaSocialForm.patchValue({
       id: dto.id,
       nombre: dto.nombre,
+      estatus: dto.estatus,
     });
     this.formData = this.programaSocialForm.value;
-    console.log(dto)
-
+    console.log(dto);
   }
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
@@ -125,16 +132,17 @@ export class ProgramasSocialesComponent {
       () => {
         this.programasSocialesService.delete(id).subscribe({
           next: () => {
-            this.mensajeService.mensajeExito('Programa social borrado correctamente');
+            this.mensajeService.mensajeExito(
+              'Programa social borrado correctamente'
+            );
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
-          error: (error) => this.mensajeService.mensajeError(error)
+          error: (error) => this.mensajeService.mensajeError(error),
         });
       }
     );
   }
-
 
   resetForm() {
     this.closebutton.nativeElement.click();
@@ -142,14 +150,11 @@ export class ProgramasSocialesComponent {
   }
   submit() {
     if (this.isModalAdd === false) {
-
       this.actualizar();
     } else {
       this.agregar();
-
     }
   }
-
 
   agregar() {
     const programaSocialData = { ...this.programaSocialForm.value };
@@ -159,14 +164,16 @@ export class ProgramasSocialesComponent {
     this.programasSocialesService.post(this.programaSocial).subscribe({
       next: () => {
         this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Programa social guardado correctamente');
+        this.mensajeService.mensajeExito(
+          'Programa social guardado correctamente'
+        );
         this.resetForm();
         this.configPaginator.currentPage = 1;
       },
       error: (error) => {
         this.spinnerService.hide();
         this.mensajeService.mensajeError(error);
-      }
+      },
     });
   }
 
@@ -181,7 +188,6 @@ export class ProgramasSocialesComponent {
     }
   }
 
-
   setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
@@ -191,23 +197,33 @@ export class ProgramasSocialesComponent {
       return;
     }
 
-    const datosParaExportar = this.programasSociales.map(programasSociales => {
+    const datosParaExportar = this.programasSociales.map(
+      (programasSociales) => {
+        return {
+          Id: programasSociales.id,
+          Nombre: programasSociales.nombre,
+        };
+      }
+    );
 
-      return {
-        'Id': programasSociales.id,
-        'Nombre': programasSociales.nombre,
-      };
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
     });
-
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
     this.guardarArchivoExcel(excelBuffer, 'Programas sociales.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const url: string = window.URL.createObjectURL(data);
     const a: HTMLAnchorElement = document.createElement('a');
     a.href = url;
@@ -228,16 +244,12 @@ export class ProgramasSocialesComponent {
   beneficiarioFiltrado: any[] = [];
 
   filtrarBeneficiario(): any {
-    return this.programasSociales.filter(programasSociales =>
-      programasSociales.nombre.toLowerCase().includes(this.buscar.toLowerCase(),)
+    return this.programasSociales.filter((programasSociales) =>
+      programasSociales.nombre.toLowerCase().includes(this.buscar.toLowerCase())
     );
-
   }
   actualizarFiltro(event: any): void {
     this.buscar = event.target.value;
     this.beneficiarioFiltrado = this.filtrarBeneficiario();
   }
-
-
 }
-
