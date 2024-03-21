@@ -35,7 +35,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
   currentUser!: AppUserAuth | null;
   mapaForm!: FormGroup;
   candidatoId = 0;
-
+  visibility = true;
   constructor(
     private simpatizantesService: SimpatizantesService,
     private seccionService: SeccionService,
@@ -54,6 +54,10 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
     }
+    if (this.currentUser?.rolId === RolesBD.operador) {
+      this.ocultar();
+      
+    }
 
     this.readonlySelectCandidato =
       this.currentUser?.rolId !== RolesBD.administrador;
@@ -64,6 +68,10 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       promovidos: [],
     });
   }
+ocultar(){
+  this.visibility = false;
+}
+
   getCandidatos() {
     this.candidatosService
       .getAll()
@@ -581,6 +589,7 @@ console.log(simpatizantesFiltrados);
     }
     console.log(id2)
       if(id2===null){
+        this.getSimpatizantes();
         this.getSimpatizantes();
       }
   }
