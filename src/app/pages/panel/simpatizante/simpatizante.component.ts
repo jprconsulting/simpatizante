@@ -32,6 +32,8 @@ import { Genero } from 'src/app/models/genero';
 import { PromotoresService } from 'src/app/core/services/promotores.service';
 import { Promotor } from 'src/app/models/promotor';
 import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
+import { Candidato } from 'src/app/models/candidato';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
 
 @Component({
   selector: 'app-beneficiarios',
@@ -77,6 +79,8 @@ export class SimpatizanteComponent implements OnInit {
   visibility = false;
   estatusTag = this.verdadero;
   formData: any;
+  candidatos: Candidato[] = [];
+  readonlySelectCandidato = true;
   dataObject!: AppUserAuth | null;
   id!: number;
   mensajeExisteCURP: string | null = null;
@@ -109,7 +113,8 @@ export class SimpatizanteComponent implements OnInit {
     private programasSociales: ProgramasSocialesService,
     private operadoresService: OperadoresService,
     private simpatizantesService: SimpatizantesService,
-    private securityService: SecurityService
+    private securityService: SecurityService,
+    private candidatosService: CandidatosService
   ) {
     this.simpatizantesService.refreshListSimpatizantes.subscribe(() =>
       this.getVotantes()
@@ -125,6 +130,7 @@ export class SimpatizanteComponent implements OnInit {
     this.getGenero();
     this.getPromotores();
     this.getPromotoresSelect();
+    this.getCandidatos();
 
     if (this.currentUser?.rolId === RolesBD.operador) {
       this.operadorId = this.currentUser?.operadorId;
@@ -167,18 +173,19 @@ export class SimpatizanteComponent implements OnInit {
   sinPrimovidosMessage = '';
   onSelectOperador(id: number | null) {
     this.votantesSelect = this.votantes.find((v) => v.operador.id === id);
-  
+
     if (this.votantesSelect) {
-      const valueSearch2 = this.votantesSelect.operador.nombreCompleto.toLowerCase();
+      const valueSearch2 =
+        this.votantesSelect.operador.nombreCompleto.toLowerCase();
       console.log('Search Value:', valueSearch2);
-  
+
       // Filtrar los votantes
       this.votantesFilter = this.votantes.filter((votante) =>
         votante.operador.nombreCompleto.toLowerCase().includes(valueSearch2)
       );
       this.sinPrimovidosMessage = '';
       console.log('Filtered Votantes:', this.votantesFilter);
-  
+
       // Verificar si votantesFilter es null o vacío
       if (!this.votantesFilter || this.votantesFilter.length === 0) {
         this.votantesFilter = [];
@@ -190,7 +197,37 @@ export class SimpatizanteComponent implements OnInit {
       this.votantesFilter = [];
     }
   }
-  
+  onSelectCandidato(id: number | null) {
+    this.votantesSelect = this.votantes.find(
+      (v) => v.operador.candidato.id === id
+    );
+
+    if (this.votantesSelect) {
+      const valueSearch2 =
+        this.votantesSelect.operador.candidato.nombreCompleto.toLowerCase();
+      console.log('Search Value:', valueSearch2);
+
+      // Filtrar los votantes
+      this.votantesFilter = this.votantes.filter((votante) =>
+        votante.operador.candidato.nombreCompleto
+          .toLowerCase()
+          .includes(valueSearch2)
+      );
+      this.sinPrimovidosMessage = '';
+      console.log('Filtered Votantes:', this.votantesFilter);
+
+      // Verificar si votantesFilter es null o vacío
+      if (!this.votantesFilter || this.votantesFilter.length === 0) {
+        this.votantesFilter = [];
+      }
+      this.configPaginator.currentPage = 1;
+    } else {
+      this.sinPrimovidosMessage = 'No se encontraron promovidos.';
+      // Si no se encuentra el votante seleccionado, establecer votantesFilter como un array vacío
+      this.votantesFilter = [];
+    }
+  }
+
   resetMap() {
     this.ubicacionInput.nativeElement.value = '';
     this.setCurrentLocation();
@@ -673,9 +710,9 @@ export class SimpatizanteComponent implements OnInit {
           this.votantesFilter = this.votantes;
           this.isLoading = LoadingStates.falseLoading;
         },
-        error: ( err ) => {
+        error: (err) => {
           this.isLoading = LoadingStates.errorLoading;
-          if ( err.status === 401 ){
+          if (err.status === 401) {
             this.mensajeService.mensajeSesionExpirada();
           }
         },
@@ -725,7 +762,11 @@ export class SimpatizanteComponent implements OnInit {
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
   }
-
+  getCandidatos() {
+    this.candidatosService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.candidatos = dataFromAPI) });
+  }
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
