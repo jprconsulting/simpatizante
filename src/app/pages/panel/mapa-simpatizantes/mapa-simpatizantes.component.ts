@@ -56,7 +56,6 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     }
     if (this.currentUser?.rolId === RolesBD.operador) {
       this.ocultar();
-      
     }
 
     this.readonlySelectCandidato =
@@ -68,9 +67,9 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       promovidos: [],
     });
   }
-ocultar(){
-  this.visibility = false;
-}
+  ocultar() {
+    this.visibility = false;
+  }
 
   getCandidatos() {
     this.candidatosService
@@ -256,7 +255,6 @@ ocultar(){
     this.map = new google.maps.Map(mapElement, mapOptions);
   }
   getSimpatizantes() {
-
     this.dataObject = this.securityService.getDataUser();
     this.isLoading = LoadingStates.trueLoading;
     const isAdmin = this.dataObject && this.dataObject.rolId === 1;
@@ -264,9 +262,8 @@ ocultar(){
     if (isAdmin) {
       this.simpatizantesService.getAll2().subscribe({
         next: (dataFromAPI) => {
-          this.simpatizantesFiltrados = this.simpatizantes
+          this.simpatizantesFiltrados = this.simpatizantes;
           this.combineResults(dataFromAPI);
-          
         },
       });
     }
@@ -296,7 +293,6 @@ ocultar(){
             next: (dataFromAPI) => {
               this.combineResults(dataFromAPI);
               this.simpatizantesFiltrados = this.simpatizantes;
-              
             },
           });
       }
@@ -337,8 +333,8 @@ ocultar(){
             ...simpatizantesCombinados,
             ...simpatizantesMapeadosf,
           ];
-         
-          console.log(simpatizantesCombinados2,'uhidea')
+
+          console.log(simpatizantesCombinados2, 'uhidea');
           this.setAllMarkers(simpatizantesCombinados2);
         },
       });
@@ -378,7 +374,6 @@ ocultar(){
           },
         });
       }
-      
     }
     const isCandidato = this.dataObject && this.dataObject.rolId === 3;
 
@@ -410,7 +405,6 @@ ocultar(){
               ...simpatizantesCombinados,
               ...simpatizantesMapeadosf,
             ];
-         
 
             this.setAllMarkers(simpatizantesCombinados2);
           },
@@ -468,7 +462,7 @@ ocultar(){
                   this.getContentString(simpatizante)
                 );
               });
-              console.log(simpatizantesFiltrados,'fjid');
+              console.log(simpatizantesFiltrados, 'fjid');
 
               this.setAllMarkers(simpatizantesFiltrados);
             },
@@ -573,7 +567,7 @@ ocultar(){
                     simpatizantesCombinados2.filter(
                       (v) => v.simpatizante.seccion.id === id2
                     );
-console.log(simpatizantesFiltrados);
+                  console.log(simpatizantesFiltrados);
                   simpatizantesFiltrados.forEach((simpatizante) => {
                     this.setInfoWindow(
                       this.getMarker(simpatizante),
@@ -587,11 +581,11 @@ console.log(simpatizantesFiltrados);
         });
       }
     }
-    console.log(id2)
-      if(id2===null){
-        this.getSimpatizantes();
-        this.getSimpatizantes();
-      }
+    console.log(id2);
+    if (id2 === null) {
+      this.getSimpatizantes();
+      this.getSimpatizantes();
+    }
   }
   setAllMarkers(simpatizantesCombinados: Simpatiza[]): void {
     simpatizantesCombinados.forEach((simpatizante) => {
@@ -611,12 +605,10 @@ console.log(simpatizantesFiltrados);
       },
     });
   }
- 
+
   onClear() {
     this.simpatizantesFiltrados;
     this.getSimpatizantes();
-
-    
   }
 
   filterCandidatos(id: number): void {
@@ -671,8 +663,8 @@ console.log(simpatizantesFiltrados);
         });
       },
     });
-    console.log(id)
-    if(id===null){
+    console.log(id);
+    if (id === null) {
       this.getSimpatizantes();
       this.getSimpatizantes();
     }

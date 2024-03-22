@@ -1,8 +1,11 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
+import { PaginationInstance } from 'ngx-pagination';
 import { IncidenciaService } from 'src/app/core/services/incidencias.service';
 import { IndicadoresService } from 'src/app/core/services/indicadores.service';
+import { LoadingStates } from 'src/app/global/global';
 import { Incidencia } from 'src/app/models/incidencias';
 import { Indicadores } from 'src/app/models/indicadores';
+import * as XLSX from 'xlsx';
 declare const google: any;
 
 @Component({
@@ -17,14 +20,24 @@ export class MapaIncidenciasComponent implements AfterViewInit {
   indicadores: Indicadores[] = [];
   incidencias: Incidencia[] = [];
   incidenciasFiltradas: Incidencia[] = [];
+  isLoadingModaltipo = LoadingStates.neutro;
+  sinIncidencias: boolean = true;
+  isLoadingModalIncidencias = LoadingStates.neutro;
+  pagModalPromovidos: number = 1;
+  initialValueModalSearchSecciones: string = '';
+  initialValueModalSearchPromovidos: string = '';
 
   constructor(
+    @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private indicadorService: IndicadoresService,
     private incidenciasService: IncidenciaService
   ) {
     this.loadIndicadores();
     this.getIndicadores();
     this.getIncidencias();
+  }
+  onPageChange(number: number) {
+    this.configPaginator.currentPage = number;
   }
 
   ngAfterViewInit() {
@@ -109,6 +122,46 @@ export class MapaIncidenciasComponent implements AfterViewInit {
         this.incidencias = dataFromAPI;
         this.incidenciasFiltradas = this.incidencias;
         this.setAllMarkers();
+      },
+    });
+  }
+  getType(id: number) {
+    this.pagModalPromovidos = 1;
+    this.getTyte(id);
+    const modal = document.getElementById('modal-simpatizantes');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+
+  clearInputModalSearch() {
+    this.initialValueModalSearchSecciones = '';
+    this.initialValueModalSearchPromovidos = '';
+  }
+  cerrarModal2() {
+    this.clearInputModalSearch();
+    const modal = document.getElementById('modal-simpatizantes');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+    }
+  }
+  getTyte(Id: number) {
+    this.isLoadingModalIncidencias = LoadingStates.trueLoading;
+
+    this.incidenciasService.getTyte(Id).subscribe({
+      next: (dataFromAPI) => {
+        this.sinIncidencias = false;
+        this.incidencias = dataFromAPI;
+        this.incidenciasFiltradas = this.incidencias;
+        this.isLoadingModalIncidencias = LoadingStates.falseLoading;
+        console.log('dfs', this.incidencias);
+        console.log('dfeees', this.incidenciasFiltradas);
+      },
+      error: () => {
+        this.sinIncidencias = true;
+        this.isLoadingModalIncidencias = LoadingStates.errorLoading;
       },
     });
   }
@@ -213,5 +266,56 @@ export class MapaIncidenciasComponent implements AfterViewInit {
       marker.setMap(null);
     });
     this.markers = [];
+  }
+  exportarDatosAExcel() {
+    if (this.incidencias.length === 0) {
+      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      return;
+    }
+
+    const datosParaExportar = this.incidencias.map((incidencias) => {
+      return {
+        Retroalimentación: incidencias.retroalimentacion,
+        Casilla: incidencias.casilla.nombre,
+        'Tipo de incidencia': incidencias.tipoIncidencia.tipo,
+        Dirección: incidencias.direccion,
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    this.guardarArchivoExcel(excelBuffer, 'incidencias.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+  handleChangeSearch(event: any) {
+    const inputValue = event.target.value;
+    this.incidenciasFiltradas = this.incidencias.filter(
+      (incidencia) =>
+        incidencia.casilla.nombre
+          .toLocaleLowerCase()
+          .includes(inputValue.toLowerCase()) ||
+        incidencia.direccion.toLowerCase().includes(inputValue)
+    );
+    this.configPaginator.currentPage = 1;
   }
 }

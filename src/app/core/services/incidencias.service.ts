@@ -25,6 +25,9 @@ export class IncidenciaService {
   getById(id: number) {
     return this.http.get<Incidencia>(`${this.route}/obtener-por-id/${id}`);
   }
+  getTyte(id: number) {
+    return this.http.get<Incidencia[]>(`${this.route}/obtener-incidencias-por-tipo-id/${id}`);
+  }
 
   getAll() {
     return this.http.get<Incidencia[]>(`${this.route}/obtener-todos`);
