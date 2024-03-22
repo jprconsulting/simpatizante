@@ -1,4 +1,5 @@
 import { Municipio } from "./municipio";
+import { Candidato } from "./candidato";
 
 export interface Propaganda {
     id: number;
@@ -11,5 +12,5 @@ export interface Propaganda {
     imagenBase64: string;
     ubicacion: string;
     foto: string;
+    candidato: Candidato;
   }
-  

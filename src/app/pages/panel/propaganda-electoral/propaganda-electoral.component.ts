@@ -5,8 +5,10 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { PropagandaService } from 'src/app/core/services/programa-electoral.service';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { LoadingStates } from 'src/app/global/global';
 import { Municipio } from 'src/app/models/municipio';
+import { Candidato } from 'src/app/models/candidato';
 import { Propaganda } from 'src/app/models/propaganda-electoral';
 import * as XLSX from 'xlsx';
 
@@ -29,8 +31,9 @@ export class PropagandaElectoralComponent {
   private marker: any;
   maps!: google.maps.Map;
   municipios: Municipio[] = [];
-  Propagandas: Propaganda [] = [];
-  PropagandasFilter: Propaganda [] = [];
+  Propagandas: Propaganda[] = [];
+  candidatos: Candidato[] = [];
+  PropagandasFilter: Propaganda[] = [];
   imagenAmpliada: string | null = null;
   isLoading = LoadingStates.neutro;
   id!: number;
@@ -38,7 +41,6 @@ export class PropagandaElectoralComponent {
   propagandas!: Propaganda;
   public isUpdatingImg: boolean = false;
   public imgPreview: string = '';
-  
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -46,15 +48,16 @@ export class PropagandaElectoralComponent {
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private municipiosService: MunicipiosService,
-    private propagandaService: PropagandaService,
+    private candidatosService: CandidatosService,
+    private propagandaService: PropagandaService
   ) {
     this.propagandaService.refreshListpropagandas.subscribe(() =>
-    this.getPropagandas()
-  );
+      this.getPropagandas()
+    );
     this.creteForm();
     this.getMunicipios();
     this.getPropagandas();
-
+    this.getCandidatos();
   }
   getPropagandas() {
     this.isLoading = LoadingStates.trueLoading;
@@ -77,19 +80,35 @@ export class PropagandaElectoralComponent {
       id: [null],
       municipio: ['', Validators.required],
       folio: ['', [Validators.required, Validators.maxLength(10)]],
-      dimensiones: ['', [Validators.required, Validators.maxLength(30),Validators.minLength(3),]],
+      dimensiones: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(30),
+          Validators.minLength(3),
+        ],
+      ],
       comentarios: [''],
       imagenBase64: [''],
       latitud: [],
       longitud: [],
       ubicacion: ['', Validators.required],
+      candidato: ['', Validators.required],
     });
   }
+
   getMunicipios() {
     this.municipiosService
       .getAll()
       .subscribe({ next: (dataFromAPI) => (this.municipios = dataFromAPI) });
   }
+
+  getCandidatos() {
+    this.candidatosService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.candidatos = dataFromAPI) });
+  }
+
   submit() {
     if (this.isModalAdd === false) {
       this.editar();
@@ -102,12 +121,13 @@ export class PropagandaElectoralComponent {
 
     const tipo = this.propagandaForm.get('municipio')?.value;
     this.propagandas.municipio = { id: tipo } as Municipio;
+    const candidato = this.propagandaForm.get('candidato')?.value;
+    this.propagandas.candidato = { id: candidato } as Candidato;
     const imagenBase64 = this.propagandaForm.get('imagenBase64')?.value;
 
     this.imgPreview = '';
 
     if (!imagenBase64) {
-      
       const formData = { ...this.propagandas };
       this.spinnerService.show();
       this.propagandaService.put(this.id, formData).subscribe({
@@ -144,17 +164,17 @@ export class PropagandaElectoralComponent {
           this.mensajeService.mensajeError(error);
         },
       });
-    } 
+    }
   }
   agregar() {
     this.propagandas = this.propagandaForm.value as Propaganda;
     const tipo = this.propagandaForm.get('municipio')?.value;
     this.propagandas.municipio = { id: tipo } as Municipio;
+    const candidato = this.propagandaForm.get('candidato')?.value;
+    this.propagandas.candidato = { id: candidato } as Candidato;
+
     this.spinnerService.show();
 
-      
-     
-    
     console.log('data:', this.propagandas);
     const imagenBase64 = this.propagandaForm.get('imagenBase64')?.value;
 
@@ -186,15 +206,14 @@ export class PropagandaElectoralComponent {
     this.isModalAdd = false;
     this.id = dto.id;
 
-    const propaganda = this.PropagandasFilter.find(
-      (p) => p.id === dto.id
-    );
+    const propaganda = this.PropagandasFilter.find((p) => p.id === dto.id);
 
     this.imgPreview = propaganda!.foto;
     this.isUpdatingImg = true;
 
     this.propagandaForm.patchValue({
       id: dto.id,
+      candidato: dto.candidato.id,
       municipio: dto.municipio.id,
       folio: dto.folio,
       dimensiones: dto.dimensiones,
@@ -515,13 +534,12 @@ export class PropagandaElectoralComponent {
     }
 
     const datosParaExportar = this.Propagandas.map((p) => {
-
       return {
-        'Folio': p.folio,
-        'Municipio': p.municipio.nombre,
-        'Dimensiones': p.dimensiones,
-        'Comentarios': p.comentarios,
-        'ubicacion': p.ubicacion
+        Folio: p.folio,
+        Municipio: p.municipio.nombre,
+        Dimensiones: p.dimensiones,
+        Comentarios: p.comentarios,
+        ubicacion: p.ubicacion,
       };
     });
 
