@@ -3,6 +3,9 @@ import { IncidenciaService } from 'src/app/core/services/incidencias.service';
 import { PropagandaService } from 'src/app/core/services/programa-electoral.service';
 import { Propaganda } from 'src/app/models/propaganda-electoral';
 import { Indicadores } from 'src/app/models/indicadores';
+import { Candidato } from 'src/app/models/candidato';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
+
 declare const google: any;
 
 @Component({
@@ -16,9 +19,20 @@ export class MapaPropagandaComponent implements AfterViewInit {
   markers: google.maps.Marker[] = [];
   propagandas: Propaganda[] = [];
   propagandasFiltradas: Propaganda[] = [];
+  candidatos: Candidato[] = [];
 
-  constructor(private propagandasService: PropagandaService) {
+  constructor(
+    private candidatosService: CandidatosService,
+    private propagandasService: PropagandaService
+  ) {
     this.getPropagandas();
+    this.getCandidatos();
+  }
+
+  getCandidatos() {
+    this.candidatosService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.candidatos = dataFromAPI) });
   }
 
   ngAfterViewInit() {
@@ -114,6 +128,10 @@ export class MapaPropagandaComponent implements AfterViewInit {
       <span class="text-muted">${propagandas.folio}</span>
     </p>
     <p style="font-weight: bold;">
+      Candidato:
+      <span class="text-muted">${propagandas.candidato.nombreCompleto}</span>
+    </p>
+    <p style="font-weight: bold;">
       Comentarios:
       <span class="text-muted">${propagandas.comentarios}</span>
     </p>
@@ -167,6 +185,20 @@ export class MapaPropagandaComponent implements AfterViewInit {
 
   onClear() {
     this.setAllMarkers();
+  }
+
+  onSelectCandidato(id: number) {
+    if (id) {
+      this.clearMarkers();
+      this.propagandas
+        .filter((b) => b.candidato.id == id)
+        .forEach((candidato) => {
+          this.setInfoWindow(
+            this.getMarker(candidato),
+            this.getContentString(candidato)
+          );
+        });
+    }
   }
 
   clearMarkers() {
