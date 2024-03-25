@@ -65,6 +65,8 @@ export class OperadoresComponent implements OnInit {
   initialValueModalSearchSecciones: string = '';
   initialValueModalSearchPromovidos: string = '';
   dataObject!: AppUserAuth | null;
+  operadorSelect!: Operador | undefined;
+  sindataMessage = '';
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -90,10 +92,9 @@ export class OperadoresComponent implements OnInit {
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
     const isAdmin = this.dataObject && this.dataObject.rolId === 1;
-    
+
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
-
     }
 
     this.readonlySelectCandidato =
@@ -233,7 +234,7 @@ export class OperadoresComponent implements OnInit {
         },
         error: (err) => {
           this.isLoading = LoadingStates.errorLoading;
-          if ( err.status === 401 ){
+          if (err.status === 401) {
             this.mensajeService.mensajeSesionExpirada();
           }
         },
@@ -284,7 +285,8 @@ export class OperadoresComponent implements OnInit {
         operador.apellidoPaterno.toLowerCase().includes(valueSearch) ||
         operador.fechaNacimiento.toString().includes(valueSearch) ||
         operador.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-        operador.edad.toString().includes(valueSearch)
+        operador.edad.toString().includes(valueSearch) ||
+        operador.candidato.nombreCompleto.toString().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
@@ -605,5 +607,37 @@ export class OperadoresComponent implements OnInit {
         seccionesIdsControl.setValue(todasLasOpciones);
       }
     }
+  }
+  onSelectCandidato(id: number | null) {
+    this.operadorSelect = this.operadores.find((o) => o.candidato.id === id);
+
+    if (this.operadorSelect) {
+      const valueSearch2 =
+        this.operadorSelect.candidato.nombreCompleto.toLowerCase();
+      console.log('Search Value:', valueSearch2);
+
+      // Filtrar los votantes
+      this.operadorFilter = this.operadores.filter((o) =>
+        o.candidato.nombreCompleto.toLowerCase().includes(valueSearch2)
+      );
+      this.sindataMessage = '';
+      console.log('Filtered Votantes:', this.operadorFilter);
+
+      // Verificar si votantesFilter es null o vacío
+      if (!this.operadorFilter || this.operadorFilter.length === 0) {
+        this.operadorFilter = [];
+      }
+      this.configPaginator.currentPage = 1;
+    } else {
+      this.sindataMessage = 'No se encontraron operadores.';
+      // Si no se encuentra el votante seleccionado, establecer votantesFilter como un array vacío
+      this.operadorFilter = [];
+    }
+  }
+  onClear() {
+    if (this.votantes) {
+      this.getOperadores();
+    }
+    this.sindataMessage = '';
   }
 }

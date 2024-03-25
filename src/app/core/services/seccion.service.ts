@@ -17,4 +17,7 @@ export class SeccionService {
   getById(id: number) {
     return this.http.get<Seccion>(`${this.route}/obtener-por-id/${id}`);
   }
+  getMunicipioId(id: number) {
+    return this.http.get<Seccion[]>(`${this.route}/por-municipio/${id}`);
+  }
 }

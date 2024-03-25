@@ -436,6 +436,10 @@ export class CandidatosComponent implements OnInit {
       apellidoPaterno: dto.apellidoPaterno,
       apellidoMaterno: dto.apellidoMaterno,
       genero: dto.genero.id,
+      distrito: dto.distrito?.id,
+      municipio: dto.municipio?.id,
+      comunidad: dto.comunidad?.id,
+      estado: dto.estado?.id,
       fechaNacimiento: fechaFormateada,
       sobrenombre: dto.sobrenombre,
       cargo: dto.cargo.id,
@@ -451,7 +455,16 @@ export class CandidatosComponent implements OnInit {
     const genero = this.candidatoForm.get('genero')?.value;
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
     const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
+    this.candidatos.estado = { id: 29 } as Estado;
+    
+    const distrito = this.candidatoForm.get('distrito')?.value;
+    this.candidatos.distrito = { id: distrito } as Distrito;
 
+    const municipio = this.candidatoForm.get('municipio')?.value;
+    this.candidatos.municipio = { id: municipio } as Municipio;
+
+    const comunidad = this.candidatoForm.get('comunidad')?.value;
+    this.candidatos.comunidad = { id: comunidad } as Comunidad;
     console.log(imagenBase64);
     console.log(emblemaBase64);
 
