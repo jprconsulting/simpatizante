@@ -439,6 +439,7 @@ export class CandidatosComponent implements OnInit {
       distrito: dto.distrito?.id,
       municipio: dto.municipio?.id,
       comunidad: dto.comunidad?.id,
+      estado: dto.estado?.id,
       fechaNacimiento: fechaFormateada,
       sobrenombre: dto.sobrenombre,
       cargo: dto.cargo.id,
