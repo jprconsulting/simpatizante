@@ -1,8 +1,8 @@
 import { AfterViewInit, Component } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import Histogram from 'highcharts/modules/histogram-bellcurve';
-import { MunicipiosService } from 'src/app/core/services/municipios.service';
-import { Municipio } from 'src/app/models/municipio';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
+import { Candidato } from 'src/app/models/candidato';
 import { GeneralWordCloud } from 'src/app/models/word-cloud';
 
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
@@ -27,11 +27,11 @@ Wordcloud(Highcharts);
 export class NubePalabrasComponent implements AfterViewInit {
   generalWordCloud!: GeneralWordCloud;
   options: Highcharts.Options = {};
-  seccion: Seccion[] = [];
+  candidato: Candidato[] = [];
 
   constructor(
     private dashboardService: DashboardService,
-    private seccionService: SeccionService
+    private candidatoService: CandidatosService
   ) {
     this.getWordCloud();
     this.getMunicipios();
@@ -48,9 +48,9 @@ export class NubePalabrasComponent implements AfterViewInit {
   }
 
   getMunicipios() {
-    this.seccionService
+    this.candidatoService
       .getAll()
-      .subscribe({ next: (dataFromAPI) => (this.seccion = dataFromAPI) });
+      .subscribe({ next: (dataFromAPI) => (this.candidato = dataFromAPI) });
   }
 
   getWordCloud() {
@@ -150,10 +150,10 @@ export class NubePalabrasComponent implements AfterViewInit {
 
   onSelectMunicipio(id: number) {
     if (id) {
-      const wordCountByMunicipio =
-        this.generalWordCloud.wordCloudPorMunicipios.find((i) => i.id === id);
-      if (wordCountByMunicipio) {
-        this.dashboardService.updateWordCloud(wordCountByMunicipio.wordCloud);
+      const wordCloudByCandidato =
+        this.generalWordCloud.wordCloudPorCandidatos.find((i) => i.id === id);
+      if (wordCloudByCandidato) {
+        this.dashboardService.updateWordCloud(wordCloudByCandidato.wordCloud);
         this.setSettingsWordCloud();
       }
     }

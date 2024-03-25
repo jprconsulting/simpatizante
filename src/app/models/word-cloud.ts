@@ -1,16 +1,15 @@
-import { Municipio } from "./municipio";
+import { Candidato } from './candidato';
 
 export interface WordCloud {
-    name: string;
-    weight: number;
+  name: string;
+  weight: number;
 }
 
 export interface GeneralWordCloud {
-    generalWordCloud: WordCloud[];
-    wordCloudPorMunicipios: MunicipioWordCloud[];
+  generalWordCloud: WordCloud[];
+  wordCloudPorCandidatos: CandidatoWordCloud[];
 }
 
-export interface MunicipioWordCloud extends Municipio {
-    wordCloud: WordCloud[];
+export interface CandidatoWordCloud extends Candidato {
+  wordCloud: WordCloud[];
 }
-
