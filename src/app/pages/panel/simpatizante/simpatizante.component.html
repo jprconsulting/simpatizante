@@ -64,7 +64,6 @@
                 >Candidato:</label
               >
               <ng-select
-                formControlName="candidatoId"
                 #selectCandidato
                 [searchable]="false"
                 [items]="candidatos"
@@ -200,7 +199,7 @@
                   <td class="text-muted text-center">
                     {{ simpatizante.edad }} años
                   </td>
-                  <td class="text-muted">
+                  <td class="text-center">
                     {{ simpatizante.operador.candidato.nombreCompleto }}
                   </td>
                   <td class="text-center">
@@ -240,7 +239,7 @@
             <div class="text-center">
               <label
                 class="form-label"
-                style="margin-top: 50px; margin-bottom: 50px; font-size: 24px"
+                style="margin-top: 15px; font-size: 24px"
               >
                 {{ sinPrimovidosMessage }}</label
               >
@@ -350,7 +349,9 @@
                     placeholder="Elegir"
                     [clearable]="true"
                     [readonly]="readonlySelectOperador"
-                    (change)="getPromotoresSelect()"
+                    (change)="
+                      getPromotoresSelect(); Operadormunicipio($event?.id)
+                    "
                   >
                     <ng-template ng-header-tmp>
                       <input
@@ -635,22 +636,22 @@
                   <ng-select
                     formControlName="municipio"
                     #selectMunicipio
-                    [searchable]="false"
+                    [searchable]="true"
                     [items]="municipios"
                     bindLabel="nombre"
                     bindValue="id"
-                    placeholder="Tlaxcala"
-                    [clearable]="false"
-                    value="33"
-                    [clearable]="false"
-                    [readonly]="true"
+                    placeholder="Elije"
+                    [clearable]="true"
+                    value="id"
                     class="color"
+                    [(ngModel)]="selectedMunicipioId"
+                    (change)="seccionMunicipio($event?.id)"
+                    (clear)="onClearsecciones()"
                   >
                     <ng-template ng-header-tmp>
                       <input
                         class="form-control color"
                         type="text"
-                        value="33"
                         (input)="
                           selectMunicipio.filter($any($event.target).value)
                         "

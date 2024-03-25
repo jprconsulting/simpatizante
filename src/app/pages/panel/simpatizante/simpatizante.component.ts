@@ -83,6 +83,7 @@ export class SimpatizanteComponent implements OnInit {
   readonlySelectCandidato = true;
   dataObject!: AppUserAuth | null;
   id!: number;
+  operadorSelect!: Operador | undefined;
   mensajeExisteCURP: string | null = null;
   // MAPS
   latitude: number = 19.316818295403003;
@@ -95,7 +96,7 @@ export class SimpatizanteComponent implements OnInit {
   SocialForm: any;
   private map: any;
   private marker: any;
-
+  operadorFilter: Operador[] = [];
   existeCURP: boolean | null = null;
 
   constructor(
@@ -197,6 +198,43 @@ export class SimpatizanteComponent implements OnInit {
       this.votantesFilter = [];
     }
   }
+  selectedMunicipioId: number | null = null;
+  seccionesOperador: Seccion[] = [];
+
+  Operadormunicipio(id: number | null) {
+    this.operadorSelect = this.operadores.find((o) => o.id === id);
+    console.log(this.operadorSelect, 'nsacd');
+    if (
+      this.operadorSelect &&
+      this.operadorSelect.candidato.municipio?.id !== undefined
+    ) {
+      this.selectedMunicipioId = this.operadorSelect.candidato.municipio?.id;
+
+      this.seccionService.getMunicipioId(this.selectedMunicipioId).subscribe({
+        next: (dataFromAPI) => {
+          this.seccion = dataFromAPI;
+          this.seccionesOperador = this.seccion;
+        },
+      });
+    }
+    if ( this.operadorSelect && this.operadorSelect.candidato.municipio?.id === undefined) {
+      this.getSeccion();
+    }
+  }
+  onClearsecciones() {
+    this.getSeccion();
+    this.getVotantes();
+  }
+
+  seccionMunicipio(id: number) {
+    this.seccionService.getMunicipioId(id).subscribe({
+      next: (dataFromAPI) => {
+        this.seccion = dataFromAPI;
+        this.seccionesOperador = this.seccion;
+      },
+    });
+  }
+
   onSelectCandidato(id: number | null) {
     this.votantesSelect = this.votantes.find(
       (v) => v.operador.candidato.id === id
@@ -490,6 +528,19 @@ export class SimpatizanteComponent implements OnInit {
     this.operadoresService
       .getAll()
       .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
+    this.operadoresService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.operadores = dataFromAPI;
+        this.operadorFilter = this.operadores;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        if (err.status === 401) {
+          this.mensajeService.mensajeSesionExpirada();
+        }
+      },
+    });
   }
 
   getOperadoresPorCandidatoId() {
@@ -853,7 +904,7 @@ export class SimpatizanteComponent implements OnInit {
     const generoId = this.simpatizanteForm.get('generoId')?.value;
     const promotor = this.simpatizanteForm.get('promotor')?.value;
 
-    this.votante.municipio = { id: 33 } as Municipio;
+    this.votante.municipio = { id: municipioId } as Municipio;
     this.votante.estado = { id: 29 } as Estado;
     this.votante.seccion = { id: seccionId } as Seccion;
     this.votante.operador = { id: operadorId } as Operador;
@@ -938,7 +989,7 @@ export class SimpatizanteComponent implements OnInit {
       this.votante.programaSocial = programaSocialId
         ? ({ id: programaSocialId } as ProgramaSocial)
         : null;
-      this.votante.municipio = { id: 33 } as Municipio;
+      this.votante.municipio = { id: municipioId } as Municipio;
       this.votante.estado = { id: 29 } as Estado;
       this.votante.seccion = { id: seccionId } as Seccion;
       this.votante.operador = { id: operadorId } as Operador;
@@ -975,7 +1026,7 @@ export class SimpatizanteComponent implements OnInit {
       this.votante.programaSocial = programaSocialId
         ? ({ id: programaSocialId } as ProgramaSocial)
         : null;
-      this.votante.municipio = { id: 33 } as Municipio;
+      this.votante.municipio = { id: municipioId } as Municipio;
       this.votante.estado = { id: 29 } as Estado;
       this.votante.seccion = { id: seccionId } as Seccion;
       this.votante.operador = { id: operadorId } as Operador;

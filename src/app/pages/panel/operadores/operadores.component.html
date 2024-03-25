@@ -50,7 +50,38 @@
             </a>
           </div>
         </div>
+        <div class="row">
+        <div class="col-lg-6" >
+          <div>
+            <label style="margin-top: 5px" class="form-label">Candidato:</label>
+            <ng-select
+              formControlName="candidatoId"
+              #selectCandidato
+              [searchable]="false"
+              [items]="candidatos"
+              bindLabel="nombreCompleto"
+              placeholder="Todos los candidatos"
+              bindValue="id"
+              [clearable]="true"
+              (change)="onSelectCandidato($event?.id)"
+              (clear)="onClear()"
+            >
+              <ng-template ng-header-tmp>
+                <input
+                  class="form-control"
+                  type="text"
+                  (input)="selectCandidato.filter($any($event.target).value)"
+                />
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                {{ item.nombreCompleto }}
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
       </div>
+      </div>
+      
 
       <ng-container [ngSwitch]="isLoading">
         <div style="height: 300px" *ngSwitchCase="2">
@@ -73,6 +104,12 @@
                   Nombre completo
                 </th>
                 <th style="text-transform: none; font-size: inherit">Edad</th>
+                <th
+                  class="text-center"
+                  style="text-transform: none; font-size: inherit"
+                >
+                  Candidato
+                </th>
                 <th
                   style="text-transform: none; font-size: inherit"
                   class="text-center"
@@ -107,6 +144,9 @@
                   {{ operador.apellidoMaterno }}
                 </td>
                 <td class="text-muted">{{ operador.edad }} años</td>
+                <td class="text-center">
+                  {{ operador.candidato.nombreCompleto }}
+                </td>
                 <td class="text-center">
                   <ng-container *ngIf="operador.estatus; else elseEstatus">
                     <span class="badge bg-success me-1"> </span> Activo
@@ -155,6 +195,14 @@
               </tr>
             </tbody>
           </table>
+          <div class="text-center">
+            <label
+              class="form-label"
+              style="margin-top: 15px; font-size: 24px"
+            >
+              {{ sindataMessage }}</label
+            >
+          </div>
         </div>
 
         <app-no-results *ngSwitchCase="4"></app-no-results>
