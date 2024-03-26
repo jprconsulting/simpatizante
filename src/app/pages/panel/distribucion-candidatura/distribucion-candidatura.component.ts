@@ -87,6 +87,9 @@ export class DistribucionCandidaturaComponent {
     this.candidaturaService.refreshListCandidatura.subscribe(() =>
       this.getCandidatura()
     );
+    this.distribucionCandidaturaService.refreshListCandidatura.subscribe(() =>
+      this.getDistribucion()
+    );
     this.creteForm();
     this.getAgrupaciones();
     this.getCandidatura();
@@ -124,13 +127,12 @@ export class DistribucionCandidaturaComponent {
 
   obtenerLogosPartidos(): void {
     this.partidosConLogo = []; // Limpiamos el arreglo antes de comenzar
-
     // Verificamos si la propiedad partidos está presente y no es nula
     if (
-      this.DistribucionCandidatura.partidos &&
-      this.DistribucionCandidatura.partidos.length > 0
+      this.DistribucionCandidatura.lista &&
+      this.DistribucionCandidatura.lista.length > 0
     ) {
-      const solicitudes = this.DistribucionCandidatura.partidos.map(
+      const solicitudes = this.DistribucionCandidatura.lista.map(
         (partido) => {
           console.log('Buscando logo para el partido:', partido); // Agregamos el console.log()
           return this.candidaturaService.obtenerLogoPartido(partido).pipe(
@@ -483,8 +485,6 @@ export class DistribucionCandidaturaComponent {
     const candidatura = this.candidaturasFilter.find(
       (candidatura) => candidatura.id === dto.id
     );
-
-    this.imgPreview = candidatura!.logo;
     this.isUpdatingImg = true;
 
     this.DistribucionForm.patchValue({
@@ -498,7 +498,6 @@ export class DistribucionCandidaturaComponent {
       distrito: dto.distrito?.id,
       municipio: dto.municipio?.id,
       comunidad: dto.comunidad?.id,
-      imagenBase64: '',
     });
     console.log('setDataUpdateVistaForm ', this.DistribucionForm.value);
     console.log('setDataUpdateDTO', dto);
@@ -515,7 +514,8 @@ export class DistribucionCandidaturaComponent {
         distribucion.tipoEleccion.nombre.toLowerCase().includes(valueSearch) ||
         distribucion.distrito?.nombre.toLowerCase().includes(valueSearch) ||
         distribucion.municipio?.nombre.toLowerCase().includes(valueSearch) ||
-        distribucion.comunidad?.nombre.toLowerCase().includes(valueSearch)
+        distribucion.comunidad?.nombre.toLowerCase().includes(valueSearch)||
+        distribucion.estado?.nombre.toLowerCase().includes(valueSearch)
     );
 
     console.log('Filtered Votantes:', this.distribucionCandidaturaFilter);
@@ -533,13 +533,20 @@ export class DistribucionCandidaturaComponent {
     const datosParaExportar = this.distribucionCandidatura.map(
       (distribucionCandidatura) => {
         const partidoString = distribucionCandidatura.partidos?.join(', ');
+        const coalicionString = distribucionCandidatura.coalicion?.join(', ');
+        const comunString = distribucionCandidatura.comun?.join(', ');
+        const independienteString = distribucionCandidatura.independiente?.join(', ');
 
         return {
           'Tipo elección': distribucionCandidatura.tipoEleccion.nombre,
+          Estado: distribucionCandidatura.estado?.nombre,
           Distrito: distribucionCandidatura.distrito?.nombre,
           Municipio: distribucionCandidatura.municipio?.nombre,
           Comunidad: distribucionCandidatura.comunidad?.nombre,
           Partido: partidoString,
+          'Candidatura común': comunString,
+          Coalición: coalicionString,
+          'Candidatura independiente': independienteString,
         };
       }
     );

@@ -16,4 +16,5 @@ export interface DistribucionCandidatura {
   coalicion?: string[] | null;
   independiente?: string[] | null;
   comun?: string[] | null;
+  lista?: string[] | null;
 }
