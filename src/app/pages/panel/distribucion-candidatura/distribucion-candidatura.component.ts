@@ -405,31 +405,17 @@ export class DistribucionCandidaturaComponent {
     const comunidad = this.DistribucionForm.get('comunidad')?.value;
     this.distribucion.comunidad = { id: comunidad } as Comunidad;
     this.spinnerService.show();
-    console.log('data:', this.distribucion);
 
     const partidos = this.DistribucionForm.get('partidos')?.value;
+    this.distribucion.partidos = partidos as string[];
     const coalicion = this.DistribucionForm.get('coalicion')?.value;
+    this.distribucion.coalicion = coalicion as string[];
     const independiente = this.DistribucionForm.get('independiente')?.value;
+    this.distribucion.independiente = independiente as string[];
     const comun = this.DistribucionForm.get('comun')?.value;
+    this.distribucion.comun = comun as string[];
 
-    // Combinar los valores de todos los selectores en una sola lista
-    let allPartidos: string[] = [];
-
-    if (partidos) {
-      allPartidos = [...allPartidos, ...partidos];
-    }
-    if (coalicion) {
-      allPartidos = [...allPartidos, ...coalicion];
-    }
-    if (independiente) {
-      allPartidos = [...allPartidos, ...independiente];
-    }
-    if (comun) {
-      allPartidos = [...allPartidos, ...comun];
-    }
-
-    // Asignar la lista de partidos al objeto distribucion
-    this.distribucion.partidos = allPartidos;
+    console.log('data:', this.distribucion);
 
     this.spinnerService.show();
     this.distribucionCandidaturaService.post(this.distribucion).subscribe({
@@ -449,17 +435,32 @@ export class DistribucionCandidaturaComponent {
 
   actualizar() {
     this.distribucion = this.DistribucionForm.value as DistribucionCandidatura;
-
-    const tipo = this.DistribucionForm.get('tipoAgrupacionPolitica')?.value;
+    const tipo = this.DistribucionForm.get('tipoEleccion')?.value;
     this.distribucion.tipoEleccion = { id: tipo } as TipoAgrupaciones;
 
-    const tipo2 = this.DistribucionForm.get('partidos')?.value;
-    const partidosList = tipo2 ? (tipo2 as string[]) : undefined;
-    const formData = { ...this.distribucion, partidos: partidosList };
+    this.distribucion.estado = { id: 29 } as Estado;
+
+    const distrito = this.DistribucionForm.get('distrito')?.value;
+    this.distribucion.distrito = { id: distrito } as Distrito;
+
+    const municipio = this.DistribucionForm.get('municipio')?.value;
+    this.distribucion.municipio = { id: municipio } as Municipio;
+
+    const comunidad = this.DistribucionForm.get('comunidad')?.value;
+    this.distribucion.comunidad = { id: comunidad } as Comunidad;
+
+    const partidos = this.DistribucionForm.get('partidos')?.value;
+    this.distribucion.partidos = partidos as string[];
+    const coalicion = this.DistribucionForm.get('coalicion')?.value;
+    this.distribucion.coalicion = coalicion as string[];
+    const independiente = this.DistribucionForm.get('independiente')?.value;
+    this.distribucion.independiente = independiente as string[];
+    const comun = this.DistribucionForm.get('comun')?.value;
+    this.distribucion.comun = comun as string[];
 
     this.spinnerService.show();
 
-    this.distribucionCandidaturaService.put(this.id, formData).subscribe({
+    this.distribucionCandidaturaService.put(this.id, this.distribucion).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito(
@@ -490,6 +491,9 @@ export class DistribucionCandidaturaComponent {
       id: dto.id,
       tipoEleccion: dto.tipoEleccion.id,
       partidos: dto.partidos,
+      coalicion: dto.coalicion,
+      independiente: dto.independiente,
+      comun: dto.comun,
       estado: dto.estado?.id,
       distrito: dto.distrito?.id,
       municipio: dto.municipio?.id,

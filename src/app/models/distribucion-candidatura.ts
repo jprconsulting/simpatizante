@@ -13,4 +13,7 @@ export interface DistribucionCandidatura {
   municipio?: Municipio;
   comunidad?: Comunidad;
   partidos?: string[] | null;
+  coalicion?: string[] | null;
+  independiente?: string[] | null;
+  comun?: string[] | null;
 }
