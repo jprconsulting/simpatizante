@@ -19,6 +19,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import * as XLSX from 'xlsx';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
+import { Candidato } from 'src/app/models/candidato';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
 
 @Component({
   selector: 'app-incidencias',
@@ -35,6 +37,9 @@ export class IncidenciasComponent implements OnInit {
   incidenciasForm!: FormGroup;
 
   incidencia!: Incidencia;
+  candidatos: Candidato[] = [];
+  votantesSelect!: Incidencia | undefined;
+  sinPrimovidosMessage = '';
 
   vistas: Visita[] = [];
   casillas: Casillas[] = [];
@@ -63,7 +68,8 @@ export class IncidenciasComponent implements OnInit {
     private mensajeService: MensajeService,
     private indicadoresService: IndicadoresService,
     private casillasService: CasillasService,
-    private incidenciasService: IncidenciaService
+    private incidenciasService: IncidenciaService,
+    private candidatosService: CandidatosService
   ) {
     this.incidenciasService.refreshListIncidencia.subscribe(() =>
       this.getIncidencias()
@@ -72,6 +78,7 @@ export class IncidenciasComponent implements OnInit {
     this.getIndicadores();
     this.getCasillas();
     this.getIncidencias();
+    this.getCandidatos();
     this.configPaginator.itemsPerPage = 10;
   }
   ngOnInit() {}
@@ -85,11 +92,16 @@ export class IncidenciasComponent implements OnInit {
       direccion: [null, Validators.required],
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
-
+      candidato: ['', Validators.required],
     });
   }
 
-  
+  getCandidatos() {
+    this.candidatosService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.candidatos = dataFromAPI) });
+  }
+
   getCurrentLocation() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -110,7 +122,6 @@ export class IncidenciasComponent implements OnInit {
       });
     }
   }
-
 
   ngAfterViewInit() {
     this.canvas = this.mapCanvas.nativeElement;
@@ -241,7 +252,6 @@ export class IncidenciasComponent implements OnInit {
       }
     });
   }
-
 
   resetMap() {
     this.ubicacionInput.nativeElement.value = '';
@@ -378,6 +388,9 @@ export class IncidenciasComponent implements OnInit {
         incidencia.retroalimentacion
           .toLowerCase()
           .includes(inputValue.toLowerCase()) ||
+        incidencia.candidato.nombreCompleto
+          .toLowerCase()
+          .includes(inputValue.toLowerCase()) ||
         incidencia.tipoIncidencia.tipo
           .toLowerCase()
           .includes(inputValue.toLowerCase()) ||
@@ -410,7 +423,8 @@ export class IncidenciasComponent implements OnInit {
     const indicadorid = this.incidenciasForm.get('tipoIncidencia')?.value;
     const casillaid = this.incidenciasForm.get('casilla')?.value;
     const imagenBase64 = this.incidenciasForm.get('imagenBase64')?.value;
-
+    const candidato = this.incidenciasForm.get('candidato')?.value;
+    this.incidencia.candidato = { id: candidato } as Candidato;
     this.incidencia.casilla = { id: casillaid } as Casillas;
     this.incidencia.tipoIncidencia = { id: indicadorid } as Indicadores;
 
@@ -452,6 +466,7 @@ export class IncidenciasComponent implements OnInit {
       id: dto.id,
       retroalimentacion: dto.retroalimentacion,
       tipoIncidencia: dto.tipoIncidencia.id,
+      candidato: dto.candidato.id,
       casilla: dto.casilla.id,
       direccion: dto.direccion,
       latitud: dto.latitud,
@@ -469,8 +484,10 @@ export class IncidenciasComponent implements OnInit {
     const imagenBase64 = this.incidenciasForm.get('imagenBase64')?.value;
     this.emblemaPreview = '';
     const incidenciaId = this.incidenciasForm.get('id')?.value; // Obtener el ID de la incidencia directamente del formulario
+    const candidatoid = this.incidenciasForm.get('candidato')?.value;
 
     this.incidencia = this.incidenciasForm.value as Incidencia;
+    this.incidencia.candidato = { id: candidatoid } as Candidato;
     this.incidencia.casilla = { id: casillaid } as Casillas;
     this.incidencia.tipoIncidencia = { id: indicadorid } as Indicadores;
 
@@ -492,11 +509,9 @@ export class IncidenciasComponent implements OnInit {
           this.mensajeService.mensajeError(error);
         },
       });
-    } else   
-    this.imgPreview = '';
+    } else this.imgPreview = '';
 
     if (!imagenBase64) {
-
       const formData = { ...this.incidencia };
       this.spinnerService.show();
 
@@ -514,7 +529,7 @@ export class IncidenciasComponent implements OnInit {
           this.mensajeService.mensajeError(error);
         },
       });
-    }else {
+    } else {
       console.error(
         'Error: No se encontró una representación válida en base64 de la imagen.'
       );
@@ -593,9 +608,10 @@ export class IncidenciasComponent implements OnInit {
 
     const datosParaExportar = this.incidencias.map((incidencias) => {
       return {
-        Retroalimentación: incidencias.retroalimentacion,
+        Candidato: incidencias.candidato.nombreCompleto,
         Casilla: incidencias.casilla.nombre,
         'Tipo de incidencia': incidencias.tipoIncidencia.tipo,
+        Retroalimentación: incidencias.retroalimentacion,
         Dirección: incidencias.direccion,
       };
     });
@@ -624,5 +640,39 @@ export class IncidenciasComponent implements OnInit {
     a.download = nombreArchivo;
     a.click();
     window.URL.revokeObjectURL(url);
+  }
+
+  onSelectCandidato(id: number | null) {
+    this.votantesSelect = this.incidencias.find((v) => v.candidato.id === id);
+
+    if (this.votantesSelect) {
+      const valueSearch2 =
+        this.votantesSelect.candidato.nombreCompleto.toLowerCase();
+      console.log('Search Value:', valueSearch2);
+
+      // Filtrar los votantes
+      this.incidenciasFilter = this.incidencias.filter((votante) =>
+        votante.candidato.nombreCompleto.toLowerCase().includes(valueSearch2)
+      );
+      this.sinPrimovidosMessage = '';
+      console.log('Filtered Votantes:', this.incidenciasFilter);
+
+      // Verificar si votantesFilter es null o vacío
+      if (!this.incidenciasFilter || this.incidenciasFilter.length === 0) {
+        this.incidenciasFilter = [];
+      }
+      this.configPaginator.currentPage = 1;
+    } else {
+      this.sinPrimovidosMessage = 'No se encontraron incidencias.';
+      // Si no se encuentra el votante seleccionado, establecer votantesFilter como un array vacío
+      this.incidenciasFilter = [];
+    }
+  }
+
+  onClear() {
+    if (this.incidencias) {
+      this.getIncidencias();
+    }
+    this.sinPrimovidosMessage = '';
   }
 }

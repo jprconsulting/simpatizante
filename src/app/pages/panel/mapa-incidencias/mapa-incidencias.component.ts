@@ -6,6 +6,8 @@ import { LoadingStates } from 'src/app/global/global';
 import { Incidencia } from 'src/app/models/incidencias';
 import { Indicadores } from 'src/app/models/indicadores';
 import * as XLSX from 'xlsx';
+import { Candidato } from 'src/app/models/candidato';
+import { CandidatosService } from 'src/app/core/services/candidatos.service';
 declare const google: any;
 
 @Component({
@@ -26,18 +28,28 @@ export class MapaIncidenciasComponent implements AfterViewInit {
   pagModalPromovidos: number = 1;
   initialValueModalSearchSecciones: string = '';
   initialValueModalSearchPromovidos: string = '';
+  candidatos: Candidato[] = [];
+  selectedCandidatoId: number | null = null;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private indicadorService: IndicadoresService,
-    private incidenciasService: IncidenciaService
+    private incidenciasService: IncidenciaService,
+    private candidatosService: CandidatosService
   ) {
     this.loadIndicadores();
     this.getIndicadores();
     this.getIncidencias();
+    this.getCandidatos();
   }
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
+  }
+
+  getCandidatos() {
+    this.candidatosService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.candidatos = dataFromAPI) });
   }
 
   ngAfterViewInit() {
@@ -166,15 +178,34 @@ export class MapaIncidenciasComponent implements AfterViewInit {
     });
   }
 
-  onSelectIncidencias(id: number) {
+  onSelectCandidato(id: number) {
+    this.selectedCandidatoId = id; // Almacena el ID del candidato seleccionado
     if (id) {
       this.clearMarkers();
       this.incidencias
-        .filter((b) => b.tipoIncidencia.id == id)
-        .forEach((incidencica) => {
+        .filter((b) => b.candidato.id == id)
+        .forEach((incidencia) => {
           this.setInfoWindow(
-            this.getMarker(incidencica),
-            this.getContentString(incidencica)
+            this.getMarker(incidencia),
+            this.getContentString(incidencia)
+          );
+        });
+    }
+  }
+
+  onSelectIncidencias(id: number) {
+    if (id && this.selectedCandidatoId !== null) {
+      this.clearMarkers();
+      this.incidencias
+        .filter(
+          (b) =>
+            b.candidato.id == this.selectedCandidatoId &&
+            b.tipoIncidencia.id == id
+        )
+        .forEach((incidencia) => {
+          this.setInfoWindow(
+            this.getMarker(incidencia),
+            this.getContentString(incidencia)
           );
         });
     }
@@ -192,11 +223,15 @@ export class MapaIncidenciasComponent implements AfterViewInit {
 
   getContentString(incidencias: Incidencia) {
     return `
-      <div style="width: 350px; height: auto;" class=" text-center">
-          <!--<img class="rounded-circle" style="width: 130px; height: 130px; object-fit: cover;"
-            src="../../../../assets/images/casilla.png"
-            alt="Sunset in the mountains">-->
+<div style="width: 350px; height: auto;" class="text-center">
+  <img src="${incidencias.foto}" alt="Imagen de incidencia" style="width: 100%; height: auto;">
             <div class="px-4 py-4">
+          <p style="font-weight:  bolder;" class=" ">
+            Candidato:
+            <p class="text-muted ">
+              ${incidencias.candidato.nombreCompleto}
+            </p>
+          </p>            
           <p style="font-weight:  bolder;" class=" ">
             Casilla:
             <p class="text-muted ">
