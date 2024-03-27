@@ -51,6 +51,8 @@ export class NubePalabrasComponent implements AfterViewInit {
     this.getWordCloud();
     this.getMunicipios();
     this.creteForm();
+    this.readonlySelectCandidato =
+      this.currentUser?.rolId !== RolesBD.administrador;
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
     }

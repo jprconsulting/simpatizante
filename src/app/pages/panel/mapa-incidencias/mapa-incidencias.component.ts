@@ -55,6 +55,8 @@ export class MapaIncidenciasComponent implements AfterViewInit {
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
     }
+    this.readonlySelectCandidato =
+      this.currentUser?.rolId !== RolesBD.administrador;
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
     }

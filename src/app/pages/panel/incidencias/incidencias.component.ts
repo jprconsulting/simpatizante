@@ -87,11 +87,15 @@ export class IncidenciasComponent implements OnInit {
     this.getIncidencias();
     this.getCandidatos();
     this.creteForm2();
+    this.readonlySelectCandidato =
+      this.currentUser?.rolId !== RolesBD.administrador;
     this.configPaginator.itemsPerPage = 10;
     this.currentUser = securityService.getDataUser();
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
     }
+    this.readonlySelectCandidato =
+      this.currentUser?.rolId !== RolesBD.administrador;
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
     }

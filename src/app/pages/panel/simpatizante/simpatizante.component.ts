@@ -150,6 +150,8 @@ export class SimpatizanteComponent implements OnInit {
       this.candidatoId = this.currentUser?.candidatoId;
       this.getOperadoresPorCandidatoId();
     }
+    this.readonlySelectCandidato =
+      this.currentUser?.rolId !== RolesBD.administrador;
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
     }
