@@ -22,6 +22,8 @@ import { CandidatosService } from 'src/app/core/services/candidatos.service';
 import { Candidato } from 'src/app/models/candidato';
 import { AppUserAuth } from 'src/app/models/login';
 import { SecurityService } from 'src/app/core/services/security.service';
+import { MunicipiosService } from 'src/app/core/services/municipios.service';
+import { Municipio } from 'src/app/models/municipio';
 
 @Component({
   selector: 'app-operadores',
@@ -66,7 +68,10 @@ export class OperadoresComponent implements OnInit {
   initialValueModalSearchPromovidos: string = '';
   dataObject!: AppUserAuth | null;
   operadorSelect!: Operador | undefined;
+  candidatoSelect!: Candidato | undefined;
   sindataMessage = '';
+  selectedMunicipioId: number | null = null;
+  municipios: Municipio[] = [];
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -78,7 +83,8 @@ export class OperadoresComponent implements OnInit {
     private formBuilder: FormBuilder,
     private seccionesService: SeccionService,
     private simpatizantesService: SimpatizantesService,
-    private securityService: SecurityService
+    private securityService: SecurityService,
+    private municipiosService: MunicipiosService
   ) {
     this.operadoresService.refreshListOperadores.subscribe(() =>
       this.getOperadores()
@@ -88,6 +94,7 @@ export class OperadoresComponent implements OnInit {
     this.getCandidatos();
     this.getOperadores();
     this.getSeccionesRegistradas();
+    this.getMunicipios();
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
@@ -103,6 +110,12 @@ export class OperadoresComponent implements OnInit {
   ngOnInit(): void {
     this.isModalAdd = false;
     this.configPaginator.currentPage = 1;
+  }
+
+  getMunicipios() {
+    this.municipiosService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.municipios = dataFromAPI) });
   }
 
   verSeccionesOperador(operadorId: number) {
@@ -215,6 +228,7 @@ export class OperadoresComponent implements OnInit {
           ),
         ],
       ],
+      municipio: [[], Validators.required],
       fechaNacimiento: ['', Validators.required],
       seccionesIds: [[], Validators.required],
       estatus: [true],
@@ -342,6 +356,7 @@ export class OperadoresComponent implements OnInit {
       apellidoMaterno: dto.apellidoMaterno,
       fechaNacimiento: fechaFormateada,
       estatus: dto.estatus,
+      municipio: dto.municipio.id,
       seccionesIds: dto.secciones.map((s) => s.id),
     });
   }
@@ -353,7 +368,8 @@ export class OperadoresComponent implements OnInit {
     this.operador.seccionesIds = seccionesIds as number[];
     const candidatoId = this.operadorForm.get('candidatoId')?.value;
     this.operador.candidato = { id: candidatoId } as Candidato;
-
+    const municipioId = this.operadorForm.get('municipio')?.value;
+    this.operador.municipio = { id: municipioId } as Municipio;
     this.spinnerService.show();
     this.operadoresService.put(this.idUpdate, this.operador).subscribe({
       next: () => {
@@ -390,6 +406,8 @@ export class OperadoresComponent implements OnInit {
     this.operador.seccionesIds = seccionesIds as number[];
     const candidatoId = this.operadorForm.get('candidatoId')?.value;
     this.operador.candidato = { id: candidatoId } as Candidato;
+    const municipioId = this.operadorForm.get('municipio')?.value;
+    this.operador.municipio = { id: municipioId } as Municipio;
     this.spinnerService.show();
     this.operadoresService.post(this.operador).subscribe({
       next: () => {
@@ -478,6 +496,7 @@ export class OperadoresComponent implements OnInit {
         'Apellido materno': operador.apellidoMaterno,
         'Fecha de nacimiento': fechaNacimiento,
         Candidato: operador.candidato.nombreCompleto,
+        Municipio: operador.municipio,
         Secciones: secciones,
         Estatus: estatus,
       };
@@ -639,5 +658,41 @@ export class OperadoresComponent implements OnInit {
       this.getOperadores();
     }
     this.sindataMessage = '';
+  }
+
+  Candidatomunicipio(id: number | null) {
+    this.candidatoSelect = this.candidatos.find((o) => o.id === id);
+    console.log(this.candidatoSelect, 'nsacd');
+    if (
+      this.candidatoSelect &&
+      this.candidatoSelect.municipio?.id !== undefined
+    ) {
+      this.selectedMunicipioId = this.candidatoSelect.municipio?.id;
+
+      this.seccionesService.getMunicipioId(this.selectedMunicipioId).subscribe({
+        next: (dataFromAPI) => {
+          this.seccionesRegistradas = dataFromAPI;
+          this.seccionesOperador = this.seccionesRegistradas;
+        },
+      });
+    }
+    if (
+      this.operadorSelect &&
+      this.operadorSelect.candidato.municipio?.id === undefined
+    ) {
+      this.getSeccionesRegistradas();
+    }
+  }
+  onClearsecciones() {
+    this.getSeccionesRegistradas();
+  }
+
+  seccionMunicipio(id: number) {
+    this.seccionesService.getMunicipioId(id).subscribe({
+      next: (dataFromAPI) => {
+        this.seccionesRegistradas = dataFromAPI;
+        this.seccionesOperador = this.seccionesRegistradas;
+      },
+    });
   }
 }
