@@ -72,6 +72,7 @@ export class OperadoresComponent implements OnInit {
   sindataMessage = '';
   selectedMunicipioId: number | null = null;
   municipios: Municipio[] = [];
+  mapaForm!: FormGroup;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -95,6 +96,7 @@ export class OperadoresComponent implements OnInit {
     this.getOperadores();
     this.getSeccionesRegistradas();
     this.getMunicipios();
+    this.creteForm2();
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
@@ -106,7 +108,11 @@ export class OperadoresComponent implements OnInit {
 
     this.readonlySelectCandidato =
       this.currentUser?.rolId !== RolesBD.administrador;
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
+    }
   }
+
   ngOnInit(): void {
     this.isModalAdd = false;
     this.configPaginator.currentPage = 1;
@@ -117,7 +123,11 @@ export class OperadoresComponent implements OnInit {
       .getAll()
       .subscribe({ next: (dataFromAPI) => (this.municipios = dataFromAPI) });
   }
-
+  creteForm2() {
+    this.mapaForm = this.formBuilder.group({
+      candidatoId: [],
+    });
+  }
   verSeccionesOperador(operadorId: number) {
     this.pagModalSecciones = 1;
 
