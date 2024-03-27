@@ -357,21 +357,22 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <ng-container *ngFor="let partido of DistribucionCandidatura?.lista">
+                  <ng-container *ngFor="let partido of partidosLista">
                     <tr>
-                      <td>
-                        <div class="flex justify-center items-center">
-                          <ng-container *ngIf="getLogo(partido)">
-                            <img [src]="getLogo(partido)?.logoUrl" alt="Logo de {{ partido }}" width="50">
-                          </ng-container>
-                          <ng-template #noLogo>
-                            <span>No hay logo disponible</span>
-                          </ng-template>
-                        </div>
-                      </td>
-                      <td>{{ partido }}</td>
+                        <td>
+                            <div class="flex justify-center items-center">
+                                <ng-container *ngIf="getLogo(partido)">
+                                    <img [src]="getLogo(partido)?.logoUrl" alt="Logo de {{ partido }}" width="50">
+                                </ng-container>
+                                <ng-template #noLogo>
+                                    <span>No hay logo disponible</span>
+                                </ng-template>
+                            </div>
+                        </td>
+                        <td>{{ partido }}</td>
                     </tr>
-                  </ng-container>
+                </ng-container>
+                
                 </tbody>
               </table>
 
