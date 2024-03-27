@@ -326,9 +326,10 @@ export class CandidatosComponent implements OnInit {
       sobrenombre: [
         '',
         [
-          Validators.required,
           Validators.minLength(2),
-          Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$'),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
           Validators.maxLength(25),
         ],
       ],
