@@ -119,55 +119,56 @@ export class DistribucionCandidaturaComponent {
     });
   }
 
+
+  getPartido(partidoNombre: string): string | undefined {
+    return this.partidosLista.find(partido => partido === partidoNombre);
+  }
+  
   getLogo(partido: string): { nombre: string; logoUrl: string } | undefined {
     return this.partidosConLogo.find(
       (partidoConLogo) => partidoConLogo.nombre === partido
     );
   }
 
-  obtenerLogosPartidos(): void {
+
+  obtenerLogosPartidos(listaPartidos: string[]): void {
     this.partidosConLogo = []; // Limpiamos el arreglo antes de comenzar
     // Verificamos si la propiedad partidos está presente y no es nula
 
     if (
-      this.DistribucionCandidatura.lista &&
-      this.DistribucionCandidatura.lista.length > 0
+        listaPartidos &&
+        listaPartidos.length > 0
     ) {
-      // Dividir la lista por comas y convertirla en un arreglo
-      const listaPartidos = this.DistribucionCandidatura.lista.join(',');
-      const partidosArray = listaPartidos.split(',');
-
-      // Iterar sobre los partidos y hacer las solicitudes de logo
-      const solicitudes = partidosArray.map((partido) => {
-        console.log('Buscando logo para el partido:', partido);
-        return this.candidaturaService.obtenerLogoPartido(partido).pipe(
-          map((respuesta) => ({
-            nombre: partido,
-            logoUrl: respuesta.logoUrl,
-          })),
-          catchError((error) => {
-            console.error(
-              `Error al obtener el logo para el partido ${partido}:`,
-              error
+        // Iterar sobre los partidos y hacer las solicitudes de logo
+        const solicitudes = listaPartidos.map((partido) => {
+            console.log('Buscando logo para el partido:', partido);
+            return this.candidaturaService.obtenerLogoPartido(partido).pipe(
+                map((respuesta) => ({
+                    nombre: partido,
+                    logoUrl: respuesta.logoUrl,
+                })),
+                catchError((error) => {
+                    console.error(
+                        `Error al obtener el logo para el partido ${partido}:`,
+                        error
+                    );
+                    // Devolver un objeto con la URL de un logo por defecto en caso de error
+                    return of({
+                        nombre: partido,
+                        logoUrl: 'URL del logo por defecto',
+                    });
+                })
             );
-            // Devolver un objeto con la URL de un logo por defecto en caso de error
-            return of({
-              nombre: partido,
-              logoUrl: 'URL del logo por defecto',
-            });
-          })
-        );
-      });
+        });
 
-      forkJoin(solicitudes).subscribe((partidosConLogo) => {
-        this.partidosConLogo = partidosConLogo;
-      });
+        forkJoin(solicitudes).subscribe((partidosConLogo) => {
+            this.partidosConLogo = partidosConLogo;
+        });
     } else {
-      // Si no hay partidos o la lista está vacía, podemos manejarlo de alguna manera
-      console.log('No se encontraron partidos para obtener logos.');
+        // Si no hay partidos o la lista está vacía, podemos manejarlo de alguna manera
+        console.log('No se encontraron partidos para obtener logos.');
     }
-  }
-
+}
   getTipoEleccion() {
     this.isLoading = LoadingStates.trueLoading;
     this.tipoEleccionService.getAll().subscribe({
@@ -296,7 +297,7 @@ export class DistribucionCandidaturaComponent {
           comun,
           independiente
         );
-        this.obtenerLogosPartidos();
+        this.obtenerLogosPartidos(lista);
       },
       error: () => {
         this.isLoadingModalPartidos = LoadingStates.errorLoading;
