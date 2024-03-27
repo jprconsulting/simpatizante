@@ -128,32 +128,36 @@ export class DistribucionCandidaturaComponent {
   obtenerLogosPartidos(): void {
     this.partidosConLogo = []; // Limpiamos el arreglo antes de comenzar
     // Verificamos si la propiedad partidos está presente y no es nula
+
     if (
       this.DistribucionCandidatura.lista &&
       this.DistribucionCandidatura.lista.length > 0
     ) {
-      const solicitudes = this.DistribucionCandidatura.lista.map(
-        (partido) => {
-          console.log('Buscando logo para el partido:', partido); // Agregamos el console.log()
-          return this.candidaturaService.obtenerLogoPartido(partido).pipe(
-            map((respuesta) => ({
+      // Dividir la lista por comas y convertirla en un arreglo
+      const listaPartidos = this.DistribucionCandidatura.lista.join(',');
+      const partidosArray = listaPartidos.split(',');
+
+      // Iterar sobre los partidos y hacer las solicitudes de logo
+      const solicitudes = partidosArray.map((partido) => {
+        console.log('Buscando logo para el partido:', partido);
+        return this.candidaturaService.obtenerLogoPartido(partido).pipe(
+          map((respuesta) => ({
+            nombre: partido,
+            logoUrl: respuesta.logoUrl,
+          })),
+          catchError((error) => {
+            console.error(
+              `Error al obtener el logo para el partido ${partido}:`,
+              error
+            );
+            // Devolver un objeto con la URL de un logo por defecto en caso de error
+            return of({
               nombre: partido,
-              logoUrl: respuesta.logoUrl,
-            })),
-            catchError((error) => {
-              console.error(
-                `Error al obtener el logo para el partido ${partido}:`,
-                error
-              );
-              // Devolver un objeto con la URL de un logo por defecto en caso de error
-              return of({
-                nombre: partido,
-                logoUrl: 'URL del logo por defecto',
-              });
-            })
-          );
-        }
-      );
+              logoUrl: 'URL del logo por defecto',
+            });
+          })
+        );
+      });
 
       forkJoin(solicitudes).subscribe((partidosConLogo) => {
         this.partidosConLogo = partidosConLogo;
@@ -261,6 +265,7 @@ export class DistribucionCandidaturaComponent {
     });
   }
 
+  partidosLista: string[] = [];
   getDistribucionId(distribucionId: number): void {
     this.isLoadingModalPartidos = LoadingStates.trueLoading;
 
@@ -268,14 +273,66 @@ export class DistribucionCandidaturaComponent {
       next: (dataFromAPI) => {
         this.DistribucionCandidatura = dataFromAPI;
 
-        this.obtenerLogosPartidos();
-
         this.isLoadingModalPartidos = LoadingStates.falseLoading;
+
+        // Verificar que coalicion, comun, partidos e independiente sean arrays antes de llamar a la función lista
+        const coalicion = Array.isArray(dataFromAPI.coalicion)
+          ? dataFromAPI.coalicion
+          : [];
+        const comun = Array.isArray(dataFromAPI.comun) ? dataFromAPI.comun : [];
+        const partidos = Array.isArray(dataFromAPI.partidos)
+          ? dataFromAPI.partidos
+          : [];
+        const independiente = Array.isArray(dataFromAPI.independiente)
+          ? dataFromAPI.independiente
+          : [];
+
+        // Llamar a la función lista() con los datos recibidos y los datos adicionales
+        const lista = this.lista(partidos, coalicion, comun, independiente);
+        console.log(lista); // Imprimir la lista
+        this.partidosLista = this.lista(
+          partidos,
+          coalicion,
+          comun,
+          independiente
+        );
+        this.obtenerLogosPartidos();
       },
       error: () => {
         this.isLoadingModalPartidos = LoadingStates.errorLoading;
       },
     });
+  }
+
+  lista(
+    partidos: string[],
+    coalicion: string[],
+    comun: string[],
+    independiente: string[]
+  ): string[] {
+    // Inicializar la lista con los nombres de los partidos
+    const listaPartidos: string[] = [...partidos];
+
+    // Agregar los valores de coalicion, comun, e independiente solo si tienen elementos válidos
+    coalicion.forEach((item) => {
+      if (item) {
+        listaPartidos.push(item);
+      }
+    });
+
+    comun.forEach((item) => {
+      if (item) {
+        listaPartidos.push(item);
+      }
+    });
+
+    independiente.forEach((item) => {
+      if (item) {
+        listaPartidos.push(item);
+      }
+    });
+
+    return listaPartidos;
   }
 
   verPartidosDistribucion(distribucionId: number) {
@@ -462,20 +519,22 @@ export class DistribucionCandidaturaComponent {
 
     this.spinnerService.show();
 
-    this.distribucionCandidaturaService.put(this.id, this.distribucion).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito(
-          'Candidatura actualizada correctamente'
-        );
-        this.resetForm();
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      },
-    });
+    this.distribucionCandidaturaService
+      .put(this.id, this.distribucion)
+      .subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito(
+            'Candidatura actualizada correctamente'
+          );
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        },
+      });
   }
 
   setDataModalUpdate(dto: DistribucionCandidatura) {
@@ -514,7 +573,7 @@ export class DistribucionCandidaturaComponent {
         distribucion.tipoEleccion.nombre.toLowerCase().includes(valueSearch) ||
         distribucion.distrito?.nombre.toLowerCase().includes(valueSearch) ||
         distribucion.municipio?.nombre.toLowerCase().includes(valueSearch) ||
-        distribucion.comunidad?.nombre.toLowerCase().includes(valueSearch)||
+        distribucion.comunidad?.nombre.toLowerCase().includes(valueSearch) ||
         distribucion.estado?.nombre.toLowerCase().includes(valueSearch)
     );
 
@@ -535,7 +594,8 @@ export class DistribucionCandidaturaComponent {
         const partidoString = distribucionCandidatura.partidos?.join(', ');
         const coalicionString = distribucionCandidatura.coalicion?.join(', ');
         const comunString = distribucionCandidatura.comun?.join(', ');
-        const independienteString = distribucionCandidatura.independiente?.join(', ');
+        const independienteString =
+          distribucionCandidatura.independiente?.join(', ');
 
         return {
           'Tipo elección': distribucionCandidatura.tipoEleccion.nombre,
