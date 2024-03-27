@@ -7,6 +7,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -21,7 +22,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
     NgxPaginationModule,
     NgSelectModule,
     NgxGpAutocompleteModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class MapaIncidenciasModule { }

@@ -9,6 +9,10 @@ import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import { DashboardService } from 'src/app/core/services/dashboard.service';
 import { Seccion } from 'src/app/models/seccion';
 import { SeccionService } from 'src/app/core/services/seccion.service';
+import { SecurityService } from 'src/app/core/services/security.service';
+import { AppUserAuth } from 'src/app/models/login';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { RolesBD } from 'src/app/global/global';
 NoDataToDisplay(Highcharts);
 declare var require: any;
 const More = require('highcharts/highcharts-more');
@@ -28,19 +32,38 @@ export class NubePalabrasComponent implements AfterViewInit {
   generalWordCloud!: GeneralWordCloud;
   options: Highcharts.Options = {};
   candidato: Candidato[] = [];
+  currentUser!: AppUserAuth | null;
+  mapaForm!: FormGroup;
+  candidatoId = 0;
+  readonlySelectCandidato = true;
 
   constructor(
     private dashboardService: DashboardService,
-    private candidatoService: CandidatosService
+    private candidatoService: CandidatosService,
+    private securityService: SecurityService,
+    private formBuilder: FormBuilder
   ) {
+    this.currentUser = securityService.getDataUser();
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.candidatoId = this.currentUser?.candidatoId;
+    }
+
     this.getWordCloud();
     this.getMunicipios();
+    this.creteForm();
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
+    }
   }
 
   ngAfterViewInit() {
     this.setSettingsWordCloud();
   }
-
+  creteForm() {
+    this.mapaForm = this.formBuilder.group({
+      candidatoId: [],
+    });
+  }
   onClear() {
     this.dashboardService.updateWordCloud(
       this.generalWordCloud.generalWordCloud

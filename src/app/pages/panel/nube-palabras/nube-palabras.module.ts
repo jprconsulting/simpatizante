@@ -8,7 +8,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,9 @@ import { NgxGpAutocompleteModule } from '@angular-magic/ngx-gp-autocomplete';
     NgxSpinnerModule,
     NgxPaginationModule,
     NgSelectModule,
-    NgxGpAutocompleteModule
+    NgxGpAutocompleteModule,
+
+    ReactiveFormsModule,
   ]
 })
 export class NubePalabrasModule { }

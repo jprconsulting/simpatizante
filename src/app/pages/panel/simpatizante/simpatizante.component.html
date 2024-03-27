@@ -60,31 +60,37 @@
         <div class="row">
           <div class="col-lg-6">
             <div>
-              <label style="margin-top: 5px" class="form-label"
-                >Candidato:</label
-              >
-              <ng-select
-                #selectCandidato
-                [searchable]="false"
-                [items]="candidatos"
-                bindLabel="nombreCompleto"
-                placeholder="Todos los candidatos"
-                bindValue="id"
-                [clearable]="true"
-                (change)="onSelectCandidato($event?.id)"
-                (clear)="onClear()"
-              >
-                <ng-template ng-header-tmp>
-                  <input
-                    class="form-control"
-                    type="text"
-                    (input)="selectCandidato.filter($any($event.target).value)"
-                  />
-                </ng-template>
-                <ng-template ng-option-tmp let-item="item" let-index="index">
-                  {{ item.nombreCompleto }}
-                </ng-template>
-              </ng-select>
+              <form [formGroup]="mapaForm">
+                <label style="margin-top: 5px" class="form-label"
+                  >Candidato:</label
+                >
+                <ng-select
+                  #selectCandidato
+                  formControlName="candidatoId"
+                  [searchable]="false"
+                  [items]="candidatos"
+                  bindLabel="nombreCompleto"
+                  placeholder="Todos los candidatos"
+                  [readonly]="readonlySelectCandidato"
+                  bindValue="id"
+                  [clearable]="true"
+                  (change)="onSelectCandidato($event?.id)"
+                  (clear)="onClear()"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      type="text"
+                      (input)="
+                        selectCandidato.filter($any($event.target).value)
+                      "
+                    />
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+              </form>
             </div>
           </div>
           <div class="col-lg-6">

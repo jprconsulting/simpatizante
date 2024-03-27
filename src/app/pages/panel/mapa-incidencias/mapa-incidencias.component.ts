@@ -2,12 +2,15 @@ import { AfterViewInit, Component, Inject } from '@angular/core';
 import { PaginationInstance } from 'ngx-pagination';
 import { IncidenciaService } from 'src/app/core/services/incidencias.service';
 import { IndicadoresService } from 'src/app/core/services/indicadores.service';
-import { LoadingStates } from 'src/app/global/global';
+import { LoadingStates, RolesBD } from 'src/app/global/global';
 import { Incidencia } from 'src/app/models/incidencias';
 import { Indicadores } from 'src/app/models/indicadores';
 import * as XLSX from 'xlsx';
 import { Candidato } from 'src/app/models/candidato';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
+import { SecurityService } from 'src/app/core/services/security.service';
+import { AppUserAuth } from 'src/app/models/login';
+import { FormBuilder, FormGroup } from '@angular/forms';
 declare const google: any;
 
 @Component({
@@ -30,22 +33,41 @@ export class MapaIncidenciasComponent implements AfterViewInit {
   initialValueModalSearchPromovidos: string = '';
   candidatos: Candidato[] = [];
   selectedCandidatoId: number | null = null;
+  readonlySelectCandidato = true;
+  currentUser!: AppUserAuth | null;
+  mapaForm!: FormGroup;
+  candidatoId = 0;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private indicadorService: IndicadoresService,
     private incidenciasService: IncidenciaService,
-    private candidatosService: CandidatosService
+    private candidatosService: CandidatosService,
+    private securityService: SecurityService,
+    private formBuilder: FormBuilder
   ) {
     this.loadIndicadores();
     this.getIndicadores();
     this.getIncidencias();
     this.getCandidatos();
+    this.creteForm2();
+    this.currentUser = securityService.getDataUser();
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.candidatoId = this.currentUser?.candidatoId;
+    }
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
+    }
   }
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
   }
-
+  creteForm2() {
+    this.mapaForm = this.formBuilder.group({
+      candidatoId: [],
+      promovidos: [],
+    });
+  }
   getCandidatos() {
     this.candidatosService
       .getAll()

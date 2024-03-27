@@ -98,6 +98,7 @@ export class SimpatizanteComponent implements OnInit {
   private marker: any;
   operadorFilter: Operador[] = [];
   existeCURP: boolean | null = null;
+  mapaForm!: FormGroup;
 
   constructor(
     private renderer: Renderer2,
@@ -132,6 +133,7 @@ export class SimpatizanteComponent implements OnInit {
     this.getPromotores();
     this.getPromotoresSelect();
     this.getCandidatos();
+    this.creteForm2();
 
     if (this.currentUser?.rolId === RolesBD.operador) {
       this.operadorId = this.currentUser?.operadorId;
@@ -148,7 +150,9 @@ export class SimpatizanteComponent implements OnInit {
       this.candidatoId = this.currentUser?.candidatoId;
       this.getOperadoresPorCandidatoId();
     }
-
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
+    }
     if (this.currentUser?.rolId === RolesBD.administrador) {
       this.readonlySelectOperador = false;
       this.getTodosOperadores();
@@ -158,7 +162,11 @@ export class SimpatizanteComponent implements OnInit {
   ngOnInit(): void {
     this.configPaginator.currentPage = 1;
   }
-
+  creteForm2() {
+    this.mapaForm = this.formBuilder.group({
+      candidatoId: [],
+    });
+  }
   getCurrentLocation() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -217,7 +225,10 @@ export class SimpatizanteComponent implements OnInit {
         },
       });
     }
-    if ( this.operadorSelect && this.operadorSelect.candidato.municipio?.id === undefined) {
+    if (
+      this.operadorSelect &&
+      this.operadorSelect.candidato.municipio?.id === undefined
+    ) {
       this.getSeccion();
     }
   }

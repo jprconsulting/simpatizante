@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoadingStates } from 'src/app/global/global';
+import { LoadingStates, RolesBD } from 'src/app/global/global';
 import { Indicadores } from 'src/app/models/indicadores';
 import { Visita } from 'src/app/models/visita';
 import { IndicadoresService } from 'src/app/core/services/indicadores.service';
@@ -21,6 +21,8 @@ import * as XLSX from 'xlsx';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
 import { Candidato } from 'src/app/models/candidato';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
+import { SecurityService } from 'src/app/core/services/security.service';
+import { AppUserAuth } from 'src/app/models/login';
 
 @Component({
   selector: 'app-incidencias',
@@ -40,7 +42,9 @@ export class IncidenciasComponent implements OnInit {
   candidatos: Candidato[] = [];
   votantesSelect!: Incidencia | undefined;
   sinPrimovidosMessage = '';
-
+  readonlySelectCandidato = true;  
+  mapaForm!: FormGroup;
+  candidatoId = 0;
   vistas: Visita[] = [];
   casillas: Casillas[] = [];
   incidencias: Incidencia[] = [];
@@ -50,6 +54,7 @@ export class IncidenciasComponent implements OnInit {
   isModalAdd = true;
   incidenciasFilter: Incidencia[] = [];
   idUpdate!: number;
+  currentUser!: AppUserAuth | null;
   formData: any;
   latitude: number = 19.316818295403003;
   longitude: number = -98.23837658175323;
@@ -69,17 +74,27 @@ export class IncidenciasComponent implements OnInit {
     private indicadoresService: IndicadoresService,
     private casillasService: CasillasService,
     private incidenciasService: IncidenciaService,
-    private candidatosService: CandidatosService
+    private candidatosService: CandidatosService,
+    private securityService: SecurityService,
   ) {
     this.incidenciasService.refreshListIncidencia.subscribe(() =>
       this.getIncidencias()
     );
+    
     this.creteForm();
     this.getIndicadores();
     this.getCasillas();
     this.getIncidencias();
     this.getCandidatos();
+    this.creteForm2();
     this.configPaginator.itemsPerPage = 10;
+    this.currentUser = securityService.getDataUser();
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.candidatoId = this.currentUser?.candidatoId;
+    }
+    if (this.currentUser?.rolId === RolesBD.candidato) {
+      this.mapaForm.controls['candidatoId'].setValue(this.candidatoId);
+    }
   }
   ngOnInit() {}
   creteForm() {
@@ -93,6 +108,11 @@ export class IncidenciasComponent implements OnInit {
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
       candidato: ['', Validators.required],
+    });
+  }
+  creteForm2() {
+    this.mapaForm = this.formBuilder.group({
+      candidatoId: [],
     });
   }
 

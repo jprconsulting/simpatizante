@@ -1,199 +1,313 @@
 <app-page-header headerTitle="Mapa de incidencias"></app-page-header>
 <div class="row row-deck row-cards">
-    <div class="card">
-        <div class="col-12">
-            <div class="card-header pb-1 pt-2">
-                <div class="col-lg-6 mr-3" style="padding-right: 10px;">
-                    <!-- Agregado mr-3 para espacio -->
-                    <div class="mb-3">
-                        <div class="custom-header">
-                            <h5 class="page-title mb-3">Candidato</h5>
-                            <ng-select #selectPrograma [searchable]="false" bindLabel="nombreCompleto" [items]="candidatos" bindValue="id" placeholder="Todos los candidatos" [clearable]="true" (change)="onSelectCandidato($event?.id)" (clear)="onClear()" style="width: 100%">
-                                <ng-template ng-option-tmp let-item="item" let-index="index">
-                                    {{ item.nombreCompleto }}
-                                </ng-template>
-                            </ng-select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <!-- Modificación en esta línea -->
-                    <div class="mb-3">
-                        <div class="custom-header">
-                            <h5 class="page-title mb-3">Tipo de incidencia</h5>
-                            <ng-select #selectPrograma [searchable]="false" bindLabel="tipo" [items]="indicadores" bindValue="id" placeholder="Todos los tipos de incidencia" [clearable]="true" (change)="onSelectIncidencias($event?.id)" (clear)="onClear()" style="width: 100%">
-                                <ng-template ng-option-tmp let-item="item" let-index="index">
-                                    {{ item.tipo }}
-                                </ng-template>
-                            </ng-select>
-                        </div>
-                    </div>
-                </div>
+  <div class="card">
+    <div class="col-12">
+      <div class="card-header pb-1 pt-2">
+        <div class="col-lg-6 mr-3" style="padding-right: 10px">
+          <!-- Agregado mr-3 para espacio -->
+          <div class="mb-3">
+            <div class="custom-header">
+              <form [formGroup]="mapaForm">
+                <h5 class="page-title mb-3">Candidato</h5>
+                <ng-select
+                  formControlName="candidatoId"
+                  #selectPrograma
+                  [searchable]="false"
+                  bindLabel="nombreCompleto"
+                  [readonly]="readonlySelectCandidato"
+                  [items]="candidatos"
+                  bindValue="id"
+                  placeholder="Todos los candidatos"
+                  [clearable]="true"
+                  (change)="onSelectCandidato($event?.id)"
+                  (clear)="onClear()"
+                  style="width: 100%"
+                >
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+              </form>
             </div>
-
-            <div class="card-body p-0">
-                <div id="map-canvas" class="custom-map" style="width: 100%; height: 70vh" data-lat="19.34889526616767" data-lng="-98.19011296839722"></div>
-            </div>
+          </div>
         </div>
+        <div class="col-lg-6">
+          <!-- Modificación en esta línea -->
+          <div class="mb-3">
+            <div class="custom-header">
+              <h5 class="page-title mb-3">Tipo de incidencia</h5>
+              <ng-select
+                #selectPrograma
+                [searchable]="false"
+                bindLabel="tipo"
+                [items]="indicadores"
+                bindValue="id"
+                placeholder="Todos los tipos de incidencia"
+                [clearable]="true"
+                (change)="onSelectIncidencias($event?.id)"
+                (clear)="onClear()"
+                style="width: 100%"
+              >
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{ item.tipo }}
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <br />
-        <hr />
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Total de incidencias</h3>
-                </div>
-                <div class="card-table table-responsive">
-                    <table class="table table-vcenter card-table table-striped">
-                        <thead>
-                            <tr>
-                                <th style="text-transform: none; font-size: inherit" class="text-center">
-                                    #
-                                </th>
-                                <th style="text-transform: none; font-size: inherit">
-                                    Tipo de incidencia
-                                </th>
-                                <th style="text-transform: none; font-size: inherit" class="text-center">
-                                    Total
-                                </th>
-                                <th style="text-transform: none; font-size: inherit" class="text-center">
-                                    Lista
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let indicador of indicadores; let pointIndex = index">
-                                <td class="text-center">
-                                    {{ pointIndex + 1 }}
-                                </td>
-                                <td class="text-muted">
-                                    <span class="badge me-2" style="height: 14px; width: 14px" [style.backgroundColor]="indicador.color">
-                  </span> {{ indicador.tipo }}
-                                </td>
-                                <td class="text-muted text-center">
-                                    {{ indicador.totalIncidencias }}
-                                </td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center">
-                                        <button alt="Ver incidencias" class="btn btn-secondary btn-icon btn-sm" data-bs-toggle="modal" (click)="getType(indicador.id)">
+      <div class="card-body p-0">
+        <div
+          id="map-canvas"
+          class="custom-map"
+          style="width: 100%; height: 70vh"
+          data-lat="19.34889526616767"
+          data-lng="-98.19011296839722"
+        ></div>
+      </div>
+    </div>
+
+    <br />
+    <hr />
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Total de incidencias</h3>
+        </div>
+        <div class="card-table table-responsive">
+          <table class="table table-vcenter card-table table-striped">
+            <thead>
+              <tr>
+                <th
+                  style="text-transform: none; font-size: inherit"
+                  class="text-center"
+                >
+                  #
+                </th>
+                <th style="text-transform: none; font-size: inherit">
+                  Tipo de incidencia
+                </th>
+                <th
+                  style="text-transform: none; font-size: inherit"
+                  class="text-center"
+                >
+                  Total
+                </th>
+                <th
+                  style="text-transform: none; font-size: inherit"
+                  class="text-center"
+                >
+                  Lista
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let indicador of indicadores; let pointIndex = index">
+                <td class="text-center">
+                  {{ pointIndex + 1 }}
+                </td>
+                <td class="text-muted">
+                  <span
+                    class="badge me-2"
+                    style="height: 14px; width: 14px"
+                    [style.backgroundColor]="indicador.color"
+                  >
+                  </span>
+                  {{ indicador.tipo }}
+                </td>
+                <td class="text-muted text-center">
+                  {{ indicador.totalIncidencias }}
+                </td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center">
+                    <button
+                      alt="Ver incidencias"
+                      class="btn btn-secondary btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      (click)="getType(indicador.id)"
+                    >
                       <i class="ti ti-list"></i>
                     </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <br />
+      </div>
     </div>
+    <br />
+  </div>
 </div>
 
-<div class="modal modal-highlight" id="modal-simpatizantes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5)">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Incidencias</h5>
-                <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal2()"></button>
-            </div>
+<div
+  class="modal modal-highlight"
+  id="modal-simpatizantes"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="background: rgba(0, 0, 0, 0.5)"
+>
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Incidencias</h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="cerrarModal2()"
+        ></button>
+      </div>
 
-            <div class="modal-body">
-                <div class="col-md-6 col-lg-12">
-                    <div class="row d-flex justify-content-end mt-0 mb-3">
-                        <div class="ms-auto d-flex align-items-end">
-                            <div class="input-icon">
-                                <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
-                                <span class="input-icon-addon">
+      <div class="modal-body">
+        <div class="col-md-6 col-lg-12">
+          <div class="row d-flex justify-content-end mt-0 mb-3">
+            <div class="ms-auto d-flex align-items-end">
+              <div class="input-icon">
+                <input
+                  #searchItem
+                  type="text"
+                  class="form-control form-control-rounded"
+                  placeholder="Buscar"
+                  (input)="handleChangeSearch($event)"
+                />
+                <span class="input-icon-addon">
                   <i class="ti ti-search"></i>
                 </span>
-                            </div>
-                            <a class="btn w-30 btn-icon" aria-label="Dribbble" title="Descargar datos de promovidos asociados al operador" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px" (click)="exportarDatosAExcel()">
-                                <i class="ti ti-cloud-down text-muted" style="font-size: 28px"></i>
-                            </a>
-                        </div>
-                    </div>
+              </div>
+              <a
+                class="btn w-30 btn-icon"
+                aria-label="Dribbble"
+                title="Descargar datos de promovidos asociados al operador"
+                style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px"
+                (click)="exportarDatosAExcel()"
+              >
+                <i
+                  class="ti ti-cloud-down text-muted"
+                  style="font-size: 28px"
+                ></i>
+              </a>
+            </div>
+          </div>
 
-                    <ng-container [ngSwitch]="isLoadingModalIncidencias">
-                        <div style="height: 300px" *ngSwitchCase="2">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-                            </div>
-                        </div>
+          <ng-container [ngSwitch]="isLoadingModalIncidencias">
+            <div style="height: 300px" *ngSwitchCase="2">
+              <div class="progress">
+                <div
+                  class="progress-bar progress-bar-indeterminate bg-green"
+                ></div>
+              </div>
+            </div>
 
-                        <div *ngSwitchCase="3" class="card">
-                            <div class="table-responsive overflow-x-auto">
-                                <table class="table table-vcenter card-table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-transform: none; font-size: inherit" class="text-center">
-                                                #
-                                            </th>
-                                            <th style="text-transform: none; font-size: inherit">
-                                                Candidato
-                                            </th>
-                                            <th style="text-transform: none; font-size: inherit">
-                                                Casilla
-                                            </th>
-                                            <th style="text-transform: none; font-size: inherit" class="text-center">
-                                                Tipo de incidencia
-                                            </th>
-                                            <th style="text-transform: none; font-size: inherit" class="text-center">
-                                                Dirección
-                                            </th>
-                                            <th style="text-transform: none; font-size: inherit" class="text-center">
-                                                Fotografía
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="
+            <div *ngSwitchCase="3" class="card">
+              <div class="table-responsive overflow-x-auto">
+                <table class="table table-vcenter card-table table-striped">
+                  <thead>
+                    <tr>
+                      <th
+                        style="text-transform: none; font-size: inherit"
+                        class="text-center"
+                      >
+                        #
+                      </th>
+                      <th style="text-transform: none; font-size: inherit">
+                        Candidato
+                      </th>
+                      <th style="text-transform: none; font-size: inherit">
+                        Casilla
+                      </th>
+                      <th
+                        style="text-transform: none; font-size: inherit"
+                        class="text-center"
+                      >
+                        Tipo de incidencia
+                      </th>
+                      <th
+                        style="text-transform: none; font-size: inherit"
+                        class="text-center"
+                      >
+                        Dirección
+                      </th>
+                      <th
+                        style="text-transform: none; font-size: inherit"
+                        class="text-center"
+                      >
+                        Fotografía
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      *ngFor="
                         let incidencias of incidenciasFiltradas
                           | paginate : configPaginator;
                         let pointIndex = index
-                      ">
-                                            <td class="text-center">
-                                                {{ configPaginator.itemsPerPage * (configPaginator.currentPage - 1) + pointIndex + 1 }}
-                                            </td>
-                                            <td class="text-muted">
-                                                {{ incidencias.candidato.nombreCompleto }}
-                                            </td>
-                                            <td class="text-muted">
-                                                {{ incidencias.casilla.nombre }}
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge" style="height: 20px; width: 20px" [style.backgroundColor]="
+                      "
+                    >
+                      <td class="text-center">
+                        {{
+                          configPaginator.itemsPerPage *
+                            (configPaginator.currentPage - 1) +
+                            pointIndex +
+                            1
+                        }}
+                      </td>
+                      <td class="text-muted">
+                        {{ incidencias.candidato.nombreCompleto }}
+                      </td>
+                      <td class="text-muted">
+                        {{ incidencias.casilla.nombre }}
+                      </td>
+                      <td class="text-center">
+                        <span
+                          class="badge"
+                          style="height: 20px; width: 20px"
+                          [style.backgroundColor]="
                             incidencias.tipoIncidencia.color
-                          "></span> {{ incidencias.tipoIncidencia.tipo }}
-                                            </td>
-                                            <td>{{ incidencias.direccion }}</td>
-                                            <td class="text-muted">
-                                                <div class="flex justify-center items-center">
-                                                    <img src="{{ incidencias.foto }}" alt="Foto de {{ incidencias.foto }}" width="50" height="50" />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                          "
+                        ></span>
+                        {{ incidencias.tipoIncidencia.tipo }}
+                      </td>
+                      <td>{{ incidencias.direccion }}</td>
+                      <td class="text-muted">
+                        <div class="flex justify-center items-center">
+                          <img
+                            src="{{ incidencias.foto }}"
+                            alt="Foto de {{ incidencias.foto }}"
+                            width="50"
+                            height="50"
+                          />
                         </div>
-
-                        <app-no-results *ngSwitchCase="4"></app-no-results>
-                    </ng-container>
-
-                    <br />
-
-                    <div class="card-footer d-flex align-items-center">
-                        <p class="m-0 text-muted">
-                            Total de registros: <b>{{ incidenciasFiltradas.length }}</b>
-                        </p>
-                        <div class="m-0 ms-auto">
-                            <pagination-controls (pageChange)="onPageChange($event)" previousLabel="" nextLabel="">
-                            </pagination-controls>
-                        </div>
-                    </div>
-                </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
+
+            <app-no-results *ngSwitchCase="4"></app-no-results>
+          </ng-container>
+
+          <br />
+
+          <div class="card-footer d-flex align-items-center">
+            <p class="m-0 text-muted">
+              Total de registros: <b>{{ incidenciasFiltradas.length }}</b>
+            </p>
+            <div class="m-0 ms-auto">
+              <pagination-controls
+                (pageChange)="onPageChange($event)"
+                previousLabel=""
+                nextLabel=""
+              >
+              </pagination-controls>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
