@@ -22,7 +22,9 @@ export class DistribucionCandidaturaService {
   get refreshListCandidatura() {
     return this._refreshListCandidatura$;
   }
-
+  getTipoId(id: number) {
+    return this.http.get<DistribucionCandidatura[]>(`${this.route}/obtener-por-Tipo/${id}`);
+  }
   getById(id: number) {
     return this.http.get<DistribucionCandidatura>(
       `${this.route}/obtener-por-id/${id}`

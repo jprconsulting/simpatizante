@@ -19,7 +19,7 @@ export class ResultadoService {
   get refreshListPresultados() {
     return this._refreshListResultados$;
   }
-
+ 
   getAll() {
     return this.http.get<Resultado[]>(`${this.route}/obtener-todos`);
   }
