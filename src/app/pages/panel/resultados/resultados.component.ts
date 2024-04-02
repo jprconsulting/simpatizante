@@ -63,6 +63,7 @@ export class ResultadosComponent {
   candidaturasFilter: Candidatura[] = [];
   candidaturas: Candidatura[] = [];
   tiposEleccion: TipoEleccion[] = [];
+  seccionesOperador: Seccion[] = [];
   comunidades: Comunidad[] = [];
   distritos: Distrito[] = [];
   TipoSelect!: TipoEleccion | undefined;
@@ -272,7 +273,7 @@ export class ResultadosComponent {
   }
   agregar() {
     this.resultado = this.resultadosForm.value as Resultado;
-
+    this.resultado.estado = { id: 29 } as Estado;
     const seccion = this.resultadosForm.get('seccion')?.value;
     this.resultado.seccion = { id: seccion } as Seccion;
 
@@ -436,8 +437,18 @@ export class ResultadosComponent {
 
       // Reiniciar la paginación a la página 1
       this.configPaginator.currentPage = 1;
+      
     }
   }
+  seccionMunicipio(id: number) {
+    this.seccionService.getMunicipioId(id).subscribe({
+      next: (dataFromAPI) => {
+        this.secciones = dataFromAPI;
+        this.seccionesOperador = this.secciones;
+      },
+    });
+  }
+
   onSelectComunidades(id: number | null) {
     this.ComunidadSelect = this.comunidades.find((v) => v.id === id);
 
@@ -627,9 +638,7 @@ export class ResultadosComponent {
     }
   }
 
-  getPartido(partidoNombre: string): string | undefined {
-    return this.partidosLista.find((partido) => partido === partidoNombre);
-  }
+ 
 
   getLogo(partido: string): { nombre: string; logoUrl: string } | undefined {
     return this.partidosConLogo.find(
@@ -750,7 +759,7 @@ export class ResultadosComponent {
   }
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    const valueSearch = inputValue.toLowerCase();
+    const valueSearch = inputValue.toLowerCase(); 
     this.resultadosFilter = this.resultados.filter(
       (programa) =>
         programa.tipoEleccion.nombre.toLowerCase().includes(valueSearch) ||
@@ -815,12 +824,14 @@ export class ResultadosComponent {
   setDataModalUpdate(dto: Resultado) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
+    this.visibiliti = true;
 
     this.resultadosForm.patchValue({
       id: dto.id,
       seccion: dto.seccion.id,
       tipoEleccion: dto.tipoEleccion.id,
       casilla: dto.casilla.id,
+      estado: dto.estado?.id,
       municipio: dto.municipio?.id,
       boletasSobrantes: dto.boletasSobrantes,
       distrito: dto.distrito?.id,

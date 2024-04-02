@@ -72,9 +72,6 @@
                   Casilla
                 </th>
                 <th style="text-transform: none; font-size: inherit">
-                  Distrito
-                </th>
-                <th style="text-transform: none; font-size: inherit">
                   Resultado
                 </th>
                 <th style="text-transform: none; font-size: inherit">
@@ -108,9 +105,6 @@
                   {{ resultados.casilla.nombre }}
                 </td>
                 <td class="text-muted">
-                  {{ resultados.distrito.nombre }}
-                </td>
-                <td class="text-muted">
                   {{ resultados.suma }}
                 </td>
                 <td style="width: 50px">
@@ -141,7 +135,7 @@
       <!-- Fin *ngSwitchCase-->
 
       <div class="card-footer d-flex align-items-center">
-        <p class="m-0 text-muted">Total de registros: <b>1</b></p>
+        <p class="m-0 text-muted">Total de registros: <b>{{ resultadosFilter.length }}</b></p>
         <div class="m-0 ms-auto">
           <pagination-controls
             (pageChange)="onPageChange($event)"
@@ -165,7 +159,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Resultados pre-eliminares</h5>
+        {{ isModalAdd ? "Agregar" : "Actualizar" }} resultados pre-eliminares
         <button
           #closebutton
           type="button"
@@ -247,7 +241,7 @@
                       <input
                         class="form-control"
                         type="text"
-                        value="29"
+                        value=""
                         (input)="selectEstado.filter($any($event.target).value)"
                       />
                     </ng-template>
@@ -307,17 +301,19 @@
                   <ng-select
                     formControlName="municipio"
                     #selectMunicipio
-                    [searchable]="false"
+                    [searchable]="true"
                     [items]="municipios"
                     bindLabel="nombre"
+                    [clearable]="true"
                     bindValue="id"
                     (change)="
                       onSelectmunicipios($event?.id);
-                      verPartidosDistribucion($event?.id)
+                      verPartidosDistribucion($event?.id);
+                      seccionMunicipio($event?.id)
                     "
                     placeholder="Selecciona una opción"
-                    [clearable]="false"
-                    [clearable]="false"
+                    [clearable]="true"
+                    (clear)="getSecciones()"
                   >
                     <ng-template ng-header-tmp>
                       <input
@@ -577,8 +573,8 @@
                           </tr>
                         </ng-container>
                       </ng-container>
-                      <div style="columns: 2">
-                        <div style="column-count: 1">
+                      <div style="columns: 3" >
+                        <div style="column-count: 1" >
                           <ul>
                             <ng-container
                               *ngFor="
@@ -587,7 +583,24 @@
                                 let i = index
                               "
                             >
-                              <li *ngIf="i % 2 === 0">{{ partido }}</li>
+                              <li *ngIf="i % 2 === 0 getLogo(partido)" >{{ partido }} <img
+                                [src]="getLogo(partido)?.logoUrl"
+                                alt="Logo de {{ partido }}"
+                                width="50"
+                              /> </li>
+                            </ng-container>
+                          </ul>
+                        </div>
+                        <div style="column-count: 1" >
+                          <ul>
+                            <ng-container
+                              *ngFor="
+                                let partido of resultadosForm.get('Votosnulos')
+                                  ?.value;
+                                let i = index
+                              "
+                            >
+                              <li *ngIf="i % 2 === 0">{{ partido }} </li>
                             </ng-container>
                           </ul>
                         </div>

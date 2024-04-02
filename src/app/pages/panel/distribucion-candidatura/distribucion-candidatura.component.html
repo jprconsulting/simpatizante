@@ -233,15 +233,16 @@
                   [items]="estados"
                   bindLabel="nombre"
                   bindValue="id"
-                  placeholder="Selecciona una opción"
+                  placeholder="Tlaxcala"
                   [clearable]="false"
+                  [readonly]="true"
                   value=""
                 >
                   <ng-template ng-header-tmp>
                     <input
                       class="form-control"
                       type="text"
-                      value=""
+                      value="29"
                       (input)="selectEstado.filter($any($event.target).value)"
                     />
                   </ng-template>
