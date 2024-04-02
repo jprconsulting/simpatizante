@@ -39,15 +39,15 @@
               <div class="col-lg-6">
                 <label class="form-label">Búsqueda por municipio</label>
                 <ng-select
-                  formControlName="municipio"
-                  #selectMunicipio
+                  formControlName="seccion"
+                  #selectSeccion
                   [searchable]="false"
-                  [items]="municipio"
+                  [items]="seccion"
                   bindLabel="nombre"
                   bindValue="id"
-                  placeholder="Todos los municipios"
+                  placeholder="Todas las secciones"
                   [clearable]="true"
-                  (change)="onSelectMunicipios($event?.id)"
+                  (change)="onSelectSeccion($event?.id)"
                   (clear)="onClear()"
                 >
                   <ng-template ng-header-tmp>
@@ -55,7 +55,7 @@
                       class="form-control"
                       type="text"
                       (input)="
-                        selectMunicipio.filter($any($event.target).value)
+                        selectSeccion.filter($any($event.target).value)
                       "
                     />
                   </ng-template>

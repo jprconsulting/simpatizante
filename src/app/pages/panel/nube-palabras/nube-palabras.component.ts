@@ -13,8 +13,7 @@ import { SecurityService } from 'src/app/core/services/security.service';
 import { AppUserAuth } from 'src/app/models/login';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { RolesBD } from 'src/app/global/global';
-import { Municipio } from 'src/app/models/municipio';
-import { MunicipiosService } from 'src/app/core/services/municipios.service';
+
 NoDataToDisplay(Highcharts);
 declare var require: any;
 const More = require('highcharts/highcharts-more');
@@ -34,7 +33,7 @@ export class NubePalabrasComponent implements AfterViewInit {
   generalWordCloud!: GeneralWordCloud;
   options: Highcharts.Options = {};
   candidato: Candidato[] = [];
-  municipio: Municipio[] = [];
+  seccion: Seccion[] = [];
   currentUser!: AppUserAuth | null;
   mapaForm!: FormGroup;
   candidatoId = 0;
@@ -43,7 +42,7 @@ export class NubePalabrasComponent implements AfterViewInit {
   constructor(
     private dashboardService: DashboardService,
     private candidatoService: CandidatosService,
-    private municipioService: MunicipiosService,
+    private seccionService: SeccionService,
     private securityService: SecurityService,
     private formBuilder: FormBuilder
   ) {
@@ -83,9 +82,9 @@ export class NubePalabrasComponent implements AfterViewInit {
       .subscribe({ next: (dataFromAPI) => (this.candidato = dataFromAPI) });
   }
   getMunicipios2() {
-    this.municipioService
+    this.seccionService
       .getAll()
-      .subscribe({ next: (dataFromAPI) => (this.municipio = dataFromAPI) });
+      .subscribe({ next: (dataFromAPI) => (this.seccion = dataFromAPI) });
   }
 
   getWordCloud() {
@@ -194,12 +193,12 @@ export class NubePalabrasComponent implements AfterViewInit {
     }
   }
 
-  onSelectMunicipios(id: number) {
+  onSelectSeccion(id: number) {
     if (id) {
-      const wordCloudByMunicipio =
+      const wordCloudBySeccion =
         this.generalWordCloud.wordCloudPorMunicipios.find((i) => i.id === id);
-      if (wordCloudByMunicipio) {
-        this.dashboardService.updateWordCloud(wordCloudByMunicipio.wordCloud);
+      if (wordCloudBySeccion) {
+        this.dashboardService.updateWordCloud(wordCloudBySeccion.wordCloud);
         this.setSettingsWordCloud();
       }
     }

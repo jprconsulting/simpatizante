@@ -1,5 +1,5 @@
 import { Candidato } from './candidato';
-import { Municipio } from './municipio';
+import { Seccion } from './seccion';
 
 export interface WordCloud {
   name: string;
@@ -16,6 +16,6 @@ export interface CandidatoWordCloud extends Candidato {
   wordCloud: WordCloud[];
 }
 
-export interface MunicipiotoWordCloud extends Municipio {
+export interface MunicipiotoWordCloud extends Seccion {
   wordCloud: WordCloud[];
 }
