@@ -11,6 +11,8 @@ import { Municipio } from 'src/app/models/municipio';
 import { Candidato } from 'src/app/models/candidato';
 import { Propaganda } from 'src/app/models/propaganda-electoral';
 import * as XLSX from 'xlsx';
+import { Seccion } from 'src/app/models/seccion';
+import { SeccionService } from 'src/app/core/services/seccion.service';
 
 @Component({
   selector: 'app-propaganda-electoral',
@@ -31,6 +33,7 @@ export class PropagandaElectoralComponent {
   private marker: any;
   maps!: google.maps.Map;
   municipios: Municipio[] = [];
+  seccion: Seccion[] = [];
   Propagandas: Propaganda[] = [];
   candidatos: Candidato[] = [];
   PropagandasFilter: Propaganda[] = [];
@@ -49,7 +52,8 @@ export class PropagandaElectoralComponent {
     private formBuilder: FormBuilder,
     private municipiosService: MunicipiosService,
     private candidatosService: CandidatosService,
-    private propagandaService: PropagandaService
+    private propagandaService: PropagandaService,
+    private seccionService: SeccionService
   ) {
     this.propagandaService.refreshListpropagandas.subscribe(() =>
       this.getPropagandas()
@@ -58,6 +62,7 @@ export class PropagandaElectoralComponent {
     this.getMunicipios();
     this.getPropagandas();
     this.getCandidatos();
+    this.getSeccion();
   }
   getPropagandas() {
     this.isLoading = LoadingStates.trueLoading;
@@ -72,6 +77,14 @@ export class PropagandaElectoralComponent {
         if (err.status === 401) {
           this.mensajeService.mensajeSesionExpirada();
         }
+      },
+    });
+  }
+  getSeccion() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.seccionService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.seccion = dataFromAPI;
       },
     });
   }
@@ -94,6 +107,7 @@ export class PropagandaElectoralComponent {
       longitud: [],
       ubicacion: ['', Validators.required],
       candidato: ['', Validators.required],
+      seccion: ['', Validators.required],
     });
   }
 
@@ -123,6 +137,8 @@ export class PropagandaElectoralComponent {
     this.propagandas.municipio = { id: tipo } as Municipio;
     const candidato = this.propagandaForm.get('candidato')?.value;
     this.propagandas.candidato = { id: candidato } as Candidato;
+    const seccionId = this.propagandaForm.get('seccion')?.value;
+    this.propagandas.seccion = { id: seccionId } as Seccion;
     const imagenBase64 = this.propagandaForm.get('imagenBase64')?.value;
 
     this.imgPreview = '';
@@ -172,6 +188,8 @@ export class PropagandaElectoralComponent {
     this.propagandas.municipio = { id: tipo } as Municipio;
     const candidato = this.propagandaForm.get('candidato')?.value;
     this.propagandas.candidato = { id: candidato } as Candidato;
+    const seccionId = this.propagandaForm.get('seccion')?.value;
+    this.propagandas.seccion = { id: seccionId } as Seccion;
 
     this.spinnerService.show();
 
@@ -215,6 +233,7 @@ export class PropagandaElectoralComponent {
       id: dto.id,
       candidato: dto.candidato.id,
       municipio: dto.municipio.id,
+      seccion: dto.seccion.id,
       folio: dto.folio,
       dimensiones: dto.dimensiones,
       comentarios: dto.comentarios,
@@ -579,5 +598,36 @@ export class PropagandaElectoralComponent {
     };
 
     this.selectAddress2(dummyPlace);
+  }
+
+  candidatoSelect!: Candidato | undefined;
+  selectedCandidatosId: number | null = null;
+  seccionesOperador: Seccion[] = [];
+  Candidatomunicipio(id: number | null) {
+    this.candidatoSelect = this.candidatos.find((o) => o.id === id);
+    console.log(this.candidatoSelect, 'nsacd');
+    if (
+      this.candidatoSelect &&
+      this.candidatoSelect.municipio?.id !== undefined
+    ) {
+      this.selectedCandidatosId = this.candidatoSelect.municipio?.id;
+
+      this.seccionService.getMunicipioId(this.selectedCandidatosId).subscribe({
+        next: (dataFromAPI) => {
+          this.seccion = dataFromAPI;
+          this.seccionesOperador = this.seccion;
+        },
+      });
+    }
+    if (
+      this.candidatoSelect &&
+      this.candidatoSelect.municipio?.id === undefined
+    ) {
+      this.getSeccion();
+    }
+  }
+  onClearsecciones() {
+    this.getSeccion();
+    this.getPropagandas();
   }
 }

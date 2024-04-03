@@ -271,6 +271,42 @@ export class ResultadosComponent {
       this.agregar();
     }
   }
+
+  obtenerLogos(listaPartidos: string[]): void {
+    this.partidosConLogo = []; // Limpiamos el arreglo antes de comenzar
+    // Verificamos si la propiedad partidos está presente y no es nula
+
+    if (listaPartidos && listaPartidos.length > 0) {
+      // Iterar sobre los partidos y hacer las solicitudes de logo
+      const solicitudes = listaPartidos.map((partido) => {
+        console.log('Buscando logo para el partido:', partido);
+        return this.candidaturaService.obtenerLogoPartido(partido).pipe(
+          map((respuesta) => ({
+            nombre: partido,
+            logoUrl: respuesta.logoUrl,
+          })),
+          catchError((error) => {
+            console.error(
+              `Error al obtener el logo para el partido ${partido}:`,
+              error
+            );
+            // Devolver un objeto con la URL de un logo por defecto en caso de error
+            return of({
+              nombre: partido,
+              logoUrl: 'URL del logo por defecto',
+            });
+          })
+        );
+      });
+
+      forkJoin(solicitudes).subscribe((partidosConLogo) => {
+        this.partidosConLogo = partidosConLogo;
+      });
+    } else {
+      // Si no hay partidos o la lista está vacía, podemos manejarlo de alguna manera
+      console.log('No se encontraron partidos para obtener logos.');
+    }
+  }
   agregar() {
     this.resultado = this.resultadosForm.value as Resultado;
     this.resultado.estado = { id: 29 } as Estado;

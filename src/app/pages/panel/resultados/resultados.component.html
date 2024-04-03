@@ -576,19 +576,14 @@
                       <div style="columns: 3" >
                         <div style="column-count: 1" >
                           <ul>
-                            <ng-container
-                              *ngFor="
-                                let partido of resultadosForm.get('Votosnulos')
-                                  ?.value;
-                                let i = index
-                              "
-                            >
-                              <li *ngIf="i % 2 === 0 getLogo(partido)" >{{ partido }} <img
-                                [src]="getLogo(partido)?.logoUrl"
-                                alt="Logo de {{ partido }}"
-                                width="50"
-                              /> </li>
-                            </ng-container>
+                            <div style="column-count: 1" #columna1>
+                              <ul>
+                                <ng-container *ngFor="let partido of resultadosForm.get('Votosnulos')?.value; let i = index">
+                                  <li *ngIf="i % 2 === 0">{{ partido }} </li>
+                                </ng-container>
+                              </ul>
+                            </div>
+                            
                           </ul>
                         </div>
                         <div style="column-count: 1" >
