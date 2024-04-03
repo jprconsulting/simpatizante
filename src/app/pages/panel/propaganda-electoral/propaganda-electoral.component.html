@@ -242,6 +242,7 @@
                     placeholder="Elegir"
                     [clearable]="true"
                     [(ngModel)]="selectedCandidatosId"
+                    (change)="seccionMunicipio($event?.id)"
                     (clear)="onClearsecciones()"
                   >
                     <ng-template ng-header-tmp>

@@ -351,6 +351,7 @@ export class PropagandaElectoralComponent {
             if (place.formatted_address) {
               this.propagandaForm.patchValue({
                 ubicacion: place.formatted_address,
+                domicilio: place.formatted_address,
               });
             } else {
               console.log('No se pudo obtener la dirección.');
@@ -629,5 +630,13 @@ export class PropagandaElectoralComponent {
   onClearsecciones() {
     this.getSeccion();
     this.getPropagandas();
+  }
+  seccionMunicipio(id: number) {
+    this.seccionService.getMunicipioId(id).subscribe({
+      next: (dataFromAPI) => {
+        this.seccion = dataFromAPI;
+        this.seccionesOperador = this.seccion;
+      },
+    });
   }
 }
