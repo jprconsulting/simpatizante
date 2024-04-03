@@ -5,6 +5,8 @@ import { Propaganda } from 'src/app/models/propaganda-electoral';
 import { Indicadores } from 'src/app/models/indicadores';
 import { Candidato } from 'src/app/models/candidato';
 import { CandidatosService } from 'src/app/core/services/candidatos.service';
+import { Seccion } from 'src/app/models/seccion';
+import { SeccionService } from 'src/app/core/services/seccion.service';
 
 declare const google: any;
 
@@ -20,13 +22,21 @@ export class MapaPropagandaComponent implements AfterViewInit {
   propagandas: Propaganda[] = [];
   propagandasFiltradas: Propaganda[] = [];
   candidatos: Candidato[] = [];
+  secciones: Seccion[] = [];
 
   constructor(
     private candidatosService: CandidatosService,
-    private propagandasService: PropagandaService
+    private propagandasService: PropagandaService,
+    private seccionService: SeccionService
   ) {
     this.getPropagandas();
     this.getCandidatos();
+    this.getSecciones();
+  }
+  getSecciones() {
+    this.seccionService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.secciones = dataFromAPI) });
   }
 
   getCandidatos() {
@@ -196,6 +206,19 @@ export class MapaPropagandaComponent implements AfterViewInit {
           this.setInfoWindow(
             this.getMarker(candidato),
             this.getContentString(candidato)
+          );
+        });
+    }
+  }
+  onSelectSecciones(id: number) {
+    if (id) {
+      this.clearMarkers();
+      this.propagandas
+        .filter((b) => b.seccion.id == id)
+        .forEach((seccion) => {
+          this.setInfoWindow(
+            this.getMarker(seccion),
+            this.getContentString(seccion)
           );
         });
     }

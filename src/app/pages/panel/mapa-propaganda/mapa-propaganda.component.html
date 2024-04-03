@@ -1,24 +1,76 @@
 <app-page-header headerTitle="Mapa de propaganda electoral"></app-page-header>
 <div class="row row-deck row-cards">
-    <div class="card">
-        <div class="col-12">
-            <div class="card-header pb-1 pt-2">
-                <div class="col-lg-12">
-                    <div class="mb-3">
-                        <div class="custom-header">
-                            <h5 class="page-title mb-3">Candidato</h5>
-                            <ng-select #selectPrograma [searchable]="false" bindLabel="nombreCompleto" [items]="candidatos" bindValue="id" placeholder="Todos los candidatos" [clearable]="true" (change)="onSelectCandidato($event?.id)" (clear)="onClear()" style="width: 50%">
-                                <ng-template ng-option-tmp let-item="item" let-index="index">
-                                    {{ item.nombreCompleto }}
-                                </ng-template>
-                            </ng-select>
-                        </div>
-                    </div>
-                </div>
+  <div class="card">
+    <div class="col-12">
+      <div class="card-header pb-1 pt-2">
+        <div class="col-lg-6 mr-3" style="padding-right: 10px">
+          <!-- Agregado mr-3 para espacio -->
+          <div class="mb-3">
+            <div class="custom-header">
+              <form>
+                <h5 class="page-title mb-3">Candidato</h5>
+                <ng-select
+                  #selectPrograma
+                  [searchable]="false"
+                  bindLabel="nombreCompleto"
+                  [items]="candidatos"
+                  bindValue="id"
+                  placeholder="Todos los candidatos"
+                  [clearable]="true"
+                  (change)="onSelectCandidato($event?.id)"
+                  (clear)="onClear()"
+                  style="width: 100%"
+                >
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{ item.nombreCompleto }}
+                  </ng-template>
+                </ng-select>
+              </form>
             </div>
-            <div class="card-body p-0">
-                <div id="map-canvas" class="custom-map" style="width: 100%; height: 70vh" data-lat="19.34889526616767" data-lng="-98.19011296839722"></div>
-            </div>
+          </div>
         </div>
+        <div class="col-lg-6">
+          <!-- Modificación en esta línea -->
+          <div class="mb-3">
+            <div class="custom-header">
+              <h5 class="page-title mb-3">Secciones</h5>
+              <ng-select
+                formControlName="promovidos"
+                #selectsecciones
+                [searchable]="false"
+                placeholder="Todas las secciones"
+                [items]="secciones"
+                bindLabel="claveYNombre"
+                bindValue="id"
+                [clearable]="true"
+                (change)="onSelectSecciones($event?.id)"
+                (clear)="onClear()"
+              >
+                <ng-template ng-header-tmp>
+                  <input
+                    class="form-control"
+                    type="text"
+                    (input)="selectsecciones.filter($any($event.target).value)"
+                  />
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{ item.claveYNombre }}
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body p-0">
+        <div
+          id="map-canvas"
+          class="custom-map"
+          style="width: 100%; height: 70vh"
+          data-lat="19.34889526616767"
+          data-lng="-98.19011296839722"
+        ></div>
+      </div>
     </div>
+  </div>
 </div>
