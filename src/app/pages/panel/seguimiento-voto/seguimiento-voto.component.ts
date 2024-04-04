@@ -24,6 +24,9 @@ import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { PaginationInstance } from 'ngx-pagination';
 import { SimpatizantesService } from 'src/app/core/services/simpatizantes.service';
 import * as XLSX from 'xlsx';
+import { Operador } from 'src/app/models/operador';
+import { OperadoresService } from 'src/app/core/services/operadores.service';
+import { AppUserAuth } from 'src/app/models/login';
 
 @Component({
   selector: 'app-seguimiento-voto',
@@ -47,6 +50,12 @@ export class SeguimientoVotoComponent implements OnInit {
   isClaveFilled = false;
   isUpdatingImg = false;
   imgPreview = '';
+  operadores: Operador[] = [];
+  dataObject!: AppUserAuth | null;
+  operadorFilter: Operador[] = [];
+  votantesSelect!: Voto | undefined;
+  votantes: Simpatizante[] = [];
+  sinPrimovidosMessage = '';
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -54,16 +63,63 @@ export class SeguimientoVotoComponent implements OnInit {
     private votoService: VotoService,
     private spinnerService: NgxSpinnerService,
     private mensajeService: MensajeService,
-    private simpatizantesService: SimpatizantesService
+    private simpatizantesService: SimpatizantesService,
+    private operadoresService: OperadoresService
   ) {
     this.votoService.refreshListVotos.subscribe(() => this.getSimpatizantes());
     this.creteForm();
     this.getVotantes();
     this.getSimpatizantes();
+    this.getTodosOperadores();
   }
 
   ngOnInit(): void {
     this.isModalAdd = false;
+  }
+
+  getTodosOperadores() {
+    this.operadoresService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
+    this.operadoresService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.operadores = dataFromAPI;
+        this.operadorFilter = this.operadores;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: (err) => {
+        this.isLoading = LoadingStates.errorLoading;
+        if (err.status === 401) {
+          this.mensajeService.mensajeSesionExpirada();
+        }
+      },
+    });
+  }
+
+  onSelectOperador(id: number | null) {
+    console.log('ID del operador seleccionado:', id);
+    if (id !== null) {
+      this.votosFilter = this.votos.filter(
+        (voto) => voto.simpatizante.operador.id === id
+      );
+      console.log('Votos filtrados:', this.votosFilter);
+      if (this.votosFilter.length === 0) {
+        this.sinPrimovidosMessage = 'No se encontraron votos.';
+      } else {
+        this.sinPrimovidosMessage = '';
+      }
+    } else {
+      console.log('El ID del operador seleccionado es null.');
+      this.sinPrimovidosMessage = 'No se encontraron votos.';
+      this.votosFilter = [];
+    }
+  }
+
+  onClear() {
+    if (this.votos) {
+      this.getSimpatizantes();
+    }
+    this.sinPrimovidosMessage = '';
   }
 
   creteForm() {
