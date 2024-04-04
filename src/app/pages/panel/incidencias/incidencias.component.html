@@ -29,7 +29,7 @@
                         <div>
                             <form [formGroup]="mapaForm">
                                 <label style="margin-top: 5px" class="form-label">Candidato:</label>
-                                <ng-select #selectCandidato [searchable]="false" [items]="candidatos" formControlName="candidatoId" bindLabel="nombreCompleto" placeholder="Todos los candidatos" bindValue="id" [clearable]="true" [readonly]="readonlySelectCandidato" change()="onSelectCandidato($event?.id)"
+                                <ng-select #selectCandidato [searchable]="false" [items]="candidatos" formControlName="candidatoId" bindLabel="nombreCompleto" placeholder="Todos los candidatos" bindValue="id" [clearable]="true" [readonly]="readonlySelectCandidato" (change)="onSelectCandidato($event?.id)"
                                     (clear)="onClear()">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="
