@@ -40,6 +40,7 @@ export class PromotorComponent implements OnInit {
   readonlySelectOperador = true;
   operadorId = 0;
   candidatoId = 0;
+  sinPrimovidosMessage = '';
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -84,6 +85,41 @@ export class PromotorComponent implements OnInit {
 
   ngOnInit(): void {
     this.configPaginator.currentPage = 1;
+  }
+
+  obtenerNombreCompletoOperador(promotor: Promotor): string {
+    if (promotor.operadores.length > 0) {
+      const primerOperador = promotor.operadores[0];
+      return primerOperador.nombreCompleto;
+    } else {
+      return 'Sin operador asociado';
+    }
+  }
+
+  onSelectOperador(id: number | null) {
+    console.log('ID del operador seleccionado:', id);
+    if (id !== null) {
+      this.promotoresFilter = this.promotores.filter((promotor) =>
+        promotor.operadores.some((operador) => operador.id === id)
+      );
+      console.log('Promotores filtrados:', this.promotoresFilter);
+      if (this.promotoresFilter.length === 0) {
+        this.sinPrimovidosMessage = 'No se encontraron promovidos.';
+      } else {
+        this.sinPrimovidosMessage = '';
+      }
+    } else {
+      console.log('El ID del operador seleccionado es null.');
+      this.sinPrimovidosMessage = 'No se encontraron promovidos.';
+      this.promotoresFilter = [];
+    }
+  }
+
+  onClear() {
+    if (this.promotores) {
+      this.getPromotores();
+    }
+    this.sinPrimovidosMessage = '';
   }
 
   creteForm() {

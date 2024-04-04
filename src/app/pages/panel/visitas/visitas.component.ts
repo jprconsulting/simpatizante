@@ -160,7 +160,7 @@ export class VisitasComponent {
           Validators.required,
           Validators.minLength(3),
           Validators.pattern(
-            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF, ]+$/
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF,. ]+$/
           ),
         ],
       ],
