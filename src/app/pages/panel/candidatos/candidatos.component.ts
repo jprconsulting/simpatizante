@@ -61,6 +61,7 @@ export class CandidatosComponent implements OnInit {
   sinSimpatizantes: boolean = false;
   pagModalPromovidos: number = 1;
   initialValueModalSearch: string = '';
+  comunidadPormunicipio: Comunidad[] = [];
 
   public imgPreview: string = '';
   public emblemaPreview: string = '';
@@ -457,7 +458,7 @@ export class CandidatosComponent implements OnInit {
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
     const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
     this.candidatos.estado = { id: 29 } as Estado;
-    
+
     const distrito = this.candidatoForm.get('distrito')?.value;
     this.candidatos.distrito = { id: distrito } as Distrito;
 
@@ -753,5 +754,13 @@ export class CandidatosComponent implements OnInit {
     a.download = nombreArchivo;
     a.click();
     window.URL.revokeObjectURL(url);
+  }
+  ComundadMunicipio(id: number) {
+    this.comunidadService.getMunicipioId(id).subscribe({
+      next: (dataFromAPI) => {
+        this.comunidades = dataFromAPI;
+        this.comunidadPormunicipio = this.comunidades;
+      },
+    });
   }
 }

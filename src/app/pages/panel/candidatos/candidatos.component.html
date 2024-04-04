@@ -460,7 +460,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-5">
+            <div class="col-lg-6">
               <div class="mb-3">
                 <div class="">
                   <label class="form-label">Cargo a participar*:</label>
@@ -489,7 +489,7 @@
               </div>
             </div>
             <div
-              class="col-lg-5"
+              class="col-lg-6"
               *ngIf="
                 candidatoForm.controls['cargo'].value == 1 ||
                 candidatoForm.controls['cargo'].value == 2 ||
@@ -525,7 +525,7 @@
             </div>
 
             <div
-              class="col-lg-5"
+              class="col-lg-6"
               *ngIf="candidatoForm.controls['cargo'].value == 4"
             >
               <div class="mb-3">
@@ -557,21 +557,25 @@
             </div>
 
             <div
-              class="col-lg-5"
-              *ngIf="candidatoForm.controls['cargo'].value == 5"
+              class="col-lg-6"
+              *ngIf="
+                candidatoForm.controls['cargo'].value == 5 ||
+                candidatoForm.controls['cargo'].value == 6
+              "
             >
               <div class="mb-3">
                 <label class="form-label">Municipio:</label>
                 <ng-select
                   formControlName="municipio"
                   #selectMunicipio
-                  [searchable]="false"
+                  [searchable]="true"
                   [items]="municipios"
                   bindLabel="nombre"
                   bindValue="id"
                   placeholder="Selecciona una opción"
-                  [clearable]="false"
-                  [clearable]="false"
+                  [clearable]="true"
+                  (change)="ComundadMunicipio($event?.id)"
+                  (clear)="getComunidad()"
                 >
                   <ng-template ng-header-tmp>
                     <input
@@ -591,7 +595,7 @@
             </div>
 
             <div
-              class="col-lg-5"
+              class="col-lg-6"
               *ngIf="candidatoForm.controls['cargo'].value == 6"
             >
               <div class="mb-3">

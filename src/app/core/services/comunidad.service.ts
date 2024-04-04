@@ -25,4 +25,8 @@ export class ComunidadService {
   getAll() {
     return this.http.get<Comunidad[]>(`${this.route}/obtener-todos`);
   }
+
+  getMunicipioId(id: number) {
+    return this.http.get<Comunidad[]>(`${this.route}/por-municipio/${id}`);
+  }
 }
