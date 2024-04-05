@@ -66,6 +66,9 @@
                                 <th style="text-transform: none; font-size: inherit">
                                     Casilla
                                 </th>
+                                <th style="text-transform: none; font-size: inherit">
+                                    Indicador
+                                </th>
                                 <th style="text-transform: none; font-size: inherit" class="text-center">
                                     Tipo de incidencia
                                 </th>
@@ -95,7 +98,10 @@
                                 <td>{{ incidencia.candidato.nombreCompleto }}</td>
                                 <td class="text-muted">{{ incidencia.casilla.nombre }}</td>
                                 <td class="text-center">
-                                    <span class="badge" style="height: 20px; width: 20px" [style.backgroundColor]="incidencia.tipoIncidencia.color"></span> {{ incidencia.tipoIncidencia.tipo }}
+                                    <span class="badge" style="height: 20px; width: 20px" [style.backgroundColor]="incidencia.tipoIncidencia.color"></span>
+                                </td>
+                                <td class="text-center">
+                                    {{ incidencia.tipoIncidencia.tipo }}
                                 </td>
                                 <td>{{ incidencia.retroalimentacion }}</td>
                                 <td>{{ incidencia.direccion }}</td>
