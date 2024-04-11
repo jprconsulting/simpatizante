@@ -31,6 +31,9 @@ export class CandidaturaService {
   getById(id: number) {
     return this.http.get<Candidatura>(`${this.route}/obtener-por-id/${id}`);
   }
+  getByNombre(nombre: string) {
+    return this.http.get<Candidatura[]>(`${this.route}/obtener-por-nombre/${nombre}`);
+  }
 
   getAll() {
     return this.http.get<Candidatura[]>(`${this.route}/obtener-todos`);
