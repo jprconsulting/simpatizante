@@ -24,10 +24,9 @@ import * as XLSX from 'xlsx';
 import { TipoEleccion } from 'src/app/models/tipo-eleccion';
 import { DistribucionCandidatura } from '../../../models/distribucion-candidatura';
 import { DistribucionCandidaturaService } from 'src/app/core/services/distribucion-candidatura.service';
-import { concatMap, map } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
+import { concatMap, map, mergeMap, toArray } from 'rxjs/operators';
+import { forkJoin, Observable, of, from } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 
 @Component({
   selector: 'app-distribucion-candidatura',
@@ -38,6 +37,7 @@ export class DistribucionCandidaturaComponent {
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
   distribucion!: DistribucionCandidatura;
+  distribucion2!: DistribucionCandidatura;
   DistribucionCandidatura!: DistribucionCandidatura;
   DistribucionForm!: FormGroup;
   isModalAdd = true;
@@ -537,65 +537,86 @@ export class DistribucionCandidaturaComponent {
     this.distribucion = this.DistribucionForm.value as DistribucionCandidatura;
     const tipo = this.DistribucionForm.get('tipoEleccion')?.value;
     this.distribucion.tipoEleccion = { id: tipo } as TipoAgrupaciones;
-
     this.distribucion.estado = { id: 29 } as Estado;
-
     const distrito = this.DistribucionForm.get('distrito')?.value;
     this.distribucion.distrito = { id: distrito } as Distrito;
-
     const municipio = this.DistribucionForm.get('municipio')?.value;
     this.distribucion.municipio = { id: municipio } as Municipio;
-
     const comunidad = this.DistribucionForm.get('comunidad')?.value;
     this.distribucion.comunidad = { id: comunidad } as Comunidad;
 
-    // Obtener y asignar los partidos
     const partidos = this.DistribucionForm.get('partidos')?.value;
-    const listaPartidos = partidos.map(
-      (partido: any) => partido.logo + '-' + partido.nombre
-    );
-    this.distribucion.partidos = listaPartidos;
-
-    // Obtener y asignar las coaliciones
     const coalicion = this.DistribucionForm.get('coalicion')?.value;
-    const listaCoalicion = coalicion.map(
-      (coalicionItem: any) => coalicionItem.logo + '-' + coalicionItem.nombre
-    );
-    this.distribucion.coalicion = listaCoalicion;
-
-    // Obtener y asignar los partidos independientes
     const independiente = this.DistribucionForm.get('independiente')?.value;
-    const listaIndependiente = independiente.map(
-      (independienteItem: any) =>
-        independienteItem.logo + '-' + independienteItem.nombre
-    );
-    this.distribucion.independiente = listaIndependiente;
-
-    // Obtener y asignar los partidos comunes
     const comun = this.DistribucionForm.get('comun')?.value;
-    const listaComun = comun.map(
-      (comunItem: any) => comunItem.logo + '-' + comunItem.nombre
+
+    const requests = [
+      this.getCandidaturas(partidos),
+      this.getCandidaturas(coalicion),
+      this.getCandidaturas(independiente),
+      this.getCandidaturas(comun),
+    ];
+
+    forkJoin(requests).subscribe((responses: any) => {
+      const [
+        partidosResultados,
+        coalicionResultados,
+        independienteResultados,
+        comunResultados,
+      ] = responses;
+
+      this.distribucion.partidos = partidosResultados;
+      this.distribucion.coalicion = coalicionResultados;
+      this.distribucion.independiente = independienteResultados;
+      this.distribucion.comun = comunResultados;
+
+      console.log('Data:', this.distribucion);
+      this.put(this.distribucion);
+    });
+  }
+
+  getCandidaturas(candidaturas: any[]): Observable<any[]> {
+    const observables = candidaturas.map((candidatura: any) =>
+      this.candidaturaService.getByNombre(candidatura)
     );
-    this.distribucion.comun = listaComun;
+    return forkJoin(observables).pipe(
+      map((responses: any[]) => {
+        const formattedResponses = responses.map(
+          (dataFromAPI) => `${dataFromAPI.logo} - ${dataFromAPI.nombre}`
+        );
+        console.log('Respuestas exitosas:', formattedResponses);
+        return formattedResponses;
+      }),
 
-    this.spinnerService.show();
+      catchError((error) => {
+        console.error('Error en la solicitud:', error);
+        // Si ocurre un error, devolver las candidaturas originales
+        return of(
+          candidaturas.map(
+            (coalicionItem) => `${coalicionItem.logo} - ${coalicionItem.nombre}`
+          )
+        );
+      })
+    );
+  }
 
-    this.distribucionCandidaturaService
-      .put(this.id, this.distribucion)
-      .subscribe({
-        next: () => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeExito(
-            'Candidatura actualizada correctamente'
-          );
-          this.resetForm();
-          this.configPaginator.currentPage = 1;
-        },
-        error: (error) => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeError(error);
-        },
-      });
+  put(data: any) {
+    console.log('data2', data);
+    console.log('data3', this.distribucion2);
+    this.distribucionCandidaturaService.put(this.id, data).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito(
+          'Candidatura actualizada correctamente'
+        );
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      },
+    });
   }
 
   setDataModalUpdate(dto: DistribucionCandidatura) {
@@ -606,14 +627,31 @@ export class DistribucionCandidaturaComponent {
       (candidatura) => candidatura.id === dto.id
     );
     this.isUpdatingImg = true;
+    // Realizar transformación para mostrar al usuario
+    const nombresPartidos = dto.partidos?.map((url: string) => {
+      const partes = url.split('-');
+      return partes[partes.length - 1];
+    });
+    const nombrescoalicion = dto.coalicion?.map((url: string) => {
+      const partes = url.split('-');
+      return partes[partes.length - 1];
+    });
+    const nombresindependiente = dto.independiente?.map((url: string) => {
+      const partes = url.split('-');
+      return partes[partes.length - 1];
+    });
+    const nombrescomun = dto.comun?.map((url: string) => {
+      const partes = url.split('-');
+      return partes[partes.length - 1];
+    });
 
     this.DistribucionForm.patchValue({
       id: dto.id,
       tipoEleccion: dto.tipoEleccion.id,
-      partidos: dto.partidos,
-      coalicion: dto.coalicion,
-      independiente: dto.independiente,
-      comun: dto.comun,
+      partidos: nombresPartidos,
+      coalicion: nombrescoalicion,
+      independiente: nombresindependiente,
+      comun: nombrescomun,
       estado: dto.estado?.id,
       distrito: dto.distrito?.id,
       municipio: dto.municipio?.id,
