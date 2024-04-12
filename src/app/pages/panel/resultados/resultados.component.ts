@@ -456,7 +456,7 @@ export class ResultadosComponent {
       noRegistrado: [''],
       votosNulos: [''],
       estado: [''],
-      partidos: [''],
+      partidos: [[]],
     });
   }
 
