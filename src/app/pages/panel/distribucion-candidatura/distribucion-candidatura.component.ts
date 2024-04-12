@@ -549,13 +549,35 @@ export class DistribucionCandidaturaComponent {
     const coalicion = this.DistribucionForm.get('coalicion')?.value;
     const independiente = this.DistribucionForm.get('independiente')?.value;
     const comun = this.DistribucionForm.get('comun')?.value;
+    console.log(partidos, 'partidos');
+    console.log(coalicion, 'coalicion');
+    console.log(independiente, 'independiente');
+    console.log(comun, 'comun');
+    const requests = [];
 
-    const requests = [
-      this.getCandidaturas(partidos),
-      this.getCandidaturas(coalicion),
-      this.getCandidaturas(independiente),
-      this.getCandidaturas(comun),
-    ];
+    if (partidos && partidos.length > 0) {
+      requests.push(this.getCandidaturas(partidos));
+    } else {
+      requests.push(of([]));
+    }
+
+    if (coalicion && coalicion.length > 0) {
+      requests.push(this.getCandidaturas(coalicion));
+    } else {
+      requests.push(of([]));
+    }
+
+    if (independiente && independiente.length > 0) {
+      requests.push(this.getCandidaturas(independiente));
+    } else {
+      requests.push(of([]));
+    }
+
+    if (comun && comun.length > 0) {
+      requests.push(this.getCandidaturas(comun));
+    } else {
+      requests.push(of([]));
+    }
 
     forkJoin(requests).subscribe((responses: any) => {
       const [
@@ -569,6 +591,11 @@ export class DistribucionCandidaturaComponent {
       this.distribucion.coalicion = coalicionResultados;
       this.distribucion.independiente = independienteResultados;
       this.distribucion.comun = comunResultados;
+
+      console.log(partidosResultados, 'partidos3');
+      console.log(coalicionResultados, 'coalicion3');
+      console.log(independienteResultados, 'independiente3');
+      console.log(comunResultados, 'comun3');
 
       console.log('Data:', this.distribucion);
       this.put(this.distribucion);
@@ -591,11 +618,11 @@ export class DistribucionCandidaturaComponent {
       catchError((error) => {
         console.error('Error en la solicitud:', error);
         // Si ocurre un error, devolver las candidaturas originales
-        return of(
-          candidaturas.map(
-            (coalicionItem) => `${coalicionItem.logo} - ${coalicionItem.nombre}`
-          )
+        const formattedErrors = candidaturas.map(
+          (coalicionItem) => `${coalicionItem.logo} - ${coalicionItem.nombre}`
         );
+        console.log('Respuestas error:', formattedErrors);
+        return of(formattedErrors);
       })
     );
   }
@@ -690,11 +717,30 @@ export class DistribucionCandidaturaComponent {
 
     const datosParaExportar = this.distribucionCandidatura.map(
       (distribucionCandidatura) => {
-        const partidoString = distribucionCandidatura.partidos?.join(', ');
-        const coalicionString = distribucionCandidatura.coalicion?.join(', ');
-        const comunString = distribucionCandidatura.comun?.join(', ');
-        const independienteString =
-          distribucionCandidatura.independiente?.join(', ');
+        const nombresPartidos = distribucionCandidatura.partidos?.map(
+          (url: string) => {
+            const partes = url.split('-');
+            return partes[partes.length - 1];
+          }
+        );
+        const nombrescoalicion = distribucionCandidatura.coalicion?.map(
+          (url: string) => {
+            const partes = url.split('-');
+            return partes[partes.length - 1];
+          }
+        );
+        const nombresindependiente = distribucionCandidatura.independiente?.map(
+          (url: string) => {
+            const partes = url.split('-');
+            return partes[partes.length - 1];
+          }
+        );
+        const nombrescomun = distribucionCandidatura.comun?.map(
+          (url: string) => {
+            const partes = url.split('-');
+            return partes[partes.length - 1];
+          }
+        );
 
         return {
           'Tipo elección': distribucionCandidatura.tipoEleccion.nombre,
@@ -702,10 +748,10 @@ export class DistribucionCandidaturaComponent {
           Distrito: distribucionCandidatura.distrito?.nombre,
           Municipio: distribucionCandidatura.municipio?.nombre,
           Comunidad: distribucionCandidatura.comunidad?.nombre,
-          Partido: partidoString,
-          'Candidatura común': comunString,
-          Coalición: coalicionString,
-          'Candidatura independiente': independienteString,
+          Partido: nombresPartidos?.join(', '),
+          'Candidatura común': nombrescomun?.join(', '),
+          Coalición: nombrescoalicion?.join(', '),
+          'Candidatura independiente': nombresindependiente?.join(', '),
         };
       }
     );
