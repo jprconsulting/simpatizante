@@ -82,6 +82,7 @@ export class ResultadosComponent {
   sumaTotal: number = 0;
   estados: Estado[] = [];
   partidosData: { nombre: string; valor: number }[] = [];
+  id!: number;
 
   isModalAdd = true;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -119,6 +120,19 @@ export class ResultadosComponent {
     this.Resultados();
     this.getEstado();
   }
+
+  getNombrePartido(partido: string): string {
+    return partido.split('.jpg')[1].split('-')[1].trim();
+  }
+
+  getLogoUrl(partido: string): string {
+    return partido.split('.jpg')[0] + '.jpg';
+  }
+
+  getPartido(partidoNombre: string): string | undefined {
+    return this.partidosLista.find((partido) => partido === partidoNombre);
+  }
+
   Resultados() {
     this.isLoading = LoadingStates.trueLoading;
     this.resultadoService.getAll().subscribe({
@@ -266,7 +280,7 @@ export class ResultadosComponent {
 
   submit() {
     if (this.isModalAdd === false) {
-      this.actualizarVisita();
+      this.actualizar();
     } else {
       this.agregar();
     }
@@ -333,7 +347,6 @@ export class ResultadosComponent {
     let partidos = [];
 
     for (let i = 0; i < listaActual.length; i++) {
-      partidos.push(listaActual[i].nombre);
       partidos.push(listaActual[i].valor.toString());
     }
 
@@ -365,7 +378,52 @@ export class ResultadosComponent {
     this.closebutton.nativeElement.click();
     this.resultadosForm.reset();
   }
-  actualizarVisita() {}
+
+  actualizar() {
+    this.resultado = this.resultadosForm.value as Resultado;
+    const resultadoId = this.resultadosForm.get('id')?.value;
+    this.resultado.estado = { id: 29 } as Estado;
+    const seccion = this.resultadosForm.get('seccion')?.value;
+    this.resultado.seccion = { id: seccion } as Seccion;
+    const tipoeleccion = this.resultadosForm.get('tipoEleccion')?.value;
+    this.resultado.tipoEleccion = { id: tipoeleccion } as Cargo;
+    const casilla = this.resultadosForm.get('casilla')?.value;
+    this.resultado.casilla = { id: casilla } as Casillas;
+    const distrito = this.resultadosForm.get('distrito')?.value;
+    this.resultado.distrito = { id: distrito } as Distrito;
+    const municipio = this.resultadosForm.get('municipio')?.value;
+    this.resultado.municipio = { id: municipio } as Municipio;
+    const comunidad = this.resultadosForm.get('comunidad')?.value;
+    this.resultado.comunidad = { id: comunidad } as Comunidad;
+
+    let listaActual = this.partidosData;
+
+    let partidos = [];
+
+    for (let i = 0; i < listaActual.length; i++) {
+      partidos.push(listaActual[i].valor.toString());
+    }
+
+    this.resultado.partidos = partidos; // Asignar la lista de partidos al resultado
+
+    console.log('Resultado antes de enviar:', this.resultado);
+
+    this.spinnerService.show();
+
+    this.resultadoService.put(resultadoId, this.resultado).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito('Resultado actualizado correctamente');
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      },
+    });
+  }
+
   onPageChange(number: number) {}
   handleChangeAdd() {
     this.resultadosForm.reset();
@@ -395,9 +453,10 @@ export class ResultadosComponent {
       personasVotaron: ['', Validators.required],
       votosRepresentantes: ['', Validators.required],
       suma: [''],
-      Candidatonoregistrado: [''],
-      Votosnulos: [''],
+      noRegistrado: [''],
+      votosNulos: [''],
       estado: [''],
+      partidos: [''],
     });
   }
 
@@ -469,11 +528,8 @@ export class ResultadosComponent {
       console.log(lista2); // Imprimir la lista
       this.partidosLista = lista2;
       console.log(this.partidosLista, 'tyf');
-      this.obtenerLogosPartidos(lista2);
-
       // Reiniciar la paginación a la página 1
       this.configPaginator.currentPage = 1;
-      
     }
   }
   seccionMunicipio(id: number) {
@@ -514,7 +570,6 @@ export class ResultadosComponent {
       console.log(lista2); // Imprimir la lista
       this.partidosLista = lista2;
       console.log(this.partidosLista, 'tyf');
-      this.obtenerLogosPartidos(lista2);
 
       // Reiniciar la paginación a la página 1
       this.configPaginator.currentPage = 1;
@@ -549,7 +604,6 @@ export class ResultadosComponent {
       console.log(lista2); // Imprimir la lista
       this.partidosLista = lista2;
       console.log(this.partidosLista, 'tyf');
-      this.obtenerLogosPartidos(lista2);
 
       // Reiniciar la paginación a la página 1
       this.configPaginator.currentPage = 1;
@@ -584,7 +638,6 @@ export class ResultadosComponent {
     console.log(lista2); // Imprimir la lista
     this.partidosLista = lista2;
     console.log(this.partidosLista, 'tyf');
-    this.obtenerLogosPartidos(lista2);
 
     // Reiniciar la paginación a la página 1
     this.configPaginator.currentPage = 1;
@@ -638,44 +691,6 @@ export class ResultadosComponent {
     this.configPaginator.currentPage = 1;
   }
 
-  obtenerLogosPartidos(listaPartidos: string[]): void {
-    this.partidosConLogo = []; // Limpiamos el arreglo antes de comenzar
-    // Verificamos si la propiedad partidos está presente y no es nula
-
-    if (listaPartidos && listaPartidos.length > 0) {
-      // Iterar sobre los partidos y hacer las solicitudes de logo
-      const solicitudes = listaPartidos.map((partido) => {
-        console.log('Buscando logo para el partido:', partido);
-        return this.candidaturaService.obtenerLogoPartido(partido).pipe(
-          map((respuesta) => ({
-            nombre: partido,
-            logoUrl: respuesta.logoUrl,
-          })),
-          catchError((error) => {
-            console.error(
-              `Error al obtener el logo para el partido ${partido}:`,
-              error
-            );
-            // Devolver un objeto con la URL de un logo por defecto en caso de error
-            return of({
-              nombre: partido,
-              logoUrl: 'URL del logo por defecto',
-            });
-          })
-        );
-      });
-
-      forkJoin(solicitudes).subscribe((partidosConLogo) => {
-        this.partidosConLogo = partidosConLogo;
-      });
-    } else {
-      // Si no hay partidos o la lista está vacía, podemos manejarlo de alguna manera
-      console.log('No se encontraron partidos para obtener logos.');
-    }
-  }
-
- 
-
   getLogo(partido: string): { nombre: string; logoUrl: string } | undefined {
     return this.partidosConLogo.find(
       (partidoConLogo) => partidoConLogo.nombre === partido
@@ -694,12 +709,49 @@ export class ResultadosComponent {
     }
   }
   partidosLista: string[] = [];
+
+  verificar(): void {
+    // Verificar si se ha seleccionado algún tipo de elección
+    if (this.selectedTipoId === null) {
+      console.log('No se ha seleccionado ningún tipo de elección.');
+      return;
+    }
+
+    // Verificar si se ha seleccionado algún valor de demarcación
+    const estado = this.resultadosForm.get('estado')?.value;
+    const distrito = this.resultadosForm.get('distrito')?.value;
+    const municipio = this.resultadosForm.get('municipio')?.value;
+    const comunidad = this.resultadosForm.get('comunidad')?.value;
+
+    if (!estado && !distrito && !municipio && !comunidad) {
+      console.log('No se ha seleccionado ninguna demarcación.');
+      return;
+    }
+
+    // Filtrar y mostrar los partidos según la demarcación seleccionada
+    if (distrito) {
+      this.onSelectdistrito(distrito);
+    } else if (municipio) {
+      this.onSelectmunicipios(municipio);
+    } else if (comunidad) {
+      this.onSelectComunidades(comunidad);
+    } else if (estado) {
+      this.onSelectestado(estado);
+    }
+  }
+
   getDistribucionId(distribucionId: number): void {
     this.isLoadingModalPartidos = LoadingStates.trueLoading;
 
     this.distribucionCandidaturaService.getById(distribucionId).subscribe({
       next: (dataFromAPI) => {
-        this.DistribucionCandidatura = dataFromAPI;
+        if (dataFromAPI.partidos) {
+          this.partidosLista = dataFromAPI.partidos;
+        } else {
+          console.error(
+            'No se han recibido datos de partidos desde el servicio.'
+          );
+        }
 
         this.isLoadingModalPartidos = LoadingStates.falseLoading;
       },
@@ -727,7 +779,7 @@ export class ResultadosComponent {
       return false;
     }
   }
-  lista(event: any, partidoItem: any) {
+  lista(event: any, partidoItem: any, index: number) {
     const valor = parseFloat(event.target.value);
     if (!isNaN(valor)) {
       const nombrePartido: string = partidoItem;
@@ -795,7 +847,7 @@ export class ResultadosComponent {
   }
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    const valueSearch = inputValue.toLowerCase(); 
+    const valueSearch = inputValue.toLowerCase();
     this.resultadosFilter = this.resultados.filter(
       (programa) =>
         programa.tipoEleccion.nombre.toLowerCase().includes(valueSearch) ||
@@ -857,15 +909,20 @@ export class ResultadosComponent {
     a.click();
     window.URL.revokeObjectURL(url);
   }
+
   setDataModalUpdate(dto: Resultado) {
     this.isModalAdd = false;
     this.idUpdate = dto.id;
     this.visibiliti = true;
 
+    // Filtrar solo el primer número de cada partido y eliminar los espacios en blanco adicionales
+    const partidosFormatted = dto.partidos
+      .map((partido) => partido.trim().split(',')[0].trim()) // Tomar solo el primer número de cada partido
+      .filter((numero) => !isNaN(Number(numero))); // Filtrar solo los números
+
     this.resultadosForm.patchValue({
       id: dto.id,
       seccion: dto.seccion.id,
-      tipoEleccion: dto.tipoEleccion.id,
       casilla: dto.casilla.id,
       estado: dto.estado?.id,
       municipio: dto.municipio?.id,
@@ -875,9 +932,9 @@ export class ResultadosComponent {
       personasVotaron: dto.personasVotaron,
       votosRepresentantes: dto.votosRepresentantes,
       suma: dto.suma,
-      Votosnulos: dto.partidos.map((s) => s),
-      partidos: dto.partidos.map((s) => s),
+      votosNulos: dto.votosNulos,
+      noRegistrado: dto.noRegistrado,
+      partidos: partidosFormatted,
     });
-    console.log('resultadosForm', this.resultadosForm.value);
   }
 }
