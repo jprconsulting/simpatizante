@@ -546,6 +546,7 @@ export class DistribucionCandidaturaComponent {
     this.distribucion.comunidad = { id: comunidad } as Comunidad;
 
     const partidos = this.DistribucionForm.get('partidos')?.value;
+
     const coalicion = this.DistribucionForm.get('coalicion')?.value;
     const independiente = this.DistribucionForm.get('independiente')?.value;
     const comun = this.DistribucionForm.get('comun')?.value;
@@ -601,28 +602,29 @@ export class DistribucionCandidaturaComponent {
       this.put(this.distribucion);
     });
   }
-
-  getCandidaturas(candidaturas: any[]): Observable<any[]> {
+  getCandidaturas(candidaturas: any[]): Observable<string[]> {
     const observables = candidaturas.map((candidatura: any) =>
       this.candidaturaService.getByNombre(candidatura)
     );
+
     return forkJoin(observables).pipe(
       map((responses: any[]) => {
         const formattedResponses = responses.map(
-          (dataFromAPI) => `${dataFromAPI.logo} - ${dataFromAPI.nombre}`
+          (dataFromAPI) => `${dataFromAPI.logo}-${dataFromAPI.nombre}` // Ajuste aquí
         );
         console.log('Respuestas exitosas:', formattedResponses);
         return formattedResponses;
       }),
-
       catchError((error) => {
         console.error('Error en la solicitud:', error);
-        // Si ocurre un error, devolver las candidaturas originales
-        const formattedErrors = candidaturas.map(
-          (coalicionItem) => `${coalicionItem.logo} - ${coalicionItem.nombre}`
-        );
+        // Si ocurre un error, devolver un mensaje de error como cadena
+        const formattedErrors = candidaturas
+          .map(
+            (coalicionItem) => `${coalicionItem.logo}-${coalicionItem.nombre}` // Ajuste aquí
+          )
+          .join(', ');
         console.log('Respuestas error:', formattedErrors);
-        return of(formattedErrors);
+        return of([formattedErrors]); // Devolver un array con el mensaje de error
       })
     );
   }
@@ -654,36 +656,45 @@ export class DistribucionCandidaturaComponent {
       (candidatura) => candidatura.id === dto.id
     );
     this.isUpdatingImg = true;
+
     // Realizar transformación para mostrar al usuario
-    const nombresPartidos = dto.partidos?.map((url: string) => {
-      const partes = url.split('-');
-      return partes[partes.length - 1];
-    });
-    const nombrescoalicion = dto.coalicion?.map((url: string) => {
-      const partes = url.split('-');
-      return partes[partes.length - 1];
-    });
-    const nombresindependiente = dto.independiente?.map((url: string) => {
-      const partes = url.split('-');
-      return partes[partes.length - 1];
-    });
-    const nombrescomun = dto.comun?.map((url: string) => {
-      const partes = url.split('-');
-      return partes[partes.length - 1];
-    });
+    const nombresPartidos =
+      dto.partidos?.map((url: string) => {
+        const partes = url.split('-');
+        return partes[partes.length - 1];
+      }) || []; // Si dto.partidos es null o undefined, asigna un array vacío
+
+    const nombresCoalicion =
+      dto.coalicion?.map((url: string) => {
+        const partes = url.split('-');
+        return partes[partes.length - 1];
+      }) || [];
+
+    const nombresIndependiente =
+      dto.independiente?.map((url: string) => {
+        const partes = url.split('-');
+        return partes[partes.length - 1];
+      }) || [];
+
+    const nombresComun =
+      dto.comun?.map((url: string) => {
+        const partes = url.split('-');
+        return partes[partes.length - 1];
+      }) || [];
 
     this.DistribucionForm.patchValue({
       id: dto.id,
       tipoEleccion: dto.tipoEleccion.id,
       partidos: nombresPartidos,
-      coalicion: nombrescoalicion,
-      independiente: nombresindependiente,
-      comun: nombrescomun,
+      coalicion: nombresCoalicion,
+      independiente: nombresIndependiente,
+      comun: nombresComun,
       estado: dto.estado?.id,
       distrito: dto.distrito?.id,
       municipio: dto.municipio?.id,
       comunidad: dto.comunidad?.id,
     });
+
     console.log('setDataUpdateVistaForm ', this.DistribucionForm.value);
     console.log('setDataUpdateDTO', dto);
   }
