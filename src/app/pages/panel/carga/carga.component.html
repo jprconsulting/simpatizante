@@ -1,0 +1,54 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.41)" size="large" color="#ffffff" type="ball-scale-multiple" [fullScreen]="true">
+    <p style="color: white">Guardando...</p>
+</ngx-spinner>
+
+<app-page-header headerTitle="Carga de promovidos"></app-page-header>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body border-bottom py-3">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#cargarcsv">
+            <i class="ti ti-plus me-1"></i>Agregar
+          </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-blur fade" id="cargarcsv" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Agregar csv de simpatizantes
+                </h5>
+                <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form [formGroup]="cargaForm" (ngSubmit)="submit()" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="csv" class="form-label">Archivo CSV *</label>
+                            <input type="file" class="form-control" formControlName="csv" (change)="onFileSelected($event)" accept=".csv">
+                            <small class="text-muted">Seleccione un archivo CSV para cargar.</small>
+                        </div>
+                    </div>
+                </div>
+                <p class="form-label" style="margin-left: 20px; color: red; font-weight: bold">
+                    Todos los campos marcados con * son requeridos
+                </p>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" [disabled]="!cargaForm.valid || !formData">
+            Agregar
+          </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

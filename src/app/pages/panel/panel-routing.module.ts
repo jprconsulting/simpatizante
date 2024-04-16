@@ -176,6 +176,11 @@ const routes: Routes = [
             (i) => i.FormulariosModule
           ),
       },
+      {
+        path: 'carga',
+        loadChildren: () =>
+          import('./carga/carga.module').then((i) => i.CargaModule),
+      },
     ],
   },
 ];

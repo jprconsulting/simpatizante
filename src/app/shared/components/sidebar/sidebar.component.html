@@ -242,7 +242,29 @@
                     </div>
                 </ul>
             </li>
-
+            <li class="nav-item dropdown" *appHasClaim="'canAccessConfiguracion'" [ngClass]="{
+                            active:
+                        (rlCarga && rlCarga.isActive)
+                          }">
+                <a class="nav-link dropdown-toggle" [routerLink]="" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
+                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <i class="ti ti-tool"></i>
+          </span>
+                    <span class="nav-link-title"> Configuración</span>
+                </a>
+                <ul class="dropdown-menu show">
+                    <div class="dropdown-menu-columns">
+                        <div class="dropdown-menu-column">
+                            <a *appHasClaim="'CanAccessCarga'" class="dropdown-item" [routerLink]="['carga']" #rlCandidaturas="routerLinkActive" routerLinkActive="active">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="ti ti-cloud-upload"></i>
+                </span>
+                                <span class="nav-link-title">Carga de promovidos</span>
+                            </a>
+                        </div>
+                    </div>
+                </ul>
+            </li>
         </ul>
     </div>
 </div>
