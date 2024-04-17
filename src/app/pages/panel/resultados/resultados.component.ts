@@ -377,6 +377,7 @@ export class ResultadosComponent {
   resetForm() {
     this.closebutton.nativeElement.click();
     this.resultadosForm.reset();
+    this.partidosLista = [''];
   }
 
   actualizar() {
@@ -439,6 +440,7 @@ export class ResultadosComponent {
     this.visibiliti = false;
     this.sumaTotal = 0;
     this.sumaDeValores = 0;
+    this.partidosLista = [''];
   }
   creteForm() {
     this.resultadosForm = this.formBuilder.group({
