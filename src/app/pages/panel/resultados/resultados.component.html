@@ -571,7 +571,7 @@
                         <td>
                           <input
                             type="text"
-                            class="form-control"
+                            class="form-control text-center"
                             formControlName="noRegistrado"
                             (blur)="actualizarSuma2($event)"
                           />
@@ -594,7 +594,7 @@
                         <td>
                           <input
                             type="text"
-                            class="form-control"
+                            class="form-control text-center"
                             formControlName="votosNulos"
                             (blur)="actualizarSuma3($event)"
                           />
@@ -605,11 +605,24 @@
                         <td>
                           <input
                             type="text"
-                            class="form-control"
+                            class="form-control text-center"
                             formControlName="suma"
                             [value]="sumaDeValores"
                             readonly
                           />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">
+                          <div class="text-center">
+                            <button
+                              class="btn btn-primary"
+                              type="button"
+                              (click)="mostrar()"
+                            >
+                              Sumar
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -617,17 +630,6 @@
                   <p *ngIf="partidosLista.length === 0" class="text-center">
                     No hay datos para mostrar.
                   </p>
-                </div>
-                <div class="row justify-content-center d-grid gap-2">
-                  <div class="col-lg-2 text-center">
-                    <button
-                      class="btn btn-primary"
-                      type="button"
-                      (click)="mostrar()"
-                    >
-                      Sumar
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
