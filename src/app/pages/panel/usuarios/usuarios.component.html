@@ -285,9 +285,6 @@
                   <div *ngIf="usuarioForm.get('correo')?.hasError('required')">
                     <p style="color: red">El correo es obligatorio</p>
                   </div>
-                  <div *ngIf="usuarioForm.get('correo')?.hasError('email')">
-                    <p style="color: red">El correo no es válido</p>
-                  </div>
                   <div *ngIf="usuarioForm.get('correo')?.hasError('pattern')">
                     <p style="color: red">El correo no es válido</p>
                   </div>
