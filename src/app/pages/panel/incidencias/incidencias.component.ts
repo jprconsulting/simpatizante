@@ -36,16 +36,14 @@ export class IncidenciasComponent implements OnInit {
   @ViewChild('mapCanvas') mapCanvas!: ElementRef<HTMLElement>;
   @ViewChild('ubicacionInput', { static: false }) ubicacionInput!: ElementRef;
 
-  incidenciasForm!: FormGroup;
-
+  incidenciasForm!: FormGroup; 
   incidencia!: Incidencia;
   candidatos: Candidato[] = [];
   votantesSelect!: Incidencia | undefined;
   sinPrimovidosMessage = '';
-  readonlySelectCandidato = true;  
+  readonlySelectCandidato = true;
   mapaForm!: FormGroup;
   candidatoId = 0;
-  vistas: Visita[] = [];
   casillas: Casillas[] = [];
   incidencias: Incidencia[] = [];
   indicadores: Indicadores[] = [];
@@ -75,12 +73,12 @@ export class IncidenciasComponent implements OnInit {
     private casillasService: CasillasService,
     private incidenciasService: IncidenciaService,
     private candidatosService: CandidatosService,
-    private securityService: SecurityService,
+    private securityService: SecurityService
   ) {
     this.incidenciasService.refreshListIncidencia.subscribe(() =>
       this.getIncidencias()
     );
-    
+
     this.creteForm();
     this.getIndicadores();
     this.getCasillas();

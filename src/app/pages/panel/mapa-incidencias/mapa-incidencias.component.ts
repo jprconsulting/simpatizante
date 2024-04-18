@@ -25,7 +25,6 @@ export class MapaIncidenciasComponent implements AfterViewInit {
   indicadores: Indicadores[] = [];
   incidencias: Incidencia[] = [];
   incidenciasFiltradas: Incidencia[] = [];
-  isLoadingModaltipo = LoadingStates.neutro;
   sinIncidencias: boolean = true;
   isLoadingModalIncidencias = LoadingStates.neutro;
   pagModalPromovidos: number = 1;
@@ -328,7 +327,7 @@ export class MapaIncidenciasComponent implements AfterViewInit {
   }
   exportarDatosAExcel() {
     if (this.incidencias.length === 0) {
-      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      console.warn('La lista de incidencias está vacía. No se puede exportar.');
       return;
     }
 

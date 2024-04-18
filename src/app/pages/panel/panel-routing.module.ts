@@ -38,13 +38,6 @@ const routes: Routes = [
           import('./promotor/promotor.module').then((i) => i.PromotorModule),
       },
       {
-        path: 'jornada-electoral',
-        loadChildren: () =>
-          import('./jornada-electoral/jornada-electoral.module').then(
-            (i) => i.JornadaElectoralModule
-          ),
-      },
-      {
         path: 'incidencias',
         loadChildren: () =>
           import('./incidencias/incidencias.module').then(
