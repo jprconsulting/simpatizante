@@ -1,7 +1,6 @@
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoadingStates } from 'src/app/global/global';
-import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
 import { ProgramaSocial } from 'src/app/models/programa-social';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -17,19 +16,13 @@ import * as XLSX from 'xlsx';
 export class ProgramasSocialesComponent {
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
-
   programaSocial!: ProgramaSocial;
   programaSocialForm!: FormGroup;
-  busqueda!: FormGroup;
   programasSociales: ProgramaSocial[] = [];
   programasSocialesFilter: ProgramaSocial[] = [];
   isLoading = LoadingStates.neutro;
-
-  areasAdscripcion: AreaAdscripcion[] = [];
   isModalAdd: boolean = true;
   formData: any;
-  rolId = 0;
-  defaultColor = '#206bc4';
   id!: number;
   estatusBtn = true;
   verdadero = 'Activo';

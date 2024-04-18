@@ -609,6 +609,9 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
   onClear() {
     this.simpatizantesFiltrados;
     this.getSimpatizantes();
+    this.getSimpatizantes();
+    this.getSimpatizantes();
+    this.getSimpatizantes();
   }
 
   filterCandidatos(id: number): void {

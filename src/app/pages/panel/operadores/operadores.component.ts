@@ -12,7 +12,6 @@ import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { OperadoresService } from 'src/app/core/services/operadores.service';
 import { SeccionService } from 'src/app/core/services/seccion.service';
 import { GenericType, LoadingStates, RolesBD } from 'src/app/global/global';
-import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
 import { Operador } from 'src/app/models/operador';
 import { Seccion } from 'src/app/models/seccion';
 import * as XLSX from 'xlsx';
@@ -49,7 +48,6 @@ export class OperadoresComponent implements OnInit {
   ];
   seccionesRegistradas: Seccion[] = [];
   secciones: Seccion[] = [];
-  areasAdscripcion: AreaAdscripcion[] = [];
   isModalAdd = true;
   rolId = 0;
   seccionesFilter: Seccion[] = [];
