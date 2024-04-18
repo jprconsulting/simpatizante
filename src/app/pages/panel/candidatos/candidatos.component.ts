@@ -6,8 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { GenericType, LoadingStates } from 'src/app/global/global';
-import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
+import { LoadingStates } from 'src/app/global/global';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
@@ -41,7 +40,6 @@ export class CandidatosComponent implements OnInit {
   candidatos!: Candidato;
   candidatoForm!: FormGroup;
   generos: Genero[] = [];
-  areasAdscripcion: AreaAdscripcion[] = [];
   candidatoFilter: Candidato[] = [];
   cargos: Cargo[] = [];
   candidato: Candidato[] = [];
@@ -49,15 +47,12 @@ export class CandidatosComponent implements OnInit {
   isLoadingModalSimpatizantes = LoadingStates.neutro;
   isModalAdd: boolean = true;
   idUpdate!: number;
-  votantes: Simpatizante[] = [];
-  simpatizantesFilter: Simpatizante[] = [];
   simpatizantes: Simpatizante[] = [];
   simpatizanteFilter: Simpatizante[] = [];
   estados: Estado[] = [];
   distritos: Distrito[] = [];
   municipios: Municipio[] = [];
   comunidades: Comunidad[] = [];
-  errorMessage!: string;
   sinSimpatizantes: boolean = false;
   pagModalPromovidos: number = 1;
   initialValueModalSearch: string = '';
