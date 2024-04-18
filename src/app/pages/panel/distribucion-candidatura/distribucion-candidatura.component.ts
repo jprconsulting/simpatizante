@@ -48,14 +48,11 @@ export class DistribucionCandidaturaComponent {
   independiente: Candidatura[] = [];
   candidaturas: Candidatura[] = [];
   public isUpdatingImg: boolean = false;
-  public imgPreview: string = '';
   isLoading = LoadingStates.neutro;
   agrupacionSelect: any;
   candidaturasFilter: Candidatura[] = [];
   imagenAmpliada: string | null = null;
   id!: number;
-  selectedAgrupacion: any;
-  searchText: string = '';
   estados: Estado[] = [];
   distritos: Distrito[] = [];
   municipios: Municipio[] = [];
@@ -66,7 +63,6 @@ export class DistribucionCandidaturaComponent {
   isLoadingModalPartidos = LoadingStates.neutro;
   pagModalSecciones: number = 1;
   initialValueModalSearchPartidos: string = '';
-  partidosFil: DistribucionCandidatura[] = [];
   partidosConLogo: { nombre: string; logoUrl: string }[] = [];
 
   constructor(

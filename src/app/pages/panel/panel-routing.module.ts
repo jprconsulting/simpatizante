@@ -170,13 +170,6 @@ const routes: Routes = [
           ).then((i) => i.DistribucionesOrdenadasModule),
       },
       {
-        path: 'formulario',
-        loadChildren: () =>
-          import('./formulario/formulario.module').then(
-            (i) => i.FormulariosModule
-          ),
-      },
-      {
         path: 'carga',
         loadChildren: () =>
           import('./carga/carga.module').then((i) => i.CargaModule),
