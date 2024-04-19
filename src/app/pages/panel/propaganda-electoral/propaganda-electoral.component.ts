@@ -297,6 +297,7 @@ export class PropagandaElectoralComponent {
   resetMap() {
     this.ubicacionInput.nativeElement.value = '';
     this.setCurrentLocation();
+    this.getPropagandas();
     this.ngAfterViewInit();
   }
 
