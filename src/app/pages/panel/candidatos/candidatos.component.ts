@@ -333,7 +333,7 @@ export class CandidatosComponent implements OnInit {
       estatus: [true],
       imagenBase64: [''],
       emblemaBase64: [''],
-      estado: [29],
+      estado: [61],
       distrito: [null],
       municipio: [null],
       comunidad: [null],
@@ -452,7 +452,7 @@ export class CandidatosComponent implements OnInit {
     const genero = this.candidatoForm.get('genero')?.value;
     const imagenBase64 = this.candidatoForm.get('imagenBase64')?.value;
     const emblemaBase64 = this.candidatoForm.get('emblemaBase64')?.value;
-    this.candidatos.estado = { id: 29 } as Estado;
+    this.candidatos.estado = { id: 61 } as Estado;
 
     const distrito = this.candidatoForm.get('distrito')?.value;
     this.candidatos.distrito = { id: distrito } as Distrito;
@@ -546,7 +546,7 @@ export class CandidatosComponent implements OnInit {
     this.candidatos.cargo = { id: cargoid } as Cargo;
     this.candidatos.genero = { id: genero } as Genero;
 
-    this.candidatos.estado = { id: 29 } as Estado;
+    this.candidatos.estado = { id: 61 } as Estado;
 
     const distrito = this.candidatoForm.get('distrito')?.value;
     this.candidatos.distrito = { id: distrito } as Distrito;
