@@ -166,7 +166,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
           <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
             src="${generoImage}"
             alt="Imagen de género">
-  
+
           <div class="px-4 py-4">
             <p style="font-weight: bolder;">
               Nombre:
@@ -257,7 +257,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
   getSimpatizantes() {
     this.dataObject = this.securityService.getDataUser();
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 5;
 
     if (isAdmin) {
       this.simpatizantesService.getAll2().subscribe({
@@ -267,7 +267,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
         },
       });
     }
-    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 6;
 
     if (isAdmin2) {
       const id = this.dataObject && this.dataObject.operadorId;
@@ -307,7 +307,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     }[] = [];
     this.dataObject = this.securityService.getDataUser();
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 5;
     if (isAdmin) {
       this.simpatizantesService.getAll().subscribe({
         next: (dataFromAPI2) => {
@@ -339,7 +339,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
         },
       });
     }
-    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 6;
 
     if (isAdmin2) {
       const id = this.dataObject && this.dataObject.operadorId;
@@ -421,7 +421,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
     }[] = [];
     this.dataObject = this.securityService.getDataUser();
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 5;
 
     if (isAdmin) {
       this.simpatizantesService.getAll().subscribe({
@@ -472,7 +472,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       this.mapaForm.controls['candidatoId'].setValue('');
     }
 
-    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 6;
 
     if (isAdmin2) {
       const id = this.dataObject && this.dataObject.operadorId;
@@ -528,7 +528,7 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       }
     }
 
-    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
+    const isCandidato = this.dataObject && this.dataObject.rolId === 7;
 
     if (isCandidato) {
       const id = this.dataObject && this.dataObject.candidatoId;
