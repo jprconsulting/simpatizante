@@ -637,12 +637,12 @@ export class SimpatizanteComponent implements OnInit {
         ],
       ],
       fechaNacimiento: [null],
-      estado: ['29'],
+      estado: [''],
       seccion: [null, Validators.required],
       generoId: [null, Validators.required],
       estatus: [this.estatusBtn],
       programaSocial: [''],
-      municipio: [29],
+      municipio: [''],
       domicilio: [''],
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
@@ -918,7 +918,7 @@ export class SimpatizanteComponent implements OnInit {
     const promotor = this.simpatizanteForm.get('promotor')?.value;
 
     this.votante.municipio = { id: municipioId } as Municipio;
-    this.votante.estado = { id: 29 } as Estado;
+    this.votante.estado = { id: 61 } as Estado;
     this.votante.seccion = { id: seccionId } as Seccion;
     this.votante.operador = { id: operadorId } as Operador;
     this.votante.genero = { id: generoId } as Genero;
@@ -1003,7 +1003,7 @@ export class SimpatizanteComponent implements OnInit {
         ? ({ id: programaSocialId } as ProgramaSocial)
         : null;
       this.votante.municipio = { id: municipioId } as Municipio;
-      this.votante.estado = { id: 29 } as Estado;
+      this.votante.estado = { id: 61 } as Estado;
       this.votante.seccion = { id: seccionId } as Seccion;
       this.votante.operador = { id: operadorId } as Operador;
       this.votante.genero = { id: generoId } as Genero;
@@ -1040,7 +1040,7 @@ export class SimpatizanteComponent implements OnInit {
         ? ({ id: programaSocialId } as ProgramaSocial)
         : null;
       this.votante.municipio = { id: municipioId } as Municipio;
-      this.votante.estado = { id: 29 } as Estado;
+      this.votante.estado = { id: 61 } as Estado;
       this.votante.seccion = { id: seccionId } as Seccion;
       this.votante.operador = { id: operadorId } as Operador;
       this.votante.genero = { id: generoId } as Genero;

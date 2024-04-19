@@ -70,7 +70,7 @@ export class VisitasComponent {
   getSimpatizante() {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
-    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 5;
     if (isAdmin) {
       this.simpatizantesService.getAll().subscribe({
         next: (dataFromAPI) => {
@@ -82,7 +82,7 @@ export class VisitasComponent {
         },
       });
     }
-    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 6;
 
     if (isAdmin2) {
       const id = this.dataObject && this.dataObject.operadorId;
@@ -100,7 +100,7 @@ export class VisitasComponent {
         });
       }
     }
-    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
+    const isCandidato = this.dataObject && this.dataObject.rolId === 7;
 
     if (isCandidato) {
       const id = this.dataObject && this.dataObject.candidatoId;

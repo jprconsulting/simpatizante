@@ -178,7 +178,7 @@ export class PromotorComponent implements OnInit {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 5;
     if (isAdmin) {
       this.isLoading = LoadingStates.trueLoading;
       this.pomotoresService.getAll().subscribe({
@@ -195,7 +195,7 @@ export class PromotorComponent implements OnInit {
         },
       });
     }
-    const Operador = this.dataObject && this.dataObject.rolId === 2;
+    const Operador = this.dataObject && this.dataObject.rolId === 6;
 
     if (Operador) {
       const id = this.dataObject && this.dataObject.operadorId;
