@@ -98,7 +98,7 @@ export class OperadoresComponent implements OnInit {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 5;
 
     if (this.currentUser?.rolId === RolesBD.candidato) {
       this.candidatoId = this.currentUser?.candidatoId;
@@ -246,7 +246,7 @@ export class OperadoresComponent implements OnInit {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 5;
     if (isAdmin) {
       this.operadoresService.getAll().subscribe({
         next: (dataFromAPI) => {
@@ -262,7 +262,7 @@ export class OperadoresComponent implements OnInit {
         },
       });
     }
-    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
+    const isCandidato = this.dataObject && this.dataObject.rolId === 7;
 
     if (isCandidato) {
       const id = this.dataObject && this.dataObject.candidatoId;
