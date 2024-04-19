@@ -458,7 +458,7 @@ export class DistribucionCandidaturaComponent {
     const tipo = this.DistribucionForm.get('tipoEleccion')?.value;
     this.distribucion.tipoEleccion = { id: tipo } as TipoAgrupaciones;
 
-    this.distribucion.estado = { id: 29 } as Estado;
+    this.distribucion.estado = { id: 61 } as Estado;
 
     const distrito = this.DistribucionForm.get('distrito')?.value;
     this.distribucion.distrito = { id: distrito } as Distrito;
@@ -533,7 +533,7 @@ export class DistribucionCandidaturaComponent {
     this.distribucion = this.DistribucionForm.value as DistribucionCandidatura;
     const tipo = this.DistribucionForm.get('tipoEleccion')?.value;
     this.distribucion.tipoEleccion = { id: tipo } as TipoAgrupaciones;
-    this.distribucion.estado = { id: 29 } as Estado;
+    this.distribucion.estado = { id: 61 } as Estado;
     const distrito = this.DistribucionForm.get('distrito')?.value;
     this.distribucion.distrito = { id: distrito } as Distrito;
     const municipio = this.DistribucionForm.get('municipio')?.value;
