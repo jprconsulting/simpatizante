@@ -685,14 +685,14 @@ export class SimpatizanteComponent implements OnInit {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 5;
     if (isAdmin) {
       this.isLoading = LoadingStates.trueLoading;
       this.promotoresService
         .getAll()
         .subscribe({ next: (dataFromAPI) => (this.promotores = dataFromAPI) });
     }
-    const Operador = this.dataObject && this.dataObject.rolId === 2;
+    const Operador = this.dataObject && this.dataObject.rolId === 6;
 
     if (Operador) {
       const id = this.dataObject && this.dataObject.operadorId;
@@ -705,7 +705,7 @@ export class SimpatizanteComponent implements OnInit {
         this.getPromotoresSelect();
       }
     }
-    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
+    const isCandidato = this.dataObject && this.dataObject.rolId === 7;
 
     if (isCandidato) {
       const id = this.dataObject && this.dataObject.candidatoId;
@@ -762,7 +762,7 @@ export class SimpatizanteComponent implements OnInit {
     this.dataObject = this.securityService.getDataUser();
     console.log(this.dataObject);
     this.isLoading = LoadingStates.trueLoading;
-    const isAdmin = this.dataObject && this.dataObject.rolId === 1;
+    const isAdmin = this.dataObject && this.dataObject.rolId === 5;
 
     if (isAdmin) {
       this.isLoading = LoadingStates.trueLoading;
@@ -782,7 +782,7 @@ export class SimpatizanteComponent implements OnInit {
         },
       });
     }
-    const isAdmin2 = this.dataObject && this.dataObject.rolId === 2;
+    const isAdmin2 = this.dataObject && this.dataObject.rolId === 6;
 
     if (isAdmin2) {
       const id = this.dataObject && this.dataObject.operadorId;
@@ -802,7 +802,7 @@ export class SimpatizanteComponent implements OnInit {
         });
       }
     }
-    const isCandidato = this.dataObject && this.dataObject.rolId === 3;
+    const isCandidato = this.dataObject && this.dataObject.rolId === 7;
 
     if (isCandidato) {
       const id = this.dataObject && this.dataObject.candidatoId;
