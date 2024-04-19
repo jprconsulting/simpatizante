@@ -699,7 +699,7 @@ export class OperadoresComponent implements OnInit {
     this.seccionesService.getMunicipioId(id).subscribe({
       next: (dataFromAPI) => {
         this.seccionesRegistradas = dataFromAPI;
-        this.seccionesOperador = this.seccionesRegistradas;
+        this.seccionesOperador = this.secciones;
       },
     });
   }
