@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    apiUrl: 'https://localhost:7224/api', 
+    apiUrl: 'http://simpatizantes.somee.com/api',
 };

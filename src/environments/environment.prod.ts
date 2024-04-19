@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://beneficiariosdifapi20240104225625.azurewebsites.net/api',
+    apiUrl: 'http://simpatizantes.somee.com/api',
 };
