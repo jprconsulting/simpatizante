@@ -38,22 +38,17 @@ export class SeguimientoVotoComponent implements OnInit {
   @ViewChild('closebutton') closebutton!: ElementRef;
 
   seguimientoForm!: FormGroup;
-  vistas: Visita[] = [];
   candidato: Candidato[] = [];
   votos: Voto[] = [];
   voto!: Voto;
   votosFilter: Voto[] = [];
-  candidatosSelect: any;
   simpatizantes: Simpatizante[] = [];
   isLoading = LoadingStates.neutro;
   isModalAdd = true;
-  isClaveFilled = false;
   isUpdatingImg = false;
   imgPreview = '';
   operadores: Operador[] = [];
-  dataObject!: AppUserAuth | null;
   operadorFilter: Operador[] = [];
-  votantesSelect!: Voto | undefined;
   votantes: Simpatizante[] = [];
   sinPrimovidosMessage = '';
 
