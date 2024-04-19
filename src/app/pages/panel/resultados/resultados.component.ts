@@ -323,7 +323,9 @@ export class ResultadosComponent {
   }
   agregar() {
     this.resultado = this.resultadosForm.value as Resultado;
-    this.resultado.estado = { id: 29 } as Estado;
+
+    const estado = this.resultadosForm.get('estado')?.value;
+    this.resultado.estado = { id: estado } as Estado;
     const seccion = this.resultadosForm.get('seccion')?.value;
     this.resultado.seccion = { id: seccion } as Seccion;
 
@@ -383,7 +385,8 @@ export class ResultadosComponent {
   actualizar() {
     this.resultado = this.resultadosForm.value as Resultado;
     const resultadoId = this.resultadosForm.get('id')?.value;
-    this.resultado.estado = { id: 29 } as Estado;
+    const estado = this.resultadosForm.get('estado')?.value;
+    this.resultado.estado = { id: estado } as Estado;
     const seccion = this.resultadosForm.get('seccion')?.value;
     this.resultado.seccion = { id: seccion } as Seccion;
     const tipoeleccion = this.resultadosForm.get('tipoEleccion')?.value;

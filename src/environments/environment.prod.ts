@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://simpatizantes.somee.com/api',
+    apiUrl: 'https://simpatizantes.somee.com/api',
 };
