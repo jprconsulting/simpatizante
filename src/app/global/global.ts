@@ -23,8 +23,8 @@ export interface GenericType {
 }
 
 export const Generos = {
-  1: 'Masculino',
-  2: 'Femenino',
+  4: 'Masculino',
+  5: 'Femenino',
 };
 
 export enum RolesBD {

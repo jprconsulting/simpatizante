@@ -17,10 +17,9 @@ import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
-  styleUrls: ['./usuarios.component.css']
+  styleUrls: ['./usuarios.component.css'],
 })
 export class UsuariosComponent {
-
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
 
@@ -42,7 +41,7 @@ export class UsuariosComponent {
     private formBuilder: FormBuilder,
     private candidatosService: CandidatosService,
     private rolsService: RolsService,
-    private operadoresService: OperadoresService,
+    private operadoresService: OperadoresService
   ) {
     this.usuarioService.refreshListUsuarios.subscribe(() => this.getUsuarios());
     this.getUsuarios();
@@ -55,31 +54,68 @@ export class UsuariosComponent {
   }
 
   getRols() {
-    this.rolsService.getAll().subscribe({ next: (dataFromAPI) => this.rols = dataFromAPI });
+    this.rolsService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.rols = dataFromAPI) });
   }
 
   getCandidatos() {
-    this.candidatosService.getAll().subscribe({ next: (dataFromAPI) => this.candidatos = dataFromAPI });
+    this.candidatosService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.candidatos = dataFromAPI) });
   }
 
   getOperadores() {
-    this.operadoresService.getAll().subscribe({ next: (dataFromAPI) => this.operadores = dataFromAPI });
+    this.operadoresService
+      .getAll()
+      .subscribe({ next: (dataFromAPI) => (this.operadores = dataFromAPI) });
   }
 
   creteForm() {
     this.usuarioForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', [Validators.required,Validators.maxLength(22), Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoPaterno: ['', [Validators.required,Validators.maxLength(17), Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      apellidoMaterno: ['', [Validators.required,Validators.maxLength(17), Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
-      correo: ['', [Validators.required, Validators.email, Validators.pattern('^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$')]],
-      password: [
+      nombre: [
         '',
         [
           Validators.required,
-          Validators.minLength(8)
+          Validators.maxLength(22),
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
         ],
       ],
+      apellidoPaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(17),
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      apellidoMaterno: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(17),
+          Validators.minLength(2),
+          Validators.pattern(
+            /^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/
+          ),
+        ],
+      ],
+      correo: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.pattern('^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$'),
+        ],
+      ],
+      password: ['', [Validators.required, Validators.minLength(8)]],
       estatus: [true],
       rolId: [null, Validators.required],
       operadorId: [null],
@@ -87,33 +123,36 @@ export class UsuariosComponent {
     });
   }
 
-
   changeValidatorsCandidato(rolId: number) {
     //Si es candidato
-    if (rolId === 3) {
-      this.usuarioForm.controls["candidatoId"].enable();
-      this.usuarioForm.controls["candidatoId"].setValidators(Validators.required);
+    if (rolId === 7) {
+      this.usuarioForm.controls['candidatoId'].enable();
+      this.usuarioForm.controls['candidatoId'].setValidators(
+        Validators.required
+      );
     } else {
-      this.usuarioForm.controls["candidatoId"].disable();
-      this.usuarioForm.controls["candidatoId"].clearValidators();
+      this.usuarioForm.controls['candidatoId'].disable();
+      this.usuarioForm.controls['candidatoId'].clearValidators();
     }
-    this.usuarioForm.get("candidatoId")?.updateValueAndValidity();
+    this.usuarioForm.get('candidatoId')?.updateValueAndValidity();
   }
 
   changeValidatorsOperador(rolId: number) {
     //Si es operador
-    if (rolId === 2) {
-      this.usuarioForm.controls["operadorId"].enable();
-      this.usuarioForm.controls["operadorId"].setValidators(Validators.required);
+    if (rolId === 6) {
+      this.usuarioForm.controls['operadorId'].enable();
+      this.usuarioForm.controls['operadorId'].setValidators(
+        Validators.required
+      );
     } else {
-      this.usuarioForm.controls["operadorId"].disable();
-      this.usuarioForm.controls["operadorId"].clearValidators();
+      this.usuarioForm.controls['operadorId'].disable();
+      this.usuarioForm.controls['operadorId'].clearValidators();
     }
-    this.usuarioForm.get("operadorId")?.updateValueAndValidity();
+    this.usuarioForm.get('operadorId')?.updateValueAndValidity();
   }
 
   subscribeRolId() {
-    this.usuarioForm.get("rolId")?.valueChanges.subscribe(eventRolId => {
+    this.usuarioForm.get('rolId')?.valueChanges.subscribe((eventRolId) => {
       this.usuarioForm.patchValue({ candidatoId: null, operadorId: null });
       this.changeValidatorsCandidato(eventRolId);
       this.changeValidatorsOperador(eventRolId);
@@ -122,18 +161,16 @@ export class UsuariosComponent {
 
   getUsuarios() {
     this.isLoading = LoadingStates.trueLoading;
-    this.usuarioService.getAll().subscribe(
-      {
-        next: (dataFromAPI) => {
-          this.usuarios = dataFromAPI;
-          this.usuariosFilter = this.usuarios;
-          this.isLoading = LoadingStates.falseLoading;
-        },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading
-        }
-      }
-    );
+    this.usuarioService.getAll().subscribe({
+      next: (dataFromAPI) => {
+        this.usuarios = dataFromAPI;
+        this.usuariosFilter = this.usuarios;
+        this.isLoading = LoadingStates.falseLoading;
+      },
+      error: () => {
+        this.isLoading = LoadingStates.errorLoading;
+      },
+    });
   }
 
   onPageChange(number: number) {
@@ -144,12 +181,13 @@ export class UsuariosComponent {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
 
-    this.usuariosFilter = this.usuarios.filter(usuario =>
-      usuario.nombre.toLowerCase().includes(valueSearch) ||
-      usuario.apellidoPaterno.toLowerCase().includes(valueSearch) ||
-      usuario.apellidoMaterno.toLowerCase().includes(valueSearch) ||
-      usuario.rol.nombreRol.toLowerCase().includes(valueSearch) ||
-      usuario.correo.toLowerCase().includes(valueSearch)
+    this.usuariosFilter = this.usuarios.filter(
+      (usuario) =>
+        usuario.nombre.toLowerCase().includes(valueSearch) ||
+        usuario.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+        usuario.apellidoMaterno.toLowerCase().includes(valueSearch) ||
+        usuario.rol.nombreRol.toLowerCase().includes(valueSearch) ||
+        usuario.correo.toLowerCase().includes(valueSearch)
     );
 
     this.configPaginator.currentPage = 1;
@@ -170,7 +208,7 @@ export class UsuariosComponent {
       estatus: dto.estatus,
       rolId: dto.rol.id,
       candidatoId: dto.candidato?.id,
-      operadorId: dto.operador?.id
+      operadorId: dto.operador?.id,
     });
   }
 
@@ -209,12 +247,11 @@ export class UsuariosComponent {
             this.configPaginator.currentPage = 1;
             this.searchItem.nativeElement.value = '';
           },
-          error: (error) => this.mensajeService.mensajeError(error)
+          error: (error) => this.mensajeService.mensajeError(error),
         });
       }
     );
   }
-
 
   agregar() {
     this.usuario = this.usuarioForm.value as Usuario;
@@ -238,22 +275,18 @@ export class UsuariosComponent {
         this.mensajeService.mensajeError(error);
       },
     });
-
   }
-
 
   resetForm() {
     this.closebutton.nativeElement.click();
     this.usuarioForm.reset();
   }
 
-
   submit() {
     if (this.isModalAdd === false) {
       this.editarUsuario();
     } else {
       this.agregar();
-
     }
   }
 
@@ -274,27 +307,36 @@ export class UsuariosComponent {
       return;
     }
 
-    const datosParaExportar = this.usuarios.map(usuario => {
+    const datosParaExportar = this.usuarios.map((usuario) => {
       const estatus = usuario.estatus ? 'Activo' : 'Inactivo';
       return {
-        'Nombre': usuario.nombre,
+        Nombre: usuario.nombre,
         'Apellido Paterno': usuario.apellidoPaterno,
         'Apellido Materno': usuario.apellidoMaterno,
-        'Correo': usuario.correo,
-        'Rol': usuario.rol.nombreRol,
-        'Estatus': estatus,
+        Correo: usuario.correo,
+        Rol: usuario.rol.nombreRol,
+        Estatus: estatus,
       };
     });
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const worksheet: XLSX.WorkSheet =
+      XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
 
     this.guardarArchivoExcel(excelBuffer, 'usuarios.xlsx');
   }
 
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const data: Blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const url: string = window.URL.createObjectURL(data);
     const a: HTMLAnchorElement = document.createElement('a');
     a.href = url;
@@ -302,9 +344,4 @@ export class UsuariosComponent {
     a.click();
     window.URL.revokeObjectURL(url);
   }
-
 }
-
-
-
-

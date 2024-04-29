@@ -14,6 +14,7 @@ import { RouterLinkActive } from '@angular/router';
   styleUrls: ['./sidebar.component.css'],
 })
 export class SidebarComponent implements AfterViewInit {
+  menuColapsado: boolean = true;
   @ViewChild('rlDashboard') rlDashboard!: RouterLinkActive;
   @ViewChild('rlUsuarios') rlUsuarios: RouterLinkActive | undefined;
   @ViewChild('rlProgramasSociales') rlProgramasSociales:
@@ -67,5 +68,13 @@ export class SidebarComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.cdr.detectChanges(); // forzar un ciclo de detección de cambios después de la vista inicial
+  }
+
+  cerrarMenu(): void {
+    const sidebarMenu = document.querySelector('#sidebar-menu');
+
+    if (sidebarMenu) {
+      sidebarMenu.classList.remove('show');
+    }
   }
 }

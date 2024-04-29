@@ -24,6 +24,7 @@
     "@tabler/core": "^1.0.0-beta20",
     "@tabler/icons-webfont": "^2.44.0",
     "@types/google.maps": "^3.54.10",
+    "firebase": "^10.11.0",
     "highcharts": "^11.2.0",
     "highcharts-angular": "^4.0.0",
     "ngx-color-picker": "^16.0.0",

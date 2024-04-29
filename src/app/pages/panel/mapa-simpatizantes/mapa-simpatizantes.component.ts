@@ -151,10 +151,10 @@ export class MapaSimpatizantesComponent implements AfterViewInit {
       let generoImage = '';
 
       switch (simpatizante.simpatizante.genero.id) {
-        case 1:
+        case 4:
           generoImage = '../../../../assets/images/hombre.png';
           break;
-        case 2:
+        case 5:
           generoImage = '../../../../assets/images/mujer.png';
           break;
         default:

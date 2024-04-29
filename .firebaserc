@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "simpatizantes-4041e"
-  }
+    "default": "simpatizantes-c3705",
+    "jpr": "simpatizantes-c3705"
+  },
+  "targets": {},
+  "etags": {}
 }

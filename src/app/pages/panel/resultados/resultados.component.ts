@@ -122,11 +122,35 @@ export class ResultadosComponent {
   }
 
   getNombrePartido(partido: string): string {
-    return partido.split('.jpg')[1].split('-')[1].trim();
+    if (!partido.includes('.jpg')) {
+      return '';
+    }
+
+    const splitArray = partido.split('.jpg');
+    if (splitArray.length < 2) {
+      return '';
+    }
+
+    // Dividir la segunda parte en "-"
+    const segundoSplit = splitArray[1].split('-');
+    if (segundoSplit.length < 2) {
+      return '';
+    }
+
+    return segundoSplit[1].trim();
   }
 
   getLogoUrl(partido: string): string {
-    return partido.split('.jpg')[0] + '.jpg';
+    if (!partido.includes('.jpg')) {
+      return '';
+    }
+
+    const splitArray = partido.split('.jpg');
+    if (splitArray.length < 2) {
+      return '';
+    }
+
+    return splitArray[0] + '.jpg';
   }
 
   getPartido(partidoNombre: string): string | undefined {
